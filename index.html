@@ -14,7 +14,7 @@
 <meta property="og:title" content="Artisans du bâtiment : votre entreprise, de A à Z · Nora Éditions Artisans">
 <meta property="og:description" content="Logo, fiche Google, site internet avec son appli métier, à votre nom. Création 200 €, puis 10 € par mois.">
 <meta property="og:image" content="https://artisans.noraeditions.fr/medias/icone-512.png">
-<meta name="theme-color" content="#f7f4ef">
+<meta name="theme-color" content="#ffffff">
 <link rel="icon" type="image/png" sizes="32x32" href="medias/favicon-32.png">
 <link rel="apple-touch-icon" href="medias/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,7 +23,7 @@
 <style>
 
   :root {
-    --fond: #f7f4ef; --pierre: #ebe5dc; --sable: #d9d0c3; --encre: #1b1a18; --gris: #6d675f; --clair: #a39b90;
+    --fond: #ffffff; --pierre: #f5f4f2; --sable: #e3e1dd; --encre: #1b1a18; --gris: #6d675f; --clair: #a39b90;
     --sombre: #141312; --filet: #d1402a; --blanc: #fff;
     --serif: "Fraunces", Georgia, serif; --sans: "Inter", Arial, sans-serif;
   }
@@ -55,7 +55,7 @@
   .btn-trait:hover { background: var(--encre); color: #fff; }
 
   /* En-tête */
-  header { position: sticky; top: 0; z-index: 50; background: rgba(247,244,239,.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0,0,0,.06); }
+  header { position: sticky; top: 0; z-index: 50; background: rgba(255,255,255,.94); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0,0,0,.06); }
   header .bloc { display: flex; align-items: center; justify-content: space-between; height: 66px; }
   .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
   .logo img { height: 34px; width: auto; }
@@ -139,10 +139,10 @@
   .galerie .item .pastille { position: absolute; left: 10px; bottom: 10px; font-size: 10px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: #fff; background: rgba(20,19,18,.55); padding: 4px 8px; }
 
   /* Vidéos */
-  .videos { background: var(--sombre); color: #f1ede6; }
-  .videos .label { color: var(--clair); }
-  .videos h2 i { color: var(--clair); }
-  .videos .intro { color: var(--clair); }
+  .videos { background: #fff; color: var(--encre); border-top: 1px solid var(--pierre); }
+  .videos .label { color: var(--gris); }
+  .videos h2 i { color: var(--gris); }
+  .videos .intro { color: var(--gris); }
   .pubs { display: grid; grid-auto-flow: column; grid-auto-columns: 62%; gap: 12px; margin-top: 40px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 6px; scrollbar-width: none; }
   .pubs::-webkit-scrollbar { display: none; }
   .pubs video { scroll-snap-align: start; }
@@ -225,7 +225,7 @@
   footer img { height: 28px; width: auto; align-self: flex-start; }
 
   /* Barre mobile */
-  .barre { position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); background: rgba(247,244,239,.96); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-top: 1px solid rgba(0,0,0,.08); }
+  .barre { position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); background: rgba(255,255,255,.96); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-top: 1px solid rgba(0,0,0,.08); }
   .barre .btn { padding: 14px 10px; }
   .barre .wa svg { color: #25d366; }
 
@@ -276,14 +276,29 @@
 
 
   /* Nora Éditions · artisans */
-  .heros { background: #14110e; }
-  .heros::after { background: linear-gradient(180deg, rgba(20,17,14,0) 30%, rgba(20,17,14,.6) 100%); }
+  #tarifs { background: var(--pierre); }
+  .heros { background: #fff; color: var(--encre); min-height: 0; align-items: stretch; }
+  .heros::after { display: none; }
+  .heros .bloc { padding-top: 34px; padding-bottom: 40px; }
+  .heros .label { color: var(--filet); }
+  .heros p { color: #3d3934; }
+  .heros .btn-contour { border-color: var(--encre); color: var(--encre); }
+  .heros .btn-contour:hover { background: rgba(27,26,24,.06); }
+  .heros-grille { display: grid; gap: 34px; align-items: center; }
+  .heros-tel { display: block; justify-self: center; width: 62%; max-width: 300px; border: 8px solid #1b1a18; border-radius: 34px; overflow: hidden; box-shadow: 0 24px 50px rgba(27,26,24,.18), 0 0 0 1px rgba(0,0,0,.04); transform: rotate(-3deg); }
+  .heros-tel img { display: block; width: 100%; height: auto; aspect-ratio: 390 / 600; object-fit: cover; object-position: top; }
+  @media (min-width: 900px) {
+    .heros .bloc { padding-top: 70px; padding-bottom: 80px; }
+    .heros-grille { grid-template-columns: 1.3fr 1fr; }
+    .heros-tel { width: 100%; max-width: 320px; }
+    .heros-tel img { aspect-ratio: 390 / 760; }
+  }
   .fond-n { position: absolute; right: -18%; top: 6%; width: 120%; max-width: 760px; opacity: .13; }
   @media (min-width: 900px) { .fond-n { right: -4%; top: 8%; width: 58%; } }
   .etape.sans-photo { padding-top: 6px; }
   .ka-grille { display: grid; gap: 14px; margin-top: 30px; grid-template-columns: 1fr 1fr; }
-  .ka-carte { background: #262421; border-radius: 18px; padding: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
-  .ka-carte figcaption { font-size: 13px; color: #bdb6ac; text-align: center; }
+  .ka-carte { background: var(--fond); box-shadow: 0 10px 30px rgba(27,26,24,.08); border-radius: 18px; padding: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+  .ka-carte figcaption { font-size: 13px; color: var(--gris); text-align: center; }
   .ka-carte .ka-logo { width: 70%; max-width: 160px; background: #f7f4ef; border-radius: 14px; padding: 18px; }
   .ka-carte .ka-site, .ka-carte video { width: 100%; max-width: 240px; border-radius: 14px; aspect-ratio: 390 / 844; object-fit: cover; object-position: top; background: #000; }
   .ka-aa { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
@@ -328,15 +343,17 @@
 <main id="haut">
 
 <section class="heros">
-  <img class="fond-n" src="medias/nora-logo-rouge.png" alt="" aria-hidden="true">
-  <div class="bloc">
+  <div class="bloc heros-grille">
+   <div>
     <span class="label">Artisans du bâtiment · auto-entrepreneurs</span>
     <h1>Votre entreprise, <i>de A à Z.</i></h1>
     <p>Logo, fiche Google, et votre site internet avec son appli métier, à votre nom, pour vos devis, vos chantiers, vos rendez-vous et vos paiements. Vous faites les travaux, je m'occupe du reste.</p>
     <div class="actions">
-      <a class="btn btn-clair" href="questionnaire.html">Remplir le questionnaire</a>
+      <a class="btn btn-sombre" href="questionnaire.html">Remplir le questionnaire</a>
       <a class="btn btn-contour" href="#exemple">Voir un exemple</a>
     </div>
+   </div>
+   <a class="heros-tel" href="#exemple" aria-label="Voir l'exemple de KA Rénovation"><img src="medias/ka-site.jpg" alt="Un site d'artisan réalisé par Nora Éditions, sur téléphone" width="780" height="1688" fetchpriority="high"></a>
   </div>
 </section>
 
@@ -352,7 +369,7 @@
       <figure class="ka-carte"><a href="https://karenovation.fr" target="_blank" rel="noopener"><img src="medias/ka-site.jpg" alt="Le site de KA Rénovation sur téléphone" class="ka-site"></a><figcaption>Son site, karenovation.fr</figcaption></figure>
       <figure class="ka-carte"><video src="medias/tuto-appli.mp4" poster="medias/tuto-appli.jpg" controls playsinline preload="none"></video><figcaption>Son appli : l'appli Flex, devenue « l'appli KA »</figcaption></figure>
     </div>
-    <a class="lien" href="https://karenovation.fr" target="_blank" rel="noopener" style="color:#fff">Voir le site de KA Rénovation →</a>
+    <a class="lien" href="https://karenovation.fr" target="_blank" rel="noopener">Voir le site de KA Rénovation →</a>
   </div>
 </section>
 
@@ -368,7 +385,7 @@
       <div class="presta apparait"><span class="num">02</span><h3>Votre fiche Google</h3><p>Créée et soignée : photos, horaires, zone d'intervention. Et des avis demandés à chaque chantier fini.</p></div>
       <div class="presta apparait"><span class="num">03</span><h3>Votre site internet</h3><p>À votre nom, rapide et clair sur téléphone, avec vos réalisations et un formulaire de demande de devis. Référencé pour Google : votre métier, votre ville, vos prestations, pour que les clients du coin vous trouvent.</p></div>
       <div class="presta apparait"><span class="num">04</span><h3>L'appli métier de votre site</h3><p>Vos clients vous trouvent sur votre site : leur demande arrive directement dans votre appli métier. À votre nom et à votre logo, sur votre téléphone ou votre tablette, c'est votre outil de tous les jours, jusqu'à la réception des travaux.</p></div>
-      <div class="presta apparait"><span class="num">05</span><h3>Vos vidéos <small style="font-size:14px;color:var(--gris)">· en option</small></h3><p>Vous m'envoyez vos photos et vidéos de chantier depuis votre appli, je monte vos vidéos dans tous les formats pour les réseaux.</p></div>
+      <div class="presta apparait"><span class="num">05</span><h3>Montage de vos vidéos <small style="font-size:14px;color:var(--gris)">· en option</small></h3><p>Vous m'envoyez vos photos et vidéos de chantier depuis votre appli, je fais le montage de vos vidéos, dans tous les formats pour les réseaux.</p></div>
     </div>
   </div>
 </section>
