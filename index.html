@@ -282,12 +282,11 @@
   .ka-carte figcaption { font-size: 13px; color: #bdb6ac; text-align: center; }
   .ka-carte .ka-logo { width: 70%; max-width: 160px; background: #f7f4ef; border-radius: 14px; padding: 18px; }
   .ka-carte .ka-site, .ka-carte video { width: 100%; max-width: 240px; border-radius: 14px; aspect-ratio: 390 / 844; object-fit: cover; object-position: top; background: #000; }
-  .ka-grille .ka-carte:first-child { grid-column: 1 / -1; }
   .ka-aa { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
   .ka-aa figure { position: relative; }
   .ka-aa img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 14px; }
   .ka-aa figcaption { position: absolute; left: 10px; bottom: 10px; background: rgba(20,17,14,.8); color: #fff; font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; padding: 4px 10px; border-radius: 99px; }
-  @media (min-width: 760px) { .ka-grille { grid-template-columns: repeat(3, 1fr); } .ka-grille .ka-carte:first-child { grid-column: auto; } }
+  @media (min-width: 760px) { .ka-grille { grid-template-columns: repeat(2, minmax(0, 300px)); } }
   .logo img { height: 34px; width: 34px; }
   .tarifs { display: grid; gap: 16px; margin-top: 34px; }
   .tarif { background: #fff; border-radius: 20px; padding: 28px; box-shadow: 0 1px 0 rgba(0,0,0,.04), 0 8px 26px rgba(0,0,0,.05); }
@@ -348,7 +347,6 @@
       <p class="intro" style="margin-top:12px">Son appli, c'est l'appli Flex, devenue « l'appli KA » : à son nom, à son logo, réglée pour son métier. Chaque artisan a la sienne, adaptée à ce qu'il fait : un plombier n'a pas les mêmes besoins qu'un carreleur.</p>
     </div>
     <div class="ka-grille apparait">
-      <figure class="ka-carte"><img src="medias/ka-logo.png" alt="Logo de KA Rénovation" class="ka-logo"><figcaption>Son logo</figcaption></figure>
       <figure class="ka-carte"><a href="https://karenovation.fr" target="_blank" rel="noopener"><img src="medias/ka-site.jpg" alt="Le site de KA Rénovation sur téléphone" class="ka-site"></a><figcaption>Son site, karenovation.fr</figcaption></figure>
       <figure class="ka-carte"><video src="medias/tuto-appli.mp4" poster="medias/tuto-appli.jpg" controls playsinline preload="none"></video><figcaption>Son appli : l'appli Flex, devenue « l'appli KA »</figcaption></figure>
     </div>
