@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Questionnaire artisan · Nora Éditions</title>
+<meta name="description" content="Dites-moi tout sur votre entreprise : je prépare votre site, votre fiche Google et votre appli à partir de vos réponses.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#f7f4ef">
+<link rel="icon" type="image/png" sizes="32x32" href="medias/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+
+  :root {
+    --fond: #f7f4ef; --pierre: #ebe5dc; --sable: #d9d0c3; --encre: #1b1a18; --gris: #6d675f; --clair: #a39b90;
+    --sombre: #141312; --filet: #d1402a; --blanc: #fff;
+    --serif: "Fraunces", Georgia, serif; --sans: "Inter", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; scroll-padding-top: 72px; -webkit-text-size-adjust: 100%; }
+  body { font-family: var(--sans); color: var(--encre); background: var(--fond); line-height: 1.6; font-size: 16px; padding-bottom: 76px; }
+  img, video { display: block; max-width: 100%; }
+  a { color: inherit; }
+  .bloc { max-width: 1180px; margin: 0 auto; padding: 0 20px; }
+  section { padding: 84px 0; }
+
+  h1, h2, h3 { font-family: var(--serif); font-weight: 400; line-height: 1.08; letter-spacing: -.015em; }
+  h2 { font-size: clamp(34px, 8.5vw, 58px); }
+  h2 i { font-style: italic; color: var(--gris); }
+  .label { display: inline-flex; align-items: center; gap: 12px; font-size: 12px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--gris); margin-bottom: 18px; }
+  .label::before { content: ""; width: 28px; height: 1px; background: var(--filet); }
+  .intro { color: var(--gris); max-width: 560px; margin-top: 18px; font-size: 17px; }
+
+  /* Boutons */
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; font-family: var(--sans); font-weight: 500; font-size: 15px; letter-spacing: .02em; text-decoration: none; padding: 16px 26px; border-radius: 999px; border: 1px solid transparent; cursor: pointer; transition: background .2s, color .2s, border-color .2s; white-space: nowrap; }
+  .btn svg { width: 18px; height: 18px; flex: none; }
+  .btn-sombre { background: var(--encre); color: #fff; }
+  .btn-sombre:hover { background: #000; }
+  .btn-clair { background: #fff; color: var(--encre); }
+  .btn-clair:hover { background: var(--pierre); }
+  .btn-contour { border-color: rgba(255,255,255,.7); color: #fff; }
+  .btn-contour:hover { background: rgba(255,255,255,.12); }
+  .btn-trait { border-color: var(--encre); color: var(--encre); }
+  .btn-trait:hover { background: var(--encre); color: #fff; }
+
+  /* En-tête */
+  header { position: sticky; top: 0; z-index: 50; background: rgba(247,244,239,.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0,0,0,.06); }
+  header .bloc { display: flex; align-items: center; justify-content: space-between; height: 66px; }
+  .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .logo img { height: 34px; width: auto; }
+  .logo span { font-size: 12px; font-weight: 600; letter-spacing: .24em; text-transform: uppercase; }
+  nav.menu { display: none; gap: 30px; }
+  nav.menu a { text-decoration: none; font-size: 14px; color: var(--gris); }
+  nav.menu a:hover { color: var(--encre); }
+  .tel-haut { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font-size: 14px; font-weight: 600; background: var(--encre); color: #fff; padding: 9px 16px; border-radius: 999px; }
+  .tel-haut svg { width: 16px; height: 16px; }
+
+  /* Héros */
+  .heros { position: relative; min-height: calc(100svh - 66px); display: flex; align-items: flex-end; color: #fff; overflow: hidden; padding: 0; background: #2a2723; }
+  .heros video, .heros .poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .heros::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(20,19,18,.05) 20%, rgba(20,19,18,.55) 62%, rgba(20,19,18,.88) 100%); }
+  .heros .bloc { position: relative; z-index: 1; padding-bottom: 44px; width: 100%; }
+  .heros .label { color: rgba(255,255,255,.85); }
+  .heros h1 { font-size: clamp(44px, 12vw, 92px); font-weight: 300; max-width: 900px; }
+  .heros h1 i { font-style: italic; font-weight: 300; }
+  .heros p { font-size: 17px; max-width: 520px; margin: 18px 0 28px; color: rgba(255,255,255,.82); }
+  .heros .actions { display: flex; flex-wrap: wrap; gap: 10px; }
+  .heros .repere { display: flex; gap: 22px; margin-top: 34px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,.22); font-size: 13px; color: rgba(255,255,255,.78); flex-wrap: wrap; }
+  .heros .repere b { display: block; font-family: var(--serif); font-weight: 400; font-size: 26px; color: #fff; }
+
+  /* Atouts */
+  .atouts { padding: 0; background: var(--fond); }
+  .atouts .bloc { display: grid; grid-template-columns: 1fr 1fr; }
+  .atouts .bloc > div { padding: 28px 8px 26px 0; border-bottom: 1px solid var(--sable); }
+  .atouts .bloc > div:nth-child(odd) { padding-right: 16px; border-right: 1px solid var(--sable); }
+  .atouts .bloc > div:nth-child(even) { padding-left: 18px; }
+  .atouts strong { display: block; font-family: var(--serif); font-weight: 400; font-size: 24px; }
+  .atouts span { font-size: 13px; color: var(--gris); }
+
+  /* Avant / après */
+  .comparateur { position: relative; margin-top: 34px; overflow: hidden; aspect-ratio: 3 / 4; user-select: none; -webkit-user-select: none; touch-action: pan-y; background: var(--pierre); }
+  .comparateur img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+  .comparateur .apres { clip-path: inset(0 0 0 var(--pos, 50%)); }
+  .comparateur .ligne { position: absolute; top: 0; bottom: 0; left: var(--pos, 50%); width: 1px; background: #fff; }
+  .comparateur .poignee { position: absolute; top: 50%; left: var(--pos, 50%); width: 54px; height: 54px; border-radius: 50%; background: rgba(255,255,255,.95); transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 24px rgba(0,0,0,.25); }
+  .comparateur .poignee svg { width: 24px; height: 24px; color: var(--encre); }
+  .comparateur .tag { position: absolute; bottom: 16px; font-size: 11px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: #fff; background: rgba(20,19,18,.55); padding: 6px 10px; backdrop-filter: blur(4px); }
+  .comparateur .tag.g { left: 16px; } .comparateur .tag.d { right: 16px; }
+  .comparateur input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; margin: 0; }
+  .aide { font-size: 13px; color: var(--clair); margin-top: 12px; letter-spacing: .02em; }
+  .duos { display: grid; gap: 44px; margin-top: 56px; }
+  .duo .images { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .duo figure { position: relative; aspect-ratio: 3 / 4; overflow: hidden; background: var(--pierre); }
+  .duo figure img { width: 100%; height: 100%; object-fit: cover; }
+  .duo figcaption { position: absolute; left: 12px; bottom: 12px; font-size: 11px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: #fff; background: rgba(20,19,18,.55); padding: 5px 9px; }
+  .duo h3 { font-size: 24px; margin-top: 18px; }
+  .duo p { color: var(--gris); margin-top: 6px; font-size: 15px; }
+
+  /* Prestations */
+  .prestations { background: var(--blanc); }
+  .liste-presta { margin-top: 44px; border-top: 1px solid var(--sable); }
+  .presta { display: grid; grid-template-columns: 54px 1fr; gap: 6px 16px; padding: 26px 0; border-bottom: 1px solid var(--sable); }
+  .presta .num { font-family: var(--serif); font-size: 18px; color: var(--clair); padding-top: 4px; }
+  .presta h3 { font-size: 28px; }
+  .presta p { grid-column: 2; color: var(--gris); font-size: 15px; max-width: 560px; }
+
+  /* Méthode : carrousel au doigt */
+  .methode { overflow: hidden; }
+  .defile { display: grid; grid-auto-flow: column; grid-auto-columns: 78%; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; margin-top: 40px; padding-bottom: 10px; scrollbar-width: none; }
+  .defile::-webkit-scrollbar { display: none; }
+  .etape { scroll-snap-align: start; display: block; text-decoration: none; color: inherit; }
+  .etape .lire { display: inline-block; margin-top: 10px; font-size: 13px; font-weight: 600; letter-spacing: .04em; color: var(--encre); border-bottom: 1px solid var(--filet); padding-bottom: 2px; }
+  .etape:hover img { transform: scale(1.03); } .etape img { transition: transform .5s ease; }
+  .etape .photo { aspect-ratio: 4 / 5; overflow: hidden; background: var(--pierre); }
+  .etape img { width: 100%; height: 100%; object-fit: cover; }
+  .etape .num { font-family: var(--serif); font-size: 15px; color: var(--clair); margin-top: 16px; }
+  .etape h3 { font-size: 24px; margin-top: 2px; }
+  .etape p { color: var(--gris); font-size: 15px; margin-top: 6px; }
+  .glisser { font-size: 13px; color: var(--clair); margin-top: 16px; }
+
+  /* Réalisations */
+  .realisations { background: var(--blanc); }
+  .galerie { display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 160px; grid-auto-flow: dense; gap: 6px; margin-top: 40px; }
+  .galerie .item { position: relative; overflow: hidden; background: var(--pierre); cursor: zoom-in; border: 0; padding: 0; grid-row: span 2; }
+  .galerie .item.grand { grid-column: span 2; grid-row: span 3; }
+  .galerie .item img, .galerie .item video { width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
+  .galerie .item:hover img, .galerie .item:hover video { transform: scale(1.03); }
+  .galerie .item .pastille { position: absolute; left: 10px; bottom: 10px; font-size: 10px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: #fff; background: rgba(20,19,18,.55); padding: 4px 8px; }
+
+  /* Vidéos */
+  .videos { background: var(--sombre); color: #f1ede6; }
+  .videos .label { color: var(--clair); }
+  .videos h2 i { color: var(--clair); }
+  .videos .intro { color: var(--clair); }
+  .pubs { display: grid; grid-auto-flow: column; grid-auto-columns: 62%; gap: 12px; margin-top: 40px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 6px; scrollbar-width: none; }
+  .pubs::-webkit-scrollbar { display: none; }
+  .pubs video { scroll-snap-align: start; }
+  @media (min-width: 760px) { .pubs { grid-auto-flow: row; grid-template-columns: repeat(3, 1fr); max-width: 900px; overflow: visible; } }
+  .pubs video { width: 100%; aspect-ratio: 9 / 16; object-fit: cover; border-radius: 18px; background: #000; }
+
+  /* Avis */
+  .note { display: flex; align-items: baseline; gap: 14px; margin-top: 26px; flex-wrap: wrap; }
+  .note b { font-family: var(--serif); font-weight: 400; font-size: 54px; line-height: 1; }
+  .note span { color: var(--gris); font-size: 14px; }
+  .etoiles { color: #b8954a; letter-spacing: .14em; font-size: 15px; }
+  .avis { display: grid; gap: 0; margin-top: 34px; border-top: 1px solid var(--sable); }
+  .avis blockquote { padding: 30px 0; border-bottom: 1px solid var(--sable); }
+  .avis blockquote p { font-family: var(--serif); font-size: 23px; line-height: 1.35; font-weight: 300; margin: 10px 0 14px; }
+  .avis cite { font-style: normal; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--gris); }
+  .lien { display: inline-flex; align-items: center; gap: 8px; margin-top: 26px; font-size: 14px; font-weight: 600; text-decoration: none; border-bottom: 1px solid var(--filet); padding-bottom: 2px; }
+
+  /* Prix */
+  .prix { background: var(--pierre); text-align: center; }
+  .prix .montant { font-family: var(--serif); font-weight: 300; font-size: clamp(64px, 19vw, 132px); line-height: 1; margin: 10px 0 8px; letter-spacing: -.03em; }
+  .prix .sous { font-size: 13px; letter-spacing: .2em; text-transform: uppercase; color: var(--gris); }
+  .prix p { max-width: 520px; margin: 22px auto 30px; color: var(--gris); }
+  .prix .label { justify-content: center; }
+
+  /* FAQ */
+  .faq-liste { margin-top: 36px; border-top: 1px solid var(--sable); max-width: 820px; }
+  details { border-bottom: 1px solid var(--sable); padding: 22px 0; }
+  summary { font-family: var(--serif); font-size: 21px; cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 18px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; font-family: var(--sans); font-weight: 300; font-size: 26px; line-height: 1; color: var(--gris); transition: transform .2s; }
+  details[open] summary::after { transform: rotate(45deg); }
+  details p { color: var(--gris); margin-top: 12px; max-width: 680px; }
+
+  /* Contact */
+  .contact { background: var(--sombre); color: #f1ede6; }
+  .contact .label, .contact .intro { color: var(--clair); }
+  .contact h2 i { color: var(--clair); }
+  .gros-tel { display: inline-block; font-family: var(--serif); font-weight: 300; font-size: clamp(40px, 11vw, 72px); text-decoration: none; margin-top: 30px; letter-spacing: -.01em; border-bottom: 1px solid rgba(255,255,255,.2); padding-bottom: 6px; }
+  .contact .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 28px; }
+  .contact .btn-trait { border-color: rgba(255,255,255,.4); color: #fff; }
+  .contact .btn-trait:hover { background: #fff; color: var(--encre); }
+  .infos { display: grid; gap: 22px; margin-top: 48px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,.12); font-size: 15px; color: var(--clair); }
+  .infos b { display: block; color: #fff; font-weight: 500; margin-bottom: 4px; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; }
+  .infos a { text-decoration: none; color: #f1ede6; }
+
+  /* Formulaire de demande */
+  .demande { margin-top: 56px; padding-top: 40px; border-top: 1px solid rgba(255,255,255,.12); }
+  .demande h3 { font-size: clamp(28px, 7vw, 40px); color: #fff; }
+  .demande h3 i { color: var(--clair); }
+  .demande form { display: grid; gap: 14px; margin-top: 26px; max-width: 720px; }
+  .demande label { display: grid; gap: 6px; font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--clair); }
+  .demande input, .demande textarea, .demande select { font: 16px var(--sans); color: #fff; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.18); border-radius: 12px; padding: 14px 16px; width: 100%; letter-spacing: 0; text-transform: none; }
+  .demande select option { color: var(--encre); }
+  .demande input:focus, .demande textarea:focus, .demande select:focus { outline: none; border-color: #fff; }
+  .demande textarea { min-height: 130px; resize: vertical; }
+  .demande .duo { display: grid; gap: 14px; }
+  .demande .depot { display: flex; align-items: center; justify-content: center; gap: 10px; border: 1px dashed rgba(255,255,255,.35); border-radius: 12px; padding: 20px; cursor: pointer; color: #f1ede6; font-size: 15px; text-transform: none; letter-spacing: 0; font-weight: 500; }
+  .demande .depot input { display: none; }
+  .vignettes { display: flex; flex-wrap: wrap; gap: 8px; }
+  .vignettes:empty { display: none; }
+  .vignettes figure { position: relative; width: 74px; height: 74px; border-radius: 10px; overflow: hidden; }
+  .vignettes img { width: 100%; height: 100%; object-fit: cover; }
+  .vignettes button { position: absolute; top: 4px; right: 4px; width: 24px; height: 24px; border-radius: 50%; border: 0; background: rgba(0,0,0,.65); color: #fff; font-size: 15px; line-height: 1; cursor: pointer; }
+  .demande .petit { font-size: 13px; color: var(--clair); }
+  .demande .btn-clair { justify-self: start; }
+  .demande .btn[disabled] { opacity: .6; cursor: wait; }
+  .retour { padding: 16px 18px; border-radius: 12px; font-size: 15px; display: none; }
+  .retour.ok { display: block; background: rgba(255,255,255,.08); color: #fff; }
+  .retour.erreur { display: block; background: rgba(200,20,26,.18); color: #fff; }
+  .piege { position: absolute; left: -9999px; width: 1px; height: 1px; }
+
+  footer { background: var(--sombre); color: #77716a; font-size: 13px; padding: 0 0 36px; }
+  footer .bloc { border-top: 1px solid rgba(255,255,255,.08); padding-top: 26px; display: flex; flex-direction: column; gap: 10px; }
+  footer a { color: #b9b2a8; }
+  .acces-admin { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; font-size: 12px; text-decoration: none; color: #8f887f !important; border: 1px solid rgba(255,255,255,.14); border-radius: 999px; padding: 6px 12px; }
+  .acces-admin:hover { color: #fff !important; border-color: rgba(255,255,255,.4); }
+  .acces-admin svg { width: 13px; height: 13px; }
+  .credit { font-size: 12px; color: #77716a; }
+  .credit a { color: #9a938a; }
+  footer img { height: 28px; width: auto; align-self: flex-start; }
+
+  /* Barre mobile */
+  .barre { position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); background: rgba(247,244,239,.96); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-top: 1px solid rgba(0,0,0,.08); }
+  .barre .btn { padding: 14px 10px; }
+  .barre .wa svg { color: #25d366; }
+
+  .liens-zone { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .liens-zone a { text-decoration: none; font-size: 14px; border: 1px solid var(--sable); border-radius: 999px; padding: 8px 14px; background: var(--fond); }
+  .liens-zone a:hover { border-color: var(--encre); }
+  a.presta { text-decoration: none; color: inherit; position: relative; padding-right: 34px; }
+  a.presta::after { content: "→"; position: absolute; right: 2px; top: 28px; font-size: 22px; color: var(--encre); }
+  a.presta .lire { display: block; width: max-content; margin-top: 12px; font-size: 13px; font-weight: 600; letter-spacing: .04em; color: var(--encre); border-bottom: 1px solid var(--filet); padding-bottom: 2px; }
+  a.presta:hover h3 { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 5px; }
+
+  /* Visionneuse */
+  .visionneuse { position: fixed; inset: 0; z-index: 100; background: rgba(15,14,13,.94); display: none; align-items: center; justify-content: center; padding: 18px; }
+  .visionneuse.ouverte { display: flex; }
+  .visionneuse img, .visionneuse video { max-width: 100%; max-height: 86vh; }
+  .visionneuse button { position: absolute; top: 16px; right: 16px; background: transparent; color: #fff; border: 1px solid rgba(255,255,255,.4); width: 46px; height: 46px; border-radius: 50%; font-size: 22px; cursor: pointer; }
+
+  .apparait { opacity: 0; transform: translateY(22px); transition: opacity .8s ease, transform .8s ease; }
+  .apparait.vu { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .apparait { opacity: 1; transform: none; } html { scroll-behavior: auto; } }
+
+  @media (min-width: 760px) {
+    .demande .duo { grid-template-columns: 1fr 1fr; }
+    body { padding-bottom: 0; }
+    .barre { display: none; }
+    nav.menu { display: flex; }
+    section { padding: 120px 0; }
+    .bloc { padding: 0 32px; }
+    .heros { min-height: 680px; }
+    .heros .bloc { padding-bottom: 64px; }
+    .atouts .bloc { grid-template-columns: repeat(4, 1fr); }
+    .atouts .bloc > div, .atouts .bloc > div:nth-child(odd), .atouts .bloc > div:nth-child(even) { padding: 34px 20px; border-bottom: 0; border-right: 1px solid var(--sable); }
+    .atouts .bloc > div:first-child { padding-left: 0; }
+    .atouts .bloc > div:last-child { border-right: 0; }
+    .aa-grille { display: grid; grid-template-columns: 5fr 6fr; gap: 64px; align-items: end; }
+    .comparateur { margin-top: 0; }
+    .duos { grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 90px; }
+    .presta { grid-template-columns: 90px 1fr 1.2fr; align-items: baseline; padding: 34px 0; }
+    .presta p { grid-column: 3; }
+    .defile { grid-auto-flow: row; grid-template-columns: repeat(3, 1fr); overflow: visible; margin: 50px 0 0; padding: 0; gap: 40px 28px; }
+    .glisser { display: none; }
+    .galerie { grid-template-columns: repeat(4, 1fr); grid-auto-rows: 150px; gap: 10px; }
+    .avis { grid-template-columns: repeat(3, 1fr); gap: 40px; border-top: 0; }
+    .avis blockquote { border-top: 1px solid var(--encre); border-bottom: 0; }
+    .infos { grid-template-columns: repeat(3, 1fr); }
+    footer .bloc { flex-direction: row; justify-content: space-between; align-items: center; }
+  }
+
+
+  /* Nora Éditions · artisans */
+  .heros { background: #14110e; }
+  .heros::after { background: linear-gradient(180deg, rgba(20,17,14,0) 30%, rgba(20,17,14,.6) 100%); }
+  .fond-n { position: absolute; right: -18%; top: 6%; width: 120%; max-width: 760px; opacity: .13; }
+  @media (min-width: 900px) { .fond-n { right: -4%; top: 8%; width: 58%; } }
+  .etape.sans-photo { padding-top: 6px; }
+  .logo img { height: 34px; width: 34px; }
+  .tarifs { display: grid; gap: 16px; margin-top: 34px; }
+  .tarif { background: #fff; border-radius: 20px; padding: 28px; box-shadow: 0 1px 0 rgba(0,0,0,.04), 0 8px 26px rgba(0,0,0,.05); }
+  .tarif .chiffre { font-family: var(--serif); font-size: clamp(46px, 12vw, 72px); line-height: 1; }
+  .tarif .chiffre small { font-size: 20px; color: var(--gris); }
+  .tarif h3 { margin: 12px 0 8px; }
+  .tarif ul { list-style: none; margin-top: 14px; display: grid; gap: 8px; color: var(--gris); font-size: 15px; }
+  .tarif li::before { content: "✓  "; color: var(--filet); font-weight: 600; }
+  .tarif.option { background: transparent; border: 1px dashed var(--sable); box-shadow: none; }
+  .exemple-ka { display: grid; gap: 28px; align-items: center; margin-top: 34px; }
+  .exemple-ka video { width: 100%; max-width: 320px; border-radius: 22px; background: #000; box-shadow: 0 14px 36px rgba(0,0,0,.22); }
+  @media (min-width: 760px) { .tarifs { grid-template-columns: repeat(3, 1fr); } .exemple-ka { grid-template-columns: 340px 1fr; } }
+
+
+  /* Questionnaire */
+  .q { padding: 40px 0 120px; }
+  .q h1 { font-size: clamp(38px, 10vw, 64px); }
+  .q form { margin-top: 30px; display: grid; gap: 18px; max-width: 760px; }
+  .q fieldset { border: 0; background: #fff; border-radius: 20px; padding: 22px 20px 24px; box-shadow: 0 1px 0 rgba(0,0,0,.04), 0 8px 26px rgba(0,0,0,.04); }
+  .q legend { font-family: var(--serif); font-size: 26px; padding: 0; margin-bottom: 4px; float: left; width: 100%; }
+  .q legend + * { clear: both; }
+  .q .aide { color: var(--gris); font-size: 14px; margin: 2px 0 14px; clear: both; }
+  .q .champ { display: grid; gap: 6px; margin-top: 14px; font-size: 14px; font-weight: 600; }
+  .q .champ small { font-weight: 400; color: var(--gris); }
+  .q input[type=text], .q input[type=email], .q input[type=tel], .q input[type=url], .q select, .q textarea { width: 100%; font: 16px var(--sans); padding: 13px 14px; border: 1px solid var(--sable); border-radius: 12px; background: var(--fond); color: var(--encre); }
+  .q textarea { min-height: 96px; resize: vertical; }
+  .q .deux { display: grid; gap: 0 14px; }
+  .q .cases { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .q .case { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--sable); border-radius: 999px; padding: 9px 14px; font-size: 14px; font-weight: 500; cursor: pointer; background: var(--fond); }
+  .q .case input { accent-color: var(--filet); width: 16px; height: 16px; }
+  .q .case:has(input:checked) { border-color: var(--encre); background: #fff; }
+  .q .depot { display: flex; align-items: center; justify-content: center; gap: 10px; border: 1px dashed var(--sable); border-radius: 14px; padding: 18px; margin-top: 14px; cursor: pointer; font-weight: 500; }
+  .q .vignettes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .q .vignettes figure { position: relative; width: 74px; height: 74px; }
+  .q .vignettes img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
+  .q .vignettes button { position: absolute; top: -6px; right: -6px; width: 24px; height: 24px; border-radius: 50%; border: 0; background: var(--encre); color: #fff; cursor: pointer; }
+  .q .accord { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: var(--gris); margin-top: 8px; }
+  .q .accord input { margin-top: 3px; accent-color: var(--filet); }
+  .q .retour { font-size: 15px; margin-top: 10px; }
+  .q .retour.ok { color: #2f6f4f; } .q .retour.erreur { color: #a3261f; }
+  .q .si-video[hidden] { display: none; }
+  @media (min-width: 700px) { .q .deux { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="bloc">
+    <a class="logo" href="./" aria-label="Nora Éditions, retour en haut"><img src="medias/nora-logo-rouge.png" alt="Nora Éditions" width="34" height="34"><span>Nora Éditions</span></a>
+    <nav class="menu" aria-label="Menu">
+      <a href="./#offre">L'offre</a>
+      <a href="./#appli">Votre appli</a>
+      <a href="./#exemple">Exemple</a>
+      <a href="./#tarifs">Tarifs</a>
+      <a href="./#contact">Contact</a>
+    </nav>
+    <a class="tel-haut" href="questionnaire.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg><span>Questionnaire</span></a>
+  </div>
+</header>
+<main class="q"><div class="bloc">
+  <span class="label">Questionnaire</span>
+  <h1>Dites-moi tout,<br><i>je m'occupe du reste.</i></h1>
+  <p class="intro">Une dizaine de minutes. Vos réponses me permettent de préparer votre site, votre fiche Google et votre appli sans passer des heures au téléphone. Ne répondez qu'à ce qui vous concerne.</p>
+
+  <form id="q" novalidate>
+    <fieldset>
+      <legend>1. Vous et votre entreprise</legend>
+      <div class="deux">
+        <label class="champ">Nom et prénom *<input type="text" name="Nom et prénom" required autocomplete="name"></label>
+        <label class="champ">Téléphone *<input type="tel" name="Téléphone" required autocomplete="tel"></label>
+        <label class="champ">E-mail *<input type="email" name="email" required autocomplete="email"></label>
+        <label class="champ">Nom de l'entreprise<input type="text" name="Entreprise" autocomplete="organization"></label>
+        <label class="champ">Statut<select name="Statut"><option>Auto-entrepreneur</option><option>Entreprise individuelle (EI)</option><option>Société (SASU, EURL…)</option><option>Pas encore créée</option></select></label>
+        <label class="champ">SIRET <small>(facultatif)</small><input type="text" name="SIRET" inputmode="numeric"></label>
+        <label class="champ">Ville<input type="text" name="Ville" autocomplete="address-level2"></label>
+        <label class="champ">Depuis combien de temps vous exercez ?<input type="text" name="Expérience" placeholder="ex. 12 ans"></label>
+      </div>
+      <div class="champ">Votre métier <small>(plusieurs choix possibles)</small><div class="cases"><label class="case"><input type="checkbox" name="Métiers" value="Tous corps d'état"><span>Tous corps d'état</span></label><label class="case"><input type="checkbox" name="Métiers" value="Plomberie, chauffage"><span>Plomberie, chauffage</span></label><label class="case"><input type="checkbox" name="Métiers" value="Carrelage"><span>Carrelage</span></label><label class="case"><input type="checkbox" name="Métiers" value="Électricité"><span>Électricité</span></label><label class="case"><input type="checkbox" name="Métiers" value="Peinture, revêtements"><span>Peinture, revêtements</span></label><label class="case"><input type="checkbox" name="Métiers" value="Plâtrerie, isolation"><span>Plâtrerie, isolation</span></label><label class="case"><input type="checkbox" name="Métiers" value="Maçonnerie"><span>Maçonnerie</span></label><label class="case"><input type="checkbox" name="Métiers" value="Menuiserie"><span>Menuiserie</span></label><label class="case"><input type="checkbox" name="Métiers" value="Couverture, toiture"><span>Couverture, toiture</span></label><label class="case"><input type="checkbox" name="Métiers" value="Salle de bain, cuisine"><span>Salle de bain, cuisine</span></label><label class="case"><input type="checkbox" name="Métiers" value="Paysagisme"><span>Paysagisme</span></label><label class="case"><input type="checkbox" name="Métiers" value="Autre"><span>Autre</span></label></div></div>
+      <label class="champ">Votre zone d'intervention<input type="text" name="Zone" placeholder="ex. Yvelines et Val-d'Oise, 30 km autour de Poissy"></label>
+    </fieldset>
+
+    <fieldset>
+      <legend>2. Ce que vous voulez</legend>
+      <p class="aide">Cochez ce qui vous intéresse. On s'adapte : vous ne prenez que ce dont vous avez besoin.</p>
+      <div class="cases"><label class="case"><input type="checkbox" name="Je veux" value="Un site internet"><span>Un site internet</span></label><label class="case"><input type="checkbox" name="Je veux" value="Une fiche Google"><span>Une fiche Google</span></label><label class="case"><input type="checkbox" name="Je veux" value="Un logo"><span>Un logo</span></label><label class="case"><input type="checkbox" name="Je veux" value="L'appli à mon nom"><span>L'appli à mon nom</span></label><label class="case"><input type="checkbox" name="Je veux" value="Des vidéos pour les réseaux (option)"><span>Des vidéos pour les réseaux (option)</span></label></div>
+      <div class="champ">Dans l'appli, ce qui vous servirait<div class="cases"><label class="case"><input type="checkbox" name="Appli" value="Devis et factures"><span>Devis et factures</span></label><label class="case"><input type="checkbox" name="Appli" value="Signature en ligne"><span>Signature en ligne</span></label><label class="case"><input type="checkbox" name="Appli" value="Agenda et rappels clients"><span>Agenda et rappels clients</span></label><label class="case"><input type="checkbox" name="Appli" value="Carnet de chantier et photos"><span>Carnet de chantier et photos</span></label><label class="case"><input type="checkbox" name="Appli" value="Dépenses et paiements"><span>Dépenses et paiements</span></label><label class="case"><input type="checkbox" name="Appli" value="PV de fin de chantier"><span>PV de fin de chantier</span></label><label class="case"><input type="checkbox" name="Appli" value="Simulation 3D (salle de bain, cuisine)"><span>Simulation 3D (salle de bain, cuisine)</span></label></div></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>3. Ce que vous avez déjà</legend>
+      <div class="champ">Un logo ?<div class="cases"><label class="case"><input type="radio" name="Logo actuel" value="Oui, je l'envoie"><span>Oui, je l'envoie</span></label><label class="case"><input type="radio" name="Logo actuel" value="Oui, mais à refaire"><span>Oui, mais à refaire</span></label><label class="case"><input type="radio" name="Logo actuel" value="Non"><span>Non</span></label></div></div>
+      <label class="champ">Votre site actuel <small>(s'il existe)</small><input type="url" name="Site actuel" placeholder="https://"></label>
+      <div class="champ">Une fiche Google ?<div class="cases"><label class="case"><input type="radio" name="Fiche Google" value="Oui"><span>Oui</span></label><label class="case"><input type="radio" name="Fiche Google" value="Non"><span>Non</span></label><label class="case"><input type="radio" name="Fiche Google" value="Je ne sais pas"><span>Je ne sais pas</span></label></div></div>
+      <label class="champ">Lien de la fiche Google <small>(si oui)</small><input type="url" name="Lien fiche Google" placeholder="https://"></label>
+      <label class="champ">Vos pages sur les réseaux <small>(liens)</small><textarea name="Réseaux" placeholder="Un lien par ligne"></textarea></label>
+      <label class="champ">L'adresse de site que vous aimeriez<input type="text" name="Adresse souhaitée" placeholder="ex. dupont-plomberie.fr"></label>
+    </fieldset>
+
+    <fieldset>
+      <legend>4. Votre site</legend>
+      <label class="champ">Vos prestations, celles à mettre en avant<textarea name="Prestations" placeholder="ex. rénovation de salle de bain, douche à l'italienne, dépannage, chauffe-eau…"></textarea></label>
+      <label class="champ">Ce qui vous distingue<textarea name="Points forts" placeholder="ex. devis sous 48 h, chantier propre, 15 ans d'expérience, garantie décennale…"></textarea></label>
+      <div class="deux">
+        <label class="champ">Téléphone à afficher<input type="tel" name="Téléphone du site"></label>
+        <label class="champ">E-mail à afficher<input type="email" name="E-mail du site"></label>
+        <label class="champ">Horaires<input type="text" name="Horaires" placeholder="ex. du lundi au samedi, 8 h – 19 h"></label>
+        <label class="champ">Afficher votre adresse ?<select name="Adresse affichée"><option>Non, seulement la ville</option><option>Oui</option></select></label>
+      </div>
+      <label class="champ">Vos assurances et labels <small>(décennale, RGE…)</small><input type="text" name="Assurances et labels"></label>
+    </fieldset>
+
+    <fieldset>
+      <legend>5. Votre style</legend>
+      <div class="champ">L'allure que vous aimez<div class="cases"><label class="case"><input type="radio" name="Style" value="Sobre et haut de gamme"><span>Sobre et haut de gamme</span></label><label class="case"><input type="radio" name="Style" value="Chaleureux"><span>Chaleureux</span></label><label class="case"><input type="radio" name="Style" value="Moderne et coloré"><span>Moderne et coloré</span></label><label class="case"><input type="radio" name="Style" value="Je vous fais confiance"><span>Je vous fais confiance</span></label></div></div>
+      <label class="champ">Vos couleurs <small>(si vous en avez)</small><input type="text" name="Couleurs" placeholder="ex. bleu marine et blanc"></label>
+      <label class="champ">Des sites que vous aimez <small>(liens)</small><textarea name="Sites aimés" placeholder="Un lien par ligne"></textarea></label>
+    </fieldset>
+
+    <fieldset>
+      <legend>6. Vos réalisations</legend>
+      <p class="aide">Indispensable pour votre site : vos plus beaux chantiers, avant et après si possible.</p>
+      <label class="depot"><input type="file" id="photos" accept="image/*" multiple hidden><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Ajouter des photos (jusqu'à 10)</label>
+      <div class="vignettes" id="vignettes"></div>
+      <label class="champ">Plus de photos, ou des vidéos ? Un lien de partage<input type="url" name="Lien des réalisations" placeholder="Google Photos, WeTransfer, Drive…"></label>
+      <label class="champ">Votre logo <small>(si vous en avez un)</small><input type="file" id="logo" accept="image/*,.pdf,.svg"></label>
+    </fieldset>
+
+    <fieldset>
+      <legend>7. Vos vidéos <small style="font-size:15px;color:var(--gris)">· en option</small></legend>
+      <div class="champ">Ça vous intéresse ?<div class="cases"><label class="case"><input type="radio" name="Vidéos" value="Oui"><span>Oui</span></label><label class="case"><input type="radio" name="Vidéos" value="Peut-être plus tard"><span>Peut-être plus tard</span></label><label class="case"><input type="radio" name="Vidéos" value="Non"><span>Non</span></label></div></div>
+      <div class="si-video" id="siVideo" hidden>
+        <div class="champ">À quel rythme ?<div class="cases"><label class="case"><input type="radio" name="Rythme" value="Une par semaine"><span>Une par semaine</span></label><label class="case"><input type="radio" name="Rythme" value="Deux par mois"><span>Deux par mois</span></label><label class="case"><input type="radio" name="Rythme" value="Une par mois"><span>Une par mois</span></label></div></div>
+        <div class="champ">Le ton<div class="cases"><label class="case"><input type="radio" name="Ton" value="Sérieux"><span>Sérieux</span></label><label class="case"><input type="radio" name="Ton" value="Dynamique"><span>Dynamique</span></label><label class="case"><input type="radio" name="Ton" value="Avec de l'humour"><span>Avec de l'humour</span></label></div></div>
+        <div class="champ">Votre voix dans les vidéos ?<div class="cases"><label class="case"><input type="radio" name="Voix" value="Oui, je m'enregistre"><span>Oui, je m'enregistre</span></label><label class="case"><input type="radio" name="Voix" value="Une voix off"><span>Une voix off</span></label><label class="case"><input type="radio" name="Voix" value="Pas de voix, juste du texte"><span>Pas de voix, juste du texte</span></label></div></div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>8. Pour finir</legend>
+      <label class="champ">Pour quand ?<select name="Délai"><option>Dès que possible</option><option>Dans le mois</option><option>Pas pressé</option></select></label>
+      <label class="champ">Autre chose à me dire ?<textarea name="Remarques"></textarea></label>
+      <label class="accord"><input type="checkbox" id="accord"><span>J'ai bien noté : 200 € la création, puis 10 € par mois. Les vidéos sont en option.</span></label>
+    </fieldset>
+
+    <input class="piege" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none">
+    <button class="btn btn-sombre" type="submit" id="envoyer">Envoyer mes réponses</button>
+    <div class="retour" id="retour" role="status"></div>
+  </form>
+</div></main>
+<footer>
+  <div class="bloc">
+    <img src="medias/nora-logo-rouge.png" alt="Nora Éditions" width="34" height="34">
+    <p>Nora Éditions · Nora Ainseba · <a href="mailto:contact@noraeditions.com">contact@noraeditions.com</a></p>
+  </div>
+</footer>
+<script>
+  const form = document.getElementById("q"), retour = document.getElementById("retour"), bouton = document.getElementById("envoyer");
+  const dire = (c, t) => { retour.className = "retour " + c; retour.textContent = t; };
+  // la partie vidéos ne s'ouvre que si elles intéressent
+  form.querySelectorAll('[name="Vidéos"]').forEach(r => r.addEventListener("change", () => { document.getElementById("siVideo").hidden = r.value !== "Oui" || !r.checked; }));
+  // photos : réduites dans le téléphone avant l'envoi
+  let photos = [];
+  const vign = document.getElementById("vignettes");
+  const afficher = () => { vign.innerHTML = ""; photos.forEach((f, i) => { const fig = document.createElement("figure"); fig.innerHTML = '<img alt=""><button type="button" aria-label="Retirer">×</button>';
+    fig.querySelector("img").src = URL.createObjectURL(f); fig.querySelector("button").onclick = () => { photos.splice(i, 1); afficher(); }; vign.appendChild(fig); }); };
+  document.getElementById("photos").addEventListener("change", e => { photos = photos.concat([...e.target.files]).slice(0, 10); e.target.value = ""; afficher(); });
+  const reduire = f => new Promise(ok => { const img = new Image(), u = URL.createObjectURL(f);
+    img.onload = () => { const r = Math.min(1, 1400 / Math.max(img.width, img.height)), c = document.createElement("canvas"); c.width = Math.round(img.width * r); c.height = Math.round(img.height * r);
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(u); c.toBlob(b => ok(b || f), "image/jpeg", .78); };
+    img.onerror = () => ok(f); img.src = u; });
+  form.addEventListener("submit", async e => {
+    e.preventDefault();
+    const nom = form["Nom et prénom"].value.trim(), tel = form["Téléphone"].value.trim(), mail = form.email.value.trim();
+    if (!nom || !tel || !mail) { dire("erreur", "Merci d'indiquer votre nom, votre téléphone et votre e-mail."); return; }
+    bouton.disabled = true; bouton.textContent = photos.length ? "Envoi des photos…" : "Envoi…";
+    try {
+      const fd = new FormData();
+      // les cases cochées d'une même question sont regroupées sur une ligne
+      const vu = new Set();
+      for (const el of form.elements) {
+        if (!el.name || el.type === "file" || vu.has(el.name)) continue;
+        if (el.type === "checkbox" || el.type === "radio") { vu.add(el.name); const v = [...form.querySelectorAll(`[name="${el.name}"]:checked`)].map(x => x.value).join(", "); if (v) fd.append(el.name, v); continue; }
+        if (el.value.trim()) fd.append(el.name, el.value.trim());
+      }
+      fd.append("Accord tarifs", document.getElementById("accord").checked ? "Oui" : "Non coché");
+      fd.append("_subject", `Questionnaire artisan — ${nom}`); fd.append("_template", "table"); fd.append("_captcha", "false");
+      for (const [i, f] of photos.entries()) fd.append(`realisation_${i + 1}`, await reduire(f), `realisation-${i + 1}.jpg`);
+      const logo = document.getElementById("logo").files[0]; if (logo) fd.append("logo", logo, logo.name);
+      const r = await fetch("https://formsubmit.co/ajax/contact@noraeditions.com", { method: "POST", headers: { Accept: "application/json" }, body: fd });
+      if (!r.ok) throw new Error("envoi");
+      form.reset(); photos = []; afficher();
+      dire("ok", "Merci ! Vos réponses sont bien arrivées. Je reviens vers vous très vite avec une proposition.");
+    } catch (err) { dire("erreur", "L'envoi n'a pas abouti. Réessayez, ou écrivez-moi à contact@noraeditions.com."); }
+    bouton.disabled = false; bouton.textContent = "Envoyer mes réponses";
+  });
+</script>
+</body>
+</html>

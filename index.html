@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Artisans du bâtiment : site, fiche Google et appli · Nora Éditions</title>
-<meta name="description" content="Pour les artisans auto-entrepreneurs du bâtiment : logo, fiche Google, site internet et l'appli Flex pour vos devis, chantiers, rendez-vous et paiements. Création 200 €, puis 10 € par mois.">
+<meta name="description" content="Pour les artisans auto-entrepreneurs du bâtiment : logo, fiche Google, site internet et votre appli à votre nom pour vos devis, chantiers, rendez-vous et paiements. Création 200 €, puis 10 € par mois.">
 <link rel="canonical" href="https://artisans.noraeditions.fr/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Artisans du bâtiment : votre entreprise, de A à Z · Nora Éditions">
-<meta property="og:description" content="Logo, fiche Google, site internet et l'appli Flex. Création 200 €, puis 10 € par mois.">
-<meta property="og:image" content="https://artisans.noraeditions.fr/medias/bleu-ensemble.jpg">
+<meta property="og:description" content="Logo, fiche Google, site internet et votre appli à votre nom. Création 200 €, puis 10 € par mois.">
+<meta property="og:image" content="https://artisans.noraeditions.fr/medias/icone-512.png">
 <meta name="theme-color" content="#f7f4ef">
 <link rel="icon" type="image/png" sizes="32x32" href="medias/favicon-32.png">
 <link rel="apple-touch-icon" href="medias/apple-touch-icon.png">
@@ -272,6 +272,11 @@
 
 
   /* Nora Éditions · artisans */
+  .heros { background: #14110e; }
+  .heros::after { background: linear-gradient(180deg, rgba(20,17,14,0) 30%, rgba(20,17,14,.6) 100%); }
+  .fond-n { position: absolute; right: -18%; top: 6%; width: 120%; max-width: 760px; opacity: .13; }
+  @media (min-width: 900px) { .fond-n { right: -4%; top: 8%; width: 58%; } }
+  .etape.sans-photo { padding-top: 6px; }
   .logo img { height: 34px; width: 34px; }
   .tarifs { display: grid; gap: 16px; margin-top: 34px; }
   .tarif { background: #fff; border-radius: 20px; padding: 28px; box-shadow: 0 1px 0 rgba(0,0,0,.04), 0 8px 26px rgba(0,0,0,.05); }
@@ -291,29 +296,28 @@
 
 <header>
   <div class="bloc">
-    <a class="logo" href="#haut" aria-label="Nora Éditions, retour en haut"><img src="medias/nora-logo-noir.png" alt="Nora Éditions" width="34" height="34"><span>Nora Éditions</span></a>
+    <a class="logo" href="#haut" aria-label="Nora Éditions, retour en haut"><img src="medias/nora-logo-rouge.png" alt="Nora Éditions" width="34" height="34"><span>Nora Éditions</span></a>
     <nav class="menu" aria-label="Menu">
       <a href="#offre">L'offre</a>
-      <a href="#appli">L'appli</a>
+      <a href="#appli">Votre appli</a>
       <a href="#exemple">Exemple</a>
       <a href="#tarifs">Tarifs</a>
       <a href="#contact">Contact</a>
     </nav>
-    <a class="tel-haut" href="#contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg><span>Me contacter</span></a>
+    <a class="tel-haut" href="questionnaire.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg><span>Questionnaire</span></a>
   </div>
 </header>
 
 <main id="haut">
 
 <section class="heros">
-  <img class="poster" src="medias/bleu-ensemble.jpg" alt="" aria-hidden="true">
-  <video autoplay muted loop playsinline preload="auto" poster="medias/bleu-ensemble.jpg" aria-hidden="true"><source src="medias/video-bleu.mp4" type="video/mp4"></video>
+  <img class="fond-n" src="medias/nora-logo-rouge.png" alt="" aria-hidden="true">
   <div class="bloc">
     <span class="label">Artisans du bâtiment · auto-entrepreneurs</span>
     <h1>Votre entreprise, <i>de A à Z.</i></h1>
-    <p>Logo, fiche Google, site internet, et l'appli Flex pour vos devis, vos chantiers, vos rendez-vous et vos paiements. Vous faites les travaux, je m'occupe du reste.</p>
+    <p>Logo, fiche Google, site internet, et votre appli à votre nom pour vos devis, vos chantiers, vos rendez-vous et vos paiements. Vous faites les travaux, je m'occupe du reste.</p>
     <div class="actions">
-      <a class="btn btn-clair" href="#contact">Parlons de votre entreprise</a>
+      <a class="btn btn-clair" href="questionnaire.html">Remplir le questionnaire</a>
       <a class="btn btn-contour" href="#exemple">Voir un exemple</a>
     </div>
     <div class="repere">
@@ -328,15 +332,15 @@
   <div class="bloc">
     <div class="apparait">
       <span class="label">L'offre</span>
-      <h2>Être trouvé,<br><i>et bien travailler.</i></h2>
-      <p class="intro">Plombier, carreleur, électricien, peintre ou tous corps d'état : tout est adapté à votre métier.</p>
+      <h2>Adapté à votre métier,<br><i>à vos besoins.</i></h2>
+      <p class="intro">Plombier, carreleur, électricien, peintre ou tous corps d'état : on s'adapte à chaque métier et à chaque demande. Vous prenez ce dont vous avez besoin, rien de plus.</p>
     </div>
     <div class="liste-presta">
       <div class="presta apparait"><span class="num">01</span><h3>Votre logo</h3><p>Si vous n'en avez pas : une identité simple et nette, pour vos devis, votre camion, votre site et vos réseaux.</p></div>
       <div class="presta apparait"><span class="num">02</span><h3>Votre fiche Google</h3><p>Créée et soignée : photos, horaires, zone d'intervention. Et des avis demandés à chaque chantier fini.</p></div>
       <div class="presta apparait"><span class="num">03</span><h3>Votre site internet</h3><p>À votre nom, rapide et clair sur téléphone, avec vos réalisations et un formulaire de demande de devis.</p></div>
-      <div class="presta apparait"><span class="num">04</span><h3>L'appli Flex</h3><p>Votre outil de tous les jours, sur votre téléphone, de la demande du client à la réception des travaux.</p></div>
-      <div class="presta apparait"><span class="num">05</span><h3>Vidéos et réseaux sociaux <small style="font-size:14px;color:var(--gris)">· en option</small></h3><p>Vous m'envoyez vos photos et vidéos de chantier depuis l'appli, je monte vos vidéos pour TikTok, Instagram et Facebook.</p></div>
+      <div class="presta apparait"><span class="num">04</span><h3>Votre appli, à votre nom</h3><p>Avec votre nom et votre logo : votre outil de tous les jours, sur votre téléphone, de la demande du client à la réception des travaux.</p></div>
+      <div class="presta apparait"><span class="num">05</span><h3>Vos vidéos <small style="font-size:14px;color:var(--gris)">· en option</small></h3><p>Vous m'envoyez vos photos et vidéos de chantier depuis votre appli, je monte vos vidéos dans tous les formats pour les réseaux.</p></div>
     </div>
   </div>
 </section>
@@ -344,16 +348,17 @@
 <section id="appli" class="methode">
   <div class="bloc">
     <div class="apparait">
-      <span class="label">L'appli Flex</span>
+      <span class="label">Votre appli</span>
       <h2>Tout le chantier,<br><i>dans votre poche.</i></h2>
+      <p class="intro">Elle porte votre nom et votre logo, sur votre téléphone. Vos clients ne voient que vous. Elle s'adapte à votre métier : la simulation 3D, par exemple, n'est là que si elle vous sert.</p>
     </div>
     <div class="defile">
-      <div class="etape"><div class="photo"><img src="medias/bleu-avant.jpg" alt="" loading="lazy"></div><div class="num">01</div><h3>Demandes et devis</h3><p>Les demandes arrivent de votre site. Le devis se fait sur le téléphone et se signe en ligne.</p></div>
-      <div class="etape"><div class="photo"><img src="medias/pub-4.jpg" alt="" loading="lazy"></div><div class="num">02</div><h3>Simulation 3D</h3><p>Pour la salle de bain et la cuisine : le client voit son projet et valide ses choix.</p></div>
-      <div class="etape"><div class="photo"><img src="medias/etape-plomberie.jpg" alt="" loading="lazy"></div><div class="num">03</div><h3>Agenda</h3><p>Vos rendez-vous dans l'agenda du téléphone, et le rappel au client en un clic.</p></div>
-      <div class="etape"><div class="photo"><img src="medias/etape-carrelage.jpg" alt="" loading="lazy"></div><div class="num">04</div><h3>Carnet de chantier</h3><p>Pointage, photos avant / pendant / après, notes, imprévus : tout est daté.</p></div>
-      <div class="etape"><div class="photo"><img src="medias/combles-colonne.jpg" alt="" loading="lazy"></div><div class="num">05</div><h3>Dépenses et paiements</h3><p>Ce que coûte le chantier, ce que le client a versé, ce qu'il vous doit encore.</p></div>
-      <div class="etape"><div class="photo"><img src="medias/bleu-ensemble.jpg" alt="" loading="lazy"></div><div class="num">06</div><h3>Fin de chantier</h3><p>PV de réception signé au doigt, avis Google demandé en un toucher.</p></div>
+      <div class="etape sans-photo"><div class="num">01</div><h3>Demandes et devis</h3><p>Les demandes arrivent de votre site. Le devis se fait sur le téléphone et se signe en ligne.</p></div>
+      <div class="etape sans-photo"><div class="num">02</div><h3>Simulation 3D <small style="font-size:13px;color:var(--gris)">· si besoin</small></h3><p>Pour la salle de bain et la cuisine : le client voit son projet et valide ses choix.</p></div>
+      <div class="etape sans-photo"><div class="num">03</div><h3>Agenda</h3><p>Vos rendez-vous dans l'agenda du téléphone, et le rappel au client en un clic.</p></div>
+      <div class="etape sans-photo"><div class="num">04</div><h3>Carnet de chantier</h3><p>Pointage, photos avant / pendant / après, notes, imprévus : tout est daté.</p></div>
+      <div class="etape sans-photo"><div class="num">05</div><h3>Dépenses et paiements</h3><p>Ce que coûte le chantier, ce que le client a versé, ce qu'il vous doit encore.</p></div>
+      <div class="etape sans-photo"><div class="num">06</div><h3>Fin de chantier</h3><p>PV de réception signé au doigt, avis Google demandé en un toucher.</p></div>
     </div>
     <p class="glisser">← Faites défiler →</p>
   </div>
@@ -368,11 +373,12 @@
     <div class="exemple-ka apparait">
       <video src="medias/tuto-appli.mp4" poster="medias/tuto-appli.jpg" controls playsinline preload="none"></video>
       <div>
-        <p class="intro" style="margin-top:0">Logo, fiche Google, site internet, vidéos TikTok et Facebook, et l'appli au quotidien : tout a été fait pour KA Rénovation, artisan de la salle de bain en Île-de-France.</p>
+        <p class="intro" style="margin-top:0">Logo, fiche Google, site internet, vidéos pour les réseaux, et l'appli à son nom, « l'appli KA » : tout a été fait pour KA Rénovation, artisan de la salle de bain en Île-de-France.</p>
         <a class="lien" href="https://karenovation.fr" target="_blank" rel="noopener">Voir le site de KA Rénovation →</a>
       </div>
     </div>
-    <div class="pubs apparait" style="margin-top:34px">
+    <p class="intro" style="margin-top:34px">Des vidéos réalisées pour KA Rénovation :</p>
+    <div class="pubs apparait" style="margin-top:14px">
       <video src="medias/pub-3.mp4" poster="medias/pub-3.jpg" controls playsinline preload="none"></video>
       <video src="medias/pub-4.mp4" poster="medias/pub-4.jpg" controls playsinline preload="none"></video>
       <video src="medias/pub-1.mp4" poster="medias/pub-1.jpg" controls playsinline preload="none"></video>
@@ -388,11 +394,11 @@
     </div>
     <div class="tarifs">
       <div class="tarif apparait"><div class="chiffre">200 €</div><h3>La création</h3><p class="gris">Une seule fois.</p>
-        <ul><li>Votre site internet</li><li>Votre fiche Google</li><li>Votre logo si besoin</li><li>L'appli prête à l'emploi</li></ul></div>
+        <ul><li>Votre site internet, avec vos réalisations</li><li>Votre fiche Google</li><li>Votre logo si besoin</li><li>Votre appli, à votre nom</li></ul></div>
       <div class="tarif apparait"><div class="chiffre">10 € <small>/ mois</small></div><h3>L'abonnement</h3><p class="gris">Votre site et votre appli, en ligne.</p>
-        <ul><li>Site hébergé et à jour</li><li>Appli Flex complète</li><li>Les nouveautés de l'appli</li><li>Un interlocuteur qui répond</li></ul></div>
+        <ul><li>Site hébergé et à jour</li><li>Votre appli complète</li><li>Les nouveautés de l'appli</li><li>Un interlocuteur qui répond</li></ul></div>
       <div class="tarif option apparait"><div class="chiffre" style="font-size:clamp(34px,9vw,48px)">En option</div><h3>Vidéos et réseaux</h3><p class="gris">Selon votre rythme.</p>
-        <ul><li>Vous envoyez photos et vidéos depuis l'appli</li><li>Je monte vos vidéos</li><li>Formats TikTok, Instagram, Facebook</li></ul></div>
+        <ul><li>Vous envoyez photos et vidéos depuis votre appli</li><li>Je monte vos vidéos</li><li>Tous les formats pour les réseaux</li></ul></div>
     </div>
   </div>
 </section>
@@ -406,8 +412,10 @@
     <div class="faq-liste apparait">
       <details><summary>Je suis auto-entrepreneur, c'est fait pour moi ?</summary><p>Oui, c'est pensé pour vous : devis et factures avec la mention « TVA non applicable, article 293 B du CGI », un outil simple sur le téléphone, et un prix adapté.</p></details>
       <details><summary>Mon site sera à mon nom ?</summary><p>Oui. Votre site porte votre nom et votre logo, sur votre propre adresse. Vos clients ne voient que vous.</p></details>
-      <details><summary>Je ne suis pas à l'aise avec l'informatique.</summary><p>L'appli se prend en main en quelques minutes, et je vous la montre. Pour le site et la fiche Google, je m'occupe de tout.</p></details>
+      <details><summary>Je ne suis pas à l'aise avec l'informatique.</summary><p>L'appli se prend en main en quelques minutes, avec un tuto vidéo. Pour le site et la fiche Google, je m'occupe de tout.</p></details>
       <details><summary>Ça marche pour mon métier ?</summary><p>Plomberie, carrelage, électricité, peinture, plâtrerie, maçonnerie, menuiserie ou tous corps d'état : le site et l'appli s'adaptent à votre métier.</p></details>
+      <details><summary>Que faut-il pour créer mon site ?</summary><p>Vous remplissez le questionnaire et vous m'envoyez vos réalisations : photos et vidéos de vos chantiers. Je m'occupe du reste.</p></details>
+      <details><summary>Qui voit mes clients et mes devis ?</summary><p>Vous seul. Vos clients, vos devis et vos chantiers restent dans votre appli. Je ne reçois que les photos et vidéos que vous choisissez de m'envoyer pour vos vidéos.</p></details>
       <details><summary>Je peux arrêter l'abonnement ?</summary><p>Oui, quand vous voulez. On en parle simplement.</p></details>
     </div>
   </div>
@@ -418,30 +426,14 @@
     <div class="apparait">
       <span class="label">Contact</span>
       <h2>Parlons de<br><i>votre entreprise.</i></h2>
-      <p class="intro">Dites-moi votre métier et où vous en êtes : je vous rappelle pour voir ensemble ce dont vous avez besoin.</p>
+      <p class="intro">Le questionnaire me dit tout ce qu'il faut. Pour une question, écrivez-moi.</p>
       <div class="actions"><a class="btn btn-trait" href="mailto:contact@noraeditions.com?subject=Mon%20entreprise%20d%27artisan">contact@noraeditions.com</a></div>
     </div>
     <div class="demande apparait" id="demande">
-      <span class="label">Votre demande</span>
-      <h3>Quelques mots,<br><i>et je vous rappelle.</i></h3>
-      <form id="form-demande" novalidate>
-        <div class="duo">
-          <label>Nom et prénom<input name="nom" autocomplete="name" required maxlength="120"></label>
-          <label>Téléphone<input name="tel" type="tel" autocomplete="tel" required maxlength="40"></label>
-        </div>
-        <div class="duo">
-          <label>E-mail<input name="email" type="email" autocomplete="email" maxlength="160"></label>
-          <label>Ville<input name="ville" autocomplete="address-level2" maxlength="80"></label>
-        </div>
-        <label>Votre métier<select name="metier">
-          <option>Tous corps d'état</option><option>Plomberie, chauffage</option><option>Carrelage</option><option>Électricité</option>
-          <option>Peinture, revêtements</option><option>Plâtrerie, isolation</option><option>Maçonnerie</option><option>Menuiserie</option><option>Autre</option>
-        </select></label>
-        <label>Ce dont vous avez besoin<textarea name="message" maxlength="3000" placeholder="Un site, une fiche Google, l'appli, des vidéos… ou tout !"></textarea></label>
-        <input class="piege" name="site" tabindex="-1" autocomplete="off" aria-hidden="true">
-        <button class="btn btn-clair" type="submit" id="envoyer">Envoyer</button>
-        <div class="retour" id="retour" role="status"></div>
-      </form>
+      <span class="label">Le questionnaire</span>
+      <h3>Dites-moi tout,<br><i>en dix minutes.</i></h3>
+      <p class="intro">Votre entreprise, ce que vous voulez, votre style, et vos réalisations. Je prépare tout à partir de vos réponses, sans heures au téléphone.</p>
+      <a class="btn btn-clair" href="questionnaire.html" style="margin-top:22px">Remplir le questionnaire</a>
     </div>
   </div>
 </section>
@@ -450,38 +442,19 @@
 
 <footer>
   <div class="bloc">
-    <img src="medias/nora-logo-blanc.png" alt="Nora Éditions" width="34" height="34">
+    <img src="medias/nora-logo-rouge.png" alt="Nora Éditions" width="34" height="34">
     <p>Nora Éditions · Nora Ainseba · <a href="mailto:contact@noraeditions.com">contact@noraeditions.com</a></p>
   </div>
 </footer>
 
 <div class="barre">
-  <a class="btn btn-sombre" href="#demande"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg>Parlons de votre entreprise</a>
+  <a class="btn btn-sombre" href="questionnaire.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg>Remplir le questionnaire</a>
 </div>
 
 <script>
   const vue = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) e.target.classList.add("vu"); }), { threshold: .12 });
   document.querySelectorAll(".apparait").forEach(el => vue.observe(el));
 
-  // la demande part par e-mail vers Nora Éditions
-  const MAIL = "https://formsubmit.co/ajax/contact@noraeditions.com";
-  const form = document.getElementById("form-demande"), retour = document.getElementById("retour"), bouton = document.getElementById("envoyer");
-  const dire = (classe, texte) => { retour.className = "retour " + classe; retour.textContent = texte; };
-  form.addEventListener("submit", async e => {
-    e.preventDefault();
-    const v = Object.fromEntries(new FormData(form));
-    if (v.site) return;
-    if (!v.nom.trim() || !v.tel.trim()) { dire("erreur", "Merci d'indiquer votre nom et votre téléphone."); return; }
-    bouton.disabled = true; bouton.textContent = "Envoi…";
-    try {
-      const r = await fetch(MAIL, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ _subject: `Artisan intéressé — ${v.nom.trim()} (${v.metier})`, _template: "table", _captcha: "false",
-          Nom: v.nom, "Téléphone": v.tel, "E-mail": v.email, Ville: v.ville, "Métier": v.metier, Message: v.message }) });
-      if (!r.ok) throw new Error("envoi");
-      form.reset(); dire("ok", "Merci, c'est bien arrivé. Je vous rappelle très vite.");
-    } catch (err) { dire("erreur", "L'envoi n'a pas abouti. Écrivez-moi à contact@noraeditions.com."); }
-    bouton.disabled = false; bouton.textContent = "Envoyer";
-  });
 </script>
 </body>
 </html>
