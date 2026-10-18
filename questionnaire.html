@@ -369,14 +369,28 @@
     <fieldset>
       <legend>2. Ce que vous voulez</legend>
       <p class="aide">Cochez ce qui vous intéresse. On s'adapte : vous ne prenez que ce dont vous avez besoin, et le prix s'adapte aussi.</p>
-      <div class="cases"><label class="case"><input type="checkbox" name="Je veux" value="Un site internet"><span>Un site internet</span></label><label class="case"><input type="checkbox" name="Je veux" value="Une fiche Google"><span>Une fiche Google</span></label><label class="case"><input type="checkbox" name="Je veux" value="Un logo"><span>Un logo</span></label><label class="case"><input type="checkbox" name="Je veux" value="L'appli à mon nom"><span>L'appli à mon nom</span></label><label class="case"><input type="checkbox" name="Je veux" value="Le montage de vidéos pour les réseaux (option)"><span>Le montage de vidéos pour les réseaux (option)</span></label></div>
+      <div class="cases"><label class="case"><input type="checkbox" name="Je veux" value="Un site internet"><span>Un site internet</span></label><label class="case"><input type="checkbox" name="Je veux" value="Une fiche Google"><span>Une fiche Google</span></label><label class="case"><input type="checkbox" name="Je veux" value="Un logo"><span>Un logo</span></label><label class="case"><input type="checkbox" name="Je veux" value="Le logiciel métier dans mon site"><span>Le logiciel métier dans mon site</span></label><label class="case"><input type="checkbox" name="Je veux" value="Le montage de vidéos pour les réseaux (option)"><span>Le montage de vidéos pour les réseaux (option)</span></label></div>
       <div class="champ">Dans l'appli, ce qui vous servirait<div class="cases"><label class="case"><input type="checkbox" name="Appli" value="Devis et factures"><span>Devis et factures</span></label><label class="case"><input type="checkbox" name="Appli" value="Signature en ligne"><span>Signature en ligne</span></label><label class="case"><input type="checkbox" name="Appli" value="Agenda et rappels clients"><span>Agenda et rappels clients</span></label><label class="case"><input type="checkbox" name="Appli" value="Carnet de chantier et photos"><span>Carnet de chantier et photos</span></label><label class="case"><input type="checkbox" name="Appli" value="Dépenses et paiements"><span>Dépenses et paiements</span></label><label class="case"><input type="checkbox" name="Appli" value="PV de fin de chantier"><span>PV de fin de chantier</span></label><label class="case"><input type="checkbox" name="Appli" value="Simulation 3D"><span>Simulation 3D</span></label></div></div>
       <label class="champ">La 3D, pour quels projets ? <small>(si elle vous intéresse)</small><input type="text" name="Projets 3D" placeholder="ex. salle de bain, cuisine, escalier, terrasse, ouverture de mur…"></label>
     </fieldset>
 
     <fieldset>
-      <legend>3. Vos prestations et vos prix</legend>
-      <p class="aide">Pour préparer votre appli : vos devis seront prêts en quelques clics. Le plus simple : envoyez un ancien devis (partie 8). Pas besoin de tout mettre : vous pourrez ajouter vos prestations vous-même dans votre appli, et elles restent enregistrées.</p>
+      <legend>3. Vos attentes</legend>
+      <p class="aide">Pour faire ce qui vous sert vraiment : dites-moi ce que vous espérez, et ce qui vous gêne aujourd'hui.</p>
+      <div class="champ">Ce que vous attendez avant tout <small>(plusieurs choix possibles)</small><div class="cases"><label class="case"><input type="checkbox" name="Attentes" value="Plus de clients"><span>Plus de clients</span></label><label class="case"><input type="checkbox" name="Attentes" value="Être trouvé sur Google"><span>Être trouvé sur Google</span></label><label class="case"><input type="checkbox" name="Attentes" value="Gagner du temps sur mes devis et factures"><span>Gagner du temps sur mes devis et factures</span></label><label class="case"><input type="checkbox" name="Attentes" value="Une image plus pro"><span>Une image plus pro</span></label><label class="case"><input type="checkbox" name="Attentes" value="Être payé plus vite, suivre mes paiements"><span>Être payé plus vite, suivre mes paiements</span></label><label class="case"><input type="checkbox" name="Attentes" value="Moins de paperasse"><span>Moins de paperasse</span></label><label class="case"><input type="checkbox" name="Attentes" value="Montrer mon travail"><span>Montrer mon travail</span></label><label class="case"><input type="checkbox" name="Attentes" value="Me démarquer de la concurrence"><span>Me démarquer de la concurrence</span></label></div></div>
+      <label class="champ">Ce qui compte le plus pour vous<textarea name="Le plus important" placeholder="ex. avoir des demandes de devis sans passer par les plateformes"></textarea></label>
+      <label class="champ">Ce qui vous fait perdre du temps ou vous agace aujourd'hui<textarea name="Ce qui gêne aujourd'hui" placeholder="ex. je fais mes devis le soir, je relance mes clients pour être payé…"></textarea></label>
+      <label class="champ">Les chantiers que vous voulez faire plus souvent<input type="text" name="Chantiers souhaités" placeholder="ex. salles de bain complètes, plutôt que des petits dépannages"></label>
+      <label class="champ">La zone où vous voulez plus de clients<input type="text" name="Zone souhaitée" placeholder="ex. Cergy et 20 km autour"></label>
+      <div class="champ">Combien de nouveaux clients par mois vous aimeriez<div class="cases"><label class="case"><input type="radio" name="Nouveaux clients souhaités" value="1 ou 2"><span>1 ou 2</span></label><label class="case"><input type="radio" name="Nouveaux clients souhaités" value="3 à 5"><span>3 à 5</span></label><label class="case"><input type="radio" name="Nouveaux clients souhaités" value="Plus de 5"><span>Plus de 5</span></label><label class="case"><input type="radio" name="Nouveaux clients souhaités" value="Je ne sais pas"><span>Je ne sais pas</span></label></div></div>
+      <div class="champ">Comment vous voulez être accompagné<div class="cases"><label class="case"><input type="radio" name="Accompagnement" value="Qu&#x27;on fasse tout pour moi"><span>Qu&#x27;on fasse tout pour moi</span></label><label class="case"><input type="radio" name="Accompagnement" value="Qu&#x27;on me montre et je gère"><span>Qu&#x27;on me montre et je gère</span></label><label class="case"><input type="radio" name="Accompagnement" value="Un peu des deux"><span>Un peu des deux</span></label></div></div>
+      <div class="champ">Pour échanger, vous préférez<div class="cases"><label class="case"><input type="checkbox" name="Échanges" value="Téléphone"><span>Téléphone</span></label><label class="case"><input type="checkbox" name="Échanges" value="WhatsApp"><span>WhatsApp</span></label><label class="case"><input type="checkbox" name="Échanges" value="E-mail"><span>E-mail</span></label><label class="case"><input type="checkbox" name="Échanges" value="Visio"><span>Visio</span></label></div></div>
+      <label class="champ">Ce que vous ne voulez surtout pas<textarea name="À éviter" placeholder="ex. un site trop chargé, des couleurs criardes…"></textarea></label>
+    </fieldset>
+
+    <fieldset>
+      <legend>4. Vos prestations et vos prix</legend>
+      <p class="aide">Pour préparer votre appli : vos devis seront prêts en quelques clics. Le plus simple : envoyez un ancien devis (partie 9). Pas besoin de tout mettre : vous pourrez ajouter vos prestations vous-même dans votre appli, et elles restent enregistrées.</p>
       <label class="champ">Vos prestations, avec vos prix habituels <small>(une par ligne : prestation · unité · prix)</small><textarea name="Prestations et prix" style="min-height:150px" placeholder="Pose de carrelage au sol · m² · 45 €&#10;Remplacement chauffe-eau 200 L · forfait · 350 €&#10;Déplacement · forfait · 30 €"></textarea></label>
       <div class="champ">Vos chantiers<div class="cases"><label class="case"><input type="checkbox" name="Chantiers" value="Rénovation"><span>Rénovation</span></label><label class="case"><input type="checkbox" name="Chantiers" value="Neuf"><span>Neuf</span></label><label class="case"><input type="checkbox" name="Chantiers" value="Dépannage"><span>Dépannage</span></label><label class="case"><input type="checkbox" name="Chantiers" value="Entretien"><span>Entretien</span></label><label class="case"><input type="checkbox" name="Chantiers" value="Petits travaux"><span>Petits travaux</span></label></div></div>
       <div class="champ">Vos clients<div class="cases"><label class="case"><input type="checkbox" name="Clients" value="Particuliers"><span>Particuliers</span></label><label class="case"><input type="checkbox" name="Clients" value="Professionnels"><span>Professionnels</span></label><label class="case"><input type="checkbox" name="Clients" value="Syndics, agences"><span>Syndics, agences</span></label><label class="case"><input type="checkbox" name="Clients" value="Entreprises du bâtiment (sous-traitance)"><span>Entreprises du bâtiment (sous-traitance)</span></label></div></div>
@@ -389,7 +403,7 @@
     </fieldset>
 
     <fieldset>
-      <legend>4. Votre façon de travailler</legend>
+      <legend>5. Votre façon de travailler</legend>
       <div class="champ">Les fournitures<div class="cases"><label class="case"><input type="radio" name="Fournitures" value="Je fournis tout"><span>Je fournis tout</span></label><label class="case"><input type="radio" name="Fournitures" value="Le client achète ses matériaux, je fournis mes consommables"><span>Le client achète ses matériaux, je fournis mes consommables</span></label><label class="case"><input type="radio" name="Fournitures" value="Main-d'œuvre seule"><span>Main-d'œuvre seule</span></label><label class="case"><input type="radio" name="Fournitures" value="Ça dépend du chantier"><span>Ça dépend du chantier</span></label></div></div>
       <label class="champ">Vos fournisseurs habituels<input type="text" name="Fournisseurs" placeholder="ex. Point P, Cedeo, Brico Dépôt, un grossiste local…"></label>
       <div class="champ">Vos devis aujourd'hui<div class="cases"><label class="case"><input type="radio" name="Devis aujourd'hui" value="Sur papier"><span>Sur papier</span></label><label class="case"><input type="radio" name="Devis aujourd'hui" value="Sur un tableur"><span>Sur un tableur</span></label><label class="case"><input type="radio" name="Devis aujourd'hui" value="Avec un logiciel"><span>Avec un logiciel</span></label><label class="case"><input type="radio" name="Devis aujourd'hui" value="Je n'en fais pas encore"><span>Je n'en fais pas encore</span></label></div></div>
@@ -408,7 +422,7 @@
     </fieldset>
 
     <fieldset>
-      <legend>5. Ce que vous avez déjà</legend>
+      <legend>6. Ce que vous avez déjà</legend>
       <div class="champ">Un logo ?<div class="cases"><label class="case"><input type="radio" name="Logo actuel" value="Oui, je l'envoie"><span>Oui, je l'envoie</span></label><label class="case"><input type="radio" name="Logo actuel" value="Oui, mais à refaire"><span>Oui, mais à refaire</span></label><label class="case"><input type="radio" name="Logo actuel" value="Non"><span>Non</span></label></div></div>
       <label class="champ">Envoyez votre logo <small>(image ou PDF, si vous en avez un)</small><input type="file" id="logo" accept="image/*,.pdf,.svg"></label>
       <label class="champ">Votre site actuel <small>(s'il existe)</small><input type="url" name="Site actuel" placeholder="https://"></label>
@@ -419,7 +433,7 @@
     </fieldset>
 
     <fieldset>
-      <legend>6. Votre site</legend>
+      <legend>7. Votre site</legend>
       <label class="champ">Vos prestations, celles à mettre en avant<textarea name="Prestations" placeholder="ex. rénovation de salle de bain, douche à l'italienne, dépannage, chauffe-eau…"></textarea></label>
       <label class="champ">Ce qui vous distingue<textarea name="Points forts" placeholder="ex. devis sous 48 h, chantier propre, 15 ans d'expérience, garantie décennale…"></textarea></label>
       <div class="deux">
@@ -432,14 +446,14 @@
     </fieldset>
 
     <fieldset>
-      <legend>7. Votre style</legend>
+      <legend>8. Votre style</legend>
       <div class="champ">L'allure que vous aimez<div class="cases"><label class="case"><input type="radio" name="Style" value="Sobre et haut de gamme"><span>Sobre et haut de gamme</span></label><label class="case"><input type="radio" name="Style" value="Chaleureux"><span>Chaleureux</span></label><label class="case"><input type="radio" name="Style" value="Moderne et coloré"><span>Moderne et coloré</span></label><label class="case"><input type="radio" name="Style" value="Je vous fais confiance"><span>Je vous fais confiance</span></label></div></div>
       <label class="champ">Vos couleurs <small>(si vous en avez)</small><input type="text" name="Couleurs" placeholder="ex. bleu marine et blanc"></label>
       <label class="champ">Des sites que vous aimez <small>(liens)</small><textarea name="Sites aimés" placeholder="Un lien par ligne"></textarea></label>
     </fieldset>
 
     <fieldset>
-      <legend>8. Vos réalisations et vos documents</legend>
+      <legend>9. Vos réalisations et vos documents</legend>
       <p class="aide">Pour votre site : vos plus beaux chantiers, avant et après si possible. Vous débutez et vous n'avez pas encore de photos ? Pas de souci, on se débrouille : laissez vide, on en parle ensemble.</p>
       <label class="depot"><input type="file" id="photos" accept="image/*" multiple hidden><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Ajouter des photos (jusqu'à 10)</label>
       <div class="vignettes" id="vignettes"></div>
@@ -448,7 +462,7 @@
     </fieldset>
 
     <fieldset>
-      <legend>9. Montage de vos vidéos <small style="font-size:15px;color:var(--gris)">· en option</small></legend>
+      <legend>10. Montage de vos vidéos <small style="font-size:15px;color:var(--gris)">· en option</small></legend>
       <p class="aide">Vous m'envoyez vos photos et vidéos de chantier, je fais le montage pour les réseaux.</p>
       <div class="champ">Ça vous intéresse ?<div class="cases"><label class="case"><input type="radio" name="Vidéos" value="Oui"><span>Oui</span></label><label class="case"><input type="radio" name="Vidéos" value="Peut-être plus tard"><span>Peut-être plus tard</span></label><label class="case"><input type="radio" name="Vidéos" value="Non"><span>Non</span></label></div></div>
       <div class="si-video" id="siVideo" hidden>
@@ -459,7 +473,7 @@
     </fieldset>
 
     <fieldset>
-      <legend>10. Pour finir</legend>
+      <legend>11. Pour finir</legend>
       <label class="champ">Pour quand ?<select name="Délai"><option>Dès que possible</option><option>Dans le mois</option><option>Pas pressé</option></select></label>
       <label class="champ">Autre chose à me dire ?<textarea name="Remarques"></textarea></label>
       <label class="accord"><input type="checkbox" id="accord"><span>J'ai bien noté : 200 € la création, puis 10 € par mois. Les vidéos sont en option.</span></label>
