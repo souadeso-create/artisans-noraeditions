@@ -277,6 +277,17 @@
   .fond-n { position: absolute; right: -18%; top: 6%; width: 120%; max-width: 760px; opacity: .13; }
   @media (min-width: 900px) { .fond-n { right: -4%; top: 8%; width: 58%; } }
   .etape.sans-photo { padding-top: 6px; }
+  .ka-grille { display: grid; gap: 14px; margin-top: 30px; grid-template-columns: 1fr 1fr; }
+  .ka-carte { background: #262421; border-radius: 18px; padding: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+  .ka-carte figcaption { font-size: 13px; color: #bdb6ac; text-align: center; }
+  .ka-carte .ka-logo { width: 70%; max-width: 160px; background: #f7f4ef; border-radius: 14px; padding: 18px; }
+  .ka-carte .ka-site, .ka-carte video { width: 100%; max-width: 240px; border-radius: 14px; aspect-ratio: 390 / 844; object-fit: cover; object-position: top; background: #000; }
+  .ka-grille .ka-carte:first-child { grid-column: 1 / -1; }
+  .ka-aa { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+  .ka-aa figure { position: relative; }
+  .ka-aa img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 14px; }
+  .ka-aa figcaption { position: absolute; left: 10px; bottom: 10px; background: rgba(20,17,14,.8); color: #fff; font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; padding: 4px 10px; border-radius: 99px; }
+  @media (min-width: 760px) { .ka-grille { grid-template-columns: repeat(3, 1fr); } .ka-grille .ka-carte:first-child { grid-column: auto; } }
   .logo img { height: 34px; width: 34px; }
   .tarifs { display: grid; gap: 16px; margin-top: 34px; }
   .tarif { background: #fff; border-radius: 20px; padding: 28px; box-shadow: 0 1px 0 rgba(0,0,0,.04), 0 8px 26px rgba(0,0,0,.05); }
@@ -300,7 +311,7 @@
     <nav class="menu" aria-label="Menu">
       <a href="#offre">L'offre</a>
       <a href="#appli">Votre appli</a>
-      <a href="#exemple">Exemple</a>
+      <a href="#exemple">KA Rénovation</a>
       <a href="#tarifs">Tarifs</a>
       <a href="#contact">Contact</a>
     </nav>
@@ -325,6 +336,33 @@
       <div><b>10 €</b>par mois</div>
       <div><b>1</b>seul interlocuteur</div>
     </div>
+  </div>
+</section>
+
+<section id="exemple" class="videos">
+  <div class="bloc">
+    <div class="apparait">
+      <span class="label">Exemple de réalisation</span>
+      <h2>KA Rénovation,<br><i>de A à Z.</i></h2>
+      <p class="intro">Artisan de la salle de bain en Île-de-France. Logo, fiche Google, site internet, vidéos pour les réseaux et appli à son nom : tout a été fait par Nora Éditions.</p>
+    </div>
+    <div class="ka-grille apparait">
+      <figure class="ka-carte"><img src="medias/ka-logo.png" alt="Logo de KA Rénovation" class="ka-logo"><figcaption>Son logo</figcaption></figure>
+      <figure class="ka-carte"><a href="https://karenovation.fr" target="_blank" rel="noopener"><img src="medias/ka-site.jpg" alt="Le site de KA Rénovation sur téléphone" class="ka-site"></a><figcaption>Son site, karenovation.fr</figcaption></figure>
+      <figure class="ka-carte"><video src="medias/tuto-appli.mp4" poster="medias/tuto-appli.jpg" controls playsinline preload="none"></video><figcaption>Son appli, « l'appli KA »</figcaption></figure>
+    </div>
+    <div class="ka-aa apparait">
+      <figure><img src="medias/ka-avant.jpg" alt="Une salle de bain de KA Rénovation avant les travaux" loading="lazy"><figcaption>Avant</figcaption></figure>
+      <figure><img src="medias/ka-apres.jpg" alt="La même salle de bain, refaite par KA Rénovation" loading="lazy"><figcaption>Après</figcaption></figure>
+    </div>
+    <p class="gris" style="font-size:13px;margin-top:8px">Un chantier de KA Rénovation, tel qu'il est mis en valeur sur son site.</p>
+    <p class="intro" style="margin-top:30px">Ses vidéos pour les réseaux :</p>
+    <div class="pubs apparait" style="margin-top:14px">
+      <video src="medias/pub-3.mp4" poster="medias/pub-3.jpg" controls playsinline preload="none"></video>
+      <video src="medias/pub-4.mp4" poster="medias/pub-4.jpg" controls playsinline preload="none"></video>
+      <video src="medias/pub-1.mp4" poster="medias/pub-1.jpg" controls playsinline preload="none"></video>
+    </div>
+    <a class="lien" href="https://karenovation.fr" target="_blank" rel="noopener" style="color:#fff">Voir le site de KA Rénovation →</a>
   </div>
 </section>
 
@@ -364,27 +402,6 @@
   </div>
 </section>
 
-<section id="exemple" class="videos">
-  <div class="bloc">
-    <div class="apparait">
-      <span class="label">Exemple de réalisation</span>
-      <h2>KA Rénovation,<br><i>de A à Z.</i></h2>
-    </div>
-    <div class="exemple-ka apparait">
-      <video src="medias/tuto-appli.mp4" poster="medias/tuto-appli.jpg" controls playsinline preload="none"></video>
-      <div>
-        <p class="intro" style="margin-top:0">Logo, fiche Google, site internet, vidéos pour les réseaux, et l'appli à son nom, « l'appli KA » : tout a été fait pour KA Rénovation, artisan de la salle de bain en Île-de-France.</p>
-        <a class="lien" href="https://karenovation.fr" target="_blank" rel="noopener">Voir le site de KA Rénovation →</a>
-      </div>
-    </div>
-    <p class="intro" style="margin-top:34px">Des vidéos réalisées pour KA Rénovation :</p>
-    <div class="pubs apparait" style="margin-top:14px">
-      <video src="medias/pub-3.mp4" poster="medias/pub-3.jpg" controls playsinline preload="none"></video>
-      <video src="medias/pub-4.mp4" poster="medias/pub-4.jpg" controls playsinline preload="none"></video>
-      <video src="medias/pub-1.mp4" poster="medias/pub-1.jpg" controls playsinline preload="none"></video>
-    </div>
-  </div>
-</section>
 
 <section id="tarifs">
   <div class="bloc">
