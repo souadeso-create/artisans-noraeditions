@@ -281,13 +281,12 @@
   .heros .btn-contour { border-color: var(--encre); color: var(--encre); }
   .heros .btn-contour:hover { background: rgba(27,26,24,.06); }
   .heros-grille { display: grid; gap: 34px; align-items: center; }
-  .heros-tel { display: block; justify-self: center; width: 62%; max-width: 300px; border: 8px solid #1b1a18; border-radius: 34px; overflow: hidden; box-shadow: 0 24px 50px rgba(27,26,24,.18), 0 0 0 1px rgba(0,0,0,.04); transform: rotate(-3deg); }
-  .heros-tel img { display: block; width: 100%; height: auto; aspect-ratio: 390 / 600; object-fit: cover; object-position: top; }
+  .heros-tel { display: block; justify-self: center; width: 62%; max-width: 300px; border: 8px solid #1b1a18; border-radius: 34px; overflow: hidden; box-shadow: 0 24px 50px rgba(27,26,24,.18), 0 0 0 1px rgba(0,0,0,.04); background: #000; }
+  .heros-tel video { position: static; inset: auto; display: block; width: 100%; height: auto; aspect-ratio: 9 / 16; object-fit: cover; background: #000; }
   @media (min-width: 900px) {
     .heros .bloc { padding-top: 70px; padding-bottom: 80px; }
     .heros-grille { grid-template-columns: 1.3fr 1fr; }
     .heros-tel { width: 100%; max-width: 320px; }
-    .heros-tel img { aspect-ratio: 390 / 760; }
   }
   .fond-n { position: absolute; right: -18%; top: 6%; width: 120%; max-width: 760px; opacity: .13; }
   @media (min-width: 900px) { .fond-n { right: -4%; top: 8%; width: 58%; } }
