@@ -273,6 +273,16 @@
   .fond-n { position: absolute; right: -18%; top: 6%; width: 120%; max-width: 760px; opacity: .13; }
   @media (min-width: 900px) { .fond-n { right: -4%; top: 8%; width: 58%; } }
   .etape.sans-photo { padding-top: 6px; }
+  .ka-grille { display: grid; gap: 14px; margin-top: 30px; grid-template-columns: 1fr 1fr; }
+  .ka-carte { background: #262421; border-radius: 18px; padding: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+  .ka-carte figcaption { font-size: 13px; color: #bdb6ac; text-align: center; }
+  .ka-carte .ka-logo { width: 70%; max-width: 160px; background: #f7f4ef; border-radius: 14px; padding: 18px; }
+  .ka-carte .ka-site, .ka-carte video { width: 100%; max-width: 240px; border-radius: 14px; aspect-ratio: 390 / 844; object-fit: cover; object-position: top; background: #000; }
+  .ka-aa { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+  .ka-aa figure { position: relative; }
+  .ka-aa img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 14px; }
+  .ka-aa figcaption { position: absolute; left: 10px; bottom: 10px; background: rgba(20,17,14,.8); color: #fff; font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; padding: 4px 10px; border-radius: 99px; }
+  @media (min-width: 760px) { .ka-grille { grid-template-columns: repeat(2, minmax(0, 300px)); } }
   .logo img { height: 34px; width: 34px; }
   .tarifs { display: grid; gap: 16px; margin-top: 34px; }
   .tarif { background: #fff; border-radius: 20px; padding: 28px; box-shadow: 0 1px 0 rgba(0,0,0,.04), 0 8px 26px rgba(0,0,0,.05); }
@@ -286,6 +296,8 @@
   .exemple-ka video { width: 100%; max-width: 320px; border-radius: 22px; background: #000; box-shadow: 0 14px 36px rgba(0,0,0,.22); }
   @media (min-width: 760px) { .tarifs { grid-template-columns: repeat(3, 1fr); } .exemple-ka { grid-template-columns: 340px 1fr; } }
 
+  .marque-nora { display: flex; flex-direction: column; line-height: 1.15; }
+  .marque-nora b { font-weight: 600; color: var(--filet); letter-spacing: .3em; font-size: 10.5px; margin-top: 2px; }
 
   /* Questionnaire */
   .q { padding: 40px 0 120px; }
@@ -315,8 +327,6 @@
   .q .retour.ok { color: #2f6f4f; } .q .retour.erreur { color: #a3261f; }
   .q .si-video[hidden] { display: none; }
   @media (min-width: 700px) { .q .deux { grid-template-columns: 1fr 1fr; } }
-  .marque-nora { display: flex; flex-direction: column; line-height: 1.15; }
-  .marque-nora b { font-weight: 600; color: var(--filet); letter-spacing: .3em; font-size: 10.5px; margin-top: 2px; }
 </style>
 </head>
 <body>
@@ -326,7 +336,6 @@
     <nav class="menu" aria-label="Menu">
       <a href="./#offre">L'offre</a>
       <a href="./#appli">Votre appli</a>
-      <a href="./#exemple">Exemple</a>
       <a href="./#tarifs">Tarifs</a>
       <a href="./#contact">Contact</a>
     </nav>
@@ -336,7 +345,7 @@
 <main class="q"><div class="bloc">
   <span class="label">Questionnaire</span>
   <h1>Dites-moi tout,<br><i>je m'occupe du reste.</i></h1>
-  <p class="intro">Une dizaine de minutes. Vos réponses me permettent de préparer votre site, votre fiche Google et votre appli sans passer des heures au téléphone. Ne répondez qu'à ce qui vous concerne.</p>
+  <p class="intro">Un petit quart d'heure. Vos réponses me permettent de préparer votre site, votre fiche Google et votre appli sans passer des heures au téléphone. Ne répondez qu'à ce qui vous concerne.</p>
 
   <form id="q" novalidate>
     <fieldset>
@@ -350,6 +359,8 @@
         <label class="champ">SIRET <small>(facultatif)</small><input type="text" name="SIRET" inputmode="numeric"></label>
         <label class="champ">Ville<input type="text" name="Ville" autocomplete="address-level2"></label>
         <label class="champ">Depuis combien de temps vous exercez ?<input type="text" name="Expérience" placeholder="ex. 12 ans"></label>
+        <label class="champ">Vous travaillez<select name="Équipe"><option>Seul</option><option>Avec un ou des salariés</option><option>Avec des sous-traitants</option><option>Avec un associé</option></select></label>
+        <label class="champ">Assurance décennale<input type="text" name="Décennale" placeholder="Assureur et n° de contrat, si vous en avez une"></label>
       </div>
       <div class="champ">Votre métier <small>(plusieurs choix possibles)</small><div class="cases"><label class="case"><input type="checkbox" name="Métiers" value="Tous corps d'état"><span>Tous corps d'état</span></label><label class="case"><input type="checkbox" name="Métiers" value="Plomberie, chauffage"><span>Plomberie, chauffage</span></label><label class="case"><input type="checkbox" name="Métiers" value="Carrelage"><span>Carrelage</span></label><label class="case"><input type="checkbox" name="Métiers" value="Électricité"><span>Électricité</span></label><label class="case"><input type="checkbox" name="Métiers" value="Peinture, revêtements"><span>Peinture, revêtements</span></label><label class="case"><input type="checkbox" name="Métiers" value="Plâtrerie, isolation"><span>Plâtrerie, isolation</span></label><label class="case"><input type="checkbox" name="Métiers" value="Maçonnerie"><span>Maçonnerie</span></label><label class="case"><input type="checkbox" name="Métiers" value="Menuiserie"><span>Menuiserie</span></label><label class="case"><input type="checkbox" name="Métiers" value="Couverture, toiture"><span>Couverture, toiture</span></label><label class="case"><input type="checkbox" name="Métiers" value="Salle de bain, cuisine"><span>Salle de bain, cuisine</span></label><label class="case"><input type="checkbox" name="Métiers" value="Paysagisme"><span>Paysagisme</span></label><label class="case"><input type="checkbox" name="Métiers" value="Autre"><span>Autre</span></label></div></div>
       <label class="champ">Votre zone d'intervention<input type="text" name="Zone" placeholder="ex. Yvelines et Val-d'Oise, 30 km autour de Poissy"></label>
@@ -363,7 +374,40 @@
     </fieldset>
 
     <fieldset>
-      <legend>3. Ce que vous avez déjà</legend>
+      <legend>3. Vos prestations et vos prix</legend>
+      <p class="aide">Pour préparer votre appli : vos devis seront prêts en quelques touchers. Le plus simple : envoyez un ancien devis (partie 8).</p>
+      <label class="champ">Vos prestations, avec vos prix habituels <small>(une par ligne : prestation · unité · prix)</small><textarea name="Prestations et prix" style="min-height:150px" placeholder="Pose de carrelage au sol · m² · 45 €&#10;Remplacement chauffe-eau 200 L · forfait · 350 €&#10;Déplacement · forfait · 30 €"></textarea></label>
+      <div class="champ">Vos chantiers<div class="cases"><label class="case"><input type="checkbox" name="Chantiers" value="Rénovation"><span>Rénovation</span></label><label class="case"><input type="checkbox" name="Chantiers" value="Neuf"><span>Neuf</span></label><label class="case"><input type="checkbox" name="Chantiers" value="Dépannage"><span>Dépannage</span></label><label class="case"><input type="checkbox" name="Chantiers" value="Entretien"><span>Entretien</span></label><label class="case"><input type="checkbox" name="Chantiers" value="Petits travaux"><span>Petits travaux</span></label></div></div>
+      <div class="champ">Vos clients<div class="cases"><label class="case"><input type="checkbox" name="Clients" value="Particuliers"><span>Particuliers</span></label><label class="case"><input type="checkbox" name="Clients" value="Professionnels"><span>Professionnels</span></label><label class="case"><input type="checkbox" name="Clients" value="Syndics, agences"><span>Syndics, agences</span></label><label class="case"><input type="checkbox" name="Clients" value="Entreprises du bâtiment (sous-traitance)"><span>Entreprises du bâtiment (sous-traitance)</span></label></div></div>
+      <div class="deux">
+        <label class="champ">Chantiers par mois, environ<input type="text" name="Chantiers par mois" placeholder="ex. 4"></label>
+        <label class="champ">Durée d'un chantier, en général<input type="text" name="Durée des chantiers" placeholder="ex. 1 à 2 semaines"></label>
+        <label class="champ">Votre prix de l'heure <small>(si vous travaillez à l'heure)</small><input type="text" name="Prix de l'heure"></label>
+        <label class="champ">Frais de déplacement<input type="text" name="Déplacement" placeholder="ex. offert jusqu'à 20 km, puis 30 €"></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>4. Votre façon de travailler</legend>
+      <div class="champ">Les fournitures<div class="cases"><label class="case"><input type="radio" name="Fournitures" value="Je fournis tout"><span>Je fournis tout</span></label><label class="case"><input type="radio" name="Fournitures" value="Le client achète ses matériaux, je fournis mes consommables"><span>Le client achète ses matériaux, je fournis mes consommables</span></label><label class="case"><input type="radio" name="Fournitures" value="Main-d'œuvre seule"><span>Main-d'œuvre seule</span></label><label class="case"><input type="radio" name="Fournitures" value="Ça dépend du chantier"><span>Ça dépend du chantier</span></label></div></div>
+      <label class="champ">Vos fournisseurs habituels<input type="text" name="Fournisseurs" placeholder="ex. Point P, Cedeo, Brico Dépôt, un grossiste local…"></label>
+      <div class="champ">Vos devis aujourd'hui<div class="cases"><label class="case"><input type="radio" name="Devis aujourd'hui" value="Sur papier"><span>Sur papier</span></label><label class="case"><input type="radio" name="Devis aujourd'hui" value="Sur un tableur"><span>Sur un tableur</span></label><label class="case"><input type="radio" name="Devis aujourd'hui" value="Avec un logiciel"><span>Avec un logiciel</span></label><label class="case"><input type="radio" name="Devis aujourd'hui" value="Je n'en fais pas encore"><span>Je n'en fais pas encore</span></label></div></div>
+      <label class="champ">Si logiciel, lequel ?<input type="text" name="Logiciel actuel"></label>
+      <div class="champ">Le devis<div class="cases"><label class="case"><input type="checkbox" name="Le devis" value="Gratuit"><span>Gratuit</span></label><label class="case"><input type="checkbox" name="Le devis" value="Toujours après une visite"><span>Toujours après une visite</span></label><label class="case"><input type="checkbox" name="Le devis" value="Possible sur photos"><span>Possible sur photos</span></label><label class="case"><input type="checkbox" name="Le devis" value="Payant si non signé"><span>Payant si non signé</span></label></div></div>
+      <div class="deux">
+        <label class="champ">Acompte à la signature<input type="text" name="Acompte" placeholder="ex. 30 %"></label>
+        <label class="champ">Le reste, quand ?<input type="text" name="Échéancier" placeholder="ex. 40 % à mi-travaux, le solde à la fin"></label>
+        <label class="champ">Validité de vos devis<input type="text" name="Validité des devis" placeholder="ex. 3 mois"></label>
+        <label class="champ">TVA<select name="TVA"><option>Non applicable (auto-entrepreneur, art. 293 B)</option><option>10 % (rénovation)</option><option>20 %</option><option>5,5 % (rénovation énergétique)</option><option>Je ne sais pas</option></select></label>
+      </div>
+      <div class="champ">Paiements acceptés<div class="cases"><label class="case"><input type="checkbox" name="Paiements" value="Virement"><span>Virement</span></label><label class="case"><input type="checkbox" name="Paiements" value="Chèque"><span>Chèque</span></label><label class="case"><input type="checkbox" name="Paiements" value="Espèces"><span>Espèces</span></label><label class="case"><input type="checkbox" name="Paiements" value="Carte bancaire"><span>Carte bancaire</span></label></div></div>
+      <div class="champ">À la fin du chantier<div class="cases"><label class="case"><input type="checkbox" name="Fin de chantier" value="PV de réception signé"><span>PV de réception signé</span></label><label class="case"><input type="checkbox" name="Fin de chantier" value="Photos avant / après"><span>Photos avant / après</span></label><label class="case"><input type="checkbox" name="Fin de chantier" value="Je demande un avis Google"><span>Je demande un avis Google</span></label><label class="case"><input type="checkbox" name="Fin de chantier" value="Rien de particulier"><span>Rien de particulier</span></label></div></div>
+      <div class="champ">Vos clients vous contactent surtout par<div class="cases"><label class="case"><input type="checkbox" name="Contact" value="Téléphone"><span>Téléphone</span></label><label class="case"><input type="checkbox" name="Contact" value="WhatsApp"><span>WhatsApp</span></label><label class="case"><input type="checkbox" name="Contact" value="SMS"><span>SMS</span></label><label class="case"><input type="checkbox" name="Contact" value="E-mail"><span>E-mail</span></label><label class="case"><input type="checkbox" name="Contact" value="Les réseaux"><span>Les réseaux</span></label></div></div>
+      <label class="champ">Vos conditions particulières <small>(garanties, délais, ce qui n'est pas compris…)</small><textarea name="Conditions"></textarea></label>
+    </fieldset>
+
+    <fieldset>
+      <legend>5. Ce que vous avez déjà</legend>
       <div class="champ">Un logo ?<div class="cases"><label class="case"><input type="radio" name="Logo actuel" value="Oui, je l'envoie"><span>Oui, je l'envoie</span></label><label class="case"><input type="radio" name="Logo actuel" value="Oui, mais à refaire"><span>Oui, mais à refaire</span></label><label class="case"><input type="radio" name="Logo actuel" value="Non"><span>Non</span></label></div></div>
       <label class="champ">Votre site actuel <small>(s'il existe)</small><input type="url" name="Site actuel" placeholder="https://"></label>
       <div class="champ">Une fiche Google ?<div class="cases"><label class="case"><input type="radio" name="Fiche Google" value="Oui"><span>Oui</span></label><label class="case"><input type="radio" name="Fiche Google" value="Non"><span>Non</span></label><label class="case"><input type="radio" name="Fiche Google" value="Je ne sais pas"><span>Je ne sais pas</span></label></div></div>
@@ -373,7 +417,7 @@
     </fieldset>
 
     <fieldset>
-      <legend>4. Votre site</legend>
+      <legend>6. Votre site</legend>
       <label class="champ">Vos prestations, celles à mettre en avant<textarea name="Prestations" placeholder="ex. rénovation de salle de bain, douche à l'italienne, dépannage, chauffe-eau…"></textarea></label>
       <label class="champ">Ce qui vous distingue<textarea name="Points forts" placeholder="ex. devis sous 48 h, chantier propre, 15 ans d'expérience, garantie décennale…"></textarea></label>
       <div class="deux">
@@ -386,23 +430,24 @@
     </fieldset>
 
     <fieldset>
-      <legend>5. Votre style</legend>
+      <legend>7. Votre style</legend>
       <div class="champ">L'allure que vous aimez<div class="cases"><label class="case"><input type="radio" name="Style" value="Sobre et haut de gamme"><span>Sobre et haut de gamme</span></label><label class="case"><input type="radio" name="Style" value="Chaleureux"><span>Chaleureux</span></label><label class="case"><input type="radio" name="Style" value="Moderne et coloré"><span>Moderne et coloré</span></label><label class="case"><input type="radio" name="Style" value="Je vous fais confiance"><span>Je vous fais confiance</span></label></div></div>
       <label class="champ">Vos couleurs <small>(si vous en avez)</small><input type="text" name="Couleurs" placeholder="ex. bleu marine et blanc"></label>
       <label class="champ">Des sites que vous aimez <small>(liens)</small><textarea name="Sites aimés" placeholder="Un lien par ligne"></textarea></label>
     </fieldset>
 
     <fieldset>
-      <legend>6. Vos réalisations</legend>
+      <legend>8. Vos réalisations et vos documents</legend>
       <p class="aide">Indispensable pour votre site : vos plus beaux chantiers, avant et après si possible.</p>
       <label class="depot"><input type="file" id="photos" accept="image/*" multiple hidden><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Ajouter des photos (jusqu'à 10)</label>
       <div class="vignettes" id="vignettes"></div>
       <label class="champ">Plus de photos, ou des vidéos ? Un lien de partage<input type="url" name="Lien des réalisations" placeholder="Google Photos, WeTransfer, Drive…"></label>
       <label class="champ">Votre logo <small>(si vous en avez un)</small><input type="file" id="logo" accept="image/*,.pdf,.svg"></label>
+      <label class="champ">Un ancien devis ou une facture <small>(photo ou PDF : j'y retrouve vos prestations, vos prix et vos mentions)</small><input type="file" id="documents" accept="image/*,.pdf" multiple></label>
     </fieldset>
 
     <fieldset>
-      <legend>7. Vos vidéos <small style="font-size:15px;color:var(--gris)">· en option</small></legend>
+      <legend>9. Vos vidéos <small style="font-size:15px;color:var(--gris)">· en option</small></legend>
       <div class="champ">Ça vous intéresse ?<div class="cases"><label class="case"><input type="radio" name="Vidéos" value="Oui"><span>Oui</span></label><label class="case"><input type="radio" name="Vidéos" value="Peut-être plus tard"><span>Peut-être plus tard</span></label><label class="case"><input type="radio" name="Vidéos" value="Non"><span>Non</span></label></div></div>
       <div class="si-video" id="siVideo" hidden>
         <div class="champ">À quel rythme ?<div class="cases"><label class="case"><input type="radio" name="Rythme" value="Une par semaine"><span>Une par semaine</span></label><label class="case"><input type="radio" name="Rythme" value="Deux par mois"><span>Deux par mois</span></label><label class="case"><input type="radio" name="Rythme" value="Une par mois"><span>Une par mois</span></label></div></div>
@@ -412,7 +457,7 @@
     </fieldset>
 
     <fieldset>
-      <legend>8. Pour finir</legend>
+      <legend>10. Pour finir</legend>
       <label class="champ">Pour quand ?<select name="Délai"><option>Dès que possible</option><option>Dans le mois</option><option>Pas pressé</option></select></label>
       <label class="champ">Autre chose à me dire ?<textarea name="Remarques"></textarea></label>
       <label class="accord"><input type="checkbox" id="accord"><span>J'ai bien noté : 200 € la création, puis 10 € par mois. Les vidéos sont en option.</span></label>
@@ -462,6 +507,7 @@
       fd.append("_subject", `Questionnaire artisan — ${nom}`); fd.append("_template", "table"); fd.append("_captcha", "false");
       for (const [i, f] of photos.entries()) fd.append(`realisation_${i + 1}`, await reduire(f), `realisation-${i + 1}.jpg`);
       const logo = document.getElementById("logo").files[0]; if (logo) fd.append("logo", logo, logo.name);
+      [...document.getElementById("documents").files].slice(0, 3).forEach((f, i) => fd.append(`document_${i + 1}`, f, f.name));
       const r = await fetch("https://formsubmit.co/ajax/contact@noraeditions.com", { method: "POST", headers: { Accept: "application/json" }, body: fd });
       if (!r.ok) throw new Error("envoi");
       form.reset(); photos = []; afficher();
