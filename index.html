@@ -285,13 +285,12 @@
   .heros .btn-contour { border-color: var(--encre); color: var(--encre); }
   .heros .btn-contour:hover { background: rgba(27,26,24,.06); }
   .heros-grille { display: grid; gap: 34px; align-items: center; }
-  .heros-tel { display: block; justify-self: center; width: 62%; max-width: 300px; border: 8px solid #1b1a18; border-radius: 34px; overflow: hidden; box-shadow: 0 24px 50px rgba(27,26,24,.18), 0 0 0 1px rgba(0,0,0,.04); transform: rotate(-3deg); }
-  .heros-tel img { display: block; width: 100%; height: auto; aspect-ratio: 390 / 600; object-fit: cover; object-position: top; }
+  .heros-tel { display: block; justify-self: center; width: 62%; max-width: 300px; border: 8px solid #1b1a18; border-radius: 34px; overflow: hidden; box-shadow: 0 24px 50px rgba(27,26,24,.18), 0 0 0 1px rgba(0,0,0,.04); background: #000; }
+  .heros-tel video { position: static; inset: auto; display: block; width: 100%; height: auto; aspect-ratio: 9 / 16; object-fit: cover; background: #000; }
   @media (min-width: 900px) {
     .heros .bloc { padding-top: 70px; padding-bottom: 80px; }
     .heros-grille { grid-template-columns: 1.3fr 1fr; }
     .heros-tel { width: 100%; max-width: 320px; }
-    .heros-tel img { aspect-ratio: 390 / 760; }
   }
   .fond-n { position: absolute; right: -18%; top: 6%; width: 120%; max-width: 760px; opacity: .13; }
   @media (min-width: 900px) { .fond-n { right: -4%; top: 8%; width: 58%; } }
@@ -353,7 +352,7 @@
       <a class="btn btn-contour" href="#exemple">Voir un exemple</a>
     </div>
    </div>
-   <a class="heros-tel" href="#exemple" aria-label="Voir l'exemple de KA Rénovation"><img src="medias/ka-site.jpg" alt="Un site d'artisan réalisé par Nora Éditions, sur téléphone" width="780" height="1688" fetchpriority="high"></a>
+   <div class="heros-tel"><video src="medias/pub-nora-artisans.mp4" poster="medias/pub-nora-artisans.jpg" autoplay muted loop playsinline controls preload="metadata" aria-label="Vidéo : ce que Nora Éditions Artisans fait pour les artisans du bâtiment"></video></div>
   </div>
 </section>
 
@@ -405,7 +404,7 @@
       <div class="etape sans-photo"><div class="num">03</div><h3>Agenda</h3><p>Vos rendez-vous dans l'agenda du téléphone, et le rappel au client en un clic.</p></div>
       <div class="etape sans-photo"><div class="num">04</div><h3>Carnet de chantier</h3><p>Pointage, photos avant / pendant / après, notes, imprévus : tout est daté.</p></div>
       <div class="etape sans-photo"><div class="num">05</div><h3>Dépenses et paiements</h3><p>Ce que coûte le chantier, ce que le client a versé, ce qu'il vous doit encore.</p></div>
-      <div class="etape sans-photo"><div class="num">06</div><h3>Fin de chantier</h3><p>PV de réception signé au doigt, avis Google demandé en un toucher.</p></div>
+      <div class="etape sans-photo"><div class="num">06</div><h3>Fin de chantier</h3><p>PV de réception signé au doigt, avis Google demandé en un clic.</p></div>
       <div class="etape sans-photo"><div class="num">07</div><h3>Simulation 3D</h3><p>Salle de bain, cuisine, salon, escalier, maçonnerie… pour tous les projets : le client voit son projet en 3D et valide ses choix. Et pour un rendu photoréaliste, le prompt est écrit automatiquement : vous le collez dans l'IA de votre choix.</p></div>
     </div>
     <p class="glisser">← Faites défiler →</p>
