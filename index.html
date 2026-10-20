@@ -117,6 +117,15 @@
 
   /* Méthode : carrousel au doigt */
   .methode { overflow: hidden; }
+  .demo-appli { display: grid; gap: 34px; margin-top: 44px; align-items: center; }
+  .demo-tel { width: 72%; max-width: 300px; justify-self: center; }
+  .demo-texte h3 { font-family: var(--serif); font-weight: 400; font-size: clamp(30px, 6vw, 42px); line-height: 1.1; }
+  .demo-texte h3 i { font-style: italic; font-weight: 300; color: var(--filet); }
+  .demo-texte > p { color: var(--gris); margin-top: 14px; font-size: 16px; }
+  .atouts { list-style: none; margin: 22px 0 30px; display: grid; gap: 12px; }
+  .atouts li { position: relative; padding-left: 28px; color: #3d3934; font-size: 16px; line-height: 1.5; }
+  .atouts li::before { content: ""; position: absolute; left: 0; top: .72em; width: 14px; height: 2px; background: var(--filet); }
+  @media (min-width: 900px) { .demo-appli { grid-template-columns: 320px 1fr; gap: 64px; } .demo-tel { width: 100%; } }
   .defile { display: grid; grid-auto-flow: column; grid-auto-columns: 78%; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; margin-top: 40px; padding-bottom: 10px; scrollbar-width: none; }
   .defile::-webkit-scrollbar { display: none; }
   .etape { scroll-snap-align: start; display: block; text-decoration: none; color: inherit; }
@@ -338,8 +347,8 @@
   <div class="bloc">
     <a class="logo" href="#haut" aria-label="Nora Éditions Artisans, retour en haut"><img src="medias/nora-logo-rouge.png" alt="" width="34" height="34"><span class="marque-nora">Nora Éditions<b>Artisans</b></span></a>
     <nav class="menu" aria-label="Menu">
-      <a href="#offre">L'offre</a>
       <a href="#appli">Votre appli</a>
+      <a href="#offre">L'offre</a>
       <a href="#tarifs">Tarifs</a>
       <a href="#contact">Contact</a>
     </nav>
@@ -361,6 +370,47 @@
     </div>
    </div>
    <div class="heros-tel"><video src="medias/pub-nora-artisans.mp4" poster="medias/pub-nora-artisans.jpg" playsinline controls preload="metadata" aria-label="Vidéo : ce que Nora Éditions Artisans fait pour les artisans du bâtiment"></video></div>
+  </div>
+</section>
+
+<section id="appli" class="methode">
+  <div class="bloc">
+    <div class="apparait">
+      <span class="label">Votre appli</span>
+      <h2>Tout le chantier,<br><i>dans votre poche.</i></h2>
+      <p class="intro">Votre appli métier fait partie de votre site : quand un client fait une demande sur votre site, elle arrive directement dans votre appli. Au nom de votre entreprise et avec votre logo, sur votre téléphone ou votre tablette, elle s'adapte à votre métier.</p>
+    </div>
+    <div class="demo-appli apparait">
+      <div class="heros-tel demo-tel"><video src="medias/appli-flex.mp4" poster="medias/appli-flex.jpg" playsinline controls preload="metadata" aria-label="Vidéo : un aperçu de l'appli métier"></video></div>
+      <div class="demo-texte">
+        <h3>Un aperçu de <i>votre appli.</i></h3>
+        <p>Quelques secondes pour la découvrir, de la demande du client à la réception des travaux. Dans la vidéo, l'appli s'appelle Flex : la vôtre porte le nom de votre entreprise et votre logo.</p>
+        <ul class="atouts">
+          <li>Votre client fait sa demande sur votre site : elle arrive dans votre appli, avec ses photos.</li>
+          <li>Vous faites le devis sur place, il le signe en ligne depuis son téléphone.</li>
+          <li>Devis, factures et PV sortent au nom de votre entreprise, avec votre logo.</li>
+          <li>Photos, pointage, dépenses : tout est rangé par chantier, et daté.</li>
+          <li>Vous voyez d'un coup d'œil ce que le client vous a versé et ce qu'il vous doit.</li>
+          <li>Une facture pas réglée ? La relance part en un clic, avec le montant restant et votre IBAN.</li>
+          <li>En fin de chantier, le PV se signe au doigt et l'avis Google se demande en un clic.</li>
+        </ul>
+        <a class="btn btn-sombre" href="questionnaire.html">Je veux mon appli</a>
+      </div>
+    </div>
+    <div class="defile">
+      <div class="etape sans-photo"><div class="num">01</div><h3>Demandes et devis</h3><p>Les demandes de vos clients, faites sur votre site, arrivent directement dans votre appli. Le devis se fait sur le téléphone et se signe en ligne. Vos prestations et vos prix sont déjà dedans, et vous en ajoutez vous-même quand vous voulez : tout reste enregistré.</p></div>
+      <div class="etape sans-photo"><div class="num">02</div><h3>Envoi en un clic</h3><p>Devis, factures, PV, simulation 3D, rappels : tout part chez le client en un clic, avec le message déjà rédigé, par WhatsApp, SMS ou e-mail.</p></div>
+      <div class="etape sans-photo"><div class="num">03</div><h3>Agenda</h3><p>Vos rendez-vous dans l'agenda du téléphone, et le rappel au client en un clic.</p></div>
+      <div class="etape sans-photo"><div class="num">04</div><h3>Carnet de chantier</h3><p>Pointage, photos avant / pendant / après, notes, imprévus : tout est daté.</p></div>
+      <div class="etape sans-photo"><div class="num">05</div><h3>Dépenses et paiements</h3><p>Ce que coûte le chantier, ce que le client a versé, ce qu'il vous doit encore. Une facture en retard se relance en un clic.</p></div>
+      <div class="etape sans-photo"><div class="num">06</div><h3>Fin de chantier</h3><p>PV de réception signé au doigt, avis Google demandé en un clic.</p></div>
+      <div class="etape sans-photo"><div class="num">07</div><h3>Simulation 3D</h3><p>Salle de bain, cuisine, salon, escalier, maçonnerie… pour tous les projets : le client voit son projet en 3D et valide ses choix. Et pour un rendu photoréaliste, le prompt est écrit automatiquement : vous le collez dans l'IA de votre choix.</p></div>
+    </div>
+    <p class="glisser">← Faites défiler →</p>
+    <div class="enregistre apparait">
+      <p class="donnees">Vos clients, vos devis, vos chantiers : tout reste à vous, et vous seul y avez accès. Pas de télétransmission : rien ne part sans votre clic.</p>
+      <p style="margin-top:22px"><a class="lien" href="/facture-electronique-artisan/">Facture électronique : ce qui vous concerne, et ce qui ne vous concerne pas →</a></p>
+    </div>
   </div>
 </section>
 
@@ -400,29 +450,7 @@
   </div>
 </section>
 
-<section id="appli" class="methode">
-  <div class="bloc">
-    <div class="apparait">
-      <span class="label">Votre appli</span>
-      <h2>Tout le chantier,<br><i>dans votre poche.</i></h2>
-      <p class="intro">Votre appli métier fait partie de votre site : quand un client fait une demande sur votre site, elle arrive directement dans votre appli. À votre marque et à votre logo, sur votre téléphone ou votre tablette, elle s'adapte à votre métier.</p>
-    </div>
-    <div class="defile">
-      <div class="etape sans-photo"><div class="num">01</div><h3>Demandes et devis</h3><p>Les demandes de vos clients, faites sur votre site, arrivent directement dans votre appli. Le devis se fait sur le téléphone et se signe en ligne. Vos prestations et vos prix sont déjà dedans, et vous en ajoutez vous-même quand vous voulez : tout reste enregistré.</p></div>
-      <div class="etape sans-photo"><div class="num">02</div><h3>Envoi en un clic</h3><p>Devis, factures, PV, simulation 3D, rappels : tout part chez le client en un clic, avec le message déjà rédigé, par WhatsApp, SMS ou e-mail.</p></div>
-      <div class="etape sans-photo"><div class="num">03</div><h3>Agenda</h3><p>Vos rendez-vous dans l'agenda du téléphone, et le rappel au client en un clic.</p></div>
-      <div class="etape sans-photo"><div class="num">04</div><h3>Carnet de chantier</h3><p>Pointage, photos avant / pendant / après, notes, imprévus : tout est daté.</p></div>
-      <div class="etape sans-photo"><div class="num">05</div><h3>Dépenses et paiements</h3><p>Ce que coûte le chantier, ce que le client a versé, ce qu'il vous doit encore.</p></div>
-      <div class="etape sans-photo"><div class="num">06</div><h3>Fin de chantier</h3><p>PV de réception signé au doigt, avis Google demandé en un clic.</p></div>
-      <div class="etape sans-photo"><div class="num">07</div><h3>Simulation 3D</h3><p>Salle de bain, cuisine, salon, escalier, maçonnerie… pour tous les projets : le client voit son projet en 3D et valide ses choix. Et pour un rendu photoréaliste, le prompt est écrit automatiquement : vous le collez dans l'IA de votre choix.</p></div>
-    </div>
-    <p class="glisser">← Faites défiler →</p>
-    <div class="enregistre apparait">
-      <p class="donnees">Vos clients, vos devis, vos chantiers : tout reste à vous, et vous seul y avez accès. Pas de télétransmission : rien ne part sans votre clic.</p>
-      <p style="margin-top:22px"><a class="lien" href="/facture-electronique-artisan/">Facture électronique : ce qui vous concerne, et ce qui ne vous concerne pas →</a></p>
-    </div>
-  </div>
-</section>
+
 
 
 <section id="tarifs">
