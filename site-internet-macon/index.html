@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Création de site internet pour maçon · Nora Éditions Artisans</title>
-<meta name="description" content="Création de site internet référencé sur Google, avec logiciel métier, pour maçon auto-entrepreneur : demandes clients, devis, acomptes et paiements selon l&#x27;avancement, carnet de chantier.">
+<meta name="description" content="Création de site internet référencé sur Google, avec logiciel métier, pour maçon auto-entrepreneur : demandes clients, devis.">
 <link rel="canonical" href="https://artisans.noraeditions.fr/site-internet-macon/">
 <meta name="theme-color" content="#ffffff">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://artisans.noraeditions.fr/site-internet-macon/">
 <meta property="og:title" content="Création de site internet pour maçon · Nora Éditions Artisans">
-<meta property="og:description" content="Création de site internet référencé sur Google, avec logiciel métier, pour maçon auto-entrepreneur : demandes clients, devis, acomptes et paiements selon l&#x27;avancement, carnet de chantier.">
+<meta property="og:description" content="Création de site internet référencé sur Google, avec logiciel métier, pour maçon auto-entrepreneur : demandes clients, devis.">
 <meta property="og:image" content="https://artisans.noraeditions.fr/medias/icone-512.png">
 <link rel="icon" href="/medias/favicon-32.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -61,6 +61,18 @@
   nav.menu a:hover { color: var(--encre); }
   .tel-haut { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font-size: 14px; font-weight: 600; background: var(--encre); color: #fff; padding: 9px 16px; border-radius: 999px; }
   .tel-haut svg { width: 16px; height: 16px; }
+  /* téléphone : menu déroulant ; le questionnaire reste dans la barre du bas */
+  .menu-tel { position: relative; }
+  .menu-tel summary { list-style: none; cursor: pointer; width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--sable); background: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 5px; }
+  .menu-tel summary::-webkit-details-marker { display: none; }
+  .menu-tel summary::after, .menu-tel summary::before { content: none !important; display: none !important; }
+  .menu-tel summary { padding: 0 !important; margin: 0 !important; font-size: 0; }
+  .menu-tel summary span { width: 18px; height: 2px; border-radius: 2px; background: var(--encre); }
+  .menu-tel nav { position: absolute; right: 0; top: 52px; z-index: 50; display: grid; min-width: 220px; padding: 8px; background: #fff; border: 1px solid var(--sable); border-radius: 16px; box-shadow: 0 18px 40px rgba(0,0,0,.12); }
+  .menu-tel nav a { padding: 12px 14px; border-radius: 10px; text-decoration: none; color: var(--encre); font-size: 16px; }
+  .menu-tel nav a:hover { background: var(--pierre); }
+  .tel-haut { display: none; }
+  @media (min-width: 760px) { .tel-haut { display: inline-flex; } .menu-tel { display: none; } }
 
   /* Héros */
   .heros { position: relative; min-height: calc(100svh - 66px); display: flex; align-items: flex-end; color: #fff; overflow: hidden; padding: 0; background: #2a2723; }
@@ -362,11 +374,12 @@
   <div class="bloc">
     <a class="logo" href="/" aria-label="Nora Éditions Artisans, accueil"><img src="/medias/nora-logo-rouge.png" alt="" width="34" height="34"><span class="marque-nora">Nora Éditions<b>Artisans</b></span></a>
     <nav class="menu" aria-label="Menu">
-      <a href="/#offre">L'offre</a>
       <a href="/#appli">Votre appli</a>
+      <a href="/#offre">L'offre</a>
       <a href="/#tarifs">Tarifs</a>
       <a href="/#contact">Contact</a>
     </nav>
+    <details class="menu-tel"><summary aria-label="Ouvrir le menu"><span></span><span></span><span></span></summary><nav onclick="this.parentNode.open=false"><a href="/#appli">Votre appli</a><a href="/#offre">L'offre</a><a href="/#tarifs">Tarifs</a><a href="/#contact">Contact</a><a href="/questionnaire.html">Questionnaire</a></nav></details>
     <a class="tel-haut" href="/questionnaire.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg><span>Questionnaire</span></a>
   </div>
 </header>
@@ -389,8 +402,18 @@
   <div class="bloc">
     <div class="article apparait">
       <span class="label">Pourquoi un site</span>
-      <h2>Vos clients<br><i>vous cherchent sur Google.</i></h2>
+      <h2>Les gros chantiers<br><i>se choisissent longtemps.</i></h2>
       <p>Une ouverture de mur, une dalle, une extension : ce sont de gros chantiers, et le client prend le temps de choisir. Il cherche sur Google, il regarde les réalisations, il lit les avis.</p><p>Un site sérieux, avec vos chantiers en photos et vos prestations, vous met dans sa liste. La fiche Google, avec ses avis, fait le reste.</p>
+    </div>
+  </div>
+</section>
+
+<section class="prestations">
+  <div class="bloc">
+    <div class="article apparait">
+      <span class="label">Maçonnerie</span>
+      <h2>Les acomptes, au bon moment.</h2>
+      <p>Sur un chantier long, l&#x27;argent arrive en plusieurs fois : acompte, versement à mi-travaux, solde. Le logiciel vous dit à chaque étape ce que le client doit avoir payé, et ce qui reste à réclamer.</p><p>Location de matériel, béton, déchetterie : chaque dépense se note avec son ticket, et vous voyez ce que le chantier vous rapporte vraiment.</p>
     </div>
   </div>
 </section>
@@ -399,7 +422,7 @@
   <div class="bloc">
     <div class="article apparait">
       <span class="label">Votre site</span>
-      <h2>Au nom de votre entreprise,<br><i>écrit pour Google.</i></h2>
+      <h2>Du sérieux,<br><i>chantier après chantier.</i></h2>
       <p>Un site rapide et clair sur téléphone, au nom de votre entreprise et avec votre logo, sur votre propre adresse. Il est construit pour le référencement : votre métier, votre ville et vos prestations sont écrits pour que Google les comprenne, et il est relié à votre fiche Google.</p>
       <ul class="points"><li>Vos réalisations en photos, étape par étape.</li><li>Vos prestations : ouverture de mur, dalle, muret, extension, rénovation.</li><li>Votre zone d&#x27;intervention écrite pour Google.</li><li>Un formulaire de demande de devis qui arrive dans votre logiciel.</li></ul>
     </div>
@@ -424,7 +447,7 @@
   <div class="bloc">
     <div class="article apparait">
       <span class="label">Au quotidien</span>
-      <h2>Une journée<br><i>avec votre logiciel.</i></h2>
+      <h2>Un chantier<br><i>de plusieurs semaines.</i></h2>
       <div class="journee"><p>Lundi : la demande pour une ouverture de mur est arrivée depuis votre site. Visite, devis avec vos prestations enregistrées, envoi par e-mail, signature en ligne.</p><p>Pendant le chantier : acompte encaissé, versement à mi-travaux noté, dépenses en photo. Le logiciel vous dit ce que le client a payé, et ce qui reste à réclamer selon l&#x27;avancement.</p><p>À la fin : facture du solde, PV signé au doigt, avis Google demandé.</p></div>
     </div>
   </div>

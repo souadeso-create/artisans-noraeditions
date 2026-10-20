@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Création de site internet pour artisan du bâtiment · Nora Éditions Artisans</title>
-<meta name="description" content="Création de site internet pour les artisans du bâtiment auto-entrepreneurs : site référencé sur Google, fiche Google, logo, et logiciel métier intégré pour la création de vos devis et factures, et le suivi de vos paiements. 150 € la création en ce moment, puis 10 € par mois. Ou l'appli métier seule à 100 €, puis 30 € par an.">
+<title>Site internet et logiciel pour artisan · Nora Éditions Artisans</title>
+<meta name="description" content="Site internet référencé sur Google, fiche Google, logo et logiciel métier pour artisan du bâtiment. Création à 150 € en promo, puis 10 € par mois.">
 <link rel="canonical" href="https://artisans.noraeditions.fr/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://artisans.noraeditions.fr/">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:site_name" content="Nora Éditions Artisans">
 <meta name="twitter:card" content="summary">
-<meta property="og:title" content="Création de site internet pour artisan du bâtiment · Nora Éditions Artisans">
-<meta property="og:description" content="Création de site internet pour les artisans du bâtiment auto-entrepreneurs : site référencé sur Google, fiche Google, logo, et logiciel métier intégré pour la création de vos devis et factures, et le suivi de vos paiements. 150 € la création en ce moment, puis 10 € par mois. Ou l'appli métier seule à 100 €, puis 30 € par an.">
+<meta property="og:title" content="Site internet et logiciel pour artisan · Nora Éditions Artisans">
+<meta property="og:description" content="Site internet référencé sur Google, fiche Google, logo et logiciel métier pour artisan du bâtiment. Création à 150 € en promo, puis 10 € par mois.">
 <meta property="og:image" content="https://artisans.noraeditions.fr/medias/icone-512.png">
 <meta name="theme-color" content="#ffffff">
 <link rel="icon" type="image/png" sizes="32x32" href="medias/favicon-32.png">
@@ -65,6 +65,18 @@
   nav.menu a:hover { color: var(--encre); }
   .tel-haut { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font-size: 14px; font-weight: 600; background: var(--encre); color: #fff; padding: 9px 16px; border-radius: 999px; }
   .tel-haut svg { width: 16px; height: 16px; }
+  /* téléphone : menu déroulant ; le questionnaire reste dans la barre du bas */
+  .menu-tel { position: relative; }
+  .menu-tel summary { list-style: none; cursor: pointer; width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--sable); background: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 5px; }
+  .menu-tel summary::-webkit-details-marker { display: none; }
+  .menu-tel summary::after, .menu-tel summary::before { content: none !important; display: none !important; }
+  .menu-tel summary { padding: 0 !important; margin: 0 !important; font-size: 0; }
+  .menu-tel summary span { width: 18px; height: 2px; border-radius: 2px; background: var(--encre); }
+  .menu-tel nav { position: absolute; right: 0; top: 52px; z-index: 50; display: grid; min-width: 220px; padding: 8px; background: #fff; border: 1px solid var(--sable); border-radius: 16px; box-shadow: 0 18px 40px rgba(0,0,0,.12); }
+  .menu-tel nav a { padding: 12px 14px; border-radius: 10px; text-decoration: none; color: var(--encre); font-size: 16px; }
+  .menu-tel nav a:hover { background: var(--pierre); }
+  .tel-haut { display: none; }
+  @media (min-width: 760px) { .tel-haut { display: inline-flex; } .menu-tel { display: none; } }
 
   /* Héros */
   .heros { position: relative; min-height: calc(100svh - 66px); display: flex; align-items: flex-end; color: #fff; overflow: hidden; padding: 0; background: #2a2723; }
@@ -358,6 +370,7 @@
       <a href="#tarifs">Tarifs</a>
       <a href="#contact">Contact</a>
     </nav>
+    <details class="menu-tel"><summary aria-label="Ouvrir le menu"><span></span><span></span><span></span></summary><nav onclick="this.parentNode.open=false"><a href="/#appli">Votre appli</a><a href="/#offre">L'offre</a><a href="/#tarifs">Tarifs</a><a href="/#contact">Contact</a><a href="/questionnaire.html">Questionnaire</a></nav></details>
     <a class="tel-haut" href="questionnaire.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg><span>Questionnaire</span></a>
   </div>
 </header>
@@ -429,7 +442,7 @@
     </div>
     <div class="liens-metiers apparait" style="margin-top:30px"><p class="intro" style="margin:0">Votre métier :</p><div class="liens-zone"><a href="/site-internet-plombier/">Plombier, chauffagiste</a><a href="/site-internet-carreleur/">Carreleur</a><a href="/site-internet-electricien/">Électricien</a><a href="/site-internet-peintre/">Peintre</a><a href="/site-internet-macon/">Maçon</a><a href="/site-internet-plaquiste/">Plaquiste, plâtrier</a><a href="/site-internet-menuisier/">Menuisier</a><a href="/site-internet-couvreur/">Couvreur</a><a href="/site-internet-charpentier/">Charpentier</a><a href="/site-internet-facadier/">Façadier</a><a href="/site-internet-cuisiniste/">Cuisiniste</a><a href="/site-internet-paysagiste/">Paysagiste</a><a href="/site-internet-climatisation/">Climatisation, pompe à chaleur</a><a href="/site-internet-renovation-tous-corps-etat/">Tous corps d&#x27;état</a></div></div>
     <div class="liens-services apparait" style="margin-top:22px"><p class="intro" style="margin:0">En détail :</p><div class="liens-zone"><a href="/appli-devis-artisan/">Création de devis et factures</a><a href="/fiche-google-artisan/">Fiche Google</a><a href="/logo-artisan/">Logo d'artisan</a><a href="/referencement-google-artisan/">Référencement Google</a><a href="/community-manager-artisan/">Community manager</a></div></div>
-    <div class="liens-guides apparait" style="margin-top:22px"><p class="intro" style="margin:0">Les guides :</p><div class="liens-zone"><a href="/facture-electronique-artisan/">Facture électronique et particuliers</a></div></div>
+    <div class="liens-guides apparait" style="margin-top:22px"><p class="intro" style="margin:0">Les guides :</p><div class="liens-zone"><a href="/facture-electronique-artisan/">Facture électronique et particuliers</a><a href="/trouver-des-clients-artisan/">Trouver ses premiers clients</a><a href="/mentions-obligatoires-devis-artisan/">Mentions d&#x27;un devis</a><a href="/etre-trouve-sur-google-artisan/">Être trouvé sur Google</a></div></div>
   </div>
 </section>
 

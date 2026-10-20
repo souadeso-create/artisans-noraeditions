@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Création de site internet pour entreprise de rénovation tous corps d&#x27;état · Nora Éditions Artisans</title>
-<meta name="description" content="Création de site internet référencé sur Google, avec logiciel métier, pour artisan tous corps d&#x27;état : demandes clients, devis multi-lots, carnet de chantier, dépenses par chantier, paiements selon l&#x27;avancement.">
+<title>Création de site internet pour artisan tous corps d&#x27;état</title>
+<meta name="description" content="Création de site internet référencé sur Google, avec logiciel métier, pour artisan tous corps d&#x27;état : demandes clients, devis multi-lots.">
 <link rel="canonical" href="https://artisans.noraeditions.fr/site-internet-renovation-tous-corps-etat/">
 <meta name="theme-color" content="#ffffff">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://artisans.noraeditions.fr/site-internet-renovation-tous-corps-etat/">
-<meta property="og:title" content="Création de site internet pour entreprise de rénovation tous corps d&#x27;état · Nora Éditions Artisans">
-<meta property="og:description" content="Création de site internet référencé sur Google, avec logiciel métier, pour artisan tous corps d&#x27;état : demandes clients, devis multi-lots, carnet de chantier, dépenses par chantier, paiements selon l&#x27;avancement.">
+<meta property="og:title" content="Création de site internet pour artisan tous corps d&#x27;état">
+<meta property="og:description" content="Création de site internet référencé sur Google, avec logiciel métier, pour artisan tous corps d&#x27;état : demandes clients, devis multi-lots.">
 <meta property="og:image" content="https://artisans.noraeditions.fr/medias/icone-512.png">
 <link rel="icon" href="/medias/favicon-32.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -61,6 +61,18 @@
   nav.menu a:hover { color: var(--encre); }
   .tel-haut { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font-size: 14px; font-weight: 600; background: var(--encre); color: #fff; padding: 9px 16px; border-radius: 999px; }
   .tel-haut svg { width: 16px; height: 16px; }
+  /* téléphone : menu déroulant ; le questionnaire reste dans la barre du bas */
+  .menu-tel { position: relative; }
+  .menu-tel summary { list-style: none; cursor: pointer; width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--sable); background: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 5px; }
+  .menu-tel summary::-webkit-details-marker { display: none; }
+  .menu-tel summary::after, .menu-tel summary::before { content: none !important; display: none !important; }
+  .menu-tel summary { padding: 0 !important; margin: 0 !important; font-size: 0; }
+  .menu-tel summary span { width: 18px; height: 2px; border-radius: 2px; background: var(--encre); }
+  .menu-tel nav { position: absolute; right: 0; top: 52px; z-index: 50; display: grid; min-width: 220px; padding: 8px; background: #fff; border: 1px solid var(--sable); border-radius: 16px; box-shadow: 0 18px 40px rgba(0,0,0,.12); }
+  .menu-tel nav a { padding: 12px 14px; border-radius: 10px; text-decoration: none; color: var(--encre); font-size: 16px; }
+  .menu-tel nav a:hover { background: var(--pierre); }
+  .tel-haut { display: none; }
+  @media (min-width: 760px) { .tel-haut { display: inline-flex; } .menu-tel { display: none; } }
 
   /* Héros */
   .heros { position: relative; min-height: calc(100svh - 66px); display: flex; align-items: flex-end; color: #fff; overflow: hidden; padding: 0; background: #2a2723; }
@@ -352,9 +364,9 @@
   .logiciel .presta h3 { font-size: 21px; }
   .note-3d { margin-top: 26px; font-size: 15px; color: var(--gris); }
 </style>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Service", "name": "Création de site internet pour entreprise de rénovation tous corps d'état", "description": "Création de site internet référencé sur Google, avec logiciel métier, pour artisan tous corps d'état : demandes clients, devis multi-lots, carnet de chantier, dépenses par chantier, paiements selon l'avancement.", "url": "https://artisans.noraeditions.fr/site-internet-renovation-tous-corps-etat/", "provider": {"@type": "ProfessionalService", "name": "Nora Éditions Artisans", "url": "https://artisans.noraeditions.fr/"}, "areaServed": {"@type": "Country", "name": "France"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Service", "name": "Création de site internet pour artisan tous corps d'état", "description": "Création de site internet référencé sur Google, avec logiciel métier, pour artisan tous corps d'état : demandes clients, devis multi-lots, carnet de chantier, dépenses par chantier, paiements selon l'avancement.", "url": "https://artisans.noraeditions.fr/site-internet-renovation-tous-corps-etat/", "provider": {"@type": "ProfessionalService", "name": "Nora Éditions Artisans", "url": "https://artisans.noraeditions.fr/"}, "areaServed": {"@type": "Country", "name": "France"}}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Vous avez un exemple ?", "acceptedAnswer": {"@type": "Answer", "text": "Oui : KA Rénovation, artisan de la salle de bain en Île-de-France. Logo, fiche Google, site et logiciel métier : tout a été fait par Nora Éditions."}}, {"@type": "Question", "name": "Je fais plusieurs métiers, ça ne fait pas trop ?", "acceptedAnswer": {"@type": "Answer", "text": "Non. Votre site présente chaque métier, et votre logiciel contient toutes vos prestations : vous ne prenez que ce dont vous avez besoin."}}, {"@type": "Question", "name": "Je veux savoir ce que me rapporte chaque chantier.", "acceptedAnswer": {"@type": "Answer", "text": "Le logiciel note les dépenses de chaque chantier et ce que le client a versé : vous voyez ce qu'il vous reste."}}]}</script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Nora Éditions Artisans", "item": "https://artisans.noraeditions.fr/"}, {"@type": "ListItem", "position": 2, "name": "Création de site internet pour entreprise de rénovation tous corps d'état", "item": "https://artisans.noraeditions.fr/site-internet-renovation-tous-corps-etat/"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Nora Éditions Artisans", "item": "https://artisans.noraeditions.fr/"}, {"@type": "ListItem", "position": 2, "name": "Création de site internet pour artisan tous corps d'état", "item": "https://artisans.noraeditions.fr/site-internet-renovation-tous-corps-etat/"}]}</script>
 </head>
 <body>
 
@@ -362,11 +374,12 @@
   <div class="bloc">
     <a class="logo" href="/" aria-label="Nora Éditions Artisans, accueil"><img src="/medias/nora-logo-rouge.png" alt="" width="34" height="34"><span class="marque-nora">Nora Éditions<b>Artisans</b></span></a>
     <nav class="menu" aria-label="Menu">
-      <a href="/#offre">L'offre</a>
       <a href="/#appli">Votre appli</a>
+      <a href="/#offre">L'offre</a>
       <a href="/#tarifs">Tarifs</a>
       <a href="/#contact">Contact</a>
     </nav>
+    <details class="menu-tel"><summary aria-label="Ouvrir le menu"><span></span><span></span><span></span></summary><nav onclick="this.parentNode.open=false"><a href="/#appli">Votre appli</a><a href="/#offre">L'offre</a><a href="/#tarifs">Tarifs</a><a href="/#contact">Contact</a><a href="/questionnaire.html">Questionnaire</a></nav></details>
     <a class="tel-haut" href="/questionnaire.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg><span>Questionnaire</span></a>
   </div>
 </header>
@@ -389,8 +402,18 @@
   <div class="bloc">
     <div class="article apparait">
       <span class="label">Pourquoi un site</span>
-      <h2>Vos clients<br><i>vous cherchent sur Google.</i></h2>
+      <h2>Un seul contact<br><i>pour tout le chantier.</i></h2>
       <p>Une rénovation complète, c&#x27;est un gros budget, et le client cherche longtemps. Il compare les sites, les réalisations, les avis. Celui qui a un site sérieux et une fiche Google bien notée part avec une longueur d&#x27;avance.</p><p>Votre site présente chacun de vos métiers, et chaque demande arrive directement dans votre logiciel.</p>
+    </div>
+  </div>
+</section>
+
+<section class="prestations">
+  <div class="bloc">
+    <div class="article apparait">
+      <span class="label">Tous corps d&#x27;état</span>
+      <h2>Un devis par lots, clair pour le client.</h2>
+      <p>Démolition, plomberie, électricité, placo, carrelage, peinture : le devis se fait par lots, chacun avec ses lignes. Le client voit tout, poste par poste.</p><p>Les avenants se font à part quand le client ajoute des travaux en cours de route, et le total du chantier reste à jour.</p>
     </div>
   </div>
 </section>
@@ -399,7 +422,7 @@
   <div class="bloc">
     <div class="article apparait">
       <span class="label">Votre site</span>
-      <h2>Au nom de votre entreprise,<br><i>écrit pour Google.</i></h2>
+      <h2>Tous vos métiers,<br><i>sur un seul site.</i></h2>
       <p>Un site rapide et clair sur téléphone, au nom de votre entreprise et avec votre logo, sur votre propre adresse. Il est construit pour le référencement : votre métier, votre ville et vos prestations sont écrits pour que Google les comprenne, et il est relié à votre fiche Google.</p>
       <ul class="points"><li>Toutes vos prestations, métier par métier.</li><li>Vos réalisations avant et après.</li><li>Votre zone d&#x27;intervention, ville par ville, écrite pour Google.</li><li>Vos avis Google, et un formulaire de devis relié à votre logiciel.</li></ul>
     </div>
@@ -424,7 +447,7 @@
   <div class="bloc">
     <div class="article apparait">
       <span class="label">Au quotidien</span>
-      <h2>Une journée<br><i>avec votre logiciel.</i></h2>
+      <h2>Une rénovation<br><i>du début à la fin.</i></h2>
       <div class="journee"><p>Lundi : une demande de rénovation de salle de bain arrive depuis votre site. Visite, devis avec toutes vos prestations, signature en ligne.</p><p>Pendant le chantier : rendez-vous dans l&#x27;agenda, rappels au client, dépenses notées, acompte et versements suivis. Le tableau de bord vous dit ce qui reste à réclamer sur chaque chantier.</p><p>À la fin : PV de réception signé au doigt, facture du solde, avis Google demandé.</p></div>
     </div>
   </div>
