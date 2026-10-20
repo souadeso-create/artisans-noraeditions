@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Agence marketing pour artisans : site internet et logiciel</title>
+<title>Agence marketing artisans : création de site internet</title>
 <meta name="description" content="Agence marketing pour artisans du bâtiment : site internet référencé sur Google, fiche Google, logo et logiciel métier. 190 € en promo, puis 10 €/mois.">
 <link rel="canonical" href="https://artisans.noraeditions.fr/">
 <meta property="og:type" content="website">
@@ -11,7 +11,7 @@
 <meta property="og:locale" content="fr_FR">
 <meta property="og:site_name" content="Nora Éditions Artisans">
 <meta name="twitter:card" content="summary">
-<meta property="og:title" content="Agence marketing pour artisans : site internet et logiciel">
+<meta property="og:title" content="Agence marketing artisans : création de site internet">
 <meta property="og:description" content="Agence marketing pour artisans du bâtiment : site internet référencé sur Google, fiche Google, logo et logiciel métier. 190 € en promo, puis 10 €/mois.">
 <meta property="og:image" content="https://artisans.noraeditions.fr/medias/icone-512.png">
 <meta name="theme-color" content="#ffffff">
@@ -374,10 +374,11 @@
   .presta .num { display: grid; place-items: center; width: 42px; height: 42px; padding: 0 !important; border-radius: 50%; background: var(--filet); color: #fff !important; font-family: var(--display) !important; font-weight: 800; font-size: 15px !important; }
   .tarif { border: 2px solid var(--trait) !important; border-radius: 22px !important; box-shadow: 6px 6px 0 var(--trait) !important; }
   .tarif.option { background: #fff !important; }
-  a.presta::after { right: 22px !important; top: 26px !important; }
-  a.presta .lire { grid-column: 2 / -1; }
-  a.presta:hover { transform: translate(2px, 2px); box-shadow: 3px 3px 0 var(--trait); }
-  a.presta { transition: transform .12s, box-shadow .12s; }
+  .carte-lien { position: relative; padding-right: 56px !important; }
+  .carte-lien .lire { grid-column: 2 / -1; display: block; width: max-content; margin-top: 12px; font-size: 13px; font-weight: 600; letter-spacing: .04em; color: var(--encre); text-decoration: none; border-bottom: 1px solid var(--filet); padding-bottom: 2px; }
+  .carte-lien .fleche { position: absolute; right: 18px; top: 20px; width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%; border: 2px solid var(--trait); color: var(--encre); text-decoration: none; font-size: 18px; background: #fff; transition: transform .12s, background .12s; }
+  .carte-lien .fleche:hover { background: var(--filet); color: #fff; transform: translateX(2px); }
+  .carte-lien .lire:hover { color: var(--filet); }
   /* Souris dessinée (ordinateur) */
   @media (hover: hover) and (pointer: fine) {
     html, body { cursor: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2232%22%20height%3D%2232%22%20viewBox%3D%220%200%2032%2032%22%3E%3Cpath%20d%3D%22M5%203.5c0-1%201.1-1.6%201.9-1l19.6%2014.2c.9.7.5%202.1-.6%202.2l-8.4.9c-.4%200-.8.3-1%20.7l-4%207.6c-.5%201-2%20.9-2.3-.2L5%204.2z%22%20fill%3D%22%231b1a18%22%20stroke%3D%22%23fff%22%20stroke-width%3D%222.2%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E") 5 3, auto; }
@@ -464,14 +465,14 @@
       <p class="intro">Plombier, carreleur, électricien, peintre ou tous corps d'état : on s'adapte à chaque métier et à chaque demande. Vous prenez ce dont vous avez besoin, rien de plus.</p>
     </div>
     <div class="liste-presta">
-      <a class="presta apparait" href="/logo-artisan/"><span class="num">01</span><h3>Votre logo</h3><p>Un logo dessiné pour votre entreprise, prêt à mettre sur vos devis, votre site, vos réseaux et vos tenues de travail.</p><span class="lire">En savoir plus</span></a>
-      <a class="presta apparait" href="/referencement-google-artisan/"><span class="num">02</span><h3>Votre fiche Google</h3><p>Une fiche créée ou reprise, soignée et reliée à votre site, pour que les clients du coin vous appellent.</p><span class="lire">En savoir plus</span></a>
-      <a class="presta apparait" href="#metiers"><span class="num">03</span><h3>Votre site internet</h3><p>Un site au nom de votre entreprise, facile à lire sur téléphone, avec vos réalisations et une demande de devis. Bien référencé sur Google.</p><span class="lire">Voir pour votre métier</span></a>
-      <a class="presta apparait" href="/appli-devis-artisan/"><span class="num">04</span><h3>L'appli métier de votre site</h3><p>Une appli à votre nom pour vos demandes, vos devis, vos factures et vos chantiers, du premier appel jusqu'au paiement.</p><span class="lire">En savoir plus</span></a>
-      <a class="presta apparait" href="/community-manager-artisan/"><span class="num">05</span><h3>Vidéos, réseaux et annuaires <small style="font-size:14px;color:var(--gris)">· en option</small></h3><p>Un suivi chaque mois : vos photos de chantier deviennent des publications et des vidéos, et votre site reçoit de nouveaux articles. 25 € par mois.</p><span class="lire">En savoir plus</span></a>
+      <div class="presta carte-lien apparait"><span class="num">01</span><h3>Votre logo</h3><p>Un logo dessiné pour votre entreprise, prêt à mettre sur vos devis, votre site, vos réseaux et vos tenues de travail.</p><a class="lire" href="/logo-artisan/">En savoir plus</a><a class="fleche" href="/logo-artisan/" aria-label="En savoir plus">→</a></div>
+      <div class="presta carte-lien apparait"><span class="num">02</span><h3>Votre fiche Google</h3><p>Une fiche créée ou reprise, soignée et reliée à votre site, pour que les clients du coin vous appellent.</p><a class="lire" href="/referencement-google-artisan/">En savoir plus</a><a class="fleche" href="/referencement-google-artisan/" aria-label="En savoir plus">→</a></div>
+      <div class="presta carte-lien apparait"><span class="num">03</span><h3>Votre site internet</h3><p>Un site au nom de votre entreprise, facile à lire sur téléphone, avec vos réalisations et une demande de devis. Bien référencé sur Google.</p><a class="lire" href="/creation-site-internet-artisan/">En savoir plus</a><a class="fleche" href="/creation-site-internet-artisan/" aria-label="En savoir plus">→</a></div>
+      <div class="presta carte-lien apparait"><span class="num">04</span><h3>L'appli métier de votre site</h3><p>Une appli à votre nom pour vos demandes, vos devis, vos factures et vos chantiers, du premier appel jusqu'au paiement.</p><a class="lire" href="/appli-devis-artisan/">En savoir plus</a><a class="fleche" href="/appli-devis-artisan/" aria-label="En savoir plus">→</a></div>
+      <div class="presta carte-lien apparait"><span class="num">05</span><h3>Vidéos, réseaux et annuaires <small style="font-size:14px;color:var(--gris)">· en option</small></h3><p>Un suivi chaque mois : vos photos de chantier deviennent des publications et des vidéos, et votre site reçoit de nouveaux articles. 25 € par mois.</p><a class="lire" href="/community-manager-artisan/">En savoir plus</a><a class="fleche" href="/community-manager-artisan/" aria-label="En savoir plus">→</a></div>
     </div>
     <div class="liens-metiers apparait" id="metiers" style="margin-top:30px;scroll-margin-top:90px"><p class="intro" style="margin:0">Votre métier :</p><div class="liens-zone"><a href="/site-internet-plombier/">Plombier, chauffagiste</a><a href="/site-internet-carreleur/">Carreleur</a><a href="/site-internet-electricien/">Électricien</a><a href="/site-internet-peintre/">Peintre</a><a href="/site-internet-macon/">Maçon</a><a href="/site-internet-plaquiste/">Plaquiste, plâtrier</a><a href="/site-internet-menuisier/">Menuisier</a><a href="/site-internet-couvreur/">Couvreur</a><a href="/site-internet-charpentier/">Charpentier</a><a href="/site-internet-facadier/">Façadier</a><a href="/site-internet-cuisiniste/">Cuisiniste</a><a href="/site-internet-paysagiste/">Paysagiste</a><a href="/site-internet-climatisation/">Climatisation, pompe à chaleur</a><a href="/site-internet-renovation-tous-corps-etat/">Tous corps d&#x27;état</a></div></div>
-    <div class="liens-services apparait" style="margin-top:22px"><p class="intro" style="margin:0">En détail :</p><div class="liens-zone"><a href="/appli-devis-artisan/">Création de devis et factures</a><a href="/logo-artisan/">Logo d'artisan</a><a href="/referencement-google-artisan/">Référencement Google</a><a href="/community-manager-artisan/">Community manager</a></div></div>
+    <div class="liens-services apparait" style="margin-top:22px"><p class="intro" style="margin:0">En détail :</p><div class="liens-zone"><a href="/creation-site-internet-artisan/">Création de site internet</a><a href="/appli-devis-artisan/">Logiciel de devis</a><a href="/logiciel-facturation-artisan/">Logiciel de facturation</a><a href="/logo-artisan/">Logo d'artisan</a><a href="/referencement-google-artisan/">Référencement Google</a><a href="/community-manager-artisan/">Community manager</a></div></div>
     <div class="liens-guides apparait" style="margin-top:22px"><p class="intro" style="margin:0">Les guides :</p><div class="liens-zone"><a href="/facture-electronique-artisan/">Facture électronique et particuliers</a><a href="/trouver-des-clients-artisan/">Trouver ses premiers clients</a><a href="/mentions-obligatoires-devis-artisan/">Mentions d&#x27;un devis</a></div></div>
   </div>
 </section>
