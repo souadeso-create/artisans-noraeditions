@@ -113,6 +113,17 @@
 
   /* Méthode : carrousel au doigt */
   .methode { overflow: hidden; }
+  .carte-3d { margin-top: 40px; max-width: 640px; }
+  .demo-appli { display: grid; gap: 26px; margin-top: 44px; justify-items: center; }
+  .demo-bouton { text-align: center; }
+  .demo-tel { width: 72%; max-width: 300px; justify-self: center; }
+  .demo-texte h3 { font-family: var(--serif); font-weight: 400; font-size: clamp(30px, 6vw, 42px); line-height: 1.1; }
+  .demo-texte h3 i { font-style: italic; font-weight: 300; color: var(--filet); }
+  .demo-texte > p { color: var(--gris); margin-top: 14px; font-size: 16px; }
+  .atouts { list-style: none; margin: 22px 0 30px; display: grid; gap: 12px; }
+  .atouts li { position: relative; padding-left: 28px; color: #3d3934; font-size: 16px; line-height: 1.5; }
+  .atouts li::before { content: ""; position: absolute; left: 0; top: .72em; width: 14px; height: 2px; background: var(--filet); }
+  @media (min-width: 900px) { .demo-tel { width: 320px; } }
   .defile { display: grid; grid-auto-flow: column; grid-auto-columns: 78%; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; margin-top: 40px; padding-bottom: 10px; scrollbar-width: none; }
   .defile::-webkit-scrollbar { display: none; }
   .etape { scroll-snap-align: start; display: block; text-decoration: none; color: inherit; }
@@ -303,6 +314,9 @@
   @media (min-width: 760px) { .ka-grille { grid-template-columns: repeat(2, minmax(0, 300px)); } }
   .logo img { height: 34px; width: 34px; }
   .tarifs { display: grid; gap: 16px; margin-top: 34px; }
+  .promo { display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: #fff; background: var(--filet); padding: 4px 10px; border-radius: 999px; margin-bottom: 12px; }
+  .tarif.option .promo { background: var(--encre); }
+  .chiffre s { font-size: .5em; color: var(--clair); font-weight: 400; margin-right: 6px; }
   .tarif { background: #fff; border-radius: 20px; padding: 28px; box-shadow: 0 1px 0 rgba(0,0,0,.04), 0 8px 26px rgba(0,0,0,.05); }
   .tarif .chiffre { font-family: var(--serif); font-size: clamp(46px, 12vw, 72px); line-height: 1; }
   .tarif .chiffre small { font-size: 20px; color: var(--gris); }
@@ -312,7 +326,8 @@
   .tarif.option { background: transparent; border: 1px dashed var(--sable); box-shadow: none; }
   .exemple-ka { display: grid; gap: 28px; align-items: center; margin-top: 34px; }
   .exemple-ka video { width: 100%; max-width: 320px; border-radius: 22px; background: #000; box-shadow: 0 14px 36px rgba(0,0,0,.22); }
-  @media (min-width: 760px) { .tarifs { grid-template-columns: repeat(3, 1fr); } .exemple-ka { grid-template-columns: 340px 1fr; } }
+  @media (min-width: 760px) { .tarifs { grid-template-columns: repeat(2, 1fr); } .exemple-ka { grid-template-columns: 340px 1fr; } }
+  @media (min-width: 1100px) { .tarifs { grid-template-columns: repeat(4, 1fr); } }
 
   .marque-nora { display: flex; flex-direction: column; line-height: 1.15; }
   .marque-nora b { font-weight: 600; color: var(--filet); letter-spacing: .3em; font-size: 10.5px; margin-top: 2px; }
@@ -375,7 +390,7 @@
     <div class="article apparait">
       <span class="label">Pourquoi</span>
       <h2>Sur la carte,<br><i>près de chez eux.</i></h2>
-      <p>Pour un plombier, un électricien ou un carreleur, la fiche Google est souvent le premier contact : le client voit votre marque, vos avis, vos photos, et il appelle sans même passer par un site.</p><p>Une fiche complète, avec des photos récentes et des avis réguliers, passe devant une fiche vide. Et quand elle renvoie vers votre site, le client trouve tout ce qu&#x27;il veut savoir.</p>
+      <p>Pour un plombier, un électricien ou un carreleur, la fiche Google est souvent le premier contact : le client voit le nom de votre entreprise, vos avis, vos photos, et il appelle sans même passer par un site.</p><p>Une fiche complète, avec des photos récentes et des avis réguliers, passe devant une fiche vide. Et quand elle renvoie vers votre site, le client trouve tout ce qu&#x27;il veut savoir.</p>
     </div>
   </div>
 </section>
@@ -423,7 +438,7 @@
     </div>
     <div class="faq-liste apparait"><details><summary>J&#x27;ai déjà une fiche Google.</summary><p>Parfait : je la reprends, je la complète et je la relie à votre site.</p></details><details><summary>Ça prend combien de temps pour apparaître ?</summary><p>Google vérifie votre entreprise avant de publier la fiche. Je m&#x27;occupe de toutes les étapes avec vous.</p></details><details><summary>Je n&#x27;ai pas encore d&#x27;avis.</summary><p>C&#x27;est normal au début. Avec la demande d&#x27;avis à chaque fin de chantier, ils arrivent au fil des chantiers.</p></details></div>
     <p class="intro" style="margin-top:30px">Les prix sont sur la page d'accueil : <a class="lien" href="/#tarifs">voir les tarifs →</a></p>
-    <div class="liens-zone" style="margin-top:26px"><a href="/site-internet-plombier/">Plombier, chauffagiste</a><a href="/site-internet-carreleur/">Carreleur</a><a href="/site-internet-electricien/">Électricien</a><a href="/site-internet-peintre/">Peintre</a><a href="/site-internet-macon/">Maçon</a><a href="/site-internet-plaquiste/">Plaquiste, plâtrier</a><a href="/site-internet-menuisier/">Menuisier</a><a href="/site-internet-renovation-tous-corps-etat/">Tous corps d&#x27;état</a><a href="/appli-devis-artisan/">Logiciel de devis</a><a href="/logo-artisan/">Logo d&#x27;artisan</a></div>
+    <div class="liens-zone" style="margin-top:26px"><a href="/site-internet-plombier/">Plombier, chauffagiste</a><a href="/site-internet-carreleur/">Carreleur</a><a href="/site-internet-electricien/">Électricien</a><a href="/site-internet-peintre/">Peintre</a><a href="/site-internet-macon/">Maçon</a><a href="/site-internet-plaquiste/">Plaquiste, plâtrier</a><a href="/site-internet-menuisier/">Menuisier</a><a href="/site-internet-renovation-tous-corps-etat/">Tous corps d&#x27;état</a><a href="/site-internet-couvreur/">Couvreur</a><a href="/site-internet-charpentier/">Charpentier</a><a href="/site-internet-facadier/">Façadier</a><a href="/site-internet-cuisiniste/">Cuisiniste</a><a href="/site-internet-paysagiste/">Paysagiste</a><a href="/site-internet-climatisation/">Climatisation, pompe à chaleur</a><a href="/appli-devis-artisan/">Logiciel de devis</a><a href="/logo-artisan/">Logo d&#x27;artisan</a><a href="/community-manager-artisan/">Community manager</a><a href="/referencement-google-artisan/">Référencement Google</a></div>
   </div>
 </section>
 
