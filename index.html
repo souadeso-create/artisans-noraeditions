@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Création de site internet pour artisan du bâtiment · Nora Éditions Artisans</title>
-<meta name="description" content="Création de site internet pour les artisans du bâtiment auto-entrepreneurs : site référencé sur Google, fiche Google, logo, et logiciel métier intégré pour la création de vos devis et factures, et le suivi de vos paiements. 150 € la création en ce moment, puis 10 € par mois. Ou l'appli métier seule à 100 €.">
+<meta name="description" content="Création de site internet pour les artisans du bâtiment auto-entrepreneurs : site référencé sur Google, fiche Google, logo, et logiciel métier intégré pour la création de vos devis et factures, et le suivi de vos paiements. 150 € la création en ce moment, puis 10 € par mois. Ou l'appli métier seule à 100 €, puis 30 € par an.">
 <link rel="canonical" href="https://artisans.noraeditions.fr/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://artisans.noraeditions.fr/">
@@ -12,7 +12,7 @@
 <meta property="og:site_name" content="Nora Éditions Artisans">
 <meta name="twitter:card" content="summary">
 <meta property="og:title" content="Création de site internet pour artisan du bâtiment · Nora Éditions Artisans">
-<meta property="og:description" content="Création de site internet pour les artisans du bâtiment auto-entrepreneurs : site référencé sur Google, fiche Google, logo, et logiciel métier intégré pour la création de vos devis et factures, et le suivi de vos paiements. 150 € la création en ce moment, puis 10 € par mois. Ou l'appli métier seule à 100 €.">
+<meta property="og:description" content="Création de site internet pour les artisans du bâtiment auto-entrepreneurs : site référencé sur Google, fiche Google, logo, et logiciel métier intégré pour la création de vos devis et factures, et le suivi de vos paiements. 150 € la création en ce moment, puis 10 € par mois. Ou l'appli métier seule à 100 €, puis 30 € par an.">
 <meta property="og:image" content="https://artisans.noraeditions.fr/medias/icone-512.png">
 <meta name="theme-color" content="#ffffff">
 <link rel="icon" type="image/png" sizes="32x32" href="medias/favicon-32.png">
@@ -118,7 +118,8 @@
   /* Méthode : carrousel au doigt */
   .methode { overflow: hidden; }
   .carte-3d { margin-top: 40px; max-width: 640px; }
-  .demo-appli { display: grid; gap: 34px; margin-top: 44px; align-items: center; }
+  .demo-appli { display: grid; gap: 26px; margin-top: 44px; justify-items: center; }
+  .demo-bouton { text-align: center; }
   .demo-tel { width: 72%; max-width: 300px; justify-self: center; }
   .demo-texte h3 { font-family: var(--serif); font-weight: 400; font-size: clamp(30px, 6vw, 42px); line-height: 1.1; }
   .demo-texte h3 i { font-style: italic; font-weight: 300; color: var(--filet); }
@@ -126,7 +127,7 @@
   .atouts { list-style: none; margin: 22px 0 30px; display: grid; gap: 12px; }
   .atouts li { position: relative; padding-left: 28px; color: #3d3934; font-size: 16px; line-height: 1.5; }
   .atouts li::before { content: ""; position: absolute; left: 0; top: .72em; width: 14px; height: 2px; background: var(--filet); }
-  @media (min-width: 900px) { .demo-appli { grid-template-columns: 320px 1fr; gap: 64px; } .demo-tel { width: 100%; } }
+  @media (min-width: 900px) { .demo-tel { width: 320px; } }
   .defile { display: grid; grid-auto-flow: column; grid-auto-columns: 78%; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; margin-top: 40px; padding-bottom: 10px; scrollbar-width: none; }
   .defile::-webkit-scrollbar { display: none; }
   .etape { scroll-snap-align: start; display: block; text-decoration: none; color: inherit; }
@@ -387,27 +388,8 @@
     </div>
     <div class="demo-appli apparait">
       <div class="heros-tel demo-tel"><video src="medias/appli-flex.mp4" poster="medias/appli-flex.jpg" playsinline controls preload="metadata" aria-label="Vidéo : un aperçu de l'appli métier"></video></div>
-      <div class="demo-texte">
-        <h3>Un aperçu de <i>votre appli.</i></h3>
-        <p>Quelques secondes pour la découvrir, de la demande du client à la réception des travaux. Dans la vidéo, l'appli s'appelle Flex : la vôtre porte le nom de votre entreprise et votre logo.</p>
-        <ul class="atouts">
-          <li>Votre client fait sa demande sur votre site : elle arrive dans votre appli, avec ses photos.</li>
-          <li>Votre catalogue de prestations est déjà dans l'appli, avec vos prix et vos forfaits : vous en ajoutez quand vous voulez, tout reste enregistré.</li>
-          <li>Le devis se fait en quelques clics, sur place, il le signe en ligne depuis son téléphone.</li>
-          <li>Devis, factures et PV sortent au nom de votre entreprise, avec votre logo.</li>
-          <li>Tout part chez le client en un clic, avec le message déjà rédigé, par WhatsApp, SMS ou e-mail.</li>
-          <li>Vos rendez-vous dans l'agenda du téléphone, et le rappel au client.</li>
-          <li>Le métré et les matériaux se calculent tout seuls : carrelage à commander, colle, joints, consommables, avec la liste prête à envoyer à votre fournisseur.</li>
-          <li>Les magasins sont reliés : chaque article, avec sa taille et sa couleur, se cherche directement chez Leroy Merlin, Castorama, Brico Dépôt, Point.P, Mr.Bricolage, Bricomarché ou ManoMano.</li>
-          <li>Photos, pointage, dépenses : tout est rangé par chantier, et daté.</li>
-          <li>Vous voyez d'un coup d'œil ce que le client vous a versé et ce qu'il vous doit.</li>
-          <li>Une facture pas réglée ? La relance part, avec le montant restant et votre IBAN.</li>
-          <li>En fin de chantier, le PV se signe au doigt et vous demandez l'avis Google au même moment.</li>
-        </ul>
-        <a class="btn btn-sombre" href="questionnaire.html">Je veux mon appli</a>
-      </div>
+      <div class="demo-bouton"><a class="btn btn-sombre" href="questionnaire.html">Je veux mon appli</a></div>
     </div>
-    <div class="carte-3d apparait"><div class="etape sans-photo"><h3>Simulation 3D</h3><p>Salle de bain, cuisine, salon, escalier, maçonnerie… pour tous les projets : le client voit son projet en 3D et valide ses choix. Les surfaces, les matériaux et les consommables se calculent directement, et le devis se prépare à partir de la 3D. Et pour un rendu photoréaliste, le prompt est écrit automatiquement : vous le collez dans l'IA de votre choix.</p></div></div>
     <div class="enregistre apparait">
       <p class="donnees">Vos clients, vos devis, vos chantiers : tout reste à vous, et vous seul y avez accès. Pas de télétransmission : rien ne part sans votre clic.</p>
       <p style="margin-top:22px"><a class="lien" href="/facture-electronique-artisan/">Facture électronique : ce qui vous concerne, et ce qui ne vous concerne pas →</a></p>
@@ -443,7 +425,7 @@
       <div class="presta apparait"><span class="num">02</span><h3>Votre fiche Google</h3><p>Créée et soignée : photos, horaires, zone d'intervention. Et des avis demandés à chaque chantier fini.</p></div>
       <div class="presta apparait"><span class="num">03</span><h3>Votre site internet</h3><p>Au nom de votre entreprise, rapide et clair sur téléphone, avec vos réalisations et un formulaire de demande de devis. Et je le fais bien référencer par Google : votre métier, votre ville, vos prestations, pour que les clients du coin vous trouvent.</p></div>
       <div class="presta apparait"><span class="num">04</span><h3>L'appli métier de votre site</h3><p>Vos clients vous trouvent sur votre site : leur demande arrive directement dans votre appli métier. Au nom de votre entreprise et avec votre logo, sur votre téléphone ou votre tablette, c'est votre outil de tous les jours, jusqu'à la réception des travaux.</p></div>
-      <div class="presta apparait"><span class="num">05</span><h3>Vidéos, réseaux et annuaires <small style="font-size:14px;color:var(--gris)">· en option</small></h3><p>Votre community manager : vous m'envoyez vos photos et vidéos de chantier depuis votre appli, je crée vos réseaux et je les fais vivre en postant régulièrement, je monte vos vidéos au bon format pour chaque réseau, et je vous inscris sur tous les annuaires pro. 25 € par mois.</p></div>
+      <div class="presta apparait"><span class="num">05</span><h3>Vidéos, réseaux et annuaires <small style="font-size:14px;color:var(--gris)">· en option</small></h3><p>Votre community manager : vous m'envoyez vos photos et vidéos de chantier depuis votre appli, je crée vos réseaux et je les fais vivre en postant régulièrement, je monte vos vidéos au bon format pour chaque réseau, j'écris des articles pour votre site pour qu'il soit bien vu par Google, et je vous inscris sur tous les annuaires pro. 25 € par mois.</p></div>
     </div>
     <div class="liens-metiers apparait" style="margin-top:30px"><p class="intro" style="margin:0">Votre métier :</p><div class="liens-zone"><a href="/site-internet-plombier/">Plombier, chauffagiste</a><a href="/site-internet-carreleur/">Carreleur</a><a href="/site-internet-electricien/">Électricien</a><a href="/site-internet-peintre/">Peintre</a><a href="/site-internet-macon/">Maçon</a><a href="/site-internet-plaquiste/">Plaquiste, plâtrier</a><a href="/site-internet-menuisier/">Menuisier</a><a href="/site-internet-renovation-tous-corps-etat/">Tous corps d&#x27;état</a></div></div>
     <div class="liens-services apparait" style="margin-top:22px"><p class="intro" style="margin:0">En détail :</p><div class="liens-zone"><a href="/appli-devis-artisan/">Création de devis et factures</a><a href="/fiche-google-artisan/">Fiche Google</a><a href="/logo-artisan/">Logo d'artisan</a></div></div>
@@ -459,17 +441,17 @@
     <div class="apparait">
       <span class="label">Tarifs</span>
       <h2>Simple,<br><i>et sans surprise.</i></h2>
-      <p class="intro">Tout compris. Vous n'avez besoin que d'une partie ? Le prix s'adapte, on en parle.</p>
+      <p class="intro">Tout compris.</p>
     </div>
     <div class="tarifs">
       <div class="tarif apparait"><span class="promo">Promo · durée limitée</span><div class="chiffre"><s>200 €</s> 150 €</div><h3>La création</h3><p class="gris">Une seule fois.</p>
         <ul><li>Votre site internet, avec vos réalisations</li><li>Un site bien référencé sur Google</li><li>Votre fiche Google</li><li>Votre logo si besoin</li><li>L'appli métier de votre site, au nom de votre entreprise</li></ul></div>
       <div class="tarif apparait"><div class="chiffre">10 € <small>/ mois</small></div><h3>L'abonnement</h3><p class="gris">Votre site et son appli métier, en ligne.</p>
         <ul><li>Site hébergé et à jour</li><li>L'appli métier complète</li><li>Les nouveautés de l'appli</li></ul></div>
-      <div class="tarif apparait"><div class="chiffre">100 €</div><h3>L'appli métier seule</h3><p class="gris">Une seule fois. Elle vous appartient à vie.</p>
-        <ul><li>L'appli complète, au nom de votre entreprise et avec votre logo</li><li>Devis, factures, relances, signature en ligne</li><li>Carnet de chantier, dépenses, paiements, PV</li><li>Elle est à vous, à vie</li></ul></div>
-      <div class="tarif option apparait"><span class="promo">En option</span><div class="chiffre">25 € <small>/ mois</small></div><h3>Community manager</h3><p class="gris">Vidéos, réseaux et annuaires.</p>
-        <ul><li>Vous envoyez photos et vidéos depuis votre appli</li><li>Je crée vos réseaux et je les fais vivre : je poste régulièrement</li><li>Je monte vos vidéos, au bon format pour chaque réseau</li><li>Je vous inscris sur tous les annuaires pro</li></ul></div>
+      <div class="tarif apparait"><div class="chiffre">100 €</div><h3>L'appli métier seule</h3><p class="gris">Puis 30 € par an pour le nom de domaine.</p>
+        <ul><li>L'appli complète, au nom de votre entreprise et avec votre logo</li><li>Devis, factures, relances, signature en ligne</li><li>Carnet de chantier, dépenses, paiements, PV</li><li>Le nom de domaine renouvelé chaque année</li></ul></div>
+      <div class="tarif option apparait"><span class="promo">En option</span><div class="chiffre">25 € <small>/ mois</small></div><h3>Community manager</h3><p class="gris">Vidéos, réseaux, articles et annuaires.</p>
+        <ul><li>Vous envoyez photos et vidéos depuis votre appli</li><li>Je crée vos réseaux et je les fais vivre : je poste régulièrement</li><li>Je monte vos vidéos, au bon format pour chaque réseau</li><li>J'écris des articles pour votre site, pour qu'il soit bien vu par Google</li><li>Je vous inscris sur tous les annuaires pro</li></ul></div>
     </div>
   </div>
 </section>
