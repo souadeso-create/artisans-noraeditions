@@ -370,6 +370,10 @@
   .presta .num { display: grid; place-items: center; width: 42px; height: 42px; padding: 0 !important; border-radius: 50%; background: var(--filet); color: #fff !important; font-family: var(--display) !important; font-weight: 800; font-size: 15px !important; }
   .tarif { border: 2px solid var(--trait) !important; border-radius: 22px !important; box-shadow: 6px 6px 0 var(--trait) !important; }
   .tarif.option { background: #fff !important; }
+  a.presta::after { right: 22px !important; top: 26px !important; }
+  a.presta .lire { grid-column: 2 / -1; }
+  a.presta:hover { transform: translate(2px, 2px); box-shadow: 3px 3px 0 var(--trait); }
+  a.presta { transition: transform .12s, box-shadow .12s; }
   /* Souris dessinée (ordinateur) */
   @media (hover: hover) and (pointer: fine) {
     html, body { cursor: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2232%22%20height%3D%2232%22%20viewBox%3D%220%200%2032%2032%22%3E%3Cpath%20d%3D%22M5%203.5c0-1%201.1-1.6%201.9-1l19.6%2014.2c.9.7.5%202.1-.6%202.2l-8.4.9c-.4%200-.8.3-1%20.7l-4%207.6c-.5%201-2%20.9-2.3-.2L5%204.2z%22%20fill%3D%22%231b1a18%22%20stroke%3D%22%23fff%22%20stroke-width%3D%222.2%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E") 5 3, auto; }
@@ -449,7 +453,7 @@
     <div class="article apparait">
       <span class="label">Votre site</span>
       <h2>Un site qui fait<br><i>sonner votre téléphone.</i></h2>
-      <p>Un site rapide et clair sur téléphone, au nom de votre entreprise et avec votre logo, sur votre propre adresse. Je m&#x27;occupe de son référencement, pour que les clients du coin vous trouvent.</p>
+      <p>Un site rapide et clair sur téléphone, au nom de votre entreprise et avec votre logo, sur votre propre adresse. Nous nous occupons de son référencement, pour que les clients du coin vous trouvent.</p>
       <ul class="points"><li>Le dépannage en avant, avec un bouton pour vous appeler tout de suite.</li><li>Vos prestations : recherche de fuite, chauffe-eau, salle de bain, chaudière, entretien.</li><li>Votre zone d&#x27;intervention.</li><li>Un formulaire de demande de devis, avec photos, qui arrive directement dans votre logiciel.</li></ul>
     </div>
   </div>
@@ -460,7 +464,7 @@
     <div class="article apparait">
       <span class="label">Votre logiciel métier</span>
       <h2>Le vrai outil<br><i>de votre entreprise.</i></h2>
-      <p>C&#x27;est le cœur de ce que je vous propose : un logiciel métier réglé pour la plomberie, au nom de votre entreprise et avec votre logo, sur votre téléphone ou votre tablette. Il fait partie de votre site, et il vous suit de la demande du client à la réception des travaux.</p>
+      <p>C&#x27;est le cœur de ce que nous vous proposons : un logiciel métier réglé pour la plomberie, au nom de votre entreprise et avec votre logo, sur votre téléphone ou votre tablette. Il fait partie de votre site, et il vous suit de la demande du client à la réception des travaux.</p>
     </div>
     <div class="liste-presta"><div class="presta apparait"><span class="num">01</span><h3>Les demandes arrivent depuis votre site</h3><p>Le client remplit la demande sur votre site : elle arrive dans votre logiciel avec son nom, son téléphone, son adresse et ses photos. Rien à recopier, rien à perdre.</p></div><div class="presta apparait"><span class="num">02</span><h3>Création de devis en quelques clics</h3><p>Vos prestations et vos prix sont déjà enregistrés (remplacement de chauffe-eau, recherche de fuite, débouchage, déplacement…). Vous choisissez les lignes, vous ajustez les quantités, le devis est prêt. Vous ajoutez vos propres prestations quand vous voulez : elles restent enregistrées.</p></div><div class="presta apparait"><span class="num">03</span><h3>Factures et devis envoyés au client, signés en ligne</h3><p>Devis, facture, PV : tout part chez le client par WhatsApp, SMS ou e-mail, avec le message déjà rédigé. Il signe depuis son téléphone, vous êtes prévenu.</p></div><div class="presta apparait"><span class="num">04</span><h3>Agenda et rappels</h3><p>Le rendez-vous s&#x27;ajoute à l&#x27;agenda de votre téléphone, et le rappel part au client. Moins d&#x27;oublis, moins de déplacements pour rien.</p></div><div class="presta apparait"><span class="num">05</span><h3>Le carnet de chantier</h3><p>Photos avant et après, notes, pièces posées, imprévus, heures passées : tout est daté, chantier par chantier. Pratique quand un client rappelle six mois plus tard.</p></div><div class="presta apparait"><span class="num">06</span><h3>Dépenses et paiements</h3><p>Fournitures, carburant, déchetterie : vous notez ce que coûte chaque chantier, ticket en photo. Acompte, versements, reste à réclamer : vous savez à tout moment où vous en êtes.</p></div><div class="presta apparait"><span class="num">07</span><h3>La fin du chantier</h3><p>Le PV de réception se signe au doigt sur votre téléphone, puis la demande d&#x27;avis Google part. Ce sont ces avis qui font venir les clients suivants.</p></div></div>
     <p class="note-3d">Pour les rénovations de salle de bain, une simulation 3D peut s&#x27;ajouter : le client voit sa future douche avant de signer.</p>
@@ -494,8 +498,8 @@
   <div class="bloc">
     <div class="demande apparait">
       <span class="label">Le questionnaire</span>
-      <h3>Dites-moi tout,<br><i>en un petit quart d'heure.</i></h3>
-      <p class="intro">Votre entreprise, ce que vous voulez, votre style, et vos réalisations. Je prépare tout à partir de vos réponses, puis on en parle ensemble.</p>
+      <h3>Dites-nous tout,<br><i>en un petit quart d'heure.</i></h3>
+      <p class="intro">Votre entreprise, ce que vous voulez, votre style, et vos réalisations. Nous préparons tout à partir de vos réponses, puis on en parle ensemble.</p>
       <a class="btn btn-clair" href="/questionnaire.html" style="margin-top:22px">Remplir le questionnaire</a>
     </div>
   </div>

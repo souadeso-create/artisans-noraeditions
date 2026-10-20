@@ -370,6 +370,10 @@
   .presta .num { display: grid; place-items: center; width: 42px; height: 42px; padding: 0 !important; border-radius: 50%; background: var(--filet); color: #fff !important; font-family: var(--display) !important; font-weight: 800; font-size: 15px !important; }
   .tarif { border: 2px solid var(--trait) !important; border-radius: 22px !important; box-shadow: 6px 6px 0 var(--trait) !important; }
   .tarif.option { background: #fff !important; }
+  a.presta::after { right: 22px !important; top: 26px !important; }
+  a.presta .lire { grid-column: 2 / -1; }
+  a.presta:hover { transform: translate(2px, 2px); box-shadow: 3px 3px 0 var(--trait); }
+  a.presta { transition: transform .12s, box-shadow .12s; }
   /* Souris dessinée (ordinateur) */
   @media (hover: hover) and (pointer: fine) {
     html, body { cursor: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2232%22%20height%3D%2232%22%20viewBox%3D%220%200%2032%2032%22%3E%3Cpath%20d%3D%22M5%203.5c0-1%201.1-1.6%201.9-1l19.6%2014.2c.9.7.5%202.1-.6%202.2l-8.4.9c-.4%200-.8.3-1%20.7l-4%207.6c-.5%201-2%20.9-2.3-.2L5%204.2z%22%20fill%3D%22%231b1a18%22%20stroke%3D%22%23fff%22%20stroke-width%3D%222.2%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E") 5 3, auto; }
@@ -477,7 +481,7 @@
     <div class="demande apparait vu">
       <span class="label">Nora Éditions Artisans</span>
       <h3>Votre site internet,<br><i>avec son logiciel métier.</i></h3>
-      <p class="intro">Création de site internet, fiche Google, devis et factures en quelques clics : dites-moi tout dans le questionnaire.</p>
+      <p class="intro">Création de site internet, fiche Google, devis et factures en quelques clics : dites-nous tout dans le questionnaire.</p>
       <a class="btn btn-clair" href="/questionnaire.html" style="margin-top:22px">Remplir le questionnaire</a>
     </div>
   </div>
