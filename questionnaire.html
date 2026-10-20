@@ -358,7 +358,7 @@
 <main class="q"><div class="bloc">
   <span class="label">Questionnaire</span>
   <h1>Dites-moi tout,<br><i>je m'occupe du reste.</i></h1>
-  <p class="intro">Un petit quart d'heure. Quand je reçois votre questionnaire, je vous écris avec le RIB pour le paiement. Ne répondez qu'à ce qui vous concerne.</p>
+  <p class="intro">Un petit quart d'heure. Ne répondez qu'à ce qui vous concerne.</p>
 
   <form id="q" novalidate>
     <fieldset>
@@ -514,6 +514,7 @@
       <label class="champ">Pour quand ?<select name="Délai"><option>Dès que possible</option><option>Dans le mois</option><option>Pas pressé</option></select></label>
       <label class="champ">Autre chose à me dire ?<textarea name="Remarques"></textarea></label>
       <label class="accord"><input type="checkbox" id="accord"><span>J'ai bien noté : 150 € la création pendant la promotion (200 € ensuite), puis 10 € par mois. Ou 100 € pour l'appli métier seule, puis 30 € par an. L'option vidéos, réseaux et annuaires est à 25 € par mois.</span></label>
+      <p class="aide" style="margin-top:14px">Une fois votre questionnaire reçu, je vous écris pour tout confirmer, avec mes coordonnées bancaires pour régler par virement.</p>
     </fieldset>
 
     <input class="piege" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none">
@@ -565,7 +566,7 @@
       const r = await fetch("https://formsubmit.co/ajax/contact@noraeditions.com", { method: "POST", headers: { Accept: "application/json" }, body: fd });
       if (!r.ok) throw new Error("envoi");
       form.reset(); photos = []; afficher();
-      dire("ok", "Merci ! Votre questionnaire est bien arrivé. Je vous écris très vite avec le RIB pour le paiement.");
+      dire("ok", "Merci, votre questionnaire est bien arrivé. Je vous écris très vite pour tout confirmer, avec mes coordonnées bancaires pour le virement.");
     } catch (err) { dire("erreur", "L'envoi n'a pas abouti. Réessayez, ou écrivez-moi à contact@noraeditions.com."); }
     bouton.disabled = false; bouton.textContent = "Envoyer mes réponses";
   });
