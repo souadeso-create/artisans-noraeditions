@@ -15,7 +15,7 @@
 <link rel="icon" href="/medias/favicon-32.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 
   :root {
@@ -351,6 +351,31 @@
   .enregistre li::before { content: ""; position: absolute; left: 0; top: .5em; width: 14px; height: 8px; border-left: 2.5px solid var(--filet); border-bottom: 2.5px solid var(--filet); transform: rotate(-45deg); }
   @media (min-width: 760px) { .enregistre { padding: 40px 44px; } .enregistre ul { grid-template-columns: 1fr 1fr; column-gap: 40px; } }
   .donnees { margin-top: 0; padding: 16px 18px; background: #fff; border-left: 4px solid var(--filet); border-radius: 10px; font-weight: 600; color: var(--encre); font-size: 16px; line-height: 1.5; }
+
+  /* Style « affiche » : titres en capitales épaisses, boutons et cartes à contour noir et ombre décalée */
+  :root { --display: "Bricolage Grotesque", "Inter", Arial, sans-serif; --trait: #1b1a18; }
+  h1, h2 { font-family: var(--display); font-weight: 800; text-transform: uppercase; letter-spacing: -.02em; line-height: .98; }
+  .heros h1 { font-weight: 800; font-size: clamp(42px, 11vw, 88px); }
+  h1 i, h2 i, .heros h1 i { font-style: normal; font-weight: 800; color: var(--filet); }
+  h3 { font-family: var(--display); font-weight: 700; letter-spacing: -.01em; }
+  .btn { border: 2px solid var(--trait) !important; box-shadow: 4px 4px 0 var(--trait); font-weight: 700; transition: transform .12s, box-shadow .12s; }
+  .btn:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--trait); }
+  .btn-contour, .btn-clair { background: #fff !important; color: var(--encre) !important; }
+  .tel-haut { background: #fff !important; color: var(--encre) !important; border: 2px solid var(--trait); box-shadow: 3px 3px 0 var(--trait); }
+  .tel-haut::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: #2fbf71; }
+  .menu-tel summary { border: 2px solid var(--trait) !important; box-shadow: 3px 3px 0 var(--trait); }
+  .heros-tel { box-shadow: 8px 8px 0 var(--trait) !important; }
+  .liste-presta { border-top: 0 !important; display: grid; gap: 18px; }
+  .presta { background: #fff; border: 2px solid var(--trait) !important; border-radius: 22px; padding: 22px !important; box-shadow: 5px 5px 0 var(--trait); }
+  .presta .num { display: grid; place-items: center; width: 42px; height: 42px; padding: 0 !important; border-radius: 50%; background: var(--filet); color: #fff !important; font-family: var(--display) !important; font-weight: 800; font-size: 15px !important; }
+  .tarif { border: 2px solid var(--trait) !important; border-radius: 22px !important; box-shadow: 6px 6px 0 var(--trait) !important; }
+  .tarif.option { background: #fff !important; }
+  /* Souris dessinée (ordinateur) */
+  @media (hover: hover) and (pointer: fine) {
+    html, body { cursor: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2232%22%20height%3D%2232%22%20viewBox%3D%220%200%2032%2032%22%3E%3Cpath%20d%3D%22M5%203.5c0-1%201.1-1.6%201.9-1l19.6%2014.2c.9.7.5%202.1-.6%202.2l-8.4.9c-.4%200-.8.3-1%20.7l-4%207.6c-.5%201-2%20.9-2.3-.2L5%204.2z%22%20fill%3D%22%231b1a18%22%20stroke%3D%22%23fff%22%20stroke-width%3D%222.2%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E") 5 3, auto; }
+    a, button, summary, label, .btn, [role="button"], input[type="checkbox"], input[type="radio"], select { cursor: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2232%22%20height%3D%2232%22%20viewBox%3D%220%200%2032%2032%22%3E%3Cpath%20d%3D%22M5%203.5c0-1%201.1-1.6%201.9-1l19.6%2014.2c.9.7.5%202.1-.6%202.2l-8.4.9c-.4%200-.8.3-1%20.7l-4%207.6c-.5%201-2%20.9-2.3-.2L5%204.2z%22%20fill%3D%22%23d1402a%22%20stroke%3D%22%23fff%22%20stroke-width%3D%222.2%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E") 5 3, pointer; }
+    input[type="text"], input[type="email"], input[type="tel"], textarea { cursor: text; }
+  }
 </style>
 <style>
   .article { max-width: 760px; }

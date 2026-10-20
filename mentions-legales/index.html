@@ -10,7 +10,7 @@
 <link rel="icon" href="/medias/favicon-32.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 
   :root {
@@ -120,6 +120,17 @@
 
   /* Méthode : carrousel au doigt */
   .methode { overflow: hidden; }
+  .carte-3d { margin-top: 40px; max-width: 640px; }
+  .demo-appli { display: grid; gap: 26px; margin-top: 44px; justify-items: center; }
+  .demo-bouton { text-align: center; }
+  .demo-tel { width: 72%; max-width: 300px; justify-self: center; }
+  .demo-texte h3 { font-family: var(--serif); font-weight: 400; font-size: clamp(30px, 6vw, 42px); line-height: 1.1; }
+  .demo-texte h3 i { font-style: italic; font-weight: 300; color: var(--filet); }
+  .demo-texte > p { color: var(--gris); margin-top: 14px; font-size: 16px; }
+  .atouts { list-style: none; margin: 22px 0 30px; display: grid; gap: 12px; }
+  .atouts li { position: relative; padding-left: 28px; color: #3d3934; font-size: 16px; line-height: 1.5; }
+  .atouts li::before { content: ""; position: absolute; left: 0; top: .72em; width: 14px; height: 2px; background: var(--filet); }
+  @media (min-width: 900px) { .demo-tel { width: 320px; } }
   .defile { display: grid; grid-auto-flow: column; grid-auto-columns: 78%; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; margin-top: 40px; padding-bottom: 10px; scrollbar-width: none; }
   .defile::-webkit-scrollbar { display: none; }
   .etape { scroll-snap-align: start; display: block; text-decoration: none; color: inherit; }
@@ -310,6 +321,9 @@
   @media (min-width: 760px) { .ka-grille { grid-template-columns: repeat(2, minmax(0, 300px)); } }
   .logo img { height: 34px; width: 34px; }
   .tarifs { display: grid; gap: 16px; margin-top: 34px; }
+  .promo { display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: #fff; background: var(--filet); padding: 4px 10px; border-radius: 999px; margin-bottom: 12px; }
+  .tarif.option .promo { background: var(--encre); }
+  .chiffre s { font-size: .5em; color: var(--clair); font-weight: 400; margin-right: 6px; }
   .tarif { background: #fff; border-radius: 20px; padding: 28px; box-shadow: 0 1px 0 rgba(0,0,0,.04), 0 8px 26px rgba(0,0,0,.05); }
   .tarif .chiffre { font-family: var(--serif); font-size: clamp(46px, 12vw, 72px); line-height: 1; }
   .tarif .chiffre small { font-size: 20px; color: var(--gris); }
@@ -319,7 +333,8 @@
   .tarif.option { background: transparent; border: 1px dashed var(--sable); box-shadow: none; }
   .exemple-ka { display: grid; gap: 28px; align-items: center; margin-top: 34px; }
   .exemple-ka video { width: 100%; max-width: 320px; border-radius: 22px; background: #000; box-shadow: 0 14px 36px rgba(0,0,0,.22); }
-  @media (min-width: 760px) { .tarifs { grid-template-columns: repeat(3, 1fr); } .exemple-ka { grid-template-columns: 340px 1fr; } }
+  @media (min-width: 760px) { .tarifs { grid-template-columns: repeat(2, 1fr); } .exemple-ka { grid-template-columns: 340px 1fr; } }
+  @media (min-width: 1100px) { .tarifs { grid-template-columns: repeat(4, 1fr); } }
 
   .marque-nora { display: flex; flex-direction: column; line-height: 1.15; }
   .marque-nora b { font-weight: 600; color: var(--filet); letter-spacing: .3em; font-size: 10.5px; margin-top: 2px; }
@@ -331,6 +346,31 @@
   .enregistre li::before { content: ""; position: absolute; left: 0; top: .5em; width: 14px; height: 8px; border-left: 2.5px solid var(--filet); border-bottom: 2.5px solid var(--filet); transform: rotate(-45deg); }
   @media (min-width: 760px) { .enregistre { padding: 40px 44px; } .enregistre ul { grid-template-columns: 1fr 1fr; column-gap: 40px; } }
   .donnees { margin-top: 0; padding: 16px 18px; background: #fff; border-left: 4px solid var(--filet); border-radius: 10px; font-weight: 600; color: var(--encre); font-size: 16px; line-height: 1.5; }
+
+  /* Style « affiche » : titres en capitales épaisses, boutons et cartes à contour noir et ombre décalée */
+  :root { --display: "Bricolage Grotesque", "Inter", Arial, sans-serif; --trait: #1b1a18; }
+  h1, h2 { font-family: var(--display); font-weight: 800; text-transform: uppercase; letter-spacing: -.02em; line-height: .98; }
+  .heros h1 { font-weight: 800; font-size: clamp(42px, 11vw, 88px); }
+  h1 i, h2 i, .heros h1 i { font-style: normal; font-weight: 800; color: var(--filet); }
+  h3 { font-family: var(--display); font-weight: 700; letter-spacing: -.01em; }
+  .btn { border: 2px solid var(--trait) !important; box-shadow: 4px 4px 0 var(--trait); font-weight: 700; transition: transform .12s, box-shadow .12s; }
+  .btn:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--trait); }
+  .btn-contour, .btn-clair { background: #fff !important; color: var(--encre) !important; }
+  .tel-haut { background: #fff !important; color: var(--encre) !important; border: 2px solid var(--trait); box-shadow: 3px 3px 0 var(--trait); }
+  .tel-haut::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: #2fbf71; }
+  .menu-tel summary { border: 2px solid var(--trait) !important; box-shadow: 3px 3px 0 var(--trait); }
+  .heros-tel { box-shadow: 8px 8px 0 var(--trait) !important; }
+  .liste-presta { border-top: 0 !important; display: grid; gap: 18px; }
+  .presta { background: #fff; border: 2px solid var(--trait) !important; border-radius: 22px; padding: 22px !important; box-shadow: 5px 5px 0 var(--trait); }
+  .presta .num { display: grid; place-items: center; width: 42px; height: 42px; padding: 0 !important; border-radius: 50%; background: var(--filet); color: #fff !important; font-family: var(--display) !important; font-weight: 800; font-size: 15px !important; }
+  .tarif { border: 2px solid var(--trait) !important; border-radius: 22px !important; box-shadow: 6px 6px 0 var(--trait) !important; }
+  .tarif.option { background: #fff !important; }
+  /* Souris dessinée (ordinateur) */
+  @media (hover: hover) and (pointer: fine) {
+    html, body { cursor: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2232%22%20height%3D%2232%22%20viewBox%3D%220%200%2032%2032%22%3E%3Cpath%20d%3D%22M5%203.5c0-1%201.1-1.6%201.9-1l19.6%2014.2c.9.7.5%202.1-.6%202.2l-8.4.9c-.4%200-.8.3-1%20.7l-4%207.6c-.5%201-2%20.9-2.3-.2L5%204.2z%22%20fill%3D%22%231b1a18%22%20stroke%3D%22%23fff%22%20stroke-width%3D%222.2%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E") 5 3, auto; }
+    a, button, summary, label, .btn, [role="button"], input[type="checkbox"], input[type="radio"], select { cursor: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2232%22%20height%3D%2232%22%20viewBox%3D%220%200%2032%2032%22%3E%3Cpath%20d%3D%22M5%203.5c0-1%201.1-1.6%201.9-1l19.6%2014.2c.9.7.5%202.1-.6%202.2l-8.4.9c-.4%200-.8.3-1%20.7l-4%207.6c-.5%201-2%20.9-2.3-.2L5%204.2z%22%20fill%3D%22%23d1402a%22%20stroke%3D%22%23fff%22%20stroke-width%3D%222.2%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E") 5 3, pointer; }
+    input[type="text"], input[type="email"], input[type="tel"], textarea { cursor: text; }
+  }
 </style>
 <style>
   .legal { max-width: 760px; padding-bottom: 60px; }
@@ -348,7 +388,7 @@
     <a class="logo" href="/" aria-label="Nora Éditions Artisans, accueil"><img src="/medias/nora-logo-rouge.png" alt="" width="34" height="34"><span class="marque-nora">Nora Éditions<b>Artisans</b></span></a>
     <nav class="menu" aria-label="Menu">
       <a href="/#appli">Votre appli</a>
-      <a href="/#offre">L\'offre</a>
+      <a href="/#offre">L'offre</a>
       <a href="/#tarifs">Tarifs</a>
       <a href="/#contact">Contact</a>
     </nav>
