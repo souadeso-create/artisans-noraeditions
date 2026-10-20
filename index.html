@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Création de site internet pour artisan du bâtiment · Nora Éditions Artisans</title>
-<meta name="description" content="Création de site internet pour les artisans du bâtiment auto-entrepreneurs : site référencé sur Google, fiche Google, logo, et logiciel métier intégré pour la création de vos devis et factures, et le suivi de vos paiements. 200 € la création, puis 10 € par mois.">
+<meta name="description" content="Création de site internet pour les artisans du bâtiment auto-entrepreneurs : site référencé sur Google, fiche Google, logo, et logiciel métier intégré pour la création de vos devis et factures, et le suivi de vos paiements. 150 € la création en ce moment, puis 10 € par mois. Ou l'appli métier seule à 100 €.">
 <link rel="canonical" href="https://artisans.noraeditions.fr/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://artisans.noraeditions.fr/">
@@ -12,7 +12,7 @@
 <meta property="og:site_name" content="Nora Éditions Artisans">
 <meta name="twitter:card" content="summary">
 <meta property="og:title" content="Création de site internet pour artisan du bâtiment · Nora Éditions Artisans">
-<meta property="og:description" content="Création de site internet pour les artisans du bâtiment auto-entrepreneurs : site référencé sur Google, fiche Google, logo, et logiciel métier intégré pour la création de vos devis et factures, et le suivi de vos paiements. 200 € la création, puis 10 € par mois.">
+<meta property="og:description" content="Création de site internet pour les artisans du bâtiment auto-entrepreneurs : site référencé sur Google, fiche Google, logo, et logiciel métier intégré pour la création de vos devis et factures, et le suivi de vos paiements. 150 € la création en ce moment, puis 10 € par mois. Ou l'appli métier seule à 100 €.">
 <meta property="og:image" content="https://artisans.noraeditions.fr/medias/icone-512.png">
 <meta name="theme-color" content="#ffffff">
 <link rel="icon" type="image/png" sizes="32x32" href="medias/favicon-32.png">
@@ -316,6 +316,9 @@
   @media (min-width: 760px) { .ka-grille { grid-template-columns: repeat(2, minmax(0, 300px)); } }
   .logo img { height: 34px; width: 34px; }
   .tarifs { display: grid; gap: 16px; margin-top: 34px; }
+  .promo { display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: #fff; background: var(--filet); padding: 4px 10px; border-radius: 999px; margin-bottom: 12px; }
+  .tarif.option .promo { background: var(--encre); }
+  .chiffre s { font-size: .5em; color: var(--clair); font-weight: 400; margin-right: 6px; }
   .tarif { background: #fff; border-radius: 20px; padding: 28px; box-shadow: 0 1px 0 rgba(0,0,0,.04), 0 8px 26px rgba(0,0,0,.05); }
   .tarif .chiffre { font-family: var(--serif); font-size: clamp(46px, 12vw, 72px); line-height: 1; }
   .tarif .chiffre small { font-size: 20px; color: var(--gris); }
@@ -325,7 +328,8 @@
   .tarif.option { background: transparent; border: 1px dashed var(--sable); box-shadow: none; }
   .exemple-ka { display: grid; gap: 28px; align-items: center; margin-top: 34px; }
   .exemple-ka video { width: 100%; max-width: 320px; border-radius: 22px; background: #000; box-shadow: 0 14px 36px rgba(0,0,0,.22); }
-  @media (min-width: 760px) { .tarifs { grid-template-columns: repeat(3, 1fr); } .exemple-ka { grid-template-columns: 340px 1fr; } }
+  @media (min-width: 760px) { .tarifs { grid-template-columns: repeat(2, 1fr); } .exemple-ka { grid-template-columns: 340px 1fr; } }
+  @media (min-width: 1100px) { .tarifs { grid-template-columns: repeat(4, 1fr); } }
 
   .marque-nora { display: flex; flex-direction: column; line-height: 1.15; }
   .marque-nora b { font-weight: 600; color: var(--filet); letter-spacing: .3em; font-size: 10.5px; margin-top: 2px; }
@@ -438,11 +442,11 @@
       <p class="intro">Plombier, carreleur, électricien, peintre ou tous corps d'état : on s'adapte à chaque métier et à chaque demande. Vous prenez ce dont vous avez besoin, rien de plus.</p>
     </div>
     <div class="liste-presta">
-      <div class="presta apparait"><span class="num">01</span><h3>Votre logo</h3><p>Si vous n'en avez pas : une identité simple et nette, pour vos devis, votre camion, votre site et vos réseaux.</p></div>
+      <div class="presta apparait"><span class="num">01</span><h3>Votre logo</h3><p>Si vous n'en avez pas : une identité simple et nette, pour vos devis, votre site et vos réseaux.</p></div>
       <div class="presta apparait"><span class="num">02</span><h3>Votre fiche Google</h3><p>Créée et soignée : photos, horaires, zone d'intervention. Et des avis demandés à chaque chantier fini.</p></div>
-      <div class="presta apparait"><span class="num">03</span><h3>Votre site internet</h3><p>À votre marque, rapide et clair sur téléphone, avec vos réalisations et un formulaire de demande de devis. Référencé pour Google : votre métier, votre ville, vos prestations, pour que les clients du coin vous trouvent.</p></div>
-      <div class="presta apparait"><span class="num">04</span><h3>L'appli métier de votre site</h3><p>Vos clients vous trouvent sur votre site : leur demande arrive directement dans votre appli métier. À votre marque et à votre logo, sur votre téléphone ou votre tablette, c'est votre outil de tous les jours, jusqu'à la réception des travaux.</p></div>
-      <div class="presta apparait"><span class="num">05</span><h3>Montage de vos vidéos <small style="font-size:14px;color:var(--gris)">· en option</small></h3><p>Vous m'envoyez vos photos et vidéos de chantier depuis votre appli, je fais le montage de vos vidéos, dans tous les formats pour les réseaux.</p></div>
+      <div class="presta apparait"><span class="num">03</span><h3>Votre site internet</h3><p>Au nom de votre entreprise, rapide et clair sur téléphone, avec vos réalisations et un formulaire de demande de devis. Et je le fais bien référencer par Google : votre métier, votre ville, vos prestations, pour que les clients du coin vous trouvent.</p></div>
+      <div class="presta apparait"><span class="num">04</span><h3>L'appli métier de votre site</h3><p>Vos clients vous trouvent sur votre site : leur demande arrive directement dans votre appli métier. Au nom de votre entreprise et avec votre logo, sur votre téléphone ou votre tablette, c'est votre outil de tous les jours, jusqu'à la réception des travaux.</p></div>
+      <div class="presta apparait"><span class="num">05</span><h3>Vidéos, réseaux et annuaires <small style="font-size:14px;color:var(--gris)">· en option</small></h3><p>Votre community manager : vous m'envoyez vos photos et vidéos de chantier depuis votre appli, je monte vos vidéos, je fais vivre vos réseaux en postant régulièrement, et je vous inscris sur tous les annuaires pro. 10 € par mois.</p></div>
     </div>
     <div class="liens-metiers apparait" style="margin-top:30px"><p class="intro" style="margin:0">Votre métier :</p><div class="liens-zone"><a href="/site-internet-plombier/">Plombier, chauffagiste</a><a href="/site-internet-carreleur/">Carreleur</a><a href="/site-internet-electricien/">Électricien</a><a href="/site-internet-peintre/">Peintre</a><a href="/site-internet-macon/">Maçon</a><a href="/site-internet-plaquiste/">Plaquiste, plâtrier</a><a href="/site-internet-menuisier/">Menuisier</a><a href="/site-internet-renovation-tous-corps-etat/">Tous corps d&#x27;état</a></div></div>
     <div class="liens-services apparait" style="margin-top:22px"><p class="intro" style="margin:0">En détail :</p><div class="liens-zone"><a href="/appli-devis-artisan/">Création de devis et factures</a><a href="/fiche-google-artisan/">Fiche Google</a><a href="/logo-artisan/">Logo d'artisan</a></div></div>
@@ -461,12 +465,14 @@
       <p class="intro">Tout compris. Vous n'avez besoin que d'une partie ? Le prix s'adapte, on en parle.</p>
     </div>
     <div class="tarifs">
-      <div class="tarif apparait"><div class="chiffre">200 €</div><h3>La création</h3><p class="gris">Une seule fois.</p>
-        <ul><li>Votre site internet, avec vos réalisations</li><li>Le référencement Google de votre site</li><li>Votre fiche Google</li><li>Votre logo si besoin</li><li>L'appli métier de votre site, à votre marque</li></ul></div>
+      <div class="tarif apparait"><span class="promo">Promo · durée limitée</span><div class="chiffre"><s>200 €</s> 150 €</div><h3>La création</h3><p class="gris">Une seule fois.</p>
+        <ul><li>Votre site internet, avec vos réalisations</li><li>Un site bien référencé sur Google</li><li>Votre fiche Google</li><li>Votre logo si besoin</li><li>L'appli métier de votre site, au nom de votre entreprise</li></ul></div>
       <div class="tarif apparait"><div class="chiffre">10 € <small>/ mois</small></div><h3>L'abonnement</h3><p class="gris">Votre site et son appli métier, en ligne.</p>
         <ul><li>Site hébergé et à jour</li><li>L'appli métier complète</li><li>Les nouveautés de l'appli</li></ul></div>
-      <div class="tarif option apparait"><div class="chiffre" style="font-size:clamp(34px,9vw,48px)">En option</div><h3>Vidéos et réseaux</h3><p class="gris">Selon votre rythme.</p>
-        <ul><li>Vous envoyez photos et vidéos depuis votre appli</li><li>Je monte vos vidéos</li><li>Tous les formats pour les réseaux</li></ul></div>
+      <div class="tarif apparait"><div class="chiffre">100 €</div><h3>L'appli métier seule</h3><p class="gris">Une seule fois. Elle vous appartient à vie.</p>
+        <ul><li>L'appli complète, au nom de votre entreprise et avec votre logo</li><li>Devis, factures, relances, signature en ligne</li><li>Carnet de chantier, dépenses, paiements, PV</li><li>Elle est à vous, à vie</li></ul></div>
+      <div class="tarif option apparait"><span class="promo">En option</span><div class="chiffre">10 € <small>/ mois</small></div><h3>Community manager</h3><p class="gris">Vidéos, réseaux et annuaires.</p>
+        <ul><li>Vous envoyez photos et vidéos depuis votre appli</li><li>Je monte vos vidéos</li><li>Je fais vivre vos réseaux : je poste régulièrement</li><li>Je vous inscris sur tous les annuaires pro</li></ul></div>
     </div>
   </div>
 </section>
