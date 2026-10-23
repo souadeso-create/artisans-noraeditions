@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 Disallow: /questionnaire.html
-Sitemap: https://artisans.noraeditions.fr/sitemap.xml
+Sitemap: https://creation-site-internet.noraeditions.fr/sitemap.xml
