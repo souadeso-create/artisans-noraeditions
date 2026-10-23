@@ -496,7 +496,7 @@
   /* « Votre entreprise, de A à Z » : le style du titre de la bannière, sur fond clair */
   .titre-clair { margin-top: 18px; }
   .titre-clair .t1 { font-size: clamp(32px, 8.6vw, 60px); color: #1b1f8a; text-shadow: 0 3px 0 #b9bdf5, 0 6px 0 #8f95e6, 0 12px 20px rgba(27,31,138,.25); }
-  .titre-clair .t2 { font-size: clamp(46px, 14vw, 104px); }
+  .titre-clair .t2 { font-size: clamp(46px, 14vw, 104px); } .titre-banniere .minus { display: inline; text-transform: none; }
 
   /* Votre site, en direct */
   .demo { position: relative; overflow: hidden; padding: 70px 0 90px; background: #0b0d2e; color: #fff; }
@@ -684,7 +684,14 @@
   /* les réglages, sur fond clair */
   .demo-zone { display: grid; gap: 10px; }
   .heros .demo-reglages { margin: 0 auto; width: 100%; max-width: 420px; padding: 18px; border-radius: 20px; background: #f4f5ff; border: 1px solid #e0e3ff; gap: 12px; }
-  .demo-essai { margin: 0 !important; font: 700 15px var(--display, system-ui) !important; color: #1b1f8a !important; }
+  /* réglages plus compacts, et le bouton sous la démo */
+  .heros .demo-reglages { padding: 12px 14px !important; gap: 8px !important; max-width: 380px !important; grid-template-columns: 1fr 1fr; }
+  .heros .demo-reglages .demo-essai, .heros .demo-reglages label:last-child { grid-column: 1 / -1; }
+  .heros .demo-reglages label { font-size: 10px !important; gap: 4px !important; }
+  .heros .demo-reglages input, .heros .demo-reglages select { font-size: 14px !important; padding: 8px 10px !important; border-radius: 10px !important; min-width: 0; }
+  .heros .demo-couleurs { gap: 7px; } .heros .demo-couleurs button { width: 26px; height: 26px; border-width: 2px; }
+  .demo-cta { justify-self: center; margin-top: 26px; position: relative; z-index: 6; }
+  .demo-essai { margin: 0 !important; font: 700 13px var(--display, system-ui) !important; color: #1b1f8a !important; }
   .heros .demo-reglages label { color: #5b21b6; }
   .heros .demo-reglages input, .heros .demo-reglages select { background: #fff; color: #1b1b2b; border-color: #d9dcff; }
   .heros .demo-reglages input::placeholder { color: #8a8fb5; }
@@ -786,7 +793,7 @@
   <div class="bloc">
    <div>
     <span class="label">Création de site internet</span>
-    <h1 class="titre-banniere titre-clair"><span class="t1">Votre entreprise,</span><span class="t2">de A à Z.</span></h1>
+    <h1 class="titre-banniere titre-clair"><span class="t1">Votre entreprise,</span><span class="t2">de A <span class="minus">à</span> Z.</span></h1>
     <p>Création de votre site internet, de votre fiche Google et de votre logo, avec son application web sur mesure pour vos devis, vos factures et vos paiements. Vous faites votre métier, nous nous occupons du reste.</p>
     <div class="actions">
       <a class="btn btn-sombre" href="questionnaire.html">Remplir le questionnaire</a>
@@ -817,6 +824,7 @@
       </div>
       <div class="demo-carte" id="demoCarte"><i id="demoIcone">€</i><div><b id="demoCarteTitre">Nouvelle demande de devis</b><span id="demoCarteTxt"></span></div><small>à l'instant</small></div>
     </div>
+    <a class="btn-banniere demo-cta" href="/questionnaire.html">Je veux mon site</a>
     </div>
   </div>
 </section>
