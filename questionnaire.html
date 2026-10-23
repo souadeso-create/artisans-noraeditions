@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Questionnaire artisan · Nora Éditions Artisans</title>
+<title>Questionnaire · Nora Éditions</title>
 <meta name="description" content="Dites-nous tout sur votre entreprise : nous préparons votre site, votre fiche Google et votre appli à partir de vos réponses.">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#f7f4ef">
 <link rel="icon" type="image/png" sizes="32x32" href="medias/favicon-32.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
 
 
@@ -317,7 +317,7 @@
   .q form { margin-top: 30px; display: grid; gap: 18px; max-width: 760px; }
   .q fieldset { border: 0; background: #fff; border-radius: 20px; padding: 22px 20px 24px; box-shadow: 0 1px 0 rgba(0,0,0,.04), 0 8px 26px rgba(0,0,0,.04); }
   .q legend { font-family: var(--display, var(--serif)); font-weight: 800; text-transform: uppercase; letter-spacing: -.01em; font-size: 24px; padding: 0; margin-bottom: 4px; float: left; width: 100%; }
-  .q legend + * { clear: both; }
+  .q legend ~ * { clear: both; }
   .q .aide { color: var(--gris); font-size: 14px; margin: 2px 0 14px; clear: both; }
   .q .champ { display: grid; gap: 6px; margin-top: 14px; font-size: 14px; font-weight: 600; }
   .q .champ small { font-weight: 400; color: var(--gris); }
@@ -338,6 +338,7 @@
   .q .retour { font-size: 15px; margin-top: 10px; }
   .q .retour.ok { color: #2f6f4f; } .q .retour.erreur { color: #a3261f; }
   .q .si-video[hidden] { display: none; }
+  .q [data-dom][hidden], .q #choixMetier[hidden] { display: none !important; }
   @media (min-width: 700px) { .q .deux { grid-template-columns: 1fr 1fr; } }
   /* Style « affiche » : titres en capitales épaisses, boutons et cartes à contour noir et ombre décalée */
   :root { --display: "Bricolage Grotesque", "Inter", Arial, sans-serif; --trait: #1b1a18; }
@@ -363,6 +364,75 @@
     a, button, summary, label, .btn, [role="button"], input[type="checkbox"], input[type="radio"], select { cursor: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2232%22%20height%3D%2232%22%20viewBox%3D%220%200%2032%2032%22%3E%3Cpath%20d%3D%22M5%203.5c0-1%201.1-1.6%201.9-1l19.6%2014.2c.9.7.5%202.1-.6%202.2l-8.4.9c-.4%200-.8.3-1%20.7l-4%207.6c-.5%201-2%20.9-2.3-.2L5%204.2z%22%20fill%3D%22%23d1402a%22%20stroke%3D%22%23fff%22%20stroke-width%3D%222.2%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E") 5 3, pointer; }
     input[type="text"], input[type="email"], input[type="tel"], textarea { cursor: text; }
   }
+
+  /* ===== Thème « tech » bleu-violet pour tout le site (23/10/2026) ===== */
+  :root { --nuit: #0f1240; --bleuT: #2b2fd1; --violetT: #5b21b6; --jauneT: #ffd426; --cyanT: #9ff3ff; --brumeT: #f4f5ff; }
+  body { background: #fff; }
+  .degrade-tech, .heros, #tarifs, .contact {
+    position: relative; overflow: hidden; color: #fff !important;
+    background: radial-gradient(55% 60% at 90% 10%, rgba(74, 222, 255, .3), transparent 60%), radial-gradient(50% 60% at 0% 100%, rgba(168, 85, 247, .5), transparent 60%), linear-gradient(150deg, #1b1f8a 0%, #2b2fd1 50%, #5b21b6 100%) !important; }
+  .heros::before, #tarifs::before, .contact::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,.14) 1px, transparent 1.4px); background-size: 22px 22px; pointer-events: none; }
+  .heros::after { display: none !important; }
+  .heros .bloc, #tarifs .bloc, .contact .bloc { position: relative; z-index: 1; }
+  .heros .label, #tarifs .label, .contact .label { color: var(--jauneT) !important; }
+  .heros .label::before, #tarifs .label::before, .contact .label::before { background: var(--jauneT) !important; }
+  .heros h1, #tarifs h2, .contact h2, .contact h3 { color: #fff !important; text-shadow: 0 3px 0 #1a1c6b, 0 8px 18px rgba(0,0,0,.3); }
+  .heros h1 i, #tarifs h2 i, .contact h2 i, .contact h3 i { color: var(--jauneT) !important; text-shadow: 0 3px 0 #a65f00, 0 8px 16px rgba(0,0,0,.35); }
+  .heros p, .heros .fil, .heros .fil a, #tarifs .intro, .contact .intro, .contact .petit, .contact label { color: #d9ddff !important; }
+  .heros { min-height: 0 !important; padding: 56px 0 60px !important; }
+  /* boutons : en relief, comme sur la bannière */
+  .btn { border-radius: 999px; font-weight: 700 !important; }
+  .btn-sombre, .heros .btn-sombre { background: var(--jauneT) !important; color: var(--nuit) !important; border: 2px solid #fff !important; box-shadow: 0 5px 0 #a65f00, 0 12px 22px rgba(0,0,0,.25) !important; }
+  .btn-sombre:hover { transform: translateY(2px); box-shadow: 0 3px 0 #a65f00, 0 8px 16px rgba(0,0,0,.25) !important; }
+  .heros .btn-contour, .contact .btn-trait, .contact .btn-clair { background: rgba(255,255,255,.1) !important; color: #fff !important; border: 2px solid #fff !important; box-shadow: 0 5px 0 rgba(10,10,60,.5) !important; }
+  .btn-clair:not(.contact .btn-clair), .btn-contour:not(.heros .btn-contour) { background: #fff !important; color: var(--violetT) !important; border: 2px solid var(--violetT) !important; box-shadow: 0 5px 0 var(--violetT) !important; }
+  .tel-haut { background: linear-gradient(180deg, #8b5cf6, #5b21b6) !important; color: #fff !important; border: 2px solid #fff !important; box-shadow: 0 4px 0 #2e1065 !important; }
+  .barre { background: rgba(255,255,255,.92) !important; }
+  .barre .btn-sombre { background: linear-gradient(180deg, #8b5cf6, #5b21b6) !important; color: #fff !important; box-shadow: 0 4px 0 #2e1065 !important; }
+  /* sections claires : fond très légèrement bleuté, accents violets */
+  .prestations:not(#offre), .methode, .videos, #faq { background: #fff !important; }
+  .methode { background: var(--brumeT) !important; }
+  .label::before { background: var(--violetT); }
+  h2 i, h1 i { color: var(--violetT); }
+  .presta, .etape, .note-3d { border-color: #1b1f8a !important; }
+  .presta { box-shadow: 0 6px 0 #1b1f8a !important; border-width: 2px !important; }
+  .presta .num { background: var(--jauneT) !important; color: var(--nuit) !important; box-shadow: 0 4px 0 #a65f00; }
+  .points li::marker, .points li::before { color: var(--violetT); }
+  /* tarifs */
+  #tarifs .tarif { background: rgba(255,255,255,.1) !important; color: #fff; border: 2px solid rgba(255,255,255,.8) !important; box-shadow: 0 6px 0 rgba(10,10,60,.45), 0 16px 30px rgba(0,0,0,.25) !important; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+  #tarifs .tarif * { color: inherit; }
+  #tarifs .tarif s, #tarifs .tarif del { color: #b9c0ff !important; }
+  #tarifs .tarif li::before { color: var(--jauneT) !important; }
+  #tarifs [class*="promo"], #tarifs .badge { background: var(--jauneT) !important; color: var(--nuit) !important; }
+  /* questions */
+  #faq summary::after { color: var(--violetT) !important; }
+  #faq details { border-color: #d9dcff !important; }
+  /* liens en pastilles */
+  .liens-zone a:hover { border-color: var(--violetT); color: var(--violetT); }
+  /* formulaires sur fond bleu */
+  .contact input, .contact textarea, .contact select { background: rgba(255,255,255,.1) !important; border-color: rgba(255,255,255,.4) !important; color: #fff !important; }
+  /* accueil : la présentation, juste sous la bannière, reste claire pour souffler */
+  .banniere + .heros { background: #fff !important; color: var(--encre) !important; }
+  .banniere + .heros::before { display: none; }
+  .banniere + .heros h1 { color: var(--encre) !important; text-shadow: none; }
+  .banniere + .heros h1 i { color: var(--violetT) !important; text-shadow: none; }
+  .banniere + .heros p { color: var(--gris) !important; }
+  .banniere + .heros .label { color: var(--violetT) !important; } .banniere + .heros .label::before { background: var(--violetT) !important; }
+  .banniere + .heros .btn-contour { background: #fff !important; color: var(--violetT) !important; border-color: var(--violetT) !important; box-shadow: 0 5px 0 var(--violetT) !important; }
+  /* questions et titres : la police des titres, pas d'italique */
+  details summary { font-family: var(--display) !important; font-weight: 700; font-size: 18px; }
+  .contact h3, .demande h3 { font-family: var(--display) !important; font-weight: 800; text-transform: uppercase; }
+  .contact h3 i, .demande h3 i, .heros h1 i { font-style: normal !important; }
+  /* champs de saisie dans les tons du thème */
+  .q input[type=text], .q input[type=email], .q input[type=tel], .q input[type=number], .q textarea, .q select { background: var(--brumeT) !important; border-color: #d9dcff !important; }
+  .q input:focus, .q textarea:focus, .q select:focus { border-color: var(--violetT) !important; outline: none; }
+  .q .case input, .q input[type=checkbox], .q input[type=radio] { accent-color: var(--violetT); }
+  .q legend { color: var(--nuit); }
+  header { background: rgba(255,255,255,.95) !important; }
+  /* pied de page */
+  footer { background: var(--nuit) !important; color: #9aa0d9 !important; }
+  footer a { color: #d9ddff !important; }
+  .menu a { white-space: nowrap; } @media (max-width: 960px) { .menu { gap: 14px !important; } .menu a { font-size: 14px; } }
 </style>
 <script src="/medias/clic.js" defer></script>
 </head>
@@ -372,11 +442,12 @@
     <a class="logo" href="./" aria-label="Nora Éditions Artisans, retour en haut"><img src="medias/nora-logo-rouge.png" alt="" width="34" height="34"><span class="marque-nora">Nora Éditions<b>Artisans</b></span></a>
     <nav class="menu" aria-label="Menu">
       <a href="./#offre">L'offre</a>
-      <a href="./#appli">Votre appli</a>
+      <a href="/realisations/">Réalisations</a>
+      <a href="/appli-devis-artisan/">Votre application</a>
       <a href="./#tarifs">Tarifs</a>
       <a href="./#contact">Contact</a>
     </nav>
-    <details class="menu-tel"><summary aria-label="Ouvrir le menu"><span></span><span></span><span></span></summary><nav onclick="this.parentNode.open=false"><a href="/#appli">Votre appli</a><a href="/#offre">L'offre</a><a href="/#tarifs">Tarifs</a><a href="/#contact">Contact</a><a href="/questionnaire.html">Questionnaire</a></nav></details>
+    <details class="menu-tel"><summary aria-label="Ouvrir le menu"><span></span><span></span><span></span></summary><nav onclick="this.parentNode.open=false"><a href="/appli-devis-artisan/">Votre application</a><a href="/#offre">L'offre</a><a href="/realisations/">Réalisations</a><a href="/#tarifs">Tarifs</a><a href="/#contact">Contact</a><a href="/questionnaire.html">Questionnaire</a></nav></details>
     <a class="tel-haut" href="questionnaire.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg><span>Questionnaire</span></a>
   </div>
 </header>
@@ -388,6 +459,9 @@
   <form id="q" novalidate>
     <fieldset>
       <legend>1. Vous et votre entreprise</legend>
+      <div class="champ">Votre activité<div class="cases" id="domaine"><label class="case"><input type="radio" name="Activité" value="Artisan du bâtiment"><span>Artisan du bâtiment</span></label><label class="case"><input type="radio" name="Activité" value="Autre artisan"><span>Autre artisan</span></label><label class="case"><input type="radio" name="Activité" value="Nettoyage, ménage"><span>Nettoyage, ménage</span></label><label class="case"><input type="radio" name="Activité" value="Freelance, indépendant"><span>Freelance, indépendant</span></label><label class="case"><input type="radio" name="Activité" value="Autre activité"><span>Autre activité</span></label></div></div>
+      <label class="champ" id="choixMetier">Votre métier<select name="Métier" id="metier"><option value="">Choisissez votre métier</option><optgroup label="Artisans du bâtiment" data-dom="bat"><option>Tous corps d'état</option><option>Plomberie, chauffage</option><option>Carrelage</option><option>Électricité</option><option>Peinture, revêtements</option><option>Plâtrerie, isolation</option><option>Maçonnerie</option><option>Menuiserie</option><option>Couverture, toiture</option><option>Salle de bain, cuisine</option><option>Paysagisme</option></optgroup><optgroup label="Autres artisans" data-dom="art"><option>Boulanger, pâtissier</option><option>Traiteur</option><option>Boucher, charcutier</option><option>Chocolatier, confiseur</option><option>Glacier</option><option>Fromager</option><option>Caviste</option><option>Food truck</option><option>Garagiste, mécanicien</option><option>Carrossier</option><option>Mécanicien à domicile</option><option>Réparateur moto, vélo</option><option>Dépanneur, remorquage</option><option>Lavage auto à domicile</option><option>Serrurier</option><option>Vitrier</option><option>Ramoneur</option><option>Antenniste</option><option>Réparateur électroménager</option><option>Réparateur téléphone, ordinateur</option><option>Déménageur</option><option>Débarras, encombrants</option><option>Couturière, retouches</option><option>Cordonnier</option><option>Bijoutier, créateur</option><option>Horloger</option><option>Maroquinier</option><option>Tapissier, ébéniste</option><option>Encadreur</option><option>Céramiste, potier</option><option>Souffleur de verre</option><option>Graveur, imprimeur, enseigniste</option><option>Barbier</option><option>Prothésiste ongulaire</option><option>Tatoueur</option><option>Toiletteur</option><option>Fleuriste</option><option>Jardinier, espaces verts</option><option>Élagueur</option><option>Pisciniste</option><option>Ferronnier, métallier</option><option>Taille de haies, tonte</option></optgroup><optgroup label="Nettoyage" data-dom="net"><option>Nettoyage de bureaux</option><option>Copropriétés</option><option>Ménage à domicile, repassage</option><option>Vitres</option><option>Fin de chantier, remise en état</option><option>Conciergerie, locations courte durée</option></optgroup><optgroup label="Freelances et indépendants" data-dom="fre"><option>Photographe, vidéaste</option><option>Coach sportif</option><option>Consultant</option><option>Graphiste</option><option>Formateur</option><option>Traducteur</option><option>Praticien bien-être</option><option>Esthéticienne</option><option>Coiffeur</option><option>Professeur particulier</option><option>Architecte</option><option>Architecte d'intérieur, décorateur</option><option>Développeur</option><option>Rédacteur</option><option>Community manager</option><option>Assistant(e) administratif(ve)</option></optgroup><option value="Autre">Autre</option></select></label>
+      <label class="champ" data-dom="autre">Votre métier, en quelques mots<input type="text" name="Métier (autre)" placeholder="ex. traiteur, toiletteur, déménageur…"></label>
       <div class="deux">
         <label class="champ">Nom et prénom *<input type="text" name="Nom et prénom" required autocomplete="name"></label>
         <label class="champ">Téléphone *<input type="tel" name="Téléphone" required autocomplete="tel"></label>
@@ -398,21 +472,22 @@
         <label class="champ">Ville<input type="text" name="Ville" autocomplete="address-level2"></label>
         <label class="champ">Depuis combien de temps vous exercez ?<input type="text" name="Expérience" placeholder="ex. 12 ans"></label>
         <label class="champ">Vous travaillez<select name="Équipe"><option>Seul</option><option>Avec un ou des salariés</option><option>Avec des sous-traitants</option><option>Avec un associé</option></select></label>
-        <label class="champ">Assurance décennale<input type="text" name="Décennale" placeholder="Assureur et n° de contrat, si vous en avez une"></label>
+        <label class="champ" data-dom="bat">Assurance décennale<input type="text" name="Décennale" placeholder="Assureur et n° de contrat, si vous en avez une"></label>
         <label class="champ">Adresse de l'entreprise <small>(elle figure sur vos devis et vos factures)</small><input type="text" name="Adresse"></label>
         <label class="champ">N° de TVA intracommunautaire <small>(si vous en avez un)</small><input type="text" name="N° TVA"></label>
-        <div class="champ">Vos qualifications et labels<div class="cases"><label class="case"><input type="checkbox" name="Labels" value="RGE"><span>RGE</span></label><label class="case"><input type="checkbox" name="Labels" value="Qualibat"><span>Qualibat</span></label><label class="case"><input type="checkbox" name="Labels" value="Qualifelec"><span>Qualifelec</span></label><label class="case"><input type="checkbox" name="Labels" value="QualiPAC"><span>QualiPAC</span></label><label class="case"><input type="checkbox" name="Labels" value="Handibat"><span>Handibat</span></label><label class="case"><input type="checkbox" name="Labels" value="Artisan (chambre des métiers)"><span>Artisan (chambre des métiers)</span></label><label class="case"><input type="checkbox" name="Labels" value="Aucun pour l'instant"><span>Aucun pour l'instant</span></label></div></div>
+        <div class="champ" data-dom="bat">Vos qualifications et labels<div class="cases"><label class="case"><input type="checkbox" name="Labels" value="RGE"><span>RGE</span></label><label class="case"><input type="checkbox" name="Labels" value="Qualibat"><span>Qualibat</span></label><label class="case"><input type="checkbox" name="Labels" value="Qualifelec"><span>Qualifelec</span></label><label class="case"><input type="checkbox" name="Labels" value="QualiPAC"><span>QualiPAC</span></label><label class="case"><input type="checkbox" name="Labels" value="Handibat"><span>Handibat</span></label><label class="case"><input type="checkbox" name="Labels" value="Artisan (chambre des métiers)"><span>Artisan (chambre des métiers)</span></label><label class="case"><input type="checkbox" name="Labels" value="Aucun pour l'instant"><span>Aucun pour l'instant</span></label></div></div>
       </div>
-      <div class="champ">Votre métier <small>(plusieurs choix possibles)</small><div class="cases"><label class="case"><input type="checkbox" name="Métiers" value="Tous corps d'état"><span>Tous corps d'état</span></label><label class="case"><input type="checkbox" name="Métiers" value="Plomberie, chauffage"><span>Plomberie, chauffage</span></label><label class="case"><input type="checkbox" name="Métiers" value="Carrelage"><span>Carrelage</span></label><label class="case"><input type="checkbox" name="Métiers" value="Électricité"><span>Électricité</span></label><label class="case"><input type="checkbox" name="Métiers" value="Peinture, revêtements"><span>Peinture, revêtements</span></label><label class="case"><input type="checkbox" name="Métiers" value="Plâtrerie, isolation"><span>Plâtrerie, isolation</span></label><label class="case"><input type="checkbox" name="Métiers" value="Maçonnerie"><span>Maçonnerie</span></label><label class="case"><input type="checkbox" name="Métiers" value="Menuiserie"><span>Menuiserie</span></label><label class="case"><input type="checkbox" name="Métiers" value="Couverture, toiture"><span>Couverture, toiture</span></label><label class="case"><input type="checkbox" name="Métiers" value="Salle de bain, cuisine"><span>Salle de bain, cuisine</span></label><label class="case"><input type="checkbox" name="Métiers" value="Paysagisme"><span>Paysagisme</span></label><label class="case"><input type="checkbox" name="Métiers" value="Autre"><span>Autre</span></label></div></div>
+      
       <label class="champ">Votre zone d'intervention<input type="text" name="Zone" placeholder="ex. Yvelines et Val-d'Oise, 30 km autour de Poissy"></label>
     </fieldset>
 
     <fieldset>
       <legend>2. Ce que vous voulez</legend>
       <p class="aide">Cochez ce qui vous intéresse.</p>
-      <div class="cases"><label class="case"><input type="checkbox" name="Je veux" value="Un site internet"><span>Un site internet</span></label><label class="case"><input type="checkbox" name="Je veux" value="Une fiche Google"><span>Une fiche Google</span></label><label class="case"><input type="checkbox" name="Je veux" value="Un logo"><span>Un logo</span></label><label class="case"><input type="checkbox" name="Je veux" value="Le logiciel métier dans mon site"><span>Le logiciel métier dans mon site</span></label><label class="case"><input type="checkbox" name="Je veux" value="Seulement l'appli métier (100 € + 30 € par an)"><span>Seulement l'appli métier (100 € + 30 € par an)</span></label><label class="case"><input type="checkbox" name="Je veux" value="Community manager : vidéos, réseaux, annuaires (option)"><span>Community manager : vidéos, réseaux, annuaires (option)</span></label></div>
-      <div class="champ">Dans l'appli, ce qui vous servirait<div class="cases"><label class="case"><input type="checkbox" name="Appli" value="Devis et factures"><span>Devis et factures</span></label><label class="case"><input type="checkbox" name="Appli" value="Signature en ligne"><span>Signature en ligne</span></label><label class="case"><input type="checkbox" name="Appli" value="Agenda et rappels clients"><span>Agenda et rappels clients</span></label><label class="case"><input type="checkbox" name="Appli" value="Carnet de chantier et photos"><span>Carnet de chantier et photos</span></label><label class="case"><input type="checkbox" name="Appli" value="Dépenses et paiements"><span>Dépenses et paiements</span></label><label class="case"><input type="checkbox" name="Appli" value="PV de fin de chantier"><span>PV de fin de chantier</span></label><label class="case"><input type="checkbox" name="Appli" value="Simulation 3D"><span>Simulation 3D</span></label></div></div>
-      <label class="champ">La 3D, pour quels projets ? <small>(si elle vous intéresse)</small><input type="text" name="Projets 3D" placeholder="ex. salle de bain, cuisine, escalier, terrasse, ouverture de mur…"></label>
+      <div class="cases"><label class="case"><input type="checkbox" name="Je veux" value="Un site internet"><span>Un site internet</span></label><label class="case"><input type="checkbox" name="Je veux" value="Une fiche Google"><span>Une fiche Google</span></label><label class="case"><input type="checkbox" name="Je veux" value="Un logo"><span>Un logo</span></label><label class="case"><input type="checkbox" name="Je veux" value="Une boutique en ligne"><span>Une boutique en ligne</span></label><label class="case"><input type="checkbox" name="Je veux" value="L'application web sur mesure dans mon site"><span>L'application web sur mesure dans mon site</span></label><label class="case"><input type="checkbox" name="Je veux" value="Seulement l'application web sur mesure (100 € + 30 € par an)"><span>Seulement l'application web sur mesure (100 € + 30 € par an)</span></label><label class="case"><input type="checkbox" name="Je veux" value="Community manager : vidéos, réseaux, annuaires (option)"><span>Community manager : vidéos, réseaux, annuaires (option)</span></label></div>
+      <div class="champ">Dans l'appli, ce qui vous servirait<div class="cases"><label class="case"><input type="checkbox" name="Appli" value="Devis et factures"><span>Devis et factures</span></label><label class="case"><input type="checkbox" name="Appli" value="Signature en ligne"><span>Signature en ligne</span></label><label class="case"><input type="checkbox" name="Appli" value="Agenda et rappels clients"><span>Agenda et rappels clients</span></label><label class="case" data-dom="bat"><input type="checkbox" name="Appli" value="Carnet de chantier et photos"><span>Carnet de chantier et photos</span></label><label class="case"><input type="checkbox" name="Appli" value="Photos avant / après"><span>Photos avant / après</span></label><label class="case"><input type="checkbox" name="Appli" value="Dépenses et paiements"><span>Dépenses et paiements</span></label><label class="case" data-dom="bat"><input type="checkbox" name="Appli" value="PV de fin de chantier"><span>PV de fin de chantier</span></label><label class="case" data-dom="bat"><input type="checkbox" name="Appli" value="Simulation 3D"><span>Simulation 3D</span></label></div></div>
+      <label class="champ">La boutique en ligne : ce que vous voulez vendre <small>(si elle vous intéresse)</small><input type="text" name="Boutique en ligne" placeholder="ex. bijoux, gâteaux sur commande, bons cadeaux, séances…"></label>
+      <label class="champ" data-dom="bat">La 3D, pour quels projets ? <small>(si elle vous intéresse)</small><input type="text" name="Projets 3D" placeholder="ex. salle de bain, cuisine, escalier, terrasse, ouverture de mur…"></label>
     </fieldset>
 
     <fieldset>
@@ -420,9 +495,9 @@
       <p class="aide">Pour faire ce qui vous sert vraiment : dites-nous ce que vous espérez, et ce qui vous gêne aujourd'hui.</p>
       <div class="champ">Ce que vous attendez avant tout <small>(plusieurs choix possibles)</small><div class="cases"><label class="case"><input type="checkbox" name="Attentes" value="Plus de clients"><span>Plus de clients</span></label><label class="case"><input type="checkbox" name="Attentes" value="Être trouvé sur Google"><span>Être trouvé sur Google</span></label><label class="case"><input type="checkbox" name="Attentes" value="Gagner du temps sur mes devis et factures"><span>Gagner du temps sur mes devis et factures</span></label><label class="case"><input type="checkbox" name="Attentes" value="Une image plus pro"><span>Une image plus pro</span></label><label class="case"><input type="checkbox" name="Attentes" value="Être payé plus vite, suivre mes paiements"><span>Être payé plus vite, suivre mes paiements</span></label><label class="case"><input type="checkbox" name="Attentes" value="Moins de paperasse"><span>Moins de paperasse</span></label><label class="case"><input type="checkbox" name="Attentes" value="Montrer mon travail"><span>Montrer mon travail</span></label><label class="case"><input type="checkbox" name="Attentes" value="Me démarquer de la concurrence"><span>Me démarquer de la concurrence</span></label></div></div>
       <label class="champ">Ce qui compte le plus pour vous<textarea name="Le plus important" placeholder="ex. avoir des demandes de devis sans passer par les plateformes"></textarea></label>
-      <div class="champ">Aujourd'hui, vos clients vous trouvent par<div class="cases"><label class="case"><input type="checkbox" name="Clients trouvés par" value="Bouche-à-oreille"><span>Bouche-à-oreille</span></label><label class="case"><input type="checkbox" name="Clients trouvés par" value="Google"><span>Google</span></label><label class="case"><input type="checkbox" name="Clients trouvés par" value="Fiche Google"><span>Fiche Google</span></label><label class="case"><input type="checkbox" name="Clients trouvés par" value="Réseaux sociaux"><span>Réseaux sociaux</span></label><label class="case"><input type="checkbox" name="Clients trouvés par" value="Annuaires (PagesJaunes…)"><span>Annuaires (PagesJaunes…)</span></label><label class="case"><input type="checkbox" name="Clients trouvés par" value="Plateformes de mise en relation"><span>Plateformes de mise en relation</span></label><label class="case"><input type="checkbox" name="Clients trouvés par" value="Architectes, agences, partenaires"><span>Architectes, agences, partenaires</span></label><label class="case"><input type="checkbox" name="Clients trouvés par" value="Panneau de chantier, véhicule"><span>Panneau de chantier, véhicule</span></label></div></div>
+      <div class="champ">Aujourd'hui, vos clients vous trouvent par<div class="cases"><label class="case"><input type="checkbox" name="Clients trouvés par" value="Bouche-à-oreille"><span>Bouche-à-oreille</span></label><label class="case"><input type="checkbox" name="Clients trouvés par" value="Google"><span>Google</span></label><label class="case"><input type="checkbox" name="Clients trouvés par" value="Fiche Google"><span>Fiche Google</span></label><label class="case"><input type="checkbox" name="Clients trouvés par" value="Réseaux sociaux"><span>Réseaux sociaux</span></label><label class="case"><input type="checkbox" name="Clients trouvés par" value="Annuaires (PagesJaunes…)"><span>Annuaires (PagesJaunes…)</span></label><label class="case"><input type="checkbox" name="Clients trouvés par" value="Plateformes de mise en relation"><span>Plateformes de mise en relation</span></label><label class="case"><input type="checkbox" name="Clients trouvés par" value="Architectes, agences, partenaires"><span>Architectes, agences, partenaires</span></label><label class="case"><input type="checkbox" name="Clients trouvés par" value="Véhicule, panneau, flyers"><span>Véhicule, panneau, flyers</span></label></div></div>
       <label class="champ">Ce qui vous fait perdre du temps ou vous agace aujourd'hui<textarea name="Ce qui gêne aujourd'hui" placeholder="ex. je fais mes devis le soir, je relance mes clients pour être payé…"></textarea></label>
-      <label class="champ">Les chantiers que vous voulez faire plus souvent<input type="text" name="Chantiers souhaités" placeholder="ex. salles de bain complètes, plutôt que des petits dépannages"></label>
+      <label class="champ">Les prestations que vous voulez faire plus souvent<input type="text" name="Prestations souhaitées" placeholder="ex. des contrats réguliers plutôt que des interventions ponctuelles"></label>
       <label class="champ">La zone où vous voulez plus de clients<input type="text" name="Zone souhaitée" placeholder="ex. Cergy et 20 km autour"></label>
       <div class="champ">Combien de nouveaux clients par mois vous aimeriez<div class="cases"><label class="case"><input type="radio" name="Nouveaux clients souhaités" value="1 ou 2"><span>1 ou 2</span></label><label class="case"><input type="radio" name="Nouveaux clients souhaités" value="3 à 5"><span>3 à 5</span></label><label class="case"><input type="radio" name="Nouveaux clients souhaités" value="Plus de 5"><span>Plus de 5</span></label><label class="case"><input type="radio" name="Nouveaux clients souhaités" value="Je ne sais pas"><span>Je ne sais pas</span></label></div></div>
       <div class="champ">Pour échanger, vous préférez<div class="cases"><label class="case"><input type="checkbox" name="Échanges" value="Téléphone"><span>Téléphone</span></label><label class="case"><input type="checkbox" name="Échanges" value="WhatsApp"><span>WhatsApp</span></label><label class="case"><input type="checkbox" name="Échanges" value="E-mail"><span>E-mail</span></label><label class="case"><input type="checkbox" name="Échanges" value="Visio"><span>Visio</span></label></div></div>
@@ -432,37 +507,37 @@
     <fieldset>
       <legend>4. Vos prestations et vos prix</legend>
       <p class="aide">Pour préparer votre appli : vos devis seront prêts en quelques clics. Le plus simple : envoyez un ancien devis (partie 10). Pas besoin de tout mettre : vous pourrez ajouter vos prestations vous-même dans votre appli, et elles restent enregistrées.</p>
-      <label class="champ">Vos prestations, avec vos prix habituels <small>(une par ligne : prestation · unité · prix)</small><textarea name="Prestations et prix" style="min-height:150px" placeholder="Pose de carrelage au sol · m² · 45 €&#10;Remplacement chauffe-eau 200 L · forfait · 350 €&#10;Déplacement · forfait · 30 €"></textarea></label>
-      <div class="champ">Vos chantiers<div class="cases"><label class="case"><input type="checkbox" name="Chantiers" value="Rénovation"><span>Rénovation</span></label><label class="case"><input type="checkbox" name="Chantiers" value="Neuf"><span>Neuf</span></label><label class="case"><input type="checkbox" name="Chantiers" value="Dépannage"><span>Dépannage</span></label><label class="case"><input type="checkbox" name="Chantiers" value="Entretien"><span>Entretien</span></label><label class="case"><input type="checkbox" name="Chantiers" value="Petits travaux"><span>Petits travaux</span></label></div></div>
-      <div class="champ">Vos clients<div class="cases"><label class="case"><input type="checkbox" name="Clients" value="Particuliers"><span>Particuliers</span></label><label class="case"><input type="checkbox" name="Clients" value="Professionnels"><span>Professionnels</span></label><label class="case"><input type="checkbox" name="Clients" value="Syndics, agences"><span>Syndics, agences</span></label><label class="case"><input type="checkbox" name="Clients" value="Entreprises du bâtiment (sous-traitance)"><span>Entreprises du bâtiment (sous-traitance)</span></label></div></div>
+      <label class="champ">Vos prestations, avec vos prix habituels <small>(une par ligne : prestation · unité · prix)</small><textarea name="Prestations et prix" style="min-height:150px" placeholder="Ménage d'un appartement · heure · 25 €&#10;Séance photo portrait · forfait · 150 €&#10;Pose de carrelage au sol · m² · 45 €&#10;Déplacement · forfait · 30 €"></textarea></label>
+      <div class="champ" data-dom="bat">Vos chantiers<div class="cases"><label class="case"><input type="checkbox" name="Chantiers" value="Rénovation"><span>Rénovation</span></label><label class="case"><input type="checkbox" name="Chantiers" value="Neuf"><span>Neuf</span></label><label class="case"><input type="checkbox" name="Chantiers" value="Dépannage"><span>Dépannage</span></label><label class="case"><input type="checkbox" name="Chantiers" value="Entretien"><span>Entretien</span></label><label class="case"><input type="checkbox" name="Chantiers" value="Petits travaux"><span>Petits travaux</span></label></div></div>
+      <div class="champ">Vos clients<div class="cases"><label class="case"><input type="checkbox" name="Clients" value="Particuliers"><span>Particuliers</span></label><label class="case"><input type="checkbox" name="Clients" value="Professionnels"><span>Professionnels</span></label><label class="case"><input type="checkbox" name="Clients" value="Syndics, agences"><span>Syndics, agences</span></label><label class="case"><input type="checkbox" name="Clients" value="Autres entreprises (sous-traitance)"><span>Autres entreprises (sous-traitance)</span></label></div></div>
       <div class="deux">
-        <label class="champ">Chantiers par mois, environ<input type="text" name="Chantiers par mois" placeholder="ex. 4"></label>
-        <label class="champ">Durée d'un chantier, en général<input type="text" name="Durée des chantiers" placeholder="ex. 1 à 2 semaines"></label>
+        <label class="champ">Clients ou missions par mois, environ<input type="text" name="Missions par mois" placeholder="ex. 4"></label>
+        <label class="champ">Durée d'une prestation, en général<input type="text" name="Durée des prestations" placeholder="ex. 2 heures, une journée, 2 semaines"></label>
         <label class="champ">Votre prix de l'heure <small>(si vous travaillez à l'heure)</small><input type="text" name="Prix de l'heure"></label>
         <label class="champ">Frais de déplacement<input type="text" name="Déplacement" placeholder="ex. offert jusqu'à 20 km, puis 30 €"></label>
-        <div class="champ">Vous comptez surtout<div class="cases"><label class="case"><input type="checkbox" name="Façon de compter" value="À l'heure"><span>À l'heure</span></label><label class="case"><input type="checkbox" name="Façon de compter" value="Au m²"><span>Au m²</span></label><label class="case"><input type="checkbox" name="Façon de compter" value="Au mètre linéaire"><span>Au mètre linéaire</span></label><label class="case"><input type="checkbox" name="Façon de compter" value="À l'unité"><span>À l'unité</span></label><label class="case"><input type="checkbox" name="Façon de compter" value="Au forfait"><span>Au forfait</span></label></div></div>
-        <label class="champ">Le montant minimum d'un chantier <small>(si vous en avez un)</small><input type="text" name="Montant minimum" placeholder="ex. pas de chantier sous 300 €"></label>
+        <div class="champ">Vous comptez surtout<div class="cases"><label class="case"><input type="checkbox" name="Façon de compter" value="À l'heure"><span>À l'heure</span></label><label class="case"><input type="checkbox" name="Façon de compter" value="Au m²"><span>Au m²</span></label><label class="case"><input type="checkbox" name="Façon de compter" value="Au mètre linéaire"><span>Au mètre linéaire</span></label><label class="case"><input type="checkbox" name="Façon de compter" value="À l'unité"><span>À l'unité</span></label><label class="case"><input type="checkbox" name="Façon de compter" value="À la séance"><span>À la séance</span></label><label class="case"><input type="checkbox" name="Façon de compter" value="Au mois"><span>Au mois</span></label><label class="case"><input type="checkbox" name="Façon de compter" value="Au forfait"><span>Au forfait</span></label></div></div>
+        <label class="champ">Le montant minimum d'une prestation <small>(si vous en avez un)</small><input type="text" name="Montant minimum" placeholder="ex. rien sous 80 €"></label>
         <div class="champ">Dépannages et urgences<div class="cases"><label class="case"><input type="radio" name="Urgences" value="Oui"><span>Oui</span></label><label class="case"><input type="radio" name="Urgences" value="Seulement pour mes clients"><span>Seulement pour mes clients</span></label><label class="case"><input type="radio" name="Urgences" value="Non"><span>Non</span></label></div></div>
       </div>
     </fieldset>
 
     <fieldset>
       <legend>5. Votre façon de travailler</legend>
-      <div class="champ">Les fournitures<div class="cases"><label class="case"><input type="radio" name="Fournitures" value="Je fournis tout"><span>Je fournis tout</span></label><label class="case"><input type="radio" name="Fournitures" value="Le client achète ses matériaux, je fournis mes consommables"><span>Le client achète ses matériaux, je fournis mes consommables</span></label><label class="case"><input type="radio" name="Fournitures" value="Main-d'œuvre seule"><span>Main-d'œuvre seule</span></label><label class="case"><input type="radio" name="Fournitures" value="Ça dépend du chantier"><span>Ça dépend du chantier</span></label></div></div>
-      <div class="champ">Les magasins et fournisseurs où vous achetez <small>(ils seront reliés à votre appli)</small><div class="cases"><label class="case"><input type="checkbox" name="Magasins" value="Point.P"><span>Point.P</span></label><label class="case"><input type="checkbox" name="Magasins" value="Cedeo"><span>Cedeo</span></label><label class="case"><input type="checkbox" name="Magasins" value="Gedimat"><span>Gedimat</span></label><label class="case"><input type="checkbox" name="Magasins" value="BigMat"><span>BigMat</span></label><label class="case"><input type="checkbox" name="Magasins" value="Tout Faire Matériaux"><span>Tout Faire Matériaux</span></label><label class="case"><input type="checkbox" name="Magasins" value="La Plateforme du Bâtiment"><span>La Plateforme du Bâtiment</span></label><label class="case"><input type="checkbox" name="Magasins" value="Leroy Merlin"><span>Leroy Merlin</span></label><label class="case"><input type="checkbox" name="Magasins" value="Castorama"><span>Castorama</span></label><label class="case"><input type="checkbox" name="Magasins" value="Brico Dépôt"><span>Brico Dépôt</span></label><label class="case"><input type="checkbox" name="Magasins" value="Bricomarché"><span>Bricomarché</span></label><label class="case"><input type="checkbox" name="Magasins" value="Mr.Bricolage"><span>Mr.Bricolage</span></label><label class="case"><input type="checkbox" name="Magasins" value="ManoMano"><span>ManoMano</span></label><label class="case"><input type="checkbox" name="Magasins" value="Rexel"><span>Rexel</span></label><label class="case"><input type="checkbox" name="Magasins" value="Sonepar"><span>Sonepar</span></label><label class="case"><input type="checkbox" name="Magasins" value="Würth"><span>Würth</span></label><label class="case"><input type="checkbox" name="Magasins" value="Prolians"><span>Prolians</span></label></div></div>
-      <label class="champ">Vos autres fournisseurs <small>(grossiste local, fabricant…)</small><input type="text" name="Fournisseurs"></label>
-      <div class="champ">Un compte pro chez eux ?<div class="cases"><label class="case"><input type="radio" name="Compte pro" value="Oui"><span>Oui</span></label><label class="case"><input type="radio" name="Compte pro" value="Chez certains"><span>Chez certains</span></label><label class="case"><input type="radio" name="Compte pro" value="Non"><span>Non</span></label></div></div>
+      <div class="champ" data-dom="bat">Les fournitures<div class="cases"><label class="case"><input type="radio" name="Fournitures" value="Je fournis tout"><span>Je fournis tout</span></label><label class="case"><input type="radio" name="Fournitures" value="Le client achète ses matériaux, je fournis mes consommables"><span>Le client achète ses matériaux, je fournis mes consommables</span></label><label class="case"><input type="radio" name="Fournitures" value="Main-d'œuvre seule"><span>Main-d'œuvre seule</span></label><label class="case"><input type="radio" name="Fournitures" value="Ça dépend du chantier"><span>Ça dépend du chantier</span></label></div></div>
+      <div class="champ" data-dom="bat">Les magasins et fournisseurs où vous achetez <small>(ils seront reliés à votre appli)</small><div class="cases"><label class="case"><input type="checkbox" name="Magasins" value="Point.P"><span>Point.P</span></label><label class="case"><input type="checkbox" name="Magasins" value="Cedeo"><span>Cedeo</span></label><label class="case"><input type="checkbox" name="Magasins" value="Gedimat"><span>Gedimat</span></label><label class="case"><input type="checkbox" name="Magasins" value="BigMat"><span>BigMat</span></label><label class="case"><input type="checkbox" name="Magasins" value="Tout Faire Matériaux"><span>Tout Faire Matériaux</span></label><label class="case"><input type="checkbox" name="Magasins" value="La Plateforme du Bâtiment"><span>La Plateforme du Bâtiment</span></label><label class="case"><input type="checkbox" name="Magasins" value="Leroy Merlin"><span>Leroy Merlin</span></label><label class="case"><input type="checkbox" name="Magasins" value="Castorama"><span>Castorama</span></label><label class="case"><input type="checkbox" name="Magasins" value="Brico Dépôt"><span>Brico Dépôt</span></label><label class="case"><input type="checkbox" name="Magasins" value="Bricomarché"><span>Bricomarché</span></label><label class="case"><input type="checkbox" name="Magasins" value="Mr.Bricolage"><span>Mr.Bricolage</span></label><label class="case"><input type="checkbox" name="Magasins" value="ManoMano"><span>ManoMano</span></label><label class="case"><input type="checkbox" name="Magasins" value="Rexel"><span>Rexel</span></label><label class="case"><input type="checkbox" name="Magasins" value="Sonepar"><span>Sonepar</span></label><label class="case"><input type="checkbox" name="Magasins" value="Würth"><span>Würth</span></label><label class="case"><input type="checkbox" name="Magasins" value="Prolians"><span>Prolians</span></label></div></div>
+      <label class="champ" data-dom="bat">Vos autres fournisseurs <small>(grossiste local, fabricant…)</small><input type="text" name="Fournisseurs"></label>
+      <div class="champ" data-dom="bat">Un compte pro chez eux ?<div class="cases"><label class="case"><input type="radio" name="Compte pro" value="Oui"><span>Oui</span></label><label class="case"><input type="radio" name="Compte pro" value="Chez certains"><span>Chez certains</span></label><label class="case"><input type="radio" name="Compte pro" value="Non"><span>Non</span></label></div></div>
       <div class="champ">Vos devis aujourd'hui<div class="cases"><label class="case"><input type="radio" name="Devis aujourd'hui" value="Sur papier"><span>Sur papier</span></label><label class="case"><input type="radio" name="Devis aujourd'hui" value="Sur un tableur"><span>Sur un tableur</span></label><label class="case"><input type="radio" name="Devis aujourd'hui" value="Avec un logiciel"><span>Avec un logiciel</span></label><label class="case"><input type="radio" name="Devis aujourd'hui" value="Je n'en fais pas encore"><span>Je n'en fais pas encore</span></label></div></div>
       <label class="champ">Si logiciel, lequel ?<input type="text" name="Logiciel actuel"></label>
       <div class="champ">Le devis<div class="cases"><label class="case"><input type="checkbox" name="Le devis" value="Gratuit"><span>Gratuit</span></label><label class="case"><input type="checkbox" name="Le devis" value="Toujours après une visite"><span>Toujours après une visite</span></label><label class="case"><input type="checkbox" name="Le devis" value="Possible sur photos"><span>Possible sur photos</span></label><label class="case"><input type="checkbox" name="Le devis" value="Payant si non signé"><span>Payant si non signé</span></label></div></div>
       <div class="deux">
         <label class="champ">Acompte à la signature<input type="text" name="Acompte" placeholder="ex. 30 %"></label>
-        <label class="champ">Le reste, quand ?<input type="text" name="Échéancier" placeholder="ex. 40 % à mi-travaux, le solde à la fin"></label>
+        <label class="champ">Le reste, quand ?<input type="text" name="Échéancier" placeholder="ex. le solde à la fin"></label>
         <label class="champ">Validité de vos devis<input type="text" name="Validité des devis" placeholder="ex. 3 mois"></label>
         <label class="champ">TVA<select name="TVA"><option>Non applicable (auto-entrepreneur, art. 293 B)</option><option>10 % (rénovation)</option><option>20 %</option><option>5,5 % (rénovation énergétique)</option><option>Je ne sais pas</option></select></label>
       </div>
-      <div class="champ">Paiements acceptés<div class="cases"><label class="case"><input type="checkbox" name="Paiements" value="Virement"><span>Virement</span></label><label class="case"><input type="checkbox" name="Paiements" value="Chèque"><span>Chèque</span></label><label class="case"><input type="checkbox" name="Paiements" value="Espèces"><span>Espèces</span></label><label class="case"><input type="checkbox" name="Paiements" value="Carte bancaire"><span>Carte bancaire</span></label></div></div>
-      <div class="champ">À la fin du chantier<div class="cases"><label class="case"><input type="checkbox" name="Fin de chantier" value="PV de réception signé"><span>PV de réception signé</span></label><label class="case"><input type="checkbox" name="Fin de chantier" value="Photos avant / après"><span>Photos avant / après</span></label><label class="case"><input type="checkbox" name="Fin de chantier" value="Je demande un avis Google"><span>Je demande un avis Google</span></label><label class="case"><input type="checkbox" name="Fin de chantier" value="Rien de particulier"><span>Rien de particulier</span></label></div></div>
+      <div class="champ">Comment voulez-vous vous faire payer ? <small>(plusieurs choix possibles)</small><div class="cases"><label class="case"><input type="checkbox" name="Paiements" value="Virement"><span>Virement</span></label><label class="case"><input type="checkbox" name="Paiements" value="Paiement en ligne sur votre site (Stripe)"><span>Paiement en ligne sur votre site (Stripe)</span></label><label class="case"><input type="checkbox" name="Paiements" value="Lien de paiement Stripe envoyé par SMS ou e-mail"><span>Lien de paiement Stripe envoyé par SMS ou e-mail</span></label><label class="case"><input type="checkbox" name="Paiements" value="Carte bancaire sur place (terminal)"><span>Carte bancaire sur place (terminal)</span></label><label class="case"><input type="checkbox" name="Paiements" value="Prélèvement mensuel"><span>Prélèvement mensuel</span></label><label class="case"><input type="checkbox" name="Paiements" value="Chèque"><span>Chèque</span></label><label class="case"><input type="checkbox" name="Paiements" value="Espèces"><span>Espèces</span></label><label class="case"><input type="checkbox" name="Paiements" value="Chèque emploi service (CESU)"><span>Chèque emploi service (CESU)</span></label><label class="case"><input type="checkbox" name="Paiements" value="PayPal"><span>PayPal</span></label><label class="case"><input type="checkbox" name="Paiements" value="Wero"><span>Wero</span></label></div></div>
+      <div class="champ">À la fin de la prestation<div class="cases"><label class="case" data-dom="bat"><input type="checkbox" name="Fin de chantier" value="PV de réception signé"><span>PV de réception signé</span></label><label class="case"><input type="checkbox" name="Fin de chantier" value="Photos avant / après"><span>Photos avant / après</span></label><label class="case"><input type="checkbox" name="Fin de chantier" value="Je demande un avis Google"><span>Je demande un avis Google</span></label><label class="case"><input type="checkbox" name="Fin de chantier" value="Rien de particulier"><span>Rien de particulier</span></label></div></div>
       <div class="champ">Vos clients vous contactent surtout par<div class="cases"><label class="case"><input type="checkbox" name="Contact" value="Téléphone"><span>Téléphone</span></label><label class="case"><input type="checkbox" name="Contact" value="WhatsApp"><span>WhatsApp</span></label><label class="case"><input type="checkbox" name="Contact" value="SMS"><span>SMS</span></label><label class="case"><input type="checkbox" name="Contact" value="E-mail"><span>E-mail</span></label><label class="case"><input type="checkbox" name="Contact" value="Les réseaux"><span>Les réseaux</span></label></div></div>
       <label class="champ">Vos conditions particulières <small>(garanties, délais, ce qui n'est pas compris…)</small><textarea name="Conditions"></textarea></label>
     </fieldset>
@@ -487,20 +562,20 @@
       <div class="champ">Une fiche Google ?<div class="cases"><label class="case"><input type="radio" name="Fiche Google" value="Oui"><span>Oui</span></label><label class="case"><input type="radio" name="Fiche Google" value="Non"><span>Non</span></label><label class="case"><input type="radio" name="Fiche Google" value="Je ne sais pas"><span>Je ne sais pas</span></label></div></div>
       <label class="champ">Lien de la fiche Google <small>(si oui)</small><input type="url" name="Lien fiche Google" placeholder="https://"></label>
       <label class="champ">Vos pages sur les réseaux <small>(liens)</small><textarea name="Réseaux" placeholder="Un lien par ligne"></textarea></label>
-      <label class="champ">L'adresse de site que vous aimeriez<input type="text" name="Adresse souhaitée" placeholder="ex. dupont-plomberie.fr"></label>
+      <label class="champ">L'adresse de site que vous aimeriez<input type="text" name="Adresse souhaitée" placeholder="ex. dupont-photo.fr"></label>
     </fieldset>
 
     <fieldset>
       <legend>8. Votre site</legend>
-      <label class="champ">Vos prestations, celles à mettre en avant<textarea name="Prestations" placeholder="ex. rénovation de salle de bain, douche à l'italienne, dépannage, chauffe-eau…"></textarea></label>
-      <label class="champ">Ce qui vous distingue<textarea name="Points forts" placeholder="ex. devis sous 48 h, chantier propre, 15 ans d'expérience, garantie décennale…"></textarea></label>
+      <label class="champ">Vos prestations, celles à mettre en avant<textarea name="Prestations" placeholder="ex. celles qui vous rapportent le plus, celles que vous aimez faire"></textarea></label>
+      <label class="champ">Ce qui vous distingue<textarea name="Points forts" placeholder="ex. réponse sous 48 h, 15 ans d'expérience, travail soigné…"></textarea></label>
       <div class="deux">
         <label class="champ">Téléphone à afficher<input type="tel" name="Téléphone du site"></label>
         <label class="champ">E-mail à afficher<input type="email" name="E-mail du site"></label>
         <label class="champ">Horaires<input type="text" name="Horaires" placeholder="ex. du lundi au samedi, 8 h – 19 h"></label>
         <label class="champ">Afficher votre adresse ?<select name="Adresse affichée"><option>Non, seulement la ville</option><option>Oui</option></select></label>
       </div>
-      <label class="champ">Vos assurances et labels <small>(décennale, RGE…)</small><input type="text" name="Assurances et labels"></label>
+      <label class="champ">Vos assurances, labels et diplômes<input type="text" name="Assurances et labels"></label>
       <label class="champ">Vos avis clients ailleurs <small>(PagesJaunes, réseaux… liens)</small><input type="text" name="Avis ailleurs"></label>
     </fieldset>
 
@@ -513,7 +588,7 @@
 
     <fieldset>
       <legend>10. Vos réalisations et vos documents</legend>
-      <p class="aide">Pour votre site : vos plus beaux chantiers, avant et après si possible. Vous débutez et vous n'avez pas encore de photos ? Pas de souci, on se débrouille : laissez vide, on en parle ensemble.</p>
+      <p class="aide">Pour votre site : vos plus belles réalisations, avant et après si possible. Vous débutez et vous n'avez pas encore de photos ? Pas de souci, on se débrouille : laissez vide, on en parle ensemble.</p>
       <label class="depot"><input type="file" id="photos" accept="image/*" multiple hidden><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Ajouter des photos (jusqu'à 10)</label>
       <div class="vignettes" id="vignettes"></div>
       <label class="champ">Plus de photos, ou des vidéos ? Un lien de partage<input type="url" name="Lien des réalisations" placeholder="Google Photos, WeTransfer, Drive…"></label>
@@ -522,7 +597,7 @@
 
     <fieldset>
       <legend>11. Vidéos, réseaux et annuaires <small style="font-size:15px;color:var(--gris)">· en option, 25 € par mois</small></legend>
-      <p class="aide">Vous nous envoyez vos photos et vidéos de chantier, nous créons vos réseaux et nous les faisons vivre en postant régulièrement, nous montons vos vidéos au bon format pour chaque réseau, nous écrivons des articles pour votre site pour qu'il soit bien vu par Google, et nous vous inscrivons sur tous les annuaires pro.</p>
+      <p class="aide">Vous nous envoyez vos photos et vidéos de votre travail, nous créons vos réseaux et nous les faisons vivre en postant régulièrement, nous montons vos vidéos au bon format pour chaque réseau, nous écrivons des articles pour votre site pour qu'il soit bien vu par Google, et nous vous inscrivons sur tous les annuaires pro.</p>
       <div class="champ">Ça vous intéresse ?<div class="cases"><label class="case"><input type="radio" name="Vidéos" value="Oui"><span>Oui</span></label><label class="case"><input type="radio" name="Vidéos" value="Peut-être plus tard"><span>Peut-être plus tard</span></label><label class="case"><input type="radio" name="Vidéos" value="Non"><span>Non</span></label></div></div>
       <div class="si-video" id="siVideo" hidden>
         <div class="champ">À quel rythme ?<div class="cases"><label class="case"><input type="radio" name="Rythme" value="Une par semaine"><span>Une par semaine</span></label><label class="case"><input type="radio" name="Rythme" value="Deux par mois"><span>Deux par mois</span></label><label class="case"><input type="radio" name="Rythme" value="Une par mois"><span>Une par mois</span></label></div></div>
@@ -538,7 +613,7 @@
       <legend>12. Pour finir</legend>
       <label class="champ">Pour quand ?<select name="Délai"><option>Dès que possible</option><option>Dans le mois</option><option>Pas pressé</option></select></label>
       <label class="champ">Autre chose à nous dire ?<textarea name="Remarques"></textarea></label>
-      <label class="accord"><input type="checkbox" id="accord"><span>J'ai bien noté : 190 € la création pendant la promotion (200 € ensuite), puis 10 € par mois. Ou 100 € pour l'appli métier seule, puis 30 € par an. L'option vidéos, réseaux et annuaires est à 25 € par mois.</span></label>
+      <label class="accord"><input type="checkbox" id="accord"><span>J'ai bien noté : 190 € la création pendant la promotion (200 € ensuite), puis 10 € par mois. Ou 100 € pour l'application web sur mesure seule, puis 30 € par an. L'option vidéos, réseaux et annuaires est à 25 € par mois.</span></label>
       <p class="aide" style="margin-top:14px">Une fois votre questionnaire reçu, nous vous écrivons pour tout confirmer, avec nos coordonnées bancaires pour régler par virement.</p>
     </fieldset>
 
@@ -558,6 +633,24 @@
   const form = document.getElementById("q"), retour = document.getElementById("retour"), bouton = document.getElementById("envoyer");
   const dire = (c, t) => { retour.className = "retour " + c; retour.textContent = t; };
   // la partie vidéos ne s'ouvre que si elles intéressent
+  const domaines = { "Artisan du bâtiment": "bat", "Autre artisan": "art", "Nettoyage, ménage": "net", "Freelance, indépendant": "fre", "Autre activité": "autre" };
+  function selonActivite() { const c = form.querySelector('[name="Activité"]:checked'); const d = c ? domaines[c.value] : "";
+    form.querySelectorAll("[data-dom]").forEach(el => { el.hidden = el.dataset.dom !== d; }); }
+  // le menu des métiers : tous les métiers au départ, puis seulement ceux de l'activité choisie
+  const menu = document.getElementById("metier"), tousGroupes = [...menu.querySelectorAll("optgroup")].map(g => g.cloneNode(true)), autreOpt = menu.querySelector('option[value="Autre"]');
+  function filtrerMetiers(d) { const v = menu.value; menu.querySelectorAll("optgroup").forEach(g => g.remove());
+    tousGroupes.filter(g => !d || g.dataset.dom === d).forEach(g => menu.insertBefore(g.cloneNode(true), autreOpt));
+    menu.value = [...menu.options].some(o => o.value === v) ? v : ""; document.getElementById("choixMetier").hidden = d === "autre"; }
+  form.querySelectorAll('[name="Activité"]').forEach(r => r.addEventListener("change", () => { selonActivite(); filtrerMetiers(domaines[r.value]); })); selonActivite();
+  menu.addEventListener("change", () => { if (menu.value === "Autre") form.querySelector('[data-dom="autre"]').hidden = false; });
+  // ce qui a été choisi dans la démonstration de l'accueil
+  try { const d = JSON.parse(localStorage.getItem("nora_demo") || "null"); localStorage.removeItem("nora_demo");
+    if (d) { const A = { plombier: ["Artisan du bâtiment", "Plomberie, chauffage"], nettoyage: ["Nettoyage, ménage", "Nettoyage de bureaux"], coiffure: ["Freelance, indépendant", "Coiffeur"],
+        photo: ["Freelance, indépendant", "Photographe, vidéaste"], fleuriste: ["Autre artisan", "Fleuriste"], garage: ["Autre artisan", "Garagiste, mécanicien"],
+        coach: ["Freelance, indépendant", "Coach sportif"], boulangerie: ["Autre artisan", "Boulanger, pâtissier"] }[d.metier];
+      if (A) { const r = form.querySelector(`[name="Activité"][value="${A[0]}"]`); if (r) { r.checked = true; r.dispatchEvent(new Event("change")); menu.value = A[1]; } }
+      if (d.nom) form.querySelector('[name="Entreprise"]').value = d.nom;
+      if (d.couleur) form.querySelector('[name="Couleurs"]').value = d.couleur.toLowerCase(); } } catch (e) {}
   form.querySelectorAll('[name="Vidéos"]').forEach(r => r.addEventListener("change", () => { document.getElementById("siVideo").hidden = r.value !== "Oui" || !r.checked; }));
   // photos : réduites dans le téléphone avant l'envoi
   let photos = [];
@@ -584,7 +677,7 @@
         if (el.value.trim()) fd.append(el.name, el.value.trim());
       }
       fd.append("Accord tarifs", document.getElementById("accord").checked ? "Oui" : "Non coché");
-      fd.append("_subject", `Questionnaire artisan — ${nom}`); fd.append("_template", "table"); fd.append("_captcha", "false");
+      fd.append("_subject", `Questionnaire — ${nom}`); fd.append("_template", "table"); fd.append("_captcha", "false");
       for (const [i, f] of photos.entries()) fd.append(`realisation_${i + 1}`, await reduire(f), `realisation-${i + 1}.jpg`);
       const logo = document.getElementById("logo").files[0]; if (logo) fd.append("logo", logo, logo.name);
       [...document.getElementById("documents").files].slice(0, 3).forEach((f, i) => fd.append(`document_${i + 1}`, f, f.name));

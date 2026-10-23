@@ -3,23 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Site internet et logiciel pour artisan · Nora Éditions Artisans</title>
-<meta name="description" content="Création de site internet pour artisan du bâtiment : référencé sur Google, fiche Google, logo et logiciel métier. 190 € en promo, puis 10 €/mois.">
+<title>Création de site internet et application web · Nora Éditions</title>
+<meta name="description" content="Création de site internet pour artisans, freelances et indépendants : référencé sur Google, fiche Google, logo et application web sur mesure. 190 € en promo.">
 <link rel="canonical" href="https://artisans.noraeditions.fr/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://artisans.noraeditions.fr/">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:site_name" content="Nora Éditions Artisans">
 <meta name="twitter:card" content="summary">
-<meta property="og:title" content="Site internet et logiciel pour artisan · Nora Éditions Artisans">
-<meta property="og:description" content="Création de site internet pour artisan du bâtiment : référencé sur Google, fiche Google, logo et logiciel métier. 190 € en promo, puis 10 €/mois.">
+<meta property="og:title" content="Création de site internet et application web · Nora Éditions">
+<meta property="og:description" content="Création de site internet pour artisans, freelances et indépendants : référencé sur Google, fiche Google, logo et application web sur mesure. 190 € en promo.">
 <meta property="og:image" content="https://artisans.noraeditions.fr/medias/icone-512.png">
 <meta name="theme-color" content="#ffffff">
 <link rel="icon" type="image/png" sizes="32x32" href="medias/favicon-32.png">
 <link rel="apple-touch-icon" href="medias/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
 
   :root {
@@ -385,9 +385,361 @@
     a, button, summary, label, .btn, [role="button"], input[type="checkbox"], input[type="radio"], select { cursor: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2232%22%20height%3D%2232%22%20viewBox%3D%220%200%2032%2032%22%3E%3Cpath%20d%3D%22M5%203.5c0-1%201.1-1.6%201.9-1l19.6%2014.2c.9.7.5%202.1-.6%202.2l-8.4.9c-.4%200-.8.3-1%20.7l-4%207.6c-.5%201-2%20.9-2.3-.2L5%204.2z%22%20fill%3D%22%23d1402a%22%20stroke%3D%22%23fff%22%20stroke-width%3D%222.2%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E") 5 3, pointer; }
     input[type="text"], input[type="email"], input[type="tel"], textarea { cursor: text; }
   }
+
+  /* ===== Thème « tech » bleu-violet pour tout le site (23/10/2026) ===== */
+  :root { --nuit: #0f1240; --bleuT: #2b2fd1; --violetT: #5b21b6; --jauneT: #ffd426; --cyanT: #9ff3ff; --brumeT: #f4f5ff; }
+  body { background: #fff; }
+  .degrade-tech, .heros, #tarifs, .contact {
+    position: relative; overflow: hidden; color: #fff !important;
+    background: radial-gradient(55% 60% at 90% 10%, rgba(74, 222, 255, .3), transparent 60%), radial-gradient(50% 60% at 0% 100%, rgba(168, 85, 247, .5), transparent 60%), linear-gradient(150deg, #1b1f8a 0%, #2b2fd1 50%, #5b21b6 100%) !important; }
+  .heros::before, #tarifs::before, .contact::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,.14) 1px, transparent 1.4px); background-size: 22px 22px; pointer-events: none; }
+  .heros::after { display: none !important; }
+  .heros .bloc, #tarifs .bloc, .contact .bloc { position: relative; z-index: 1; }
+  .heros .label, #tarifs .label, .contact .label { color: var(--jauneT) !important; }
+  .heros .label::before, #tarifs .label::before, .contact .label::before { background: var(--jauneT) !important; }
+  .heros h1, #tarifs h2, .contact h2, .contact h3 { color: #fff !important; text-shadow: 0 3px 0 #1a1c6b, 0 8px 18px rgba(0,0,0,.3); }
+  .heros h1 i, #tarifs h2 i, .contact h2 i, .contact h3 i { color: var(--jauneT) !important; text-shadow: 0 3px 0 #a65f00, 0 8px 16px rgba(0,0,0,.35); }
+  .heros p, .heros .fil, .heros .fil a, #tarifs .intro, .contact .intro, .contact .petit, .contact label { color: #d9ddff !important; }
+  .heros { min-height: 0 !important; padding: 56px 0 60px !important; }
+  /* boutons : en relief, comme sur la bannière */
+  .btn { border-radius: 999px; font-weight: 700 !important; }
+  .btn-sombre, .heros .btn-sombre { background: var(--jauneT) !important; color: var(--nuit) !important; border: 2px solid #fff !important; box-shadow: 0 5px 0 #a65f00, 0 12px 22px rgba(0,0,0,.25) !important; }
+  .btn-sombre:hover { transform: translateY(2px); box-shadow: 0 3px 0 #a65f00, 0 8px 16px rgba(0,0,0,.25) !important; }
+  .heros .btn-contour, .contact .btn-trait, .contact .btn-clair { background: rgba(255,255,255,.1) !important; color: #fff !important; border: 2px solid #fff !important; box-shadow: 0 5px 0 rgba(10,10,60,.5) !important; }
+  .btn-clair:not(.contact .btn-clair), .btn-contour:not(.heros .btn-contour) { background: #fff !important; color: var(--violetT) !important; border: 2px solid var(--violetT) !important; box-shadow: 0 5px 0 var(--violetT) !important; }
+  .tel-haut { background: linear-gradient(180deg, #8b5cf6, #5b21b6) !important; color: #fff !important; border: 2px solid #fff !important; box-shadow: 0 4px 0 #2e1065 !important; }
+  .barre { background: rgba(255,255,255,.92) !important; }
+  .barre .btn-sombre { background: linear-gradient(180deg, #8b5cf6, #5b21b6) !important; color: #fff !important; box-shadow: 0 4px 0 #2e1065 !important; }
+  /* sections claires : fond très légèrement bleuté, accents violets */
+  .prestations:not(#offre), .methode, .videos, #faq { background: #fff !important; }
+  .methode { background: var(--brumeT) !important; }
+  .label::before { background: var(--violetT); }
+  h2 i, h1 i { color: var(--violetT); }
+  .presta, .etape, .note-3d { border-color: #1b1f8a !important; }
+  .presta { box-shadow: 0 6px 0 #1b1f8a !important; border-width: 2px !important; }
+  .presta .num { background: var(--jauneT) !important; color: var(--nuit) !important; box-shadow: 0 4px 0 #a65f00; }
+  .points li::marker, .points li::before { color: var(--violetT); }
+  /* tarifs */
+  #tarifs .tarif { background: rgba(255,255,255,.1) !important; color: #fff; border: 2px solid rgba(255,255,255,.8) !important; box-shadow: 0 6px 0 rgba(10,10,60,.45), 0 16px 30px rgba(0,0,0,.25) !important; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+  #tarifs .tarif * { color: inherit; }
+  #tarifs .tarif s, #tarifs .tarif del { color: #b9c0ff !important; }
+  #tarifs .tarif li::before { color: var(--jauneT) !important; }
+  #tarifs [class*="promo"], #tarifs .badge { background: var(--jauneT) !important; color: var(--nuit) !important; }
+  /* questions */
+  #faq summary::after { color: var(--violetT) !important; }
+  #faq details { border-color: #d9dcff !important; }
+  /* liens en pastilles */
+  .liens-zone a:hover { border-color: var(--violetT); color: var(--violetT); }
+  /* formulaires sur fond bleu */
+  .contact input, .contact textarea, .contact select { background: rgba(255,255,255,.1) !important; border-color: rgba(255,255,255,.4) !important; color: #fff !important; }
+  /* accueil : la présentation, juste sous la bannière, reste claire pour souffler */
+  .banniere + .heros { background: #fff !important; color: var(--encre) !important; }
+  .banniere + .heros::before { display: none; }
+  .banniere + .heros h1 { color: var(--encre) !important; text-shadow: none; }
+  .banniere + .heros h1 i { color: var(--violetT) !important; text-shadow: none; }
+  .banniere + .heros p { color: var(--gris) !important; }
+  .banniere + .heros .label { color: var(--violetT) !important; } .banniere + .heros .label::before { background: var(--violetT) !important; }
+  .banniere + .heros .btn-contour { background: #fff !important; color: var(--violetT) !important; border-color: var(--violetT) !important; box-shadow: 0 5px 0 var(--violetT) !important; }
+  /* questions et titres : la police des titres, pas d'italique */
+  details summary { font-family: var(--display) !important; font-weight: 700; font-size: 18px; }
+  .contact h3, .demande h3 { font-family: var(--display) !important; font-weight: 800; text-transform: uppercase; }
+  .contact h3 i, .demande h3 i, .heros h1 i { font-style: normal !important; }
+  header { background: rgba(255,255,255,.95) !important; }
+  /* pied de page */
+  footer { background: var(--nuit) !important; color: #9aa0d9 !important; }
+  footer a { color: #d9ddff !important; }
+
+  /* Bannière du haut, style « vignette tech » */
+  .banniere { position: relative; overflow: hidden; color: #fff; padding: 44px 0 50px;
+    background: radial-gradient(60% 70% at 85% 30%, rgba(74, 222, 255, .35), transparent 60%), radial-gradient(50% 60% at 10% 90%, rgba(168, 85, 247, .55), transparent 60%), linear-gradient(135deg, #1b1f8a 0%, #2b2fd1 45%, #5b21b6 100%); }
+  .banniere::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,.18) 1px, transparent 1.4px); background-size: 22px 22px; mask-image: linear-gradient(180deg, #000, transparent 80%); -webkit-mask-image: linear-gradient(180deg, #000, transparent 80%); pointer-events: none; }
+  .banniere .bloc { position: relative; display: grid; gap: 30px; }
+  .badges-tech { display: flex; flex-wrap: wrap; gap: 9px; }
+  .badges-tech span { display: grid; place-items: center; min-width: 52px; height: 52px; padding: 0 10px; border-radius: 13px; font: 700 13px "JetBrains Mono", monospace; color: #fff; border: 2px solid rgba(255,255,255,.85);
+    box-shadow: 0 5px 0 rgba(0,0,0,.35), 0 10px 22px rgba(0,0,0,.25); transform: rotate(var(--r, 0deg)); }
+  .titre-banniere { margin: 20px 0 0; font-family: var(--display); text-transform: uppercase; line-height: .92; letter-spacing: -.01em; }
+  .titre-banniere span { display: block; }
+  .titre-banniere .t1 { font-size: clamp(30px, 8.4vw, 58px); color: #fff; text-shadow: 0 3px 0 #1a1c6b, 0 6px 0 #12134d, 0 10px 18px rgba(0,0,0,.35); }
+  .titre-banniere .t2 { font-size: clamp(46px, 14vw, 104px); color: #ffd426; transform: rotate(-2deg); transform-origin: left; margin: 6px 0;
+    text-shadow: 0 3px 0 #d98a00, 0 6px 0 #a65f00, 0 9px 0 #6e3d00, 0 14px 24px rgba(0,0,0,.45); -webkit-text-stroke: 1px #6e3d00; }
+  .titre-banniere .t3 { font-size: clamp(24px, 6.4vw, 44px); color: #9ff3ff; text-shadow: 0 3px 0 #1a1c6b, 0 8px 16px rgba(0,0,0,.35); }
+  .liste-banniere { list-style: none; margin: 22px 0 0; padding: 16px 18px; border-radius: 18px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.28); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); max-width: 470px; }
+  .liste-banniere li { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; font-weight: 600; font-size: 15.5px; }
+  .liste-banniere li::before { content: "✓"; flex: none; display: grid; place-items: center; width: 22px; height: 22px; border-radius: 6px; background: #ffd426; color: #1b1f8a; font-weight: 800; font-size: 14px; margin-top: 1px; }
+  .btn-banniere { display: inline-flex; align-items: center; gap: 12px; margin-top: 22px; padding: 16px 28px; border-radius: 999px; text-decoration: none; font: 800 17px var(--display); text-transform: uppercase; letter-spacing: .02em;
+    color: #fff; background: linear-gradient(180deg, #8b5cf6, #5b21b6); border: 3px solid #fff; box-shadow: 0 6px 0 #2e1065, 0 14px 26px rgba(0,0,0,.35); transition: transform .12s, box-shadow .12s; }
+  .btn-banniere:hover { transform: translateY(3px); box-shadow: 0 3px 0 #2e1065, 0 8px 16px rgba(0,0,0,.35); }
+  .btn-banniere::before, .btn-banniere::after { content: "◀"; font-size: 12px; }
+  .btn-banniere::after { content: "▶"; }
+  .duo-videos { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; max-width: 520px; width: 100%; margin: 0 auto; }
+  .duo-videos figure { margin: 0; }
+  .duo-videos figure:nth-child(2) { transform: translateY(26px); }
+  .cadre-tel { border: 6px solid #10122e; border-radius: 26px; overflow: hidden; background: #000; box-shadow: 0 0 34px rgba(74, 222, 255, .35), 0 18px 36px rgba(0,0,0,.45); }
+  .cadre-tel video { display: block; width: 100%; aspect-ratio: 9 / 16; object-fit: cover; background: #000; }
+  .duo-videos figcaption { margin-top: 10px; text-align: center; font: 700 12px "JetBrains Mono", monospace; letter-spacing: .06em; text-transform: uppercase; color: #ffd426; }
+  @media (min-width: 900px) { .duo-videos { gap: 22px; } }
+  /* logos des outils */
+  .logo-t { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: #fff; border: 2px solid rgba(255,255,255,.9); box-shadow: 0 5px 0 rgba(0,0,0,.3), 0 10px 22px rgba(0,0,0,.25); flex: none; }
+  .logo-t i { display: block; width: 28px; height: 28px; -webkit-mask: var(--ic) center / contain no-repeat; mask: var(--ic) center / contain no-repeat; }
+  .logo-t b { font: 800 13px "JetBrains Mono", monospace; }
+  .badges-tech { gap: 10px; max-width: 520px; }
+  .banniere .bloc { grid-template-columns: 1fr !important; }
+  .badges-tech .logo-t { min-width: 0; padding: 0; width: 44px; height: 44px; border-radius: 14px; }
+  .badges-tech .logo-t:nth-child(odd) { transform: rotate(-4deg); } .badges-tech .logo-t:nth-child(even) { transform: rotate(4deg); }
+  .mur-outils { border-radius: 22px; padding: 20px 16px 22px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.28); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+  .mur-titre { margin: 0 0 16px; font: 700 12px "JetBrains Mono", monospace; letter-spacing: .06em; text-transform: uppercase; color: #ffd426; text-align: center; }
+  .grille-outils { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px 8px; }
+  .outil { display: grid; justify-items: center; gap: 7px; text-align: center; }
+  .outil span:last-child { font-size: 11.5px; line-height: 1.25; font-weight: 600; color: #e6e8ff; }
+  .outil .logo-t { width: 46px; height: 46px; box-shadow: 0 4px 0 rgba(0,0,0,.3); } .outil .logo-t i { width: 24px; height: 24px; }
+  @media (min-width: 560px) { .grille-outils { grid-template-columns: repeat(4, 1fr); } }
+  /* « Votre entreprise, de A à Z » : le style du titre de la bannière, sur fond clair */
+  .titre-clair { margin-top: 18px; }
+  .titre-clair .t1 { font-size: clamp(32px, 8.6vw, 60px); color: #1b1f8a; text-shadow: 0 3px 0 #b9bdf5, 0 6px 0 #8f95e6, 0 12px 20px rgba(27,31,138,.25); }
+  .titre-clair .t2 { font-size: clamp(46px, 14vw, 104px); }
+
+  /* Votre site, en direct */
+  .demo { position: relative; overflow: hidden; padding: 70px 0 90px; background: #0b0d2e; color: #fff; }
+  .demo::before { content: ""; position: absolute; inset: -20%; background: conic-gradient(from 0deg at 70% 45%, rgba(124,58,237,.0), rgba(124,58,237,.45), rgba(34,211,238,.3), rgba(255,212,38,.15), rgba(124,58,237,.0)); filter: blur(60px); animation: demoTourne 18s linear infinite; pointer-events: none; }
+  .demo::after { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px); background-size: 34px 34px; mask-image: radial-gradient(70% 70% at 60% 50%, #000, transparent); -webkit-mask-image: radial-gradient(70% 70% at 60% 50%, #000, transparent); pointer-events: none; }
+  @keyframes demoTourne { to { transform: rotate(360deg); } }
+  .demo .bloc { position: relative; z-index: 1; display: grid; gap: 30px; align-items: center; }
+  .demo .label { color: #ffd426 !important; } .demo .label::before { background: #ffd426 !important; }
+  .demo h2 { color: #fff; text-shadow: 0 3px 0 #1a1c6b, 0 8px 16px rgba(0,0,0,.3); }
+  .demo h2 i { color: #ffd426 !important; font-style: normal; }
+  .demo .intro { color: #c9cdf5; }
+  .demo-reglages { display: grid; gap: 16px; margin-top: 24px; max-width: 460px; }
+  .demo-reglages label { display: grid; gap: 7px; font: 700 12px "JetBrains Mono", monospace; letter-spacing: .06em; text-transform: uppercase; color: #9ff3ff; }
+  .demo-reglages input, .demo-reglages select { font: 600 17px var(--sans, system-ui); padding: 14px 16px; border-radius: 14px; border: 2px solid rgba(255,255,255,.35); background: rgba(255,255,255,.08); color: #fff; outline: none; }
+  .demo-reglages input::placeholder { color: rgba(255,255,255,.55); }
+  .demo-reglages select option { color: #111; }
+  .demo-reglages input:focus, .demo-reglages select:focus { border-color: #ffd426; }
+  .demo-couleurs { display: flex; gap: 10px; flex-wrap: wrap; }
+  .demo-couleurs button { width: 38px; height: 38px; border-radius: 50%; border: 3px solid rgba(255,255,255,.4); cursor: pointer; background: var(--c); transition: transform .15s; }
+  .demo-couleurs button[aria-pressed="true"] { border-color: #fff; transform: scale(1.15); box-shadow: 0 0 0 3px rgba(255,212,38,.6); }
+  .demo-direct { display: inline-flex; align-items: center; gap: 8px; margin-top: 18px; font: 700 12px "JetBrains Mono", monospace; letter-spacing: .06em; text-transform: uppercase; color: #7dffb3; }
+  .demo-direct::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: #7dffb3; box-shadow: 0 0 0 0 rgba(125,255,179,.7); animation: demoPouls 1.6s infinite; }
+  .demo-direct.main { color: #ffd426; } .demo-direct.main::before { background: #ffd426; animation: none; }
+  @keyframes demoPouls { 70% { box-shadow: 0 0 0 10px rgba(125,255,179,0); } }
+  .demo-scene { perspective: 1300px; display: grid; place-items: center; min-height: 660px; position: relative; }
+  .demo-tel { --c: #1d4ed8; position: relative; width: 290px; height: 590px; border-radius: 46px; padding: 12px; background: linear-gradient(145deg, #3a3e70, #0b0d26 60%); box-shadow: 0 50px 90px rgba(0,0,0,.6), 0 0 80px color-mix(in srgb, var(--c) 55%, transparent), inset 0 0 0 2px rgba(255,255,255,.14);
+    transform: rotateY(-18deg) rotateX(8deg); transform-style: preserve-3d; transition: transform .3s ease-out, box-shadow .6s; }
+  .demo-tel::after { content: ""; position: absolute; inset: 12px; border-radius: 34px; background: linear-gradient(115deg, rgba(255,255,255,.22), transparent 35%); pointer-events: none; z-index: 4; }
+  .demo-ecran { position: relative; height: 100%; border-radius: 34px; overflow: hidden; background: #fff; color: #1b1b2b; }
+  .demo-encoche { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 92px; height: 24px; border-radius: 20px; background: #0b0d26; z-index: 3; }
+  .demo-defile { animation: demoDefile 9s ease-in-out infinite; }
+  @keyframes demoDefile { 0%, 35% { transform: translateY(0); } 55%, 80% { transform: translateY(-230px); } 100% { transform: translateY(0); } }
+  .demo-haut { display: flex; align-items: center; gap: 9px; padding: 42px 16px 12px; border-bottom: 1px solid #eee; background: #fff; }
+  .demo-logo { width: 38px; height: 38px; flex: none; }
+  .demo-logo rect { fill: var(--c); transition: fill .5s; }
+  .demo-logo circle { fill: none; stroke: #fff; stroke-width: 2.5; stroke-dasharray: 80; stroke-dashoffset: 80; animation: demoTrace 1.2s .2s forwards; }
+  .demo-logo text { fill: #fff; font: 800 13px var(--display, system-ui); }
+  @keyframes demoTrace { to { stroke-dashoffset: 0; } }
+  .demo-nom { font: 800 14px var(--display, system-ui); line-height: 1.1; text-transform: uppercase; min-height: 1.1em; }
+  .demo-nom small { display: block; font: 600 10.5px system-ui; color: #777; text-transform: none; margin-top: 2px; }
+  .demo-curseur { display: inline-block; width: 2px; height: 1em; margin-left: 2px; background: currentColor; vertical-align: -2px; animation: demoClign 1s steps(1) infinite; }
+  @keyframes demoClign { 50% { opacity: 0; } }
+  .demo-hero { padding: 20px 16px 18px; background: linear-gradient(160deg, var(--c), color-mix(in srgb, var(--c) 50%, #000)); color: #fff; transition: background .6s; }
+  .demo-hero b { display: block; font: 800 21px/1.1 var(--display, system-ui); text-transform: uppercase; min-height: 1.1em; }
+  .demo-hero p { margin: 8px 0 0; font-size: 12.5px; opacity: .92; }
+  .demo-etoiles { margin-top: 10px; font-size: 12px; font-weight: 700; } .demo-etoiles span { color: #ffd426; letter-spacing: 1px; }
+  .demo-btn { display: inline-block; margin-top: 12px; padding: 9px 16px; border-radius: 999px; background: #fff; color: var(--c); font: 800 12px system-ui; text-transform: uppercase; transition: color .6s; }
+  .demo-services { padding: 14px 16px 6px; display: grid; gap: 8px; }
+  .demo-services div { display: flex; align-items: center; gap: 10px; padding: 11px 12px; border-radius: 12px; background: #f5f6fb; font-size: 13px; font-weight: 600; animation: demoEntre .5s both; }
+  .demo-services div::before { content: ""; width: 9px; height: 9px; border-radius: 3px; background: var(--c); flex: none; transition: background .6s; }
+  .demo-services div:nth-child(2) { animation-delay: .1s; } .demo-services div:nth-child(3) { animation-delay: .2s; }
+  @keyframes demoEntre { from { opacity: 0; transform: translateX(-14px); } }
+  .demo-galerie { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 8px 16px; }
+  .demo-galerie span { aspect-ratio: 1; border-radius: 10px; background: linear-gradient(135deg, color-mix(in srgb, var(--c) 75%, #fff), color-mix(in srgb, var(--c) 35%, #000)); transition: background .6s; }
+  .demo-galerie span:nth-child(2) { background: linear-gradient(200deg, #e9ecf7, color-mix(in srgb, var(--c) 45%, #fff)); }
+  .demo-galerie span:nth-child(3) { background: linear-gradient(20deg, color-mix(in srgb, var(--c) 30%, #fff), #f5f6fb); }
+  .demo-avis { margin: 6px 16px 16px; padding: 12px; border-radius: 12px; border: 1px solid #eceef6; font-size: 12px; }
+  .demo-avis b { display: block; margin-bottom: 4px; } .demo-avis span { color: #f5b400; }
+  .demo-google { position: absolute; z-index: 5; top: 2%; left: 50%; width: 270px; padding: 11px 13px; border-radius: 16px; background: #fff; color: #202124; box-shadow: 0 20px 44px rgba(0,0,0,.4); transform: translateX(-50%) translateZ(60px); font-family: system-ui, Arial, sans-serif; }
+  .demo-recherche { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; border: 1px solid #dfe1e5; font-size: 12.5px; min-height: 34px; }
+  .demo-recherche::before { content: ""; width: 12px; height: 12px; border: 2px solid #9aa0a6; border-radius: 50%; flex: none; box-sizing: border-box; }
+  .demo-resultat { padding-left: 2px; max-height: 0; overflow: hidden; opacity: 0; transition: max-height .45s, opacity .4s, margin .45s; }
+  .demo-resultat.vu { max-height: 90px; opacity: 1; margin-top: 9px; }
+  .demo-resultat small { display: block; font-size: 10.5px; color: #4d5156; }
+  .demo-resultat b { display: block; color: #1a0dab; font-size: 14px; font-weight: 500; margin: 1px 0; }
+  .demo-resultat em { font-style: normal; font-size: 11px; color: #70757a; } .demo-resultat em span { color: #f5b400; }
+  .demo-premier { float: right; font: 800 9.5px "JetBrains Mono", monospace; color: #fff; background: #0f9d58; padding: 2px 6px; border-radius: 6px; }
+  .demo-carte { --c: #1d4ed8; position: absolute; z-index: 5; left: 50%; bottom: 6%; width: 262px; padding: 12px 14px; border-radius: 16px; background: rgba(255,255,255,.97); color: #1b1b2b; box-shadow: 0 18px 40px rgba(0,0,0,.4);
+    transform: translate(-50%, 16px) translateZ(90px) scale(.96); display: flex; gap: 11px; align-items: center; opacity: 0; transition: opacity .35s, transform .5s cubic-bezier(.2,1.5,.4,1); }
+  .demo-carte.vue { opacity: 1; transform: translate(-50%, 0) translateZ(90px) scale(1); }
+  .demo-carte i { flex: none; width: 36px; height: 36px; border-radius: 11px; background: var(--c); display: grid; place-items: center; color: #fff; font-style: normal; font-weight: 800; font-size: 16px; transition: background .4s; }
+  .demo-carte b { display: block; font-size: 13px; } .demo-carte span { font-size: 12px; color: #666; }
+  .demo-carte small { margin-left: auto; align-self: flex-start; font-size: 10px; color: #999; }
+  #demoGo { margin-top: 22px; }
+  /* un design par métier, avec ses photos */
+  .demo-defile { display: flex; flex-direction: column; }
+  .demo-hero { background-size: cover !important; background-position: center !important; }
+  .demo-galerie span { background-size: cover !important; background-position: center !important; }
+  .demo-tel[data-t] .demo-hero b, .demo-tel[data-t] .demo-hero p, .demo-tel[data-t] .demo-btn, .demo-tel[data-t] .demo-services div { transition: all .5s; }
+  /* plombier : photo, voile bleu, rayures, bouton jaune */
+  .demo-tel[data-t="plombier"] .demo-hero { min-height: 230px; display: flex; flex-direction: column; justify-content: flex-end; background-image: linear-gradient(180deg, transparent 15%, color-mix(in srgb, var(--c) 92%, #000) 75%), var(--photo) !important; }
+  .demo-tel[data-t="plombier"] .demo-btn { border-radius: 6px; background: #ffd426; color: #111; }
+  .demo-tel[data-t="plombier"] .demo-services div { border-radius: 6px; border-left: 4px solid var(--c); background: #f1f4fb; }
+  /* nettoyage : photo en haut, texte sur fond clair, pastilles */
+  .demo-tel[data-t="nettoyage"] .demo-hero { color: #0b3b3a; padding-top: 168px; background-image: linear-gradient(180deg, transparent 0 150px, color-mix(in srgb, var(--c) 12%, #fff) 150px), var(--photo) !important; background-size: 100% 100%, 100% 150px !important; background-position: top !important; background-repeat: no-repeat !important; }
+  .demo-tel[data-t="nettoyage"] .demo-btn { background: var(--c); color: #fff; }
+  .demo-tel[data-t="nettoyage"] .demo-services div { border-radius: 999px; background: color-mix(in srgb, var(--c) 10%, #fff); }
+  .demo-tel[data-t="nettoyage"] .demo-galerie span { border-radius: 18px; }
+  /* coiffure : noir et or, serif, galerie avant les prestations, rendez-vous */
+  .demo-tel[data-t="coiffure"] .demo-haut { justify-content: center; }
+  .demo-tel[data-t="coiffure"] .demo-hero { min-height: 250px; display: flex; flex-direction: column; justify-content: center; text-align: center; background-image: linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.7)), var(--photo) !important; }
+  .demo-tel[data-t="coiffure"] .demo-hero b { font: italic 400 27px/1.05 Georgia, "Times New Roman", serif; text-transform: none; }
+  .demo-tel[data-t="coiffure"] .demo-hero p { font-family: Georgia, serif; font-style: italic; }
+  .demo-tel[data-t="coiffure"] .demo-btn { align-self: center; background: transparent; color: #fff; border: 1px solid #e8c77a; border-radius: 0; letter-spacing: .14em; font-weight: 600; }
+  .demo-tel[data-t="coiffure"] .demo-galerie { order: 2; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; padding: 12px 16px 4px; }
+  .demo-tel[data-t="coiffure"] .demo-galerie span { border-radius: 50%; }
+  .demo-tel[data-t="coiffure"] .demo-services { order: 3; }
+  .demo-tel[data-t="coiffure"] .demo-services div { background: #fff; border-bottom: 1px solid #eee; border-radius: 0; font-family: Georgia, serif; }
+  .demo-tel[data-t="coiffure"] .demo-avis { order: 4; }
+  /* photographe : grande photo plein écran, lettres espacées, galerie d'abord */
+  .demo-tel[data-t="photo"] .demo-haut { position: absolute; left: 0; right: 0; z-index: 2; background: transparent; border: 0; color: #fff; }
+  .demo-tel[data-t="photo"] .demo-nom small { color: #ddd; }
+  .demo-tel[data-t="photo"] .demo-hero { min-height: 330px; display: flex; flex-direction: column; justify-content: flex-end; background-image: linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.75)), var(--photo) !important; }
+  .demo-tel[data-t="photo"] .demo-hero b { font: 300 22px/1.15 system-ui; letter-spacing: .2em; }
+  .demo-tel[data-t="photo"] .demo-btn { align-self: flex-start; background: transparent; color: #fff; border-bottom: 1px solid #fff; border-radius: 0; padding: 4px 0; letter-spacing: .14em; }
+  .demo-tel[data-t="photo"] .demo-galerie { order: 2; grid-template-columns: 1fr 1fr 1fr; gap: 3px; padding: 3px; }
+  .demo-tel[data-t="photo"] .demo-galerie { grid-auto-rows: 74px; }
+  .demo-tel[data-t="photo"] .demo-galerie span { border-radius: 0; aspect-ratio: auto; } .demo-tel[data-t="photo"] .demo-galerie span:first-child { grid-column: span 2; grid-row: span 2; } .demo-tel[data-t="photo"] .demo-galerie span:last-child { grid-column: span 3; }
+  .demo-tel[data-t="photo"] .demo-hero p, .demo-tel[data-t="coiffure"] .demo-hero p, .demo-tel[data-t="coach"] .demo-hero p, .demo-tel[data-t="plombier"] .demo-hero p { color: #fff; opacity: 1; text-shadow: 0 1px 6px rgba(0,0,0,.6); }
+  .demo-tel[data-t="photo"] .demo-services { order: 3; } .demo-tel[data-t="photo"] .demo-avis { order: 4; }
+  .demo-tel[data-t="photo"] .demo-services div { background: #111; color: #fff; border-radius: 0; letter-spacing: .08em; text-transform: uppercase; font-size: 11px; }
+  /* fleuriste : photo dans une arche, pastels, galerie en mosaïque */
+  .demo-tel[data-t="fleuriste"] .demo-hero { color: #3b0d22; text-align: center; padding-top: 196px; background-image: radial-gradient(circle at 12% 18%, #ffd1e1 0 22px, transparent 23px), radial-gradient(circle at 90% 30%, #c9f2d6 0 18px, transparent 19px), linear-gradient(color-mix(in srgb, var(--c) 14%, #fff), color-mix(in srgb, var(--c) 14%, #fff)) !important; position: relative; }
+  .demo-tel[data-t="fleuriste"] .demo-hero::before { content: ""; position: absolute; top: 16px; left: 50%; width: 150px; height: 170px; transform: translateX(-50%); border-radius: 80px 80px 14px 14px; background: var(--photo) center / cover; box-shadow: 0 10px 24px rgba(0,0,0,.18); }
+  .demo-tel[data-t="fleuriste"] .demo-hero b { font: italic 700 24px/1.05 Georgia, serif; text-transform: none; }
+  .demo-tel[data-t="fleuriste"] .demo-btn { background: var(--c); color: #fff; border-radius: 22px 4px 22px 4px; }
+  .demo-tel[data-t="fleuriste"] .demo-galerie { grid-template-columns: 1.3fr 1fr; grid-auto-rows: 70px; }
+  .demo-tel[data-t="fleuriste"] .demo-galerie span { aspect-ratio: auto; border-radius: 16px; } .demo-tel[data-t="fleuriste"] .demo-galerie span:first-child { grid-row: span 2; }
+  /* garage : photo noir et blanc, bande de course, bloc sombre */
+  .demo-tel[data-t="garage"] .demo-hero { min-height: 220px; display: flex; flex-direction: column; justify-content: flex-end; background-image: linear-gradient(100deg, transparent 84%, var(--c) 84% 91%, #ffd426 91% 94%, transparent 94%), linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.8)), var(--photo) !important; filter: none; }
+  .demo-tel[data-t="garage"] .demo-hero p { color: #e5e5e5; opacity: 1; }
+  .demo-tel[data-t="garage"] .demo-hero b { font-style: italic; font-size: 24px; }
+  .demo-tel[data-t="garage"] .demo-btn { align-self: flex-start; background: var(--c); color: #fff; border-radius: 0; transform: skewX(-12deg); }
+  .demo-tel[data-t="garage"] .demo-services { background: #161616; padding-bottom: 14px; }
+  .demo-tel[data-t="garage"] .demo-services div { background: #232323; color: #fff; border-radius: 4px; }
+  .demo-tel[data-t="garage"] .demo-galerie { grid-template-columns: repeat(4, 1fr); gap: 4px; background: #161616; padding: 0 16px 14px; }
+  .demo-tel[data-t="garage"] .demo-galerie span { border-radius: 4px; filter: grayscale(.4); }
+  /* coach : photo voile néon, très gros titre, une grande photo et trois petites */
+  .demo-tel[data-t="coach"] .demo-hero { min-height: 250px; display: flex; flex-direction: column; justify-content: flex-end; background-image: linear-gradient(160deg, rgba(10,10,10,.2), rgba(10,10,10,.85) 60%), linear-gradient(0deg, color-mix(in srgb, var(--c) 60%, transparent), transparent), var(--photo) !important; }
+  .demo-tel[data-t="coach"] .demo-hero b { font-size: 30px; line-height: .95; color: #c6ff3d; text-shadow: 0 0 18px rgba(198,255,61,.45); }
+  .demo-tel[data-t="coach"] .demo-btn { align-self: flex-start; background: #c6ff3d; color: #111; transform: skewX(-10deg); border-radius: 4px; }
+  .demo-tel[data-t="coach"] .demo-services div { background: #111; color: #c6ff3d; border-radius: 4px; }
+  .demo-tel[data-t="coach"] .demo-galerie { grid-template-columns: 1fr 1fr 1fr; }
+  .demo-tel[data-t="coach"] .demo-galerie span { border-radius: 8px; } .demo-tel[data-t="coach"] .demo-galerie span:first-child { grid-column: span 3; aspect-ratio: 2.2; }
+  /* électricien : bleu nuit, circuit, éclair jaune */
+  .demo-tel[data-t="electricien"] .demo-hero { min-height: 230px; display: flex; flex-direction: column; justify-content: flex-end; background-image: linear-gradient(90deg, rgba(255,212,38,.18) 1px, transparent 1px), linear-gradient(rgba(255,212,38,.18) 1px, transparent 1px), linear-gradient(180deg, rgba(10,16,48,.35), rgba(10,16,48,.92) 70%), var(--photo) !important; background-size: 18px 18px, 18px 18px, cover, cover !important; }
+  .demo-tel[data-t="electricien"] .demo-hero b::before { content: "⚡ "; color: #ffd426; }
+  .demo-tel[data-t="electricien"] .demo-hero p { color: #fff; opacity: 1; }
+  .demo-tel[data-t="electricien"] .demo-btn { align-self: flex-start; background: #ffd426; color: #0a1030; border-radius: 4px; box-shadow: 0 0 16px rgba(255,212,38,.6); }
+  .demo-tel[data-t="electricien"] .demo-services div { background: #0a1030; color: #fff; border-radius: 6px; }
+  .demo-tel[data-t="electricien"] .demo-services div::before { background: #ffd426; border-radius: 50%; box-shadow: 0 0 8px #ffd426; }
+  /* esthéticienne : douceur, photo ronde, rose poudré */
+  .demo-tel[data-t="esthetique"] .demo-hero { text-align: center; color: #4a1630; padding-top: 170px; position: relative; background-image: linear-gradient(180deg, color-mix(in srgb, var(--c) 14%, #fff), #fff) !important; }
+  .demo-tel[data-t="esthetique"] .demo-hero::before { content: ""; position: absolute; top: 18px; left: 50%; width: 140px; height: 140px; transform: translateX(-50%); border-radius: 50%; background: var(--photo) center / cover; border: 5px solid #fff; box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 35%, #fff), 0 12px 26px rgba(0,0,0,.15); }
+  .demo-tel[data-t="esthetique"] .demo-hero b { font: 400 24px/1.1 Georgia, serif; text-transform: none; letter-spacing: .02em; }
+  .demo-tel[data-t="esthetique"] .demo-btn { background: var(--c); color: #fff; }
+  .demo-tel[data-t="esthetique"] .demo-services div { border-radius: 999px; justify-content: center; background: color-mix(in srgb, var(--c) 8%, #fff); }
+  .demo-tel[data-t="esthetique"] .demo-galerie span { border-radius: 50%; }
+  /* traiteur : grande photo gourmande, voile chaud, serif, galerie en mosaïque */
+  .demo-tel[data-t="traiteur"] .demo-hero { min-height: 260px; display: flex; flex-direction: column; justify-content: flex-end; background-image: linear-gradient(180deg, transparent 20%, rgba(40,14,0,.88)), var(--photo) !important; }
+  .demo-tel[data-t="traiteur"] .demo-hero b { font: 700 25px/1.05 Georgia, serif; text-transform: none; color: #ffe7c2; }
+  .demo-tel[data-t="traiteur"] .demo-hero p { color: #fff; opacity: 1; }
+  .demo-tel[data-t="traiteur"] .demo-btn { align-self: flex-start; background: var(--c); color: #fff; border-radius: 4px; }
+  .demo-tel[data-t="traiteur"] .demo-galerie { order: 2; grid-template-columns: 1fr 1fr; grid-auto-rows: 64px; }
+  .demo-tel[data-t="traiteur"] .demo-galerie span { aspect-ratio: auto; border-radius: 10px; } .demo-tel[data-t="traiteur"] .demo-galerie span:nth-child(2) { grid-row: span 2; }
+  .demo-tel[data-t="traiteur"] .demo-services { order: 3; } .demo-tel[data-t="traiteur"] .demo-avis { order: 4; }
+  /* paysagiste : photo verte avec vague, feuilles */
+  .demo-tel[data-t="paysagiste"] .demo-hero { min-height: 240px; display: flex; flex-direction: column; justify-content: flex-end; border-radius: 0 0 50% 50% / 0 0 24px 24px; background-image: linear-gradient(180deg, transparent 25%, color-mix(in srgb, var(--c) 85%, #000)), var(--photo) !important; }
+  .demo-tel[data-t="paysagiste"] .demo-hero p { color: #fff; opacity: 1; }
+  .demo-tel[data-t="paysagiste"] .demo-btn { align-self: flex-start; background: #fff; color: var(--c); border-radius: 18px 4px 18px 4px; }
+  .demo-tel[data-t="paysagiste"] .demo-services div { background: color-mix(in srgb, var(--c) 9%, #fff); border-radius: 4px 16px 4px 16px; }
+  .demo-tel[data-t="paysagiste"] .demo-services div::before { content: "❦"; width: auto; height: auto; background: none; color: var(--c); font-size: 14px; }
+  .demo-tel[data-t="paysagiste"] .demo-galerie span { border-radius: 4px 22px 4px 22px; }
+  /* architecte d'intérieur : épuré, blanc, typographie fine, photo encadrée */
+  .demo-tel[data-t="archi"] .demo-hero { color: #111; padding: 14px 16px 18px; background-image: none !important; background-color: #fff !important; }
+  .demo-tel[data-t="archi"] .demo-hero::before { content: ""; display: block; height: 190px; margin: 0 -16px 14px; background: var(--photo) center / cover; }
+  .demo-tel[data-t="archi"] .demo-hero b { font: 200 25px/1.1 system-ui; letter-spacing: .16em; }
+  .demo-tel[data-t="archi"] .demo-hero p { color: #555; opacity: 1; }
+  .demo-tel[data-t="archi"] .demo-etoiles { color: #111; }
+  .demo-tel[data-t="archi"] .demo-btn { background: #111; color: #fff; border-radius: 0; letter-spacing: .12em; }
+  .demo-tel[data-t="archi"] .demo-services div { background: #fff; border-top: 1px solid #111; border-radius: 0; font-weight: 400; letter-spacing: .06em; text-transform: uppercase; font-size: 11px; }
+  .demo-tel[data-t="archi"] .demo-services div::before { display: none; }
+  .demo-tel[data-t="archi"] .demo-galerie { grid-template-columns: 1fr 1fr; grid-auto-rows: 120px; gap: 4px; }
+  .demo-tel[data-t="archi"] .demo-galerie span { aspect-ratio: auto; border-radius: 0; }
+  /* bien-être : calme, sauge, photo floutée en fond, pastilles */
+  .demo-tel[data-t="bienetre"] .demo-hero { min-height: 250px; display: flex; flex-direction: column; justify-content: center; text-align: center; background-image: radial-gradient(circle at 50% 40%, rgba(255,255,255,.15), rgba(15,60,50,.75)), var(--photo) !important; }
+  .demo-tel[data-t="bienetre"] .demo-hero b { font: italic 400 26px/1.1 Georgia, serif; text-transform: none; }
+  .demo-tel[data-t="bienetre"] .demo-hero p { color: #fff; opacity: 1; }
+  .demo-tel[data-t="bienetre"] .demo-btn { align-self: center; background: rgba(255,255,255,.9); color: var(--c); }
+  .demo-tel[data-t="bienetre"] .demo-services div { border-radius: 999px; background: color-mix(in srgb, var(--c) 10%, #fff); justify-content: center; }
+  .demo-tel[data-t="bienetre"] .demo-galerie span { border-radius: 50% 50% 18px 18px; }
+  .banniere + .heros .demo-hero p { color: inherit !important; }
+  .demo-note { margin-top: 14px; font-size: 13px; color: #9aa0d9; }
+  .banniere + .heros .bloc { display: grid; gap: 34px; align-items: center; }
+  /* les réglages, sur fond clair */
+  .demo-zone { display: grid; gap: 10px; }
+  .heros .demo-reglages { margin: 0 auto; width: 100%; max-width: 420px; padding: 18px; border-radius: 20px; background: #f4f5ff; border: 1px solid #e0e3ff; gap: 12px; }
+  .demo-essai { margin: 0 !important; font: 700 15px var(--display, system-ui) !important; color: #1b1f8a !important; }
+  .heros .demo-reglages label { color: #5b21b6; }
+  .heros .demo-reglages input, .heros .demo-reglages select { background: #fff; color: #1b1b2b; border-color: #d9dcff; }
+  .heros .demo-reglages input::placeholder { color: #8a8fb5; }
+  .heros .demo-reglages input:focus, .heros .demo-reglages select:focus { border-color: #5b21b6; }
+  .heros .demo-couleurs button { border-color: #fff; box-shadow: 0 0 0 1px #d9dcff; }
+  .heros .demo-couleurs button[aria-pressed="true"] { box-shadow: 0 0 0 3px #ffd426; }
+  .banniere + .heros { overflow: visible !important; }
+  @media (min-width: 900px) { .banniere + .heros .bloc { grid-template-columns: .9fr 1.1fr; } .demo .bloc { grid-template-columns: .9fr 1.1fr; gap: 40px; } .demo-google { left: 2%; top: 10%; transform: translateZ(60px); } .demo-carte { left: 76%; bottom: 14%; } }
+  @media (max-width: 899px) { .demo-scene { display: flex; flex-direction: column; align-items: center; gap: 18px; min-height: 0; } .demo-google { position: relative; top: auto; left: auto; transform: none; } .demo-carte { bottom: 4%; } }
+  @media (max-width: 420px) { .demo-scene { min-height: 0; } .demo-tel { width: 262px; height: 535px; } .demo-google { width: 250px; } }
+  @media (prefers-reduced-motion: reduce) { .demo::before, .demo-defile, .demo-services div, .demo-logo circle { animation: none; } .demo-logo circle { stroke-dashoffset: 0; } .demo-tel { transition: none; } }
+  /* écrans dessinés */
+  .ecrans { position: relative; height: 270px; max-width: 520px; width: 100%; margin: 0 auto; }
+  .ordi { position: absolute; left: 0; right: 40px; top: 10px; }
+  .ordi .ecran { aspect-ratio: 16 / 10; border-radius: 12px 12px 0 0; border: 8px solid #10122e; border-bottom-width: 12px; background: #0f1330; overflow: hidden; box-shadow: 0 0 40px rgba(74, 222, 255, .35); }
+  .ordi .socle { height: 12px; margin: 0 -26px; border-radius: 0 0 14px 14px; background: linear-gradient(180deg, #c9cde0, #8d92ad); }
+  .ui { display: grid; grid-template-columns: 1.25fr 1fr; gap: 8px; height: 100%; padding: 10px; }
+  .ui .code { font: 500 9.5px/1.6 "JetBrains Mono", monospace; color: #8fa3ff; white-space: pre; overflow: hidden; }
+  .ui .code b { color: #ffd426; font-weight: 500; } .ui .code i { color: #7dffb3; font-style: normal; }
+  .ui .cartes { display: grid; gap: 7px; align-content: start; }
+  .ui .cartes span { height: 30px; border-radius: 7px; background: linear-gradient(90deg, rgba(255,255,255,.18), rgba(255,255,255,.06)); }
+  .ui .cartes span:first-child { height: 46px; background: linear-gradient(135deg, #ffd426, #ff9f1c); }
+  .tel { position: absolute; right: 0; bottom: 0; width: 112px; aspect-ratio: 9 / 18.5; border-radius: 20px; border: 6px solid #10122e; background: #fff; overflow: hidden; box-shadow: 0 18px 36px rgba(0,0,0,.45); transform: rotate(6deg); }
+  .tel .haut-t { height: 30px; background: #1b1f8a; }
+  .tel .bloc-t { margin: 8px; height: 40px; border-radius: 8px; background: #eef0ff; }
+  .tel .bloc-t.j { background: #ffd426; height: 26px; }
+  .flotte { position: absolute; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%; font: 700 12px "JetBrains Mono", monospace; color: #1b1f8a; background: #ffd426; box-shadow: 0 6px 0 #a65f00, 0 12px 20px rgba(0,0,0,.3); animation: flotter 4s ease-in-out infinite; }
+  .flotte.f2 { background: #9ff3ff; box-shadow: 0 6px 0 #1a7f99, 0 12px 20px rgba(0,0,0,.3); animation-delay: -2s; }
+  @keyframes flotter { 50% { transform: translateY(-10px); } }
+  @media (prefers-reduced-motion: reduce) { .flotte { animation: none; } }
+  @media (min-width: 900px) { .banniere { padding: 64px 0 70px; } .banniere .bloc { grid-template-columns: 1.1fr 1fr; align-items: center; gap: 40px; } .ecrans { height: 380px; } .tel { width: 140px; } }
+
+  /* L'offre dans le style de la bannière du haut */
+  #offre { position: relative; overflow: hidden; color: #fff;
+    background: radial-gradient(55% 60% at 90% 10%, rgba(74, 222, 255, .3), transparent 60%), radial-gradient(50% 60% at 0% 100%, rgba(168, 85, 247, .5), transparent 60%), linear-gradient(160deg, #1b1f8a 0%, #2b2fd1 50%, #5b21b6 100%); }
+  #offre::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,.14) 1px, transparent 1.4px); background-size: 22px 22px; pointer-events: none; }
+  #offre .bloc { position: relative; }
+  #offre .label { color: #ffd426; } #offre .label::before { background: #ffd426; }
+  #offre h2 { color: #fff; text-shadow: 0 3px 0 #1a1c6b, 0 8px 16px rgba(0,0,0,.3); }
+  #offre h2 i { color: #ffd426; text-shadow: 0 3px 0 #a65f00, 0 8px 16px rgba(0,0,0,.35); }
+  #offre .intro { color: #d9ddff; }
+  #offre .presta { background: rgba(255,255,255,.1) !important; border: 2px solid rgba(255,255,255,.75) !important; box-shadow: 0 6px 0 rgba(10,10,60,.45), 0 16px 30px rgba(0,0,0,.25) !important; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+  #offre .presta .num { background: #ffd426 !important; color: #1b1f8a !important; box-shadow: 0 4px 0 #a65f00; }
+  #offre .presta h3 { color: #fff; }
+  #offre .presta h3 small { color: #9ff3ff !important; }
+  #offre .presta p { color: #d9ddff !important; }
+  #offre .carte-lien .lire { color: #ffd426; border-bottom-color: #ffd426; }
+  #offre .carte-lien .fleche { background: #ffd426; color: #1b1f8a; border-color: #fff; }
+  #offre .carte-lien .fleche:hover { background: #fff; color: #1b1f8a; }
+  #offre .liens-zone a { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.4); color: #fff; }
+  #offre .liens-zone a:hover { background: #ffd426; border-color: #ffd426; color: #1b1f8a; }
+  .menu a { white-space: nowrap; } @media (max-width: 960px) { .menu { gap: 14px !important; } .menu a { font-size: 14px; } }
 </style>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "ProfessionalService", "name": "Nora Éditions Artisans", "description": "Création de site internet référencé sur Google (SEO), fiche Google, logo et appli métier pour les artisans du bâtiment, adaptés à chaque métier. Réseaux sociaux, vidéos et articles en option.", "url": "https://artisans.noraeditions.fr/", "email": "contact@noraeditions.com", "logo": "https://artisans.noraeditions.fr/medias/icone-512.png", "image": "https://artisans.noraeditions.fr/medias/icone-512.png", "areaServed": {"@type": "Country", "name": "France"}, "parentOrganization": {"@type": "Organization", "name": "Nora Éditions", "url": "https://noraeditions.fr/"}, "makesOffer": [{"@type": "Offer", "name": "Création : site internet, fiche Google, logo et appli", "price": "200", "priceCurrency": "EUR"}, {"@type": "Offer", "name": "Abonnement : site et appli en ligne", "priceSpecification": {"@type": "UnitPriceSpecification", "price": "10", "priceCurrency": "EUR", "unitText": "mois"}}]}</script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Je suis auto-entrepreneur, c'est fait pour moi ?", "acceptedAnswer": {"@type": "Answer", "text": "Oui, c'est pensé pour vous : devis et factures prêts à envoyer, un outil simple sur le téléphone, et un prix adapté."}}, {"@type": "Question", "name": "Mon site sera à mon nom ?", "acceptedAnswer": {"@type": "Answer", "text": "Oui. Votre site porte le nom de votre entreprise et votre logo, sur votre propre adresse."}}, {"@type": "Question", "name": "Je ne suis pas à l'aise avec l'informatique.", "acceptedAnswer": {"@type": "Answer", "text": "L'appli se prend en main en quelques minutes, avec un tuto vidéo. Pour le site et la fiche Google, nous nous occupons de tout."}}, {"@type": "Question", "name": "Ça marche pour mon métier ?", "acceptedAnswer": {"@type": "Answer", "text": "Plomberie, carrelage, électricité, peinture, plâtrerie, maçonnerie, menuiserie ou tous corps d'état : le site et l'appli s'adaptent à votre métier."}}, {"@type": "Question", "name": "Mon site sera visible sur Google ?", "acceptedAnswer": {"@type": "Answer", "text": "Oui. Chaque site est bien référencé sur Google : nous nous en occupons, pour que les clients qui cherchent un artisan près de chez eux vous trouvent."}}, {"@type": "Question", "name": "Que faut-il pour créer mon site ?", "acceptedAnswer": {"@type": "Answer", "text": "Vous remplissez le questionnaire et vous nous envoyez vos réalisations : photos et vidéos de vos chantiers. Nous nous occupons du reste."}}, {"@type": "Question", "name": "Vous débutez et vous n'avez pas encore de photos ?", "acceptedAnswer": {"@type": "Answer", "text": "Pas de souci, on se débrouille. Votre site démarre avec des visuels qui présentent vos prestations, et vos chantiers s'ajoutent au fur et à mesure : vous prenez les photos avec votre appli, elles arrivent sur votre site."}}, {"@type": "Question", "name": "Qui voit mes clients et mes devis ?", "acceptedAnswer": {"@type": "Answer", "text": "Vous seul. Vos clients, vos devis et vos chantiers restent à vous, dans votre logiciel. Nous ne recevons que les photos et vidéos que vous choisissez de nous envoyer pour vos vidéos."}}, {"@type": "Question", "name": "Comment je paie ?", "acceptedAnswer": {"@type": "Answer", "text": "Par virement. Pour l'abonnement, le plus simple est un virement permanent depuis votre banque, mis en place une fois pour toutes. Vous recevez une facture à chaque paiement."}}, {"@type": "Question", "name": "Je peux arrêter l'abonnement ?", "acceptedAnswer": {"@type": "Answer", "text": "Oui, quand vous voulez : envoyez-nous un e-mail à contact@noraeditions.com, et l'abonnement s'arrête."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "ProfessionalService", "name": "Nora Éditions Artisans", "description": "Création de site internet référencé sur Google (SEO), fiche Google, logo et application web sur mesure pour les freelances, les artisans, les entreprises de nettoyage et tous les indépendants, adaptés à chaque métier. Réseaux sociaux, vidéos et articles en option.", "url": "https://artisans.noraeditions.fr/", "email": "contact@noraeditions.com", "logo": "https://artisans.noraeditions.fr/medias/icone-512.png", "image": "https://artisans.noraeditions.fr/medias/icone-512.png", "areaServed": {"@type": "Country", "name": "France"}, "parentOrganization": {"@type": "Organization", "name": "Nora Éditions", "url": "https://noraeditions.fr/"}, "makesOffer": [{"@type": "Offer", "name": "Création : site internet, fiche Google, logo et appli", "price": "200", "priceCurrency": "EUR"}, {"@type": "Offer", "name": "Abonnement : site et appli en ligne", "priceSpecification": {"@type": "UnitPriceSpecification", "price": "10", "priceCurrency": "EUR", "unitText": "mois"}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Je suis auto-entrepreneur, c'est fait pour moi ?", "acceptedAnswer": {"@type": "Answer", "text": "Oui, c'est pensé pour vous : devis et factures prêts à envoyer, un outil simple sur le téléphone, et un prix adapté."}}, {"@type": "Question", "name": "Mon site sera à mon nom ?", "acceptedAnswer": {"@type": "Answer", "text": "Oui. Votre site porte le nom de votre entreprise et votre logo, sur votre propre adresse."}}, {"@type": "Question", "name": "Je ne suis pas à l'aise avec l'informatique.", "acceptedAnswer": {"@type": "Answer", "text": "L'appli se prend en main en quelques minutes, avec un tuto vidéo. Pour le site et la fiche Google, nous nous occupons de tout."}}, {"@type": "Question", "name": "Ça marche pour mon métier ?", "acceptedAnswer": {"@type": "Answer", "text": "Artisans du bâtiment et autres artisans, entreprises de nettoyage, freelances, coachs, photographes, consultants… : le site et l'appli s'adaptent à votre métier."}}, {"@type": "Question", "name": "Mon site sera visible sur Google ?", "acceptedAnswer": {"@type": "Answer", "text": "Oui. Chaque site est bien référencé sur Google : nous nous en occupons, pour que les clients qui cherchent votre métier près de chez eux vous trouvent."}}, {"@type": "Question", "name": "Que faut-il pour créer mon site ?", "acceptedAnswer": {"@type": "Answer", "text": "Vous remplissez le questionnaire et vous nous envoyez vos réalisations : photos et vidéos de votre travail. Nous nous occupons du reste."}}, {"@type": "Question", "name": "Vous débutez et vous n'avez pas encore de photos ?", "acceptedAnswer": {"@type": "Answer", "text": "Pas de souci, on se débrouille. Votre site démarre avec des visuels qui présentent vos prestations, et vos réalisations s'ajoutent au fur et à mesure : vous prenez les photos avec votre appli, elles arrivent sur votre site."}}, {"@type": "Question", "name": "Qui voit mes clients et mes devis ?", "acceptedAnswer": {"@type": "Answer", "text": "Vous seul. Vos clients, vos devis et vos factures restent à vous, dans votre application. Nous ne recevons que les photos et vidéos que vous choisissez de nous envoyer pour vos vidéos."}}, {"@type": "Question", "name": "Comment je paie ?", "acceptedAnswer": {"@type": "Answer", "text": "Par virement. Pour l'abonnement, le plus simple est un virement permanent depuis votre banque, mis en place une fois pour toutes. Vous recevez une facture à chaque paiement."}}, {"@type": "Question", "name": "Je peux arrêter l'abonnement ?", "acceptedAnswer": {"@type": "Answer", "text": "Oui, quand vous voulez : envoyez-nous un e-mail à contact@noraeditions.com, et l'abonnement s'arrête."}}]}</script>
 <script src="/medias/clic.js" defer></script>
 </head>
 <body>
@@ -396,64 +748,76 @@
   <div class="bloc">
     <a class="logo" href="#haut" aria-label="Nora Éditions Artisans, retour en haut"><img src="medias/nora-logo-rouge.png" alt="" width="34" height="34"><span class="marque-nora">Nora Éditions<b>Artisans</b></span></a>
     <nav class="menu" aria-label="Menu">
-      <a href="#appli">Votre appli</a>
+      <a href="/appli-devis-artisan/">Votre application</a>
       <a href="#offre">L'offre</a>
+      <a href="/realisations/">Réalisations</a>
       <a href="#tarifs">Tarifs</a>
       <a href="#contact">Contact</a>
     </nav>
-    <details class="menu-tel"><summary aria-label="Ouvrir le menu"><span></span><span></span><span></span></summary><nav onclick="this.parentNode.open=false"><a href="/#appli">Votre appli</a><a href="/#offre">L'offre</a><a href="/#tarifs">Tarifs</a><a href="/#contact">Contact</a><a href="/questionnaire.html">Questionnaire</a></nav></details>
+    <details class="menu-tel"><summary aria-label="Ouvrir le menu"><span></span><span></span><span></span></summary><nav onclick="this.parentNode.open=false"><a href="/appli-devis-artisan/">Votre application</a><a href="/#offre">L'offre</a><a href="/realisations/">Réalisations</a><a href="/#tarifs">Tarifs</a><a href="/#contact">Contact</a><a href="/questionnaire.html">Questionnaire</a></nav></details>
     <a class="tel-haut" href="questionnaire.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg><span>Questionnaire</span></a>
   </div>
 </header>
 
 <main id="haut">
 
+<section class="banniere" id="appli" style="scroll-margin-top:66px" aria-label="Création de site internet et application web sur mesure pour freelances et artisans">
+  <div class="bloc">
+    <div>
+      <div class="badges-tech" aria-hidden="true"><span class="logo-t"><i style="--ic:url(https://cdn.jsdelivr.net/npm/simple-icons@13.21.0/icons/html5.svg);background:#e34f26"></i></span><span class="logo-t"><i style="--ic:url(https://cdn.jsdelivr.net/npm/simple-icons@13.21.0/icons/css3.svg);background:#1572b6"></i></span><span class="logo-t"><i style="--ic:url(https://cdn.jsdelivr.net/npm/simple-icons@13.21.0/icons/javascript.svg);background:#e8c300"></i></span><span class="logo-t"><i style="--ic:url(https://cdn.jsdelivr.net/npm/simple-icons@13.21.0/icons/threedotjs.svg);background:#111111"></i></span><span class="logo-t"><i style="--ic:url(https://cdn.jsdelivr.net/npm/simple-icons@13.21.0/icons/python.svg);background:#3776ab"></i></span><span class="logo-t"><i style="--ic:url(https://cdn.jsdelivr.net/npm/simple-icons@13.21.0/icons/supabase.svg);background:#3ecf8e"></i></span><span class="logo-t"><i style="--ic:url(https://cdn.jsdelivr.net/npm/simple-icons@13.21.0/icons/postgresql.svg);background:#4169e1"></i></span><span class="logo-t"><i style="--ic:url(https://cdn.jsdelivr.net/npm/simple-icons@13.21.0/icons/pwa.svg);background:#5a0fc8"></i></span><span class="logo-t"><i style="--ic:url(https://cdn.jsdelivr.net/npm/simple-icons@13.21.0/icons/git.svg);background:#f05032"></i></span><span class="logo-t"><i style="--ic:url(https://cdn.jsdelivr.net/npm/simple-icons@13.21.0/icons/json.svg);background:#111111"></i></span><span class="logo-t"><i style="--ic:url(https://cdn.jsdelivr.net/npm/simple-icons@13.21.0/icons/ffmpeg.svg);background:#007808"></i></span></div>
+      <p class="titre-banniere"><span class="t1">Création de site</span><span class="t2">Full stack</span><span class="t3">+ application web<br>sur mesure</span></p>
+      <ul class="liste-banniere">
+        <li>Site au nom de votre entreprise, sur mesure</li>
+        <li>Référencement local : Google (SEO) et fiche Google</li>
+        <li>Rédaction d'articles SEO pour votre site</li>
+        <li>Boutique en ligne : vos produits, commandés et payés en ligne</li>
+        <li>Montage vidéo</li>
+        <li>Web marketing : réseaux, vidéos et annuaires</li>
+        <li>Application web sur mesure : devis, factures, paiements</li>
+        <li>Simulation 3D</li>
+        <li>Pensé pour le téléphone d'abord</li>
+      </ul>
+      <a class="btn-banniere" href="questionnaire.html">Je veux mon site</a>
+    </div>
+  </div>
+</section>
+
 <section class="heros">
-  <div class="bloc heros-grille">
+  <div class="bloc">
    <div>
-    <span class="label">Création de site internet · artisans du bâtiment</span>
-    <h1>Votre entreprise, <i>de A à Z.</i></h1>
-    <p>Création de votre site internet, de votre fiche Google et de votre logo, avec son logiciel métier pour vos devis, vos factures et vos paiements. Vous faites les travaux, nous nous occupons du reste.</p>
+    <span class="label">Création de site internet</span>
+    <h1 class="titre-banniere titre-clair"><span class="t1">Votre entreprise,</span><span class="t2">de A à Z.</span></h1>
+    <p>Création de votre site internet, de votre fiche Google et de votre logo, avec son application web sur mesure pour vos devis, vos factures et vos paiements. Vous faites votre métier, nous nous occupons du reste.</p>
     <div class="actions">
       <a class="btn btn-sombre" href="questionnaire.html">Remplir le questionnaire</a>
-      <a class="btn btn-contour" href="#exemple">Voir un exemple</a>
+      
     </div>
    </div>
-   <div class="heros-tel"><video src="medias/pub-nora-artisans.mp4" poster="medias/pub-nora-artisans.jpg" playsinline controls preload="metadata" aria-label="Vidéo : ce que Nora Éditions Artisans fait pour les artisans du bâtiment"></video></div>
-  </div>
-</section>
-
-<section id="appli" class="methode">
-  <div class="bloc">
-    <div class="apparait">
-      <span class="label">Votre appli</span>
-      <h2>Tout le chantier,<br><i>dans votre poche.</i></h2>
-      <p class="intro">Votre appli métier fait partie de votre site : quand un client fait une demande sur votre site, elle arrive directement dans votre appli. Au nom de votre entreprise et avec votre logo, sur votre téléphone ou votre tablette, elle s'adapte à votre métier.</p>
+    <div class="demo-zone">
+    <div class="demo-reglages">
+      <p class="demo-essai">Essayez avec un nom, un métier et une couleur :</p>
+      <label>Un nom d'entreprise<input id="demoNom" type="text" maxlength="28" placeholder="Tapez un nom" autocomplete="off"></label>
+      <label>Un métier<select id="demoMetier"><option value="plombier">Plombier chauffagiste</option><option value="nettoyage">Entreprise de nettoyage</option><option value="coiffure">Coiffeuse à domicile</option><option value="photo">Photographe</option><option value="fleuriste">Fleuriste</option><option value="garage">Garagiste</option><option value="coach">Coach sportif</option><option value="electricien">Électricien</option><option value="esthetique">Esthéticienne</option><option value="traiteur">Traiteur</option><option value="paysagiste">Paysagiste</option><option value="archi">Architecte d'intérieur</option><option value="bienetre">Praticienne bien-être</option></select></label>
+      <label>Une couleur<div class="demo-couleurs" id="demoCouleurs"><button type="button" style="--c:#5b21b6" aria-label="Violet" aria-pressed="false" data-c="#5b21b6"></button><button type="button" style="--c:#0f766e" aria-label="Vert" aria-pressed="false" data-c="#0f766e"></button><button type="button" style="--c:#1d4ed8" aria-label="Bleu" aria-pressed="false" data-c="#1d4ed8"></button><button type="button" style="--c:#be123c" aria-label="Framboise" aria-pressed="false" data-c="#be123c"></button><button type="button" style="--c:#c2410c" aria-label="Orange" aria-pressed="false" data-c="#c2410c"></button><button type="button" style="--c:#111827" aria-label="Noir" aria-pressed="false" data-c="#111827"></button></div></label>
     </div>
-    <div class="demo-appli apparait">
-      <div class="heros-tel demo-tel"><video src="medias/appli-flex.mp4" poster="medias/appli-flex.jpg" playsinline controls preload="metadata" aria-label="Vidéo : un aperçu de l'appli métier"></video></div>
-      <div class="demo-bouton"><a class="btn btn-sombre" href="questionnaire.html">Je veux mon appli</a></div>
+    <div class="demo-scene" id="demoScene" aria-hidden="true">
+      <div class="demo-google"><div class="demo-recherche" id="demoRecherche"></div>
+        <div class="demo-resultat" id="demoResultat"><span class="demo-premier">1er</span><small id="demoUrl">martin-plomberie.fr</small><b id="demoLien">Martin Plomberie · Plombier chauffagiste</b><em><span>★★★★★</span> 4,9 · 52 avis</em></div></div>
+      <div class="demo-tel" id="demoTel">
+        <div class="demo-ecran">
+          <div class="demo-encoche"></div>
+          <div class="demo-defile">
+            <div class="demo-haut"><svg class="demo-logo" id="demoLogo" viewBox="0 0 38 38"><rect width="38" height="38" rx="11"/><circle cx="19" cy="19" r="13"/><text x="19" y="23.5" text-anchor="middle" id="demoInit">MP</text></svg><div class="demo-nom"><span id="demoNomAff">Martin Plomberie</span><small id="demoMetierAff">Plombier chauffagiste · Cergy</small></div></div>
+            <div class="demo-hero"><b><span id="demoTitre">Martin Plomberie</span><span class="demo-curseur"></span></b><p id="demoAccroche">Dépannage et salle de bain, rapide et propre.</p><div class="demo-etoiles"><span>★★★★★</span> 4,9 · avis Google</div><span class="demo-btn" id="demoBtn">Demander un devis</span></div>
+            <div class="demo-services" id="demoServices"><div>Dépannage fuite</div><div>Chauffe-eau</div><div>Salle de bain complète</div></div>
+            <div class="demo-galerie"><span></span><span></span><span></span><span></span></div>
+            <div class="demo-avis"><b>Claire, cliente</b><span>★★★★★</span> Travail soigné, devis reçu le jour même.</div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-carte" id="demoCarte"><i id="demoIcone">€</i><div><b id="demoCarteTitre">Nouvelle demande de devis</b><span id="demoCarteTxt"></span></div><small>à l'instant</small></div>
     </div>
-    <div class="enregistre apparait">
-      <p class="donnees">Vos clients, vos devis, vos chantiers : tout reste à vous, et vous seul y avez accès. Pas de télétransmission : rien ne part sans votre clic.</p>
-      <p style="margin-top:22px"><a class="lien" href="/facture-electronique-artisan/">Facture électronique : ce qui vous concerne, et ce qui ne vous concerne pas →</a></p>
     </div>
-  </div>
-</section>
-
-<section id="exemple" class="videos">
-  <div class="bloc">
-    <div class="apparait">
-      <span class="label">Exemple de réalisation</span>
-      <h2>KA Rénovation,<br><i>de A à Z.</i></h2>
-      <p class="intro">Artisan de la salle de bain en Île-de-France. Logo, fiche Google, site internet et appli métier : tout a été fait par Nora Éditions.</p>
-      <p class="intro" style="margin-top:12px">Son appli, c'est l'appli Flex, devenue « l'appli KA » : à sa marque, à son logo, réglée pour son métier. Chaque artisan a la sienne, adaptée à ce qu'il fait : un plombier n'a pas les mêmes besoins qu'un carreleur.</p>
-    </div>
-    <div class="ka-grille apparait">
-      <figure class="ka-carte"><a href="https://karenovation.fr" target="_blank" rel="noopener"><img src="medias/ka-site.jpg" alt="Le site de KA Rénovation sur téléphone" class="ka-site"></a><figcaption>Son site, karenovation.fr</figcaption></figure>
-      <figure class="ka-carte"><video src="medias/tuto-appli.mp4" poster="medias/tuto-appli.jpg" controls playsinline preload="none"></video><figcaption>Son appli : l'appli Flex, devenue « l'appli KA »</figcaption></figure>
-    </div>
-    <a class="lien" href="https://karenovation.fr" target="_blank" rel="noopener">Voir le site de KA Rénovation →</a>
   </div>
 </section>
 
@@ -462,18 +826,23 @@
     <div class="apparait">
       <span class="label">L'offre</span>
       <h2>Adapté à votre métier,<br><i>à vos besoins.</i></h2>
-      <p class="intro">Plombier, carreleur, électricien, peintre ou tous corps d'état : on s'adapte à chaque métier et à chaque demande. Vous prenez ce dont vous avez besoin, rien de plus.</p>
+      <p class="intro">Artisan du bâtiment, garagiste, traiteur, fleuriste, entreprise de nettoyage, coach, photographe ou consultant : on s'adapte à chaque métier et à chaque demande. Vous prenez ce dont vous avez besoin, rien de plus.</p>
     </div>
     <div class="liste-presta">
-      <div class="presta carte-lien apparait"><span class="num">01</span><h3>Votre logo</h3><p>Un logo dessiné pour votre entreprise, prêt à mettre sur vos devis, votre site, vos réseaux et vos tenues de travail.</p><a class="lire" href="/logo-artisan/">En savoir plus</a><a class="fleche" href="/logo-artisan/" aria-label="En savoir plus">→</a></div>
+      <div class="presta carte-lien apparait"><span class="num">01</span><h3>Votre logo</h3><p>Un logo dessiné pour votre entreprise, prêt à mettre sur vos devis, votre site, vos réseaux, votre vitrine et vos tenues.</p><a class="lire" href="/logo-artisan/">En savoir plus</a><a class="fleche" href="/logo-artisan/" aria-label="En savoir plus">→</a></div>
       <div class="presta carte-lien apparait"><span class="num">02</span><h3>Votre fiche Google</h3><p>Une fiche créée ou reprise, soignée et reliée à votre site, pour que les clients du coin vous appellent.</p><a class="lire" href="/referencement-google-artisan/">En savoir plus</a><a class="fleche" href="/referencement-google-artisan/" aria-label="En savoir plus">→</a></div>
-      <div class="presta carte-lien apparait"><span class="num">03</span><h3>Votre site internet</h3><p>Un site au nom de votre entreprise, facile à lire sur téléphone, avec vos réalisations et une demande de devis. Bien référencé sur Google.</p><a class="lire" href="/creation-site-internet-artisan/">En savoir plus</a><a class="fleche" href="/creation-site-internet-artisan/" aria-label="En savoir plus">→</a></div>
-      <div class="presta carte-lien apparait"><span class="num">04</span><h3>L'appli métier de votre site</h3><p>Une appli à votre nom pour vos demandes, vos devis, vos factures et vos chantiers, du premier appel jusqu'au paiement.</p><a class="lire" href="/appli-devis-artisan/">En savoir plus</a><a class="fleche" href="/appli-devis-artisan/" aria-label="En savoir plus">→</a></div>
-      <div class="presta carte-lien apparait"><span class="num">05</span><h3>Vidéos, réseaux et annuaires <small style="font-size:14px;color:var(--gris)">· en option</small></h3><p>Un suivi chaque mois : vos photos de chantier deviennent des publications et des vidéos, et votre site reçoit de nouveaux articles. 25 € par mois.</p><a class="lire" href="/community-manager-artisan/">En savoir plus</a><a class="fleche" href="/community-manager-artisan/" aria-label="En savoir plus">→</a></div>
+      <div class="presta carte-lien apparait"><span class="num">03</span><h3>Votre site internet</h3><p>Un site au nom de votre entreprise, facile à lire sur téléphone, avec votre travail et une demande de devis ou de rendez-vous. Bien référencé sur Google.</p><a class="lire" href="/creation-site-internet-artisan/">En savoir plus</a><a class="fleche" href="/creation-site-internet-artisan/" aria-label="En savoir plus">→</a></div>
+      <div class="presta carte-lien apparait"><span class="num">04</span><h3>L'application web sur mesure de votre site</h3><p>Une appli à votre nom pour vos demandes, vos devis, vos factures et vos rendez-vous, du premier appel jusqu'au paiement.</p><a class="lire" href="/appli-devis-artisan/">En savoir plus</a><a class="fleche" href="/appli-devis-artisan/" aria-label="En savoir plus">→</a></div>
+      <div class="presta carte-lien apparait"><span class="num">05</span><h3>Web marketing : vidéos, réseaux et annuaires <small style="font-size:14px;color:var(--gris)">· en option</small></h3><p>Un suivi chaque mois : les photos de votre travail deviennent des publications et des vidéos, et votre site reçoit de nouveaux articles. 25 € par mois.</p><a class="lire" href="/community-manager-artisan/">En savoir plus</a><a class="fleche" href="/community-manager-artisan/" aria-label="En savoir plus">→</a></div>
+      <div class="presta apparait"><span class="num">06</span><h3>Votre boutique en ligne <small style="font-size:14px;color:var(--gris)">· en option</small></h3><p>Vos produits sur votre site, avec leurs photos et leurs prix : vos clients commandent et paient en ligne, et la commande arrive dans votre appli. Gâteaux, bouquets, bijoux, bons cadeaux, séances…</p></div>
     </div>
-    <div class="liens-metiers apparait" id="metiers" style="margin-top:30px;scroll-margin-top:90px"><p class="intro" style="margin:0">Votre métier :</p><div class="liens-zone"><a href="/site-internet-plombier/">Plombier, chauffagiste</a><a href="/site-internet-carreleur/">Carreleur</a><a href="/site-internet-electricien/">Électricien</a><a href="/site-internet-peintre/">Peintre</a><a href="/site-internet-macon/">Maçon</a><a href="/site-internet-plaquiste/">Plaquiste, plâtrier</a><a href="/site-internet-menuisier/">Menuisier</a><a href="/site-internet-couvreur/">Couvreur</a><a href="/site-internet-charpentier/">Charpentier</a><a href="/site-internet-facadier/">Façadier</a><a href="/site-internet-cuisiniste/">Cuisiniste</a><a href="/site-internet-paysagiste/">Paysagiste</a><a href="/site-internet-climatisation/">Climatisation, pompe à chaleur</a><a href="/site-internet-renovation-tous-corps-etat/">Tous corps d&#x27;état</a></div></div>
-    <div class="liens-services apparait" style="margin-top:22px"><p class="intro" style="margin:0">En détail :</p><div class="liens-zone"><a href="/creation-site-internet-artisan/">Création de site internet</a><a href="/appli-devis-artisan/">Logiciel de devis</a><a href="/logiciel-facturation-artisan/">Logiciel de facturation</a><a href="/logo-artisan/">Logo d'artisan</a><a href="/referencement-google-artisan/">Référencement Google</a><a href="/community-manager-artisan/">Community manager</a></div></div>
-    <div class="liens-guides apparait" style="margin-top:22px"><p class="intro" style="margin:0">Les guides :</p><div class="liens-zone"><a href="/facture-electronique-artisan/">Facture électronique et particuliers</a><a href="/trouver-des-clients-artisan/">Trouver ses premiers clients</a><a href="/mentions-obligatoires-devis-artisan/">Mentions d&#x27;un devis</a></div></div>
+    <div class="liens-metiers apparait" id="metiers" style="margin-top:30px;scroll-margin-top:90px"><p class="intro" style="margin:0">Artisans du bâtiment :</p><div class="liens-zone"><a href="/site-internet-plombier/">Plombier, chauffagiste</a><a href="/site-internet-carreleur/">Carreleur</a><a href="/site-internet-electricien/">Électricien</a><a href="/site-internet-peintre/">Peintre</a><a href="/site-internet-macon/">Maçon</a><a href="/site-internet-plaquiste/">Plaquiste, plâtrier</a><a href="/site-internet-menuisier/">Menuisier</a><a href="/site-internet-couvreur/">Couvreur</a><a href="/site-internet-charpentier/">Charpentier</a><a href="/site-internet-facadier/">Façadier</a><a href="/site-internet-cuisiniste/">Cuisiniste</a><a href="/site-internet-paysagiste/">Paysagiste</a><a href="/site-internet-climatisation/">Climatisation, pompe à chaleur</a><a href="/site-internet-renovation-tous-corps-etat/">Tous corps d&#x27;état</a></div></div>
+    <div class="liens-metiers apparait" style="margin-top:18px;scroll-margin-top:90px"><p class="intro" style="margin:0">Autres artisans :</p><div class="liens-zone"><a href="/site-internet-boulanger-patissier/">Boulanger, pâtissier</a><a href="/site-internet-traiteur/">Traiteur</a><a href="/site-internet-boucher-charcutier/">Boucher, charcutier</a><a href="/site-internet-chocolatier-confiseur/">Chocolatier, confiseur</a><a href="/site-internet-glacier/">Glacier</a><a href="/site-internet-fromager/">Fromager</a><a href="/site-internet-caviste/">Caviste</a><a href="/site-internet-food-truck/">Food truck</a><a href="/site-internet-garagiste/">Garagiste, mécanicien</a><a href="/site-internet-carrossier/">Carrossier</a><a href="/site-internet-mecanicien-domicile/">Mécanicien à domicile</a><a href="/site-internet-reparateur-moto-velo/">Réparateur moto, vélo</a><a href="/site-internet-depanneur-remorquage/">Dépanneur, remorquage</a><a href="/site-internet-lavage-auto-domicile/">Lavage auto à domicile</a><a href="/site-internet-serrurier/">Serrurier</a><a href="/site-internet-vitrier/">Vitrier</a><a href="/site-internet-ramoneur/">Ramoneur</a><a href="/site-internet-antenniste/">Antenniste</a><a href="/site-internet-reparateur-electromenager/">Réparateur électroménager</a><a href="/site-internet-reparateur-telephone-ordinateur/">Réparateur téléphone, ordinateur</a><a href="/site-internet-demenageur/">Déménageur</a><a href="/site-internet-debarras-encombrants/">Débarras, encombrants</a><a href="/site-internet-couturiere-retouches/">Couturière, retouches</a><a href="/site-internet-cordonnier/">Cordonnier</a><a href="/site-internet-bijoutier-createur/">Bijoutier, créateur</a><a href="/site-internet-horloger/">Horloger</a><a href="/site-internet-maroquinier/">Maroquinier</a><a href="/site-internet-tapissier-ebeniste/">Tapissier, ébéniste</a><a href="/site-internet-encadreur/">Encadreur</a><a href="/site-internet-ceramiste-potier/">Céramiste, potier</a><a href="/site-internet-souffleur-verre/">Souffleur de verre</a><a href="/site-internet-graveur-imprimeur-enseigniste/">Graveur, imprimeur, enseigniste</a><a href="/site-internet-barbier/">Barbier</a><a href="/site-internet-prothesiste-ongulaire/">Prothésiste ongulaire</a><a href="/site-internet-tatoueur/">Tatoueur</a><a href="/site-internet-toiletteur/">Toiletteur</a><a href="/site-internet-fleuriste/">Fleuriste</a><a href="/site-internet-jardinier/">Jardinier, espaces verts</a><a href="/site-internet-elagueur/">Élagueur</a><a href="/site-internet-pisciniste/">Pisciniste</a><a href="/site-internet-ferronnier-metallier/">Ferronnier, métallier</a><a href="/site-internet-taille-haies-tonte/">Taille de haies, tonte</a></div></div>
+    <div class="liens-metiers apparait" style="margin-top:18px;scroll-margin-top:90px"><p class="intro" style="margin:0">Nettoyage :</p><div class="liens-zone"><a href="/site-internet-entreprise-nettoyage/">Entreprise de nettoyage</a><a href="/site-internet-menage-domicile/">Ménage à domicile</a><a href="/site-internet-laveur-vitres/">Laveur de vitres</a><a href="/site-internet-nettoyage-fin-chantier/">Nettoyage de fin de chantier</a><a href="/site-internet-conciergerie-airbnb/">Conciergerie et ménage Airbnb</a></div></div>
+    <div class="liens-metiers apparait" style="margin-top:18px;scroll-margin-top:90px"><p class="intro" style="margin:0">Freelances et indépendants :</p><div class="liens-zone"><a href="/site-internet-photographe/">Photographe et vidéaste</a><a href="/site-internet-coach-sportif/">Coach sportif</a><a href="/site-internet-consultant/">Consultant</a><a href="/site-internet-graphiste/">Graphiste</a><a href="/site-internet-formateur/">Formateur</a><a href="/site-internet-traducteur/">Traducteur</a><a href="/site-internet-praticien-bien-etre/">Praticien bien-être</a><a href="/site-internet-estheticienne-domicile/">Esthéticienne à domicile</a><a href="/site-internet-coiffeur-domicile/">Coiffeur à domicile</a><a href="/site-internet-professeur-particulier/">Professeur particulier</a><a href="/site-internet-architecte/">Architecte</a><a href="/site-internet-architecte-interieur/">Architecte d'intérieur, décorateur</a></div></div>
+    <div class="liens-services apparait" style="margin-top:22px"><p class="intro" style="margin:0">En détail :</p><div class="liens-zone"><a href="/creation-site-internet-artisan/">Création de site internet</a><a href="/appli-devis-artisan/">Logiciel de devis</a><a href="/logiciel-facturation-artisan/">Logiciel de facturation</a><a href="/logo-artisan/">Logo</a><a href="/referencement-google-artisan/">Référencement Google</a><a href="/community-manager-artisan/">Web marketing</a></div></div>
+    <div class="liens-guides apparait" style="margin-top:22px"><p class="intro" style="margin:0">Le guide pour tous :</p><div class="liens-zone"><a href="/facturation-electronique/">Facturation électronique 2026-2027</a></div></div>
+    <div class="liens-guides apparait" style="margin-top:22px"><p class="intro" style="margin:0">Les guides des artisans du bâtiment :</p><div class="liens-zone"><a href="/facture-electronique-artisan/">Facture électronique et particuliers</a><a href="/trouver-des-clients-artisan/">Trouver ses premiers clients</a><a href="/mentions-obligatoires-devis-artisan/">Mentions d&#x27;un devis</a></div></div>
   </div>
 </section>
 
@@ -489,13 +858,13 @@
     </div>
     <div class="tarifs">
       <div class="tarif apparait"><span class="promo">Promo · durée limitée</span><div class="chiffre"><s>200 €</s> 190 €</div><h3>La création</h3><p class="gris">Une seule fois.</p>
-        <ul><li>Votre site internet, avec vos réalisations</li><li>Un site bien référencé sur Google</li><li>Votre fiche Google</li><li>Votre logo si besoin</li><li>L'appli métier de votre site, au nom de votre entreprise</li></ul></div>
-      <div class="tarif apparait"><div class="chiffre">10 € <small>/ mois</small></div><h3>L'abonnement</h3><p class="gris">Votre site et son appli métier, en ligne.</p>
-        <ul><li>Site hébergé et à jour</li><li>L'appli métier complète</li><li>Les nouveautés de l'appli</li></ul></div>
-      <div class="tarif apparait"><div class="chiffre">100 €</div><h3>L'appli métier seule</h3><p class="gris">Puis 30 € par an.</p>
-        <ul><li>L'appli complète, au nom de votre entreprise et avec votre logo</li><li>Devis, factures, relances, signature en ligne</li><li>Carnet de chantier, dépenses, paiements, PV</li></ul></div>
-      <div class="tarif option apparait"><span class="promo">En option</span><div class="chiffre">25 € <small>/ mois</small></div><h3>Community manager</h3><p class="gris">Vidéos, réseaux, articles et annuaires.</p>
-        <ul><li>Vous envoyez photos et vidéos depuis votre appli</li><li>Nous créons vos réseaux et nous les faisons vivre : nous postons régulièrement</li><li>Nous montons vos vidéos, au bon format pour chaque réseau</li><li>Nous écrivons des articles pour votre site, pour qu'il soit bien vu par Google</li><li>Nous vous inscrivons sur tous les annuaires pro</li></ul></div>
+        <ul><li>Votre site internet, avec vos réalisations</li><li>Un site bien référencé sur Google</li><li>Votre fiche Google</li><li>Votre logo si besoin</li><li>L'application web sur mesure de votre site, au nom de votre entreprise</li></ul></div>
+      <div class="tarif apparait"><div class="chiffre">10 € <small>/ mois</small></div><h3>L'abonnement</h3><p class="gris">Votre site et son application web sur mesure, en ligne.</p>
+        <ul><li>Site hébergé et à jour</li><li>L'application web sur mesure complète</li><li>Les nouveautés de l'application</li></ul></div>
+      <div class="tarif apparait"><div class="chiffre">100 €</div><h3>L'application web sur mesure seule</h3><p class="gris">Puis 30 € par an.</p>
+        <ul><li>L'application complète, au nom de votre entreprise et avec votre logo</li><li>Devis, factures, relances, signature en ligne</li><li>Agenda, rappels, dépenses et paiements</li></ul></div>
+      <div class="tarif option apparait"><span class="promo">En option</span><div class="chiffre">25 € <small>/ mois</small></div><h3>Web marketing</h3><p class="gris">Vidéos, réseaux, articles et annuaires.</p>
+        <ul><li>Vous envoyez photos et vidéos depuis votre application</li><li>Nous créons vos réseaux et nous les faisons vivre : nous postons régulièrement</li><li>Nous montons vos vidéos, au bon format pour chaque réseau</li><li>Nous écrivons des articles pour votre site, pour qu'il soit bien vu par Google</li><li>Nous vous inscrivons sur tous les annuaires pro</li></ul></div>
     </div>
   </div>
 </section>
@@ -510,11 +879,11 @@
       <details><summary>Je suis auto-entrepreneur, c'est fait pour moi ?</summary><p>Oui, c'est pensé pour vous : devis et factures prêts à envoyer, un outil simple sur le téléphone, et un prix adapté.</p></details>
       <details><summary>Mon site sera à mon nom ?</summary><p>Oui. Votre site porte le nom de votre entreprise et votre logo, sur votre propre adresse.</p></details>
       <details><summary>Je ne suis pas à l'aise avec l'informatique.</summary><p>L'appli se prend en main en quelques minutes, avec un tuto vidéo. Pour le site et la fiche Google, nous nous occupons de tout.</p></details>
-      <details><summary>Ça marche pour mon métier ?</summary><p>Plomberie, carrelage, électricité, peinture, plâtrerie, maçonnerie, menuiserie ou tous corps d'état : le site et l'appli s'adaptent à votre métier.</p></details>
-      <details><summary>Mon site sera visible sur Google ?</summary><p>Oui. Chaque site est bien référencé sur Google : nous nous en occupons, pour que les clients qui cherchent un artisan près de chez eux vous trouvent.</p></details>
-      <details><summary>Que faut-il pour créer mon site ?</summary><p>Vous remplissez le questionnaire et vous nous envoyez vos réalisations : photos et vidéos de vos chantiers. Nous nous occupons du reste.</p></details>
-      <details><summary>Vous débutez et vous n'avez pas encore de photos ?</summary><p>Pas de souci, on se débrouille. Votre site démarre avec des visuels qui présentent vos prestations, et vos chantiers s'ajoutent au fur et à mesure : vous prenez les photos avec votre appli, elles arrivent sur votre site.</p></details>
-      <details><summary>Qui voit mes clients et mes devis ?</summary><p>Vous seul. Vos clients, vos devis et vos chantiers restent à vous, dans votre logiciel. Nous ne recevons que les photos et vidéos que vous choisissez de nous envoyer pour vos vidéos.</p></details>
+      <details><summary>Ça marche pour mon métier ?</summary><p>Artisans du bâtiment et autres artisans, entreprises de nettoyage, freelances, coachs, photographes, consultants… : le site et l'appli s'adaptent à votre métier.</p></details>
+      <details><summary>Mon site sera visible sur Google ?</summary><p>Oui. Chaque site est bien référencé sur Google : nous nous en occupons, pour que les clients qui cherchent votre métier près de chez eux vous trouvent.</p></details>
+      <details><summary>Que faut-il pour créer mon site ?</summary><p>Vous remplissez le questionnaire et vous nous envoyez vos réalisations : photos et vidéos de votre travail. Nous nous occupons du reste.</p></details>
+      <details><summary>Vous débutez et vous n'avez pas encore de photos ?</summary><p>Pas de souci, on se débrouille. Votre site démarre avec des visuels qui présentent vos prestations, et vos réalisations s'ajoutent au fur et à mesure : vous prenez les photos avec votre appli, elles arrivent sur votre site.</p></details>
+      <details><summary>Qui voit mes clients et mes devis ?</summary><p>Vous seul. Vos clients, vos devis et vos factures restent à vous, dans votre application. Nous ne recevons que les photos et vidéos que vous choisissez de nous envoyer pour vos vidéos.</p></details>
       <details><summary>Comment je paie ?</summary><p>Par virement. Pour l'abonnement, le plus simple est un virement permanent depuis votre banque, mis en place une fois pour toutes. Vous recevez une facture à chaque paiement.</p></details>
       <details><summary>Je peux arrêter l'abonnement ?</summary><p>Oui, quand vous voulez : envoyez-nous un e-mail à contact@noraeditions.com, et l'abonnement s'arrête.</p></details>
     </div>
@@ -556,6 +925,58 @@
   const vue = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) e.target.classList.add("vu"); }), { threshold: .12 });
   document.querySelectorAll(".apparait").forEach(el => vue.observe(el));
 
+</script>
+<script>
+(() => {
+  const M = {"plombier": {"q": "plombier cergy", "nom": "Martin Plomberie", "metier": "Plombier chauffagiste", "accroche": "Dépannage et salle de bain, rapide et propre.", "services": ["Dépannage fuite", "Chauffe-eau", "Salle de bain complète"], "ville": "Cergy", "c": "#1d4ed8", "cta": "Demander un devis", "notifs": [["€", "Nouvelle demande de devis", "Salle de bain complète · Cergy"], ["✓", "Devis signé en ligne", "4 850 €"], ["↓", "Acompte reçu", "1 455 € · virement"]]}, "nettoyage": {"q": "entreprise de nettoyage lyon", "nom": "Éclat Services", "metier": "Entreprise de nettoyage", "accroche": "Bureaux et copropriétés, impeccables chaque semaine.", "services": ["Nettoyage de bureaux", "Parties communes", "Vitres"], "ville": "Lyon", "c": "#0f766e", "cta": "Demander un devis", "notifs": [["€", "Nouvelle demande de devis", "Bureaux 400 m² · Lyon"], ["✓", "Contrat signé en ligne", "690 € par mois"], ["↓", "Paiement reçu", "690 € · prélèvement"]]}, "coiffure": {"q": "coiffeuse à domicile nantes", "nom": "Sarah Coiffure", "metier": "Coiffeuse à domicile", "accroche": "Coupes, couleurs et mariées, chez vous.", "services": ["Coupe et brushing", "Couleur", "Coiffure de mariée"], "ville": "Nantes", "c": "#be123c", "cta": "Prendre rendez-vous", "notifs": [["◷", "Nouveau rendez-vous", "Samedi 10 h · coupe et brushing"], ["✉", "Rappel envoyé à la cliente", "Vendredi 18 h"], ["↓", "Paiement reçu", "65 € · carte"]]}, "photo": {"q": "photographe mariage bordeaux", "nom": "Lumière Studio", "metier": "Photographe", "accroche": "Mariages, portraits et entreprises.", "services": ["Mariage", "Portrait", "Photos d'entreprise"], "ville": "Bordeaux", "c": "#111827", "cta": "Réserver ma date", "notifs": [["◷", "Date demandée", "Mariage · samedi 14 juin"], ["✓", "Contrat signé en ligne", "1 400 €"], ["↓", "Acompte reçu", "420 € · virement"]]}, "fleuriste": {"q": "fleuriste lille", "nom": "L'Atelier des Fleurs", "metier": "Fleuriste", "accroche": "Bouquets du jour, livrés près de chez vous.", "services": ["Bouquets du jour", "Mariages", "Livraison"], "ville": "Lille", "c": "#c2410c", "cta": "Commander un bouquet", "notifs": [["✿", "Nouvelle commande", "Bouquet de saison · 45 €"], ["↓", "Payée en ligne", "45 € · carte"], ["➜", "Livraison prévue", "Demain 11 h · Lille"]]}, "garage": {"q": "garage toulouse", "nom": "Garage Durand", "metier": "Garagiste", "accroche": "Entretien et réparations, toutes marques.", "services": ["Révision", "Freins et pneus", "Diagnostic"], "ville": "Toulouse", "c": "#be123c", "cta": "Prendre rendez-vous", "notifs": [["◷", "Nouveau rendez-vous", "Révision · mardi 8 h 30"], ["✓", "Devis accepté", "420 €"], ["↓", "Paiement reçu", "420 € · carte"]]}, "coach": {"q": "coach sportif marseille", "nom": "Move Coaching", "metier": "Coach sportif", "accroche": "Séances à domicile ou en plein air.", "services": ["Séance découverte", "Carnet de séances", "Cours collectifs"], "ville": "Marseille", "c": "#0f766e", "cta": "Réserver une séance", "notifs": [["◷", "Nouvelle réservation", "Séance découverte · lundi 7 h"], ["↓", "Carnet de 10 séances payé", "350 € · carte"], ["✉", "Rappel envoyé", "Dimanche 19 h"]]}, "electricien": {"q": "électricien versailles", "nom": "Volt Électricité", "metier": "Électricien", "accroche": "Mise aux normes, dépannage et tableaux électriques.", "services": ["Dépannage", "Mise aux normes", "Tableau électrique"], "ville": "Versailles", "c": "#1d4ed8", "cta": "Demander un devis", "notifs": [["€", "Nouvelle demande de devis", "Mise aux normes · Versailles"], ["✓", "Devis signé en ligne", "2 300 €"], ["↓", "Acompte reçu", "690 € · virement"]]}, "esthetique": {"q": "esthéticienne montpellier", "nom": "Belle Peau Institut", "metier": "Esthéticienne", "accroche": "Soins du visage, beauté des mains, épilation.", "services": ["Soin du visage", "Manucure", "Épilation"], "ville": "Montpellier", "c": "#be123c", "cta": "Prendre rendez-vous", "notifs": [["◷", "Nouveau rendez-vous", "Jeudi 14 h · soin du visage"], ["✉", "Rappel envoyé à la cliente", "Mercredi 18 h"], ["↓", "Paiement reçu", "75 € · carte"]]}, "traiteur": {"q": "traiteur mariage nice", "nom": "Saveurs & Réceptions", "metier": "Traiteur", "accroche": "Mariages, anniversaires et entreprises.", "services": ["Buffets", "Cocktails dînatoires", "Plateaux repas"], "ville": "Nice", "c": "#c2410c", "cta": "Demander un devis", "notifs": [["€", "Nouvelle demande de devis", "Mariage · 120 invités"], ["✓", "Devis signé en ligne", "6 200 €"], ["↓", "Acompte reçu", "1 860 € · virement"]]}, "paysagiste": {"q": "paysagiste aix-en-provence", "nom": "Les Jardins de Léo", "metier": "Paysagiste", "accroche": "Création et entretien de jardins.", "services": ["Création de jardin", "Pose de gazon", "Entretien à l'année"], "ville": "Aix-en-Provence", "c": "#0f766e", "cta": "Demander un devis", "notifs": [["€", "Nouvelle demande de devis", "Création de jardin · 300 m²"], ["✓", "Devis signé en ligne", "7 900 €"], ["◷", "Passage planifié", "Lundi 8 h · entretien"]]}, "archi": {"q": "architecte d'intérieur paris", "nom": "Atelier Line", "metier": "Architecte d'intérieur", "accroche": "Des intérieurs qui vous ressemblent.", "services": ["Conseil déco", "Plans 3D", "Suivi des travaux"], "ville": "Paris", "c": "#111827", "cta": "Prendre rendez-vous", "notifs": [["◷", "Nouveau rendez-vous", "Visite · appartement 70 m²"], ["✓", "Proposition signée", "3 500 €"], ["↓", "Acompte reçu", "1 050 € · virement"]]}, "bienetre": {"q": "massage bien-être strasbourg", "nom": "Zen & Équilibre", "metier": "Praticienne bien-être", "accroche": "Massages, réflexologie et relaxation.", "services": ["Massage relaxant", "Réflexologie", "Pierres chaudes"], "ville": "Strasbourg", "c": "#0f766e", "cta": "Réserver un soin", "notifs": [["◷", "Nouvelle réservation", "Massage relaxant · vendredi 17 h"], ["✉", "Rappel envoyé", "Jeudi 18 h"], ["↓", "Paiement reçu", "70 € · carte"]]}};
+  const cles = Object.keys(M), $ = id => document.getElementById(id);
+  const tel = $("demoTel"), scene = $("demoScene"), carte = $("demoCarte"), calme = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let auto = !calme, idx = 0, minuteurs = [], visible = false;
+  const plus_tard = (f, ms) => minuteurs.push(setTimeout(f, ms));
+  const stop = () => { minuteurs.forEach(clearTimeout); minuteurs = []; };
+  const initiales = n => (n.replace(/[^A-Za-zÀ-ÿ' ]/g, "").split(/[\s']+/).filter(w => w.length > 1).slice(0, 2).map(w => w[0].toUpperCase()).join("") || "N");
+  const adresse = n => n.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") + ".fr";
+  function couleur(c) { tel.style.setProperty("--c", c); carte.style.setProperty("--c", c);
+    $("demoCouleurs").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.c === c)); }
+  function nom(n) { $("demoNomAff").textContent = n; $("demoTitre").textContent = n; $("demoInit").textContent = initiales(n);
+    $("demoLien").textContent = n + " · " + M[$("demoMetier").value].metier; $("demoUrl").textContent = adresse(n); }
+  function retrace() { const c = document.querySelector(".demo-logo circle"); c.style.animation = "none"; c.getBoundingClientRect(); c.style.animation = ""; }
+  function taper(el, texte, ms, fin) { let i = 0; el.textContent = ""; (function pas() { el.textContent = texte.slice(0, ++i); if (i < texte.length) plus_tard(pas, ms); else if (fin) fin(); })(); }
+  function notifs(d) {
+    d.notifs.forEach(([ic, t, x], k) => plus_tard(() => { carte.classList.remove("vue");
+      plus_tard(() => { $("demoIcone").textContent = ic; $("demoCarteTitre").textContent = t; $("demoCarteTxt").textContent = x; carte.classList.add("vue"); }, 250); }, 1400 + k * 1700));
+  }
+  function google(d, n) { $("demoResultat").classList.remove("vu"); $("demoLien").textContent = n + " · " + d.metier; $("demoUrl").textContent = adresse(n);
+    taper($("demoRecherche"), d.q, 55, () => plus_tard(() => $("demoResultat").classList.add("vu"), 250)); }
+  function montrer(cle, nomTape) {
+    stop(); const d = M[cle]; $("demoMetier").value = cle; tel.dataset.t = cle; tel.style.setProperty("--photo", `url(/medias/demo/${cle}-0.jpg)`); $("demoBtn").textContent = d.cta;
+    document.querySelectorAll(".demo-galerie span").forEach((g, k) => { g.style.backgroundImage = `url(/medias/demo/${cle}-${k + 1}.jpg)`; });
+    $("demoMetierAff").textContent = d.metier + " · " + d.ville; $("demoAccroche").textContent = d.accroche;
+    $("demoServices").innerHTML = d.services.map(x => "<div>" + x + "</div>").join("");
+    const n = nomTape || d.nom;
+    if (auto) { couleur(d.c); retrace(); taper($("demoTitre"), n, 70, () => nom(n)); } else nom(n);
+    google(d, n); notifs(d);
+    if (auto) plus_tard(() => { if (!auto) return; idx = (idx + 1) % cles.length; montrer(cles[idx]); }, 6800);
+  }
+  // le visiteur prend la main : nom, métier, couleur
+  function main() { if (!auto) return; auto = false; stop(); }
+  $("demoNom").addEventListener("input", () => { main(); nom($("demoNom").value.trim() || M[$("demoMetier").value].nom); retrace(); });
+  $("demoMetier").addEventListener("change", () => { main(); couleur(M[$("demoMetier").value].c); montrer($("demoMetier").value, $("demoNom").value.trim()); });
+  $("demoCouleurs").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; main(); couleur(b.dataset.c); });
+  // le bouton du questionnaire emporte ses choix
+  document.querySelectorAll('.banniere + .heros a[href$="questionnaire.html"]').forEach(a => a.addEventListener("click", () => { if (auto) return;
+    const b = $("demoCouleurs").querySelector('[aria-pressed="true"]');
+    try { localStorage.setItem("nora_demo", JSON.stringify({ nom: $("demoNom").value.trim(), metier: $("demoMetier").value, couleur: b ? b.getAttribute("aria-label") : "" })); } catch (e) {} }));
+  if (!calme) {
+    scene.addEventListener("pointermove", e => { const r = scene.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      tel.style.transform = `rotateY(${x * 34 - 8}deg) rotateX(${-y * 20 + 4}deg)`; });
+    scene.addEventListener("pointerleave", () => { tel.style.transform = ""; });
+  }
+  couleur(M.plombier.c);
+  setTimeout(() => cles.forEach(k => [0, 1, 2, 3, 4].forEach(n => { const im = new Image(); im.src = `/medias/demo/${k}-${n}.jpg`; })), 1500);
+  new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting && !visible) { visible = true; montrer(auto ? cles[idx] : $("demoMetier").value, $("demoNom").value.trim()); } }), { threshold: .3 }).observe(scene);
+})();
 </script>
 </body>
 </html>
