@@ -2,7 +2,7 @@
 // abonnements, agenda, carnet de projet, notifications.
 import * as db from "./store.js";
 // version des fichiers chargés à la demande : à changer à chaque mise en ligne, pour que le téléphone ne garde pas l'ancienne
-const V = "20261024n";
+const V = "20261024o";
 import { UNITES } from "./donnees.js";
 import { telechargerPDF, totaux, eur, poserTVA, avecTVA, TAUX_TVA, tauxTxt, avenantDe } from "./pdf.js";
 import { CATEGORIES, etatPaiements } from "./carnet.js";
@@ -191,15 +191,22 @@ async function vueAccueil() {
   // ce qu'une facture encaisse vraiment : la facture finale sans l'acompte déjà facturé à part
   const acompteDeduit = f => estAcompte(f) || !f.devis_id ? 0 : docs.filter(x => estAcompte(x) && x.devis_id === f.devis_id && x.statut !== "annule").reduce((a, x) => a + totaux(x).ttc, 0);
   const net = f => Math.max(0, Math.round((totaux(f).ttc - acompteDeduit(f)) * 100) / 100);
-  // encaissé ce mois : les factures payées ce mois-ci (date du paiement, sinon de la dernière modification)
-  const encaisse = docs.filter(d => d.type === "facture" && d.statut === "paye" && String(d.paye_le || d.updated_at || d.date).slice(0, 7) === mois);
+  // encaissé ce mois : tout l'argent reçu ce mois-ci, sans compter deux fois le même paiement
+  //  - les paiements notés dans les carnets (« + Paiement reçu ») ;
+  //  - plus ce qui a été réglé directement sur les factures (payées, ou « déjà réglé » en partie), hors carnet et hors acompte déjà compté
+  const parts = {};
+  montants.filter(x => x.type === "paiement").forEach(x => { try { const imp = JSON.parse(x.categorie || ""); Object.entries(imp?.part || {}).forEach(([id, a]) => { parts[id] = (parts[id] || 0) + Number(a); }); } catch (e) {} });
+  const paiementsMois = montants.filter(x => x.type === "paiement" && String(x.created_at).slice(0, 7) === mois).reduce((a, x) => a + (Number(x.montant) || 0), 0);
+  const regleHorsCarnet = f => Math.max(0, Math.round(((f.statut === "paye" ? totaux(f).ttc : Number(f.deja_regle) || 0) - acompteDeduit(f) - (parts[f.id] || 0)) * 100) / 100);
+  const encaisse = docs.filter(d => d.type === "facture" && ["paye", "envoye"].includes(d.statut) && String(d.paye_le || d.updated_at || d.date).slice(0, 7) === mois && regleHorsCarnet(d) > 0);
+  const encaisseMois = Math.round((paiementsMois + encaisse.reduce((a, f) => a + regleHorsCarnet(f), 0)) * 100) / 100;
   const somme = l => l.reduce((a, d) => a + totaux(d).ttc, 0);
   vue.innerHTML = `
     <div class="entete"><div><div class="petit">Bonjour Patronne</div><h1>${esc(new Date().toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" }))}</h1></div></div>
     <div class="stats">
       <div class="stat"><span class="petit">Devis en attente</span><b>${devisAttente.length}</b><small class="gris">${eur(somme(devisAttente))} €</small></div>
       <div class="stat"><span class="petit">À encaisser</span><b>${eur(aEncaisser.reduce((a, d) => a + totaux(d).reste, 0))} €</b><small class="gris">${aEncaisser.length} facture(s)</small></div>
-      <div class="stat"><span class="petit">Encaissé ce mois</span><b>${eur(encaisse.reduce((a, f) => a + net(f), 0))} €</b><small class="gris">${encaisse.length} facture(s)</small></div>
+      <div class="stat"><span class="petit">Encaissé ce mois</span><b>${eur(encaisseMois)} €</b><small class="gris">reçu en ${esc(moisLong())}</small></div>
       <div class="stat"><span class="petit">Devis signés</span><b>${eur(somme(signesEnCours))} €</b><small class="gris">${signesEnCours.length} en cours</small></div>
     </div>
     ${acomptesAEnvoyer.map(f => `<a class="alerte" href="#/document/${f.id}">${ICO.liste}<span><b>Facture d'acompte à envoyer</b><small>${esc(nomClient(f.client))} · ${eur(totaux(f).ttc)} € · devis ${esc(f.devis_numero || "")}</small></span><span>›</span></a>`).join("")}
@@ -439,7 +446,7 @@ async function vueDocument(id, type, params) {
             ${!estDevis && d.id && d.statut !== "annule" ? `<button class="btn clair" id="msgFacture">Envoyer par message, sans PDF</button>` : ""}
             ${!estDevis && d.id && d.statut === "envoye" && totaux(d).reste > 0.01 ? `<button class="btn clair" id="relanceF">Relancer le paiement</button>` : ""}
             ${d.id ? `<button class="btn discret" id="dupliquer">Dupliquer</button>` : ""}
-            ${d.id && (estDevis || d.statut === "brouillon") ? `<button class="btn danger" id="suppr">${ICO.poubelle}Supprimer</button>` : ""}
+            ${d.id ? `<button class="btn danger" id="suppr">${ICO.poubelle}Supprimer</button>` : ""}
           </div>
           ${avenants.length ? `<div class="carte" style="margin-bottom:12px"><b>Avenants</b>
             <div class="liste" style="margin-top:8px">${avenants.map(ligneDoc).join("")}</div>
@@ -626,8 +633,14 @@ async function vueDocument(id, type, params) {
     };
     const su = document.getElementById("suppr");
     if (su) su.onclick = async () => {
-      if (!(await confirmer(`Supprimer définitivement ${d.numero} ?`, "Supprimer"))) return;
-      try { await db.supprimer("documents", d.id); toast("Supprimé"); location.hash = `#/documents/${d.type}`; } catch (e) { erreur(e); }
+      // une facture envoyée ou payée ne se supprime normalement pas (numérotation suivie) : on le rappelle, pour les essais seulement
+      const avert = !estDevis && d.statut !== "brouillon" ? " Une vraie facture envoyée ne doit pas être supprimée : à faire seulement pour une facture d'essai." : "";
+      if (!(await confirmer(`Supprimer définitivement ${d.numero} ?${avert}`, "Supprimer"))) return;
+      try {
+        // les factures et avenants tirés de ce devis gardent son numéro, mais ne lui sont plus rattachés
+        if (estDevis) for (const x of (await db.lister("documents")).filter(x => x.devis_id === d.id)) await db.enregistrer("documents", { ...x, devis_id: null });
+        await db.supprimer("documents", d.id); toast("Supprimé"); location.hash = `#/documents/${d.type}`;
+      } catch (e) { erreur(e); }
     };
   };
 
