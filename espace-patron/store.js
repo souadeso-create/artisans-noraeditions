@@ -101,6 +101,15 @@ export async function supprimerPhotosDemande(chemins) {
 }
 
 /* ---------- Notifications : ce téléphone est prévenu à chaque nouvelle demande ---------- */
+/* Les visites du site depuis tant de jours (compteur fait maison) */
+export async function listerVisites(jours) {
+  const depuis = new Date(Date.now() - jours * 864e5).toISOString();
+  if (MODE_ESSAI) return lireLocal("visites").filter(v => v.created_at >= depuis);
+  const { data, error } = await sb.from("visites").select("created_at, page, source, appareil, nouvelle, evenement").gte("created_at", depuis).order("created_at", { ascending: false }).limit(50000);
+  if (error) throw error;
+  return data;
+}
+
 export async function abonnerTelephone(j) {
   if (MODE_ESSAI) return;
   const { error } = await sb.from("abonnements").upsert({ endpoint: j.endpoint, cles: j.keys, appareil: navigator.userAgent.slice(0, 200) });

@@ -2,7 +2,7 @@
 // abonnements, agenda, carnet de projet, notifications.
 import * as db from "./store.js";
 // version des fichiers chargés à la demande : à changer à chaque mise en ligne, pour que le téléphone ne garde pas l'ancienne
-const V = "20261024g";
+const V = "20261024h";
 import { UNITES } from "./donnees.js";
 import { telechargerPDF, totaux, eur, poserTVA, avecTVA, TAUX_TVA, tauxTxt, avenantDe } from "./pdf.js";
 import { CATEGORIES, etatPaiements } from "./carnet.js";
@@ -921,6 +921,43 @@ async function vueAbonnements() {
   };
 }
 
+/* =================== Visites du site : le compteur fait maison =================== */
+let periodeVisites = 30;
+const nomPage = p => p === "/" || p === "/index.html" ? "Accueil" : p === "/questionnaire.html" ? "Questionnaire"
+  : (t => t.charAt(0).toUpperCase() + t.slice(1))(decodeURIComponent(p).replace(/^\/|\/$|\.html$/g, "").replace(/-/g, " "));
+async function vueVisites() {
+  let v;
+  try { v = await db.listerVisites(periodeVisites); }
+  catch (e) { vue.innerHTML = `<div class="entete"><h1>Visites du site</h1></div><p class="gris">${typeof db.listerVisites !== "function" ? "L'appli se met à jour : fermez-la et rouvrez-la dans quelques minutes." : "Les visites ne sont pas lisibles pour l'instant. Réessayez dans un moment."}</p>`; return; }
+  const pages = v.filter(x => !x.evenement), visites = v.filter(x => x.nouvelle), envoyes = v.filter(x => x.evenement === "questionnaire envoyé");
+  const compte = (l, f) => Object.entries(l.reduce((o, x) => { const k = f(x); if (k) o[k] = (o[k] || 0) + 1; return o; }, {})).sort((a, b) => b[1] - a[1]);
+  const pct = (n, t) => t ? Math.round(n * 100 / t) + " %" : "–";
+  // une barre par jour
+  const jours = [...Array(periodeVisites)].map((_, i) => { const d = new Date(); d.setHours(12, 0, 0, 0); d.setDate(d.getDate() - (periodeVisites - 1 - i)); return d.toISOString().slice(0, 10); });
+  const parJour = jours.map(j => visites.filter(x => new Date(x.created_at).toISOString().slice(0, 10) === j).length), max = Math.max(1, ...parJour);
+  const liste = (titre, l, total) => `<div class="carte" style="margin-bottom:12px"><label>${titre}</label>${l.length ? l.slice(0, 10).map(([k, n]) =>
+    `<div class="ligne-bilan"><span>${esc(k)}</span><span><b>${n}</b> <small class="gris">${pct(n, total)}</small></span></div>`).join("") : '<p class="gris" style="font-size:14px">Pas encore de visites.</p>'}</div>`;
+  const appareils = { telephone: "Téléphone", tablette: "Tablette", ordinateur: "Ordinateur" };
+  vue.innerHTML = `
+    <div class="entete"><div><div class="petit">Votre site</div><h1>Visites</h1></div></div>
+    <div class="onglets" style="margin-bottom:14px">${[[7, "7 jours"], [30, "30 jours"], [90, "3 mois"], [365, "12 mois"]].map(([n, t]) => `<a href="" data-periode="${n}" class="${periodeVisites === n ? "actif" : ""}">${t}</a>`).join("")}</div>
+    <div class="stats">
+      <div class="stat"><span class="petit">Visiteurs</span><b>${visites.length}</b></div>
+      <div class="stat"><span class="petit">Pages vues</span><b>${pages.length}</b></div>
+      <div class="stat"><span class="petit">Questionnaires envoyés</span><b>${envoyes.length}</b><small class="gris">${pct(envoyes.length, visites.length)} des visiteurs</small></div>
+      <div class="stat"><span class="petit">Sur téléphone</span><b>${pct(visites.filter(x => x.appareil === "telephone").length, visites.length)}</b></div>
+    </div>
+    <div class="carte" style="margin-bottom:12px"><label>Visiteurs par jour</label>
+      <div style="display:flex;align-items:flex-end;gap:2px;height:90px;margin-top:8px">${parJour.map((n, i) => `<div title="${new Date(jours[i] + "T12:00").toLocaleDateString("fr-FR")} : ${n}" style="flex:1;min-width:2px;height:${Math.max(2, n * 100 / max)}%;background:${n ? "var(--violet)" : "var(--sable)"};border-radius:3px 3px 0 0"></div>`).join("")}</div>
+      <div class="ligne-bilan" style="border:0;padding-top:4px"><small class="gris">${new Date(jours[0] + "T12:00").toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}</small><small class="gris">aujourd'hui</small></div></div>
+    ${liste("D'où ils viennent", compte(visites, x => x.source === "interne" ? "" : x.source || "Accès direct"), visites.length)}
+    ${liste("Les pages les plus vues", compte(pages, x => nomPage(x.page)), pages.length)}
+    ${liste("Les pages d'arrivée", compte(visites, x => nomPage(x.page)), visites.length)}
+    ${liste("Téléphone ou ordinateur", compte(visites, x => appareils[x.appareil] || ""), visites.length)}
+    <p class="gris" style="font-size:13px;margin-top:6px">Sans cookie : on compte les pages vues, rien qui identifie les visiteurs. Les robots et vos propres visites, sur les téléphones où votre appli est ouverte, ne sont pas comptés.</p>`;
+  vue.querySelectorAll("[data-periode]").forEach(a => a.onclick = e => { e.preventDefault(); periodeVisites = Number(a.dataset.periode); vueVisites(); });
+}
+
 /* =================== Agenda : les rendez-vous de tous les clients =================== */
 async function vueAgenda() {
   const [rdvs, clients, demandes] = await Promise.all([db.listerDepenses(["rdv"]).catch(() => []), db.lister("clients"), listerDemandes()]);
@@ -982,11 +1019,12 @@ async function vuePlus() {
   vue.innerHTML = `
     <div class="entete"><h1>Plus</h1></div>
     <div class="liste">
-      <a class="ligne-liste" href="#/abonnements"><div><b>Abonnements</b><small>Les abonnements du mois, leurs factures et les rappels</small></div><span class="gris">›</span></a>
+      <a class="ligne-liste" href="#/abonnements"><div><b>Abonnements</b><small>Chaque abonnement à sa date, ses factures et les rappels</small></div><span class="gris">›</span></a>
+      <a class="ligne-liste" href="#/visites"><div><b>Visites du site</b><small>Visiteurs, pages vues, d'où ils viennent, questionnaires envoyés</small></div><span class="gris">›</span></a>
       <a class="ligne-liste" href="#/prestations"><div><b>Mes prestations et tarifs</b><small>Votre catalogue, utilisé dans chaque devis</small></div><span class="gris">›</span></a>
       ${dejaInstallee() ? "" : `<button class="ligne-liste" id="installer" style="border:0;text-align:left;width:100%;cursor:pointer"><div><b>Mettre l'appli sur le téléphone</b><small>Une icône Nora sur l'écran d'accueil</small></div><span class="gris">›</span></button>`}
-      ${db.MODE_ESSAI ? "" : notifs ? `<div class="ligne-liste"><div><b>Notifications</b><small>✓ Ce téléphone sonne à chaque nouvelle demande, et le 1er et le 5 du mois pour les abonnements</small></div></div>`
-        : `<button class="ligne-liste" id="notifs" style="border:0;text-align:left;width:100%;cursor:pointer"><div><b>Recevoir les notifications</b><small>À chaque nouvelle demande, et pour les abonnements du mois</small></div><span class="gris">›</span></button>`}
+      ${db.MODE_ESSAI ? "" : notifs ? `<div class="ligne-liste"><div><b>Notifications</b><small>✓ Ce téléphone sonne à chaque nouvelle demande, et le matin quand un abonnement revient ou reste à payer</small></div></div>`
+        : `<button class="ligne-liste" id="notifs" style="border:0;text-align:left;width:100%;cursor:pointer"><div><b>Recevoir les notifications</b><small>À chaque nouvelle demande, et pour les abonnements à encaisser</small></div><span class="gris">›</span></button>`}
       <a class="ligne-liste" href="#/reglages"><div><b>Réglages</b><small>Entreprise, RIB, numérotation, conditions</small></div><span class="gris">›</span></a>
       <button class="ligne-liste" id="sauve" style="border:0;text-align:left;width:100%;cursor:pointer"><div><b>Sauvegarde</b><small>Télécharger toutes les données (fichier)</small></div><span class="gris">›</span></button>
       <a class="ligne-liste" href="/" target="_blank"><div><b>Voir le site</b><small>creation-site-internet.noraeditions.fr</small></div><span class="gris">›</span></a>
@@ -1078,7 +1116,7 @@ async function routeur() {
   const [chemin, requete] = (location.hash.slice(2) || "accueil").split("?");
   const params = new URLSearchParams(requete || "");
   const [r, a, b] = chemin.split("/");
-  nav.querySelectorAll("a").forEach(x => x.classList.toggle("actif", x.dataset.r === r || (r === "document" && x.dataset.r === "documents") || (r === "client" && x.dataset.r === "clients") || (r === "demande" && x.dataset.r === "demandes") || (["reglages", "abonnements", "prestations"].includes(r) && x.dataset.r === "plus")));
+  nav.querySelectorAll("a").forEach(x => x.classList.toggle("actif", x.dataset.r === r || (r === "document" && x.dataset.r === "documents") || (r === "client" && x.dataset.r === "clients") || (r === "demande" && x.dataset.r === "demandes") || (["reglages", "abonnements", "prestations", "visites"].includes(r) && x.dataset.r === "plus")));
   window.scrollTo(0, 0);
   try {
     if (r === "accueil") await vueAccueil();
@@ -1093,6 +1131,7 @@ async function routeur() {
     else if (r === "reglages") vueReglages();
     else if (r === "abonnements") await vueAbonnements();
     else if (r === "agenda") await vueAgenda();
+    else if (r === "visites") await vueVisites();
     else await vueAccueil();
   } catch (e) { erreur(e); }
 }
@@ -1101,6 +1140,7 @@ async function demarrer() {
   const s = await db.session();
   if (!s) return vueConnexion();
   nav.hidden = false;
+  try { localStorage.setItem("nora_moi", "1"); } catch (e) {} // vos visites du site ne comptent pas, sur ce téléphone
   document.getElementById("etat").innerHTML = db.MODE_ESSAI ? '<span class="mode" title="Les données restent dans ce navigateur">Mode essai</span>' : "";
   await db.amorcerPrestations();
   await db.ajouterNouvellesPrestations().catch(() => {});

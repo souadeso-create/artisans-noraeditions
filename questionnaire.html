@@ -446,6 +446,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.js"></script>
 <script src="/medias/supabase-config.js"></script>
 <script src="/medias/domaine.js"></script>
+<script src="/medias/compteur.js" defer></script>
 </head>
 <body>
 <header>
@@ -823,6 +824,7 @@
       const r = await fetch("https://formsubmit.co/ajax/contact@noraeditions.com", { method: "POST", headers: { Accept: "application/json" }, body: fd }).catch(() => null);
       if (!enBase && !(r && r.ok)) throw new Error("envoi");
       form.reset(); photos = []; afficher(); selonActivite(); domDispo.value = ""; document.getElementById("domRes").textContent = "";
+      if (window.noraCompter) noraCompter("questionnaire envoyé");
       dire("ok", "Merci, votre questionnaire est bien arrivé. Nous vous écrivons très vite pour tout confirmer, avec nos coordonnées bancaires pour l'acompte.");
     } catch (err) { dire("erreur", "L'envoi n'a pas abouti. Réessayez, ou écrivez-nous à contact@noraeditions.com."); }
     bouton.disabled = false; bouton.textContent = "Envoyer mes réponses";
