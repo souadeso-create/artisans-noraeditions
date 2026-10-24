@@ -2,7 +2,7 @@
 // abonnements, agenda, carnet de projet, notifications.
 import * as db from "./store.js";
 // version des fichiers chargés à la demande : à changer à chaque mise en ligne, pour que le téléphone ne garde pas l'ancienne
-const V = "20261024k";
+const V = "20261024l";
 import { UNITES } from "./donnees.js";
 import { telechargerPDF, totaux, eur, poserTVA, avecTVA, TAUX_TVA, tauxTxt, avenantDe } from "./pdf.js";
 import { CATEGORIES, etatPaiements } from "./carnet.js";
@@ -248,7 +248,7 @@ function blocRdv(montants, clients) {
 
 // Projets en cours : un devis signé ; un toucher ouvre la fiche du client (carnet du projet)
 function blocChantiers(docs, clients, depenses, montants) {
-  const payeTout = id => { const f = docs.filter(d => d.type === "facture" && d.client_id === id && !d.abo); return f.length && f.every(d => d.statut === "paye"); };
+  const payeTout = id => { const f = docs.filter(d => d.type === "facture" && d.client_id === id && (!d.abo || d.devis_id)); return f.length && f.every(d => d.statut === "paye"); };
   const signes = docs.filter(d => d.type === "devis" && d.statut === "signe" && d.client_id && !payeTout(d.client_id));
   if (!signes.length) return "";
   const parClient = {};
@@ -549,6 +549,25 @@ async function vueDocument(id, type, params) {
         const f = { type: "facture", numero: numeroSuivant("facture"), date: aujourdhui(), statut: "brouillon", client_id: d.client_id, client: d.client,
           objet: d.objet, sections: JSON.parse(JSON.stringify(d.sections)), acompte_pct: 0, deja_regle: verse, devis_id: d.id, devis_numero: d.numero, devis_date: d.date,
           notes: acomptes.length ? `Acompte déjà facturé (${acomptes.map(x => x.numero).join(", ")}) : ${eur(verse)} €, déduit du total.` : "" };
+        // le premier mois d'abonnement : celui du devis s'il y est, sinon ajouté (pas pour l'application seule, à l'année)
+        const c = d.client_id ? (await db.lister("clients")).find(x => x.id === d.client_id) : null;
+        const lignes = f.sections.flatMap(x => x.lignes || []), aAbo = lignes.some(l => /^abonnement/i.test(l.designation || "")), alAnnee = lignes.some(l => l.unite === "an");
+        if (c && !alAnnee) {
+          const ps = await db.lister("prestations").catch(() => []);
+          const prixAbo = Number(c.abonnement_mensuel) > 0 ? Number(c.abonnement_mensuel) : Number(ps.find(p => /^Abonnement du site/i.test(p.designation || ""))?.prix_ht) || 10;
+          const maj = {};
+          if (!c.abonnement_debut) maj.abonnement_debut = aujourdhui();
+          if (!(Number(c.abonnement_mensuel) > 0)) maj.abonnement_mensuel = prixAbo;
+          if (Object.keys(maj).length) { Object.assign(c, maj); await db.enregistrer("clients", { ...c }); }
+          const per = periodeAbo(c) || periodeAbo({ abonnement_debut: aujourdhui() });
+          lignes.filter(l => l.unite === "mois" && !l.designation.includes(" · du ") && !/\d{4}$/.test(l.designation)).forEach(l => { l.designation += ` · ${periodeTxt(per)}`; });
+          if (!aAbo) {
+            const taux = lignes.find(l => l.tva != null && l.tva !== "")?.tva, ligne = { designation: `${c.abonnement_libelle || P.abonnement_libelle || "Abonnement du site"} · premier mois, ${periodeTxt(per)}`, qte: 1, unite: "mois", pu: prixAbo };
+            if (taux != null) ligne.tva = Number(taux);
+            f.sections.push({ titre: "Abonnement", lignes: [ligne] });
+          }
+          f.abo = per.cle; // ce mois-là est facturé : la page Abonnements ne le refacture pas
+        }
         f.total_ht = totaux(f).ht;
         const n = await db.enregistrer("documents", f);
         P.prochain_facture = Number(P.prochain_facture) + 1; await db.enregistrerParametres(P);
