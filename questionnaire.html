@@ -436,6 +436,8 @@
   .menu a { white-space: nowrap; } @media (max-width: 960px) { .menu { gap: 14px !important; } .menu a { font-size: 14px; } }
 </style>
 <script src="/medias/clic.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.js"></script>
+<script src="/medias/supabase-config.js"></script>
 </head>
 <body>
 <header>
@@ -478,14 +480,14 @@
         <div class="champ" data-dom="bat">Vos qualifications et labels<div class="cases"><label class="case"><input type="checkbox" name="Labels" value="RGE"><span>RGE</span></label><label class="case"><input type="checkbox" name="Labels" value="Qualibat"><span>Qualibat</span></label><label class="case"><input type="checkbox" name="Labels" value="Qualifelec"><span>Qualifelec</span></label><label class="case"><input type="checkbox" name="Labels" value="QualiPAC"><span>QualiPAC</span></label><label class="case"><input type="checkbox" name="Labels" value="Handibat"><span>Handibat</span></label><label class="case"><input type="checkbox" name="Labels" value="Artisan (chambre des métiers)"><span>Artisan (chambre des métiers)</span></label><label class="case"><input type="checkbox" name="Labels" value="Aucun pour l'instant"><span>Aucun pour l'instant</span></label></div></div>
       </div>
       
-      <label class="champ">Votre zone d'intervention<input type="text" name="Zone" placeholder="ex. Yvelines et Val-d'Oise, 30 km autour de Poissy"></label>
+      <label class="champ">Votre zone d'intervention<input type="text" name="Zone" placeholder="ex. 30 km autour de Poissy, toute la France, ou à distance"></label>
     </fieldset>
 
     <fieldset>
       <legend>2. Ce que vous voulez</legend>
       <p class="aide">Cochez ce qui vous intéresse.</p>
-      <div class="cases"><label class="case"><input type="checkbox" name="Je veux" value="Un site internet"><span>Un site internet</span></label><label class="case"><input type="checkbox" name="Je veux" value="Une fiche Google"><span>Une fiche Google</span></label><label class="case"><input type="checkbox" name="Je veux" value="Un logo"><span>Un logo</span></label><label class="case"><input type="checkbox" name="Je veux" value="Une boutique en ligne"><span>Une boutique en ligne</span></label><label class="case"><input type="checkbox" name="Je veux" value="Retouche de mes photos"><span>Retouche de mes photos</span></label><label class="case"><input type="checkbox" name="Je veux" value="L'application web sur mesure dans mon site"><span>L'application web sur mesure dans mon site</span></label><label class="case"><input type="checkbox" name="Je veux" value="Seulement l'application web sur mesure (100 € + 30 € par an)"><span>Seulement l'application web sur mesure (100 € + 30 € par an)</span></label><label class="case"><input type="checkbox" name="Je veux" value="Community manager : vidéos, réseaux, annuaires (option)"><span>Community manager : vidéos, réseaux, annuaires (option)</span></label></div>
-      <div class="champ">Dans l'appli, ce qui vous servirait<div class="cases"><label class="case"><input type="checkbox" name="Appli" value="Devis et factures"><span>Devis et factures</span></label><label class="case"><input type="checkbox" name="Appli" value="Signature en ligne"><span>Signature en ligne</span></label><label class="case"><input type="checkbox" name="Appli" value="Agenda et rappels clients"><span>Agenda et rappels clients</span></label><label class="case" data-dom="bat"><input type="checkbox" name="Appli" value="Carnet de chantier et photos"><span>Carnet de chantier et photos</span></label><label class="case"><input type="checkbox" name="Appli" value="Photos avant / après"><span>Photos avant / après</span></label><label class="case"><input type="checkbox" name="Appli" value="Dépenses et paiements"><span>Dépenses et paiements</span></label><label class="case" data-dom="bat"><input type="checkbox" name="Appli" value="PV de fin de chantier"><span>PV de fin de chantier</span></label><label class="case" data-dom="bat"><input type="checkbox" name="Appli" value="Simulation 3D"><span>Simulation 3D</span></label></div></div>
+      <div class="cases"><label class="case"><input type="checkbox" name="Je veux" value="Un site internet"><span>Un site internet</span></label><label class="case"><input type="checkbox" name="Je veux" value="Le référencement local (fiche Google)"><span>Le référencement local (fiche Google)</span></label><label class="case"><input type="checkbox" name="Je veux" value="Un logo"><span>Un logo</span></label><label class="case"><input type="checkbox" name="Je veux" value="Une boutique en ligne"><span>Une boutique en ligne</span></label><label class="case"><input type="checkbox" name="Je veux" value="Retouche de mes photos"><span>Retouche de mes photos</span></label><label class="case"><input type="checkbox" name="Je veux" value="L'application web sur mesure dans mon site"><span>L'application web sur mesure dans mon site</span></label><label class="case"><input type="checkbox" name="Je veux" value="Seulement l'application web sur mesure (100 € + 30 € par an)"><span>Seulement l'application web sur mesure (100 € + 30 € par an)</span></label><label class="case"><input type="checkbox" name="Je veux" value="Web marketing : vidéos, réseaux, annuaires (option)"><span>Web marketing : vidéos, réseaux, annuaires (option)</span></label></div>
+      <div class="champ">Dans l'appli, ce qui vous servirait<div class="cases"><label class="case"><input type="checkbox" name="Appli" value="Devis et factures"><span>Devis et factures</span></label><label class="case"><input type="checkbox" name="Appli" value="Signature en ligne"><span>Signature en ligne</span></label><label class="case"><input type="checkbox" name="Appli" value="Réservations en ligne"><span>Réservations en ligne</span></label><label class="case"><input type="checkbox" name="Appli" value="Agenda et rappels clients par SMS"><span>Agenda et rappels clients par SMS</span></label><label class="case"><input type="checkbox" name="Appli" value="Paiement en ligne et acomptes"><span>Paiement en ligne et acomptes</span></label><label class="case"><input type="checkbox" name="Appli" value="Fichier clients et prestations"><span>Fichier clients et prestations</span></label><label class="case"><input type="checkbox" name="Appli" value="Forfaits et cartes de fidélité"><span>Forfaits et cartes de fidélité</span></label><label class="case" data-dom="art"><input type="checkbox" name="Appli" value="Prise de commandes"><span>Prise de commandes</span></label><label class="case" data-dom="bat"><input type="checkbox" name="Appli" value="Carnet de chantier et photos"><span>Carnet de chantier et photos</span></label><label class="case"><input type="checkbox" name="Appli" value="Photos avant / après"><span>Photos avant / après</span></label><label class="case"><input type="checkbox" name="Appli" value="Dépenses et paiements"><span>Dépenses et paiements</span></label><label class="case" data-dom="bat"><input type="checkbox" name="Appli" value="PV de fin de chantier"><span>PV de fin de chantier</span></label><label class="case" data-dom="bat"><input type="checkbox" name="Appli" value="Simulation 3D"><span>Simulation 3D</span></label></div></div>
       <div class="si-video" id="siBoutique" hidden>
         <p class="aide" style="margin:6px 0 0"><strong>Votre boutique en ligne</strong></p>
         <label class="champ">Ce que vous voulez vendre<input type="text" name="Boutique : produits" placeholder="ex. bijoux, gâteaux sur commande, bons cadeaux, séances…"></label>
@@ -509,8 +511,8 @@
     <fieldset>
       <legend>3. Vos attentes</legend>
       <p class="aide">Pour faire ce qui vous sert vraiment : dites-nous ce que vous espérez, et ce qui vous gêne aujourd'hui.</p>
-      <div class="champ">Ce que vous attendez avant tout <small>(plusieurs choix possibles)</small><div class="cases"><label class="case"><input type="checkbox" name="Attentes" value="Plus de clients"><span>Plus de clients</span></label><label class="case"><input type="checkbox" name="Attentes" value="Être trouvé sur Google"><span>Être trouvé sur Google</span></label><label class="case"><input type="checkbox" name="Attentes" value="Gagner du temps sur mes devis et factures"><span>Gagner du temps sur mes devis et factures</span></label><label class="case"><input type="checkbox" name="Attentes" value="Une image plus pro"><span>Une image plus pro</span></label><label class="case"><input type="checkbox" name="Attentes" value="Être payé plus vite, suivre mes paiements"><span>Être payé plus vite, suivre mes paiements</span></label><label class="case"><input type="checkbox" name="Attentes" value="Moins de paperasse"><span>Moins de paperasse</span></label><label class="case"><input type="checkbox" name="Attentes" value="Montrer mon travail"><span>Montrer mon travail</span></label><label class="case"><input type="checkbox" name="Attentes" value="Me démarquer de la concurrence"><span>Me démarquer de la concurrence</span></label></div></div>
-      <label class="champ">Ce qui compte le plus pour vous<textarea name="Le plus important" placeholder="ex. avoir des demandes de devis sans passer par les plateformes"></textarea></label>
+      <div class="champ">Ce que vous attendez avant tout <small>(plusieurs choix possibles)</small><div class="cases"><label class="case"><input type="checkbox" name="Attentes" value="Plus de clients"><span>Plus de clients</span></label><label class="case"><input type="checkbox" name="Attentes" value="Être trouvé sur Google"><span>Être trouvé sur Google</span></label><label class="case"><input type="checkbox" name="Attentes" value="Gagner du temps sur mes devis, réservations et factures"><span>Gagner du temps sur mes devis, réservations et factures</span></label><label class="case"><input type="checkbox" name="Attentes" value="Une image plus pro"><span>Une image plus pro</span></label><label class="case"><input type="checkbox" name="Attentes" value="Être payé plus vite, suivre mes paiements"><span>Être payé plus vite, suivre mes paiements</span></label><label class="case"><input type="checkbox" name="Attentes" value="Moins de paperasse"><span>Moins de paperasse</span></label><label class="case"><input type="checkbox" name="Attentes" value="Montrer mon travail"><span>Montrer mon travail</span></label><label class="case"><input type="checkbox" name="Attentes" value="Me démarquer de la concurrence"><span>Me démarquer de la concurrence</span></label></div></div>
+      <label class="champ">Ce qui compte le plus pour vous<textarea name="Le plus important" placeholder="ex. avoir mes clients en direct, sans passer par les plateformes"></textarea></label>
       <div class="champ">Aujourd'hui, vos clients vous trouvent par<div class="cases"><label class="case"><input type="checkbox" name="Clients trouvés par" value="Bouche-à-oreille"><span>Bouche-à-oreille</span></label><label class="case"><input type="checkbox" name="Clients trouvés par" value="Google"><span>Google</span></label><label class="case"><input type="checkbox" name="Clients trouvés par" value="Fiche Google"><span>Fiche Google</span></label><label class="case"><input type="checkbox" name="Clients trouvés par" value="Réseaux sociaux"><span>Réseaux sociaux</span></label><label class="case"><input type="checkbox" name="Clients trouvés par" value="Annuaires (PagesJaunes…)"><span>Annuaires (PagesJaunes…)</span></label><label class="case"><input type="checkbox" name="Clients trouvés par" value="Plateformes de mise en relation"><span>Plateformes de mise en relation</span></label><label class="case"><input type="checkbox" name="Clients trouvés par" value="Architectes, agences, partenaires"><span>Architectes, agences, partenaires</span></label><label class="case"><input type="checkbox" name="Clients trouvés par" value="Véhicule, panneau, flyers"><span>Véhicule, panneau, flyers</span></label></div></div>
       <label class="champ">Ce qui vous fait perdre du temps ou vous agace aujourd'hui<textarea name="Ce qui gêne aujourd'hui" placeholder="ex. je fais mes devis le soir, je relance mes clients pour être payé…"></textarea></label>
       <label class="champ">Les prestations que vous voulez faire plus souvent<input type="text" name="Prestations souhaitées" placeholder="ex. des contrats réguliers plutôt que des interventions ponctuelles"></label>
@@ -522,7 +524,7 @@
 
     <fieldset>
       <legend>4. Vos prestations et vos prix</legend>
-      <p class="aide">Pour préparer votre appli : vos devis seront prêts en quelques clics. Le plus simple : envoyez un ancien devis (partie 10). Pas besoin de tout mettre : vous pourrez ajouter vos prestations vous-même dans votre appli, et elles restent enregistrées.</p>
+      <p class="aide">Pour préparer votre appli : vos prestations et vos prix y seront déjà, prêts pour vos devis, vos réservations ou vos factures. Le plus simple : envoyez un ancien devis (partie 10). Pas besoin de tout mettre : vous pourrez ajouter vos prestations vous-même dans votre appli, et elles restent enregistrées.</p>
       <label class="champ">Vos prestations, avec vos prix habituels <small>(une par ligne : prestation · unité · prix)</small><textarea name="Prestations et prix" style="min-height:150px" placeholder="Ménage d'un appartement · heure · 25 €&#10;Séance photo portrait · forfait · 150 €&#10;Pose de carrelage au sol · m² · 45 €&#10;Déplacement · forfait · 30 €"></textarea></label>
       <div class="champ" data-dom="bat">Vos chantiers<div class="cases"><label class="case"><input type="checkbox" name="Chantiers" value="Rénovation"><span>Rénovation</span></label><label class="case"><input type="checkbox" name="Chantiers" value="Neuf"><span>Neuf</span></label><label class="case"><input type="checkbox" name="Chantiers" value="Dépannage"><span>Dépannage</span></label><label class="case"><input type="checkbox" name="Chantiers" value="Entretien"><span>Entretien</span></label><label class="case"><input type="checkbox" name="Chantiers" value="Petits travaux"><span>Petits travaux</span></label></div></div>
       <div class="champ">Vos clients<div class="cases"><label class="case"><input type="checkbox" name="Clients" value="Particuliers"><span>Particuliers</span></label><label class="case"><input type="checkbox" name="Clients" value="Professionnels"><span>Professionnels</span></label><label class="case"><input type="checkbox" name="Clients" value="Syndics, agences"><span>Syndics, agences</span></label><label class="case"><input type="checkbox" name="Clients" value="Autres entreprises (sous-traitance)"><span>Autres entreprises (sous-traitance)</span></label></div></div>
@@ -533,7 +535,7 @@
         <label class="champ">Frais de déplacement<input type="text" name="Déplacement" placeholder="ex. offert jusqu'à 20 km, puis 30 €"></label>
         <div class="champ">Vous comptez surtout<div class="cases"><label class="case"><input type="checkbox" name="Façon de compter" value="À l'heure"><span>À l'heure</span></label><label class="case"><input type="checkbox" name="Façon de compter" value="Au m²"><span>Au m²</span></label><label class="case"><input type="checkbox" name="Façon de compter" value="Au mètre linéaire"><span>Au mètre linéaire</span></label><label class="case"><input type="checkbox" name="Façon de compter" value="À l'unité"><span>À l'unité</span></label><label class="case"><input type="checkbox" name="Façon de compter" value="À la séance"><span>À la séance</span></label><label class="case"><input type="checkbox" name="Façon de compter" value="Au mois"><span>Au mois</span></label><label class="case"><input type="checkbox" name="Façon de compter" value="Au forfait"><span>Au forfait</span></label></div></div>
         <label class="champ">Le montant minimum d'une prestation <small>(si vous en avez un)</small><input type="text" name="Montant minimum" placeholder="ex. rien sous 80 €"></label>
-        <div class="champ">Dépannages et urgences<div class="cases"><label class="case"><input type="radio" name="Urgences" value="Oui"><span>Oui</span></label><label class="case"><input type="radio" name="Urgences" value="Seulement pour mes clients"><span>Seulement pour mes clients</span></label><label class="case"><input type="radio" name="Urgences" value="Non"><span>Non</span></label></div></div>
+        <div class="champ" data-dom="bat art net">Dépannages et urgences<div class="cases"><label class="case"><input type="radio" name="Urgences" value="Oui"><span>Oui</span></label><label class="case"><input type="radio" name="Urgences" value="Seulement pour mes clients"><span>Seulement pour mes clients</span></label><label class="case"><input type="radio" name="Urgences" value="Non"><span>Non</span></label></div></div>
       </div>
     </fieldset>
 
@@ -543,14 +545,31 @@
       <div class="champ" data-dom="bat">Les magasins et fournisseurs où vous achetez <small>(ils seront reliés à votre appli)</small><div class="cases"><label class="case"><input type="checkbox" name="Magasins" value="Point.P"><span>Point.P</span></label><label class="case"><input type="checkbox" name="Magasins" value="Cedeo"><span>Cedeo</span></label><label class="case"><input type="checkbox" name="Magasins" value="Gedimat"><span>Gedimat</span></label><label class="case"><input type="checkbox" name="Magasins" value="BigMat"><span>BigMat</span></label><label class="case"><input type="checkbox" name="Magasins" value="Tout Faire Matériaux"><span>Tout Faire Matériaux</span></label><label class="case"><input type="checkbox" name="Magasins" value="La Plateforme du Bâtiment"><span>La Plateforme du Bâtiment</span></label><label class="case"><input type="checkbox" name="Magasins" value="Leroy Merlin"><span>Leroy Merlin</span></label><label class="case"><input type="checkbox" name="Magasins" value="Castorama"><span>Castorama</span></label><label class="case"><input type="checkbox" name="Magasins" value="Brico Dépôt"><span>Brico Dépôt</span></label><label class="case"><input type="checkbox" name="Magasins" value="Bricomarché"><span>Bricomarché</span></label><label class="case"><input type="checkbox" name="Magasins" value="Mr.Bricolage"><span>Mr.Bricolage</span></label><label class="case"><input type="checkbox" name="Magasins" value="ManoMano"><span>ManoMano</span></label><label class="case"><input type="checkbox" name="Magasins" value="Rexel"><span>Rexel</span></label><label class="case"><input type="checkbox" name="Magasins" value="Sonepar"><span>Sonepar</span></label><label class="case"><input type="checkbox" name="Magasins" value="Würth"><span>Würth</span></label><label class="case"><input type="checkbox" name="Magasins" value="Prolians"><span>Prolians</span></label></div></div>
       <label class="champ" data-dom="bat">Vos autres fournisseurs <small>(grossiste local, fabricant…)</small><input type="text" name="Fournisseurs"></label>
       <div class="champ" data-dom="bat">Un compte pro chez eux ?<div class="cases"><label class="case"><input type="radio" name="Compte pro" value="Oui"><span>Oui</span></label><label class="case"><input type="radio" name="Compte pro" value="Chez certains"><span>Chez certains</span></label><label class="case"><input type="radio" name="Compte pro" value="Non"><span>Non</span></label></div></div>
-      <div class="champ">Vos devis aujourd'hui<div class="cases"><label class="case"><input type="radio" name="Devis aujourd'hui" value="Sur papier"><span>Sur papier</span></label><label class="case"><input type="radio" name="Devis aujourd'hui" value="Sur un tableur"><span>Sur un tableur</span></label><label class="case"><input type="radio" name="Devis aujourd'hui" value="Avec un logiciel"><span>Avec un logiciel</span></label><label class="case"><input type="radio" name="Devis aujourd'hui" value="Je n'en fais pas encore"><span>Je n'en fais pas encore</span></label></div></div>
+      <div class="champ">Vos clients passent par<small style="display:block;font-weight:400;color:var(--gris)">(plusieurs choix possibles : on vous pose ensuite les bonnes questions)</small><div class="cases" id="mode"><label class="case"><input type="checkbox" name="Mode" value="Un devis"><span>Un devis</span></label><label class="case"><input type="checkbox" name="Mode" value="Une réservation, un rendez-vous"><span>Une réservation, un rendez-vous</span></label><label class="case"><input type="checkbox" name="Mode" value="Une commande"><span>Une commande</span></label><label class="case"><input type="checkbox" name="Mode" value="Un abonnement, un forfait"><span>Un abonnement, un forfait</span></label></div></div>
+      <div class="si-video" data-si="resa" hidden>
+        <p class="aide" style="margin:6px 0 0"><strong>Vos réservations</strong></p>
+        <div class="deux">
+          <label class="champ">Durée d'un rendez-vous, en général<input type="text" name="Durée des rendez-vous" placeholder="ex. 45 min, 1 h 30"></label>
+          <label class="champ">Acompte à la réservation<input type="text" name="Acompte à la réservation" placeholder="ex. 20 €, ou aucun"></label>
+          <label class="champ">Annulation<input type="text" name="Annulation" placeholder="ex. gratuite jusqu'à 24 h avant"></label>
+          <label class="champ">Où ont lieu vos rendez-vous ?<input type="text" name="Lieu des rendez-vous" placeholder="ex. au salon, chez le client, en visio"></label>
+        </div>
+      </div>
+      <div class="si-video" data-si="commande" hidden>
+        <p class="aide" style="margin:6px 0 0"><strong>Vos commandes</strong></p>
+        <div class="deux">
+          <label class="champ">Délai pour commander<input type="text" name="Délai de commande" placeholder="ex. 48 h avant, la veille avant midi"></label>
+          <label class="champ">Acompte à la commande<input type="text" name="Acompte à la commande" placeholder="ex. 30 %, ou aucun"></label>
+        </div>
+      </div>
+      <div class="champ">Vos devis et factures aujourd'hui<div class="cases"><label class="case"><input type="radio" name="Devis aujourd'hui" value="Sur papier"><span>Sur papier</span></label><label class="case"><input type="radio" name="Devis aujourd'hui" value="Sur un tableur"><span>Sur un tableur</span></label><label class="case"><input type="radio" name="Devis aujourd'hui" value="Avec un logiciel"><span>Avec un logiciel</span></label><label class="case"><input type="radio" name="Devis aujourd'hui" value="Je n'en fais pas encore"><span>Je n'en fais pas encore</span></label></div></div>
       <label class="champ">Si logiciel, lequel ?<input type="text" name="Logiciel actuel"></label>
-      <div class="champ">Le devis<div class="cases"><label class="case"><input type="checkbox" name="Le devis" value="Gratuit"><span>Gratuit</span></label><label class="case"><input type="checkbox" name="Le devis" value="Toujours après une visite"><span>Toujours après une visite</span></label><label class="case"><input type="checkbox" name="Le devis" value="Possible sur photos"><span>Possible sur photos</span></label><label class="case"><input type="checkbox" name="Le devis" value="Payant si non signé"><span>Payant si non signé</span></label></div></div>
+      <div class="champ" data-si="devis">Le devis<div class="cases"><label class="case"><input type="checkbox" name="Le devis" value="Gratuit"><span>Gratuit</span></label><label class="case"><input type="checkbox" name="Le devis" value="Toujours après une visite"><span>Toujours après une visite</span></label><label class="case"><input type="checkbox" name="Le devis" value="Possible sur photos"><span>Possible sur photos</span></label><label class="case"><input type="checkbox" name="Le devis" value="Payant si non signé"><span>Payant si non signé</span></label></div></div>
       <div class="deux">
-        <label class="champ">Acompte à la signature<input type="text" name="Acompte" placeholder="ex. 30 %"></label>
-        <label class="champ">Le reste, quand ?<input type="text" name="Échéancier" placeholder="ex. le solde à la fin"></label>
-        <label class="champ">Validité de vos devis<input type="text" name="Validité des devis" placeholder="ex. 3 mois"></label>
-        <label class="champ">TVA<select name="TVA"><option>Non applicable (auto-entrepreneur, art. 293 B)</option><option>10 % (rénovation)</option><option>20 %</option><option>5,5 % (rénovation énergétique)</option><option>Je ne sais pas</option></select></label>
+        <label class="champ" data-si="devis">Acompte à la signature du devis<input type="text" name="Acompte" placeholder="ex. 30 %"></label>
+        <label class="champ" data-si="devis">Le reste, quand ?<input type="text" name="Échéancier" placeholder="ex. le solde à la fin"></label>
+        <label class="champ" data-si="devis">Validité de vos devis<input type="text" name="Validité des devis" placeholder="ex. 3 mois"></label>
+        <label class="champ">TVA<select name="TVA"><option>Non applicable (auto-entrepreneur, art. 293 B)</option><option>20 %</option><option>10 % (rénovation, restauration…)</option><option>5,5 % (rénovation énergétique, alimentation…)</option><option>Plusieurs taux selon la prestation</option><option>Je ne sais pas</option></select></label>
       </div>
       <div class="champ">Comment voulez-vous vous faire payer ? <small>(plusieurs choix possibles)</small><div class="cases"><label class="case"><input type="checkbox" name="Paiements" value="Virement"><span>Virement</span></label><label class="case"><input type="checkbox" name="Paiements" value="Paiement en ligne sur votre site (Stripe)"><span>Paiement en ligne sur votre site (Stripe)</span></label><label class="case"><input type="checkbox" name="Paiements" value="Lien de paiement Stripe envoyé par SMS ou e-mail"><span>Lien de paiement Stripe envoyé par SMS ou e-mail</span></label><label class="case"><input type="checkbox" name="Paiements" value="Carte bancaire sur place (terminal)"><span>Carte bancaire sur place (terminal)</span></label><label class="case"><input type="checkbox" name="Paiements" value="Prélèvement mensuel"><span>Prélèvement mensuel</span></label><label class="case"><input type="checkbox" name="Paiements" value="Chèque"><span>Chèque</span></label><label class="case"><input type="checkbox" name="Paiements" value="Espèces"><span>Espèces</span></label><label class="case"><input type="checkbox" name="Paiements" value="Chèque emploi service (CESU)"><span>Chèque emploi service (CESU)</span></label><label class="case"><input type="checkbox" name="Paiements" value="PayPal"><span>PayPal</span></label><label class="case"><input type="checkbox" name="Paiements" value="Wero"><span>Wero</span></label></div></div>
       <div class="champ">À la fin de la prestation<div class="cases"><label class="case" data-dom="bat"><input type="checkbox" name="Fin de chantier" value="PV de réception signé"><span>PV de réception signé</span></label><label class="case"><input type="checkbox" name="Fin de chantier" value="Photos avant / après"><span>Photos avant / après</span></label><label class="case"><input type="checkbox" name="Fin de chantier" value="Je demande un avis Google"><span>Je demande un avis Google</span></label><label class="case"><input type="checkbox" name="Fin de chantier" value="Rien de particulier"><span>Rien de particulier</span></label></div></div>
@@ -564,7 +583,7 @@
       <div class="champ">Votre téléphone<div class="cases"><label class="case"><input type="radio" name="Téléphone utilisé" value="Android"><span>Android</span></label><label class="case"><input type="radio" name="Téléphone utilisé" value="iPhone"><span>iPhone</span></label></div></div>
       <div class="champ">Vous utilisez aussi<div class="cases"><label class="case"><input type="checkbox" name="Autres appareils" value="Une tablette"><span>Une tablette</span></label><label class="case"><input type="checkbox" name="Autres appareils" value="Un ordinateur"><span>Un ordinateur</span></label></div></div>
       <div class="champ">Votre agenda aujourd'hui<div class="cases"><label class="case"><input type="radio" name="Agenda actuel" value="Agenda Google"><span>Agenda Google</span></label><label class="case"><input type="radio" name="Agenda actuel" value="Agenda de l'iPhone"><span>Agenda de l'iPhone</span></label><label class="case"><input type="radio" name="Agenda actuel" value="Papier"><span>Papier</span></label><label class="case"><input type="radio" name="Agenda actuel" value="Pas d'agenda"><span>Pas d'agenda</span></label></div></div>
-      <label class="champ">Combien de devis par mois, environ ?<input type="text" name="Devis par mois"></label>
+      <label class="champ" data-si="devis">Combien de devis par mois, environ ?<input type="text" name="Devis par mois"></label>
       <label class="champ">Vos derniers numéros de devis et de facture <small>(pour continuer votre numérotation)</small><input type="text" name="Derniers numéros" placeholder="ex. devis D-2026-041, facture F-2026-033"></label>
       <label class="champ">D'autres personnes utiliseront l'appli ? <small>(associé, conjoint, secrétaire)</small><input type="text" name="Autres utilisateurs"></label>
       <label class="champ">Ce qui doit figurer sur vos devis et factures <small>(mentions, garanties, conditions)</small><textarea name="Mentions des devis"></textarea></label>
@@ -612,7 +631,7 @@
     </fieldset>
 
     <fieldset>
-      <legend>11. Vidéos, réseaux et annuaires <small style="font-size:15px;color:var(--gris)">· en option, 25 € par mois</small></legend>
+      <legend>11. Web marketing : vidéos, réseaux et annuaires <small style="font-size:15px;color:var(--gris)">· en option, 25 € par mois</small></legend>
       <p class="aide">Vous nous envoyez vos photos et vidéos de votre travail, nous créons vos réseaux et nous les faisons vivre en postant régulièrement, nous montons vos vidéos au bon format pour chaque réseau, nous écrivons des articles pour votre site pour qu'il soit bien vu par Google, et nous vous inscrivons sur tous les annuaires pro.</p>
       <div class="champ">Ça vous intéresse ?<div class="cases"><label class="case"><input type="radio" name="Vidéos" value="Oui"><span>Oui</span></label><label class="case"><input type="radio" name="Vidéos" value="Peut-être plus tard"><span>Peut-être plus tard</span></label><label class="case"><input type="radio" name="Vidéos" value="Non"><span>Non</span></label></div></div>
       <div class="si-video" id="siVideo" hidden>
@@ -629,8 +648,8 @@
       <legend>12. Pour finir</legend>
       <label class="champ">Pour quand ?<select name="Délai"><option>Dès que possible</option><option>Dans le mois</option><option>Pas pressé</option></select></label>
       <label class="champ">Autre chose à nous dire ?<textarea name="Remarques"></textarea></label>
-      <label class="accord"><input type="checkbox" id="accord"><span>J'ai bien noté : 190 € la création pendant la promotion (200 € ensuite), puis 10 € par mois. Ou 100 € pour l'application web sur mesure seule, puis 30 € par an. L'option vidéos, réseaux et annuaires est à 25 € par mois.</span></label>
-      <p class="aide" style="margin-top:14px">Une fois votre questionnaire reçu, nous vous écrivons pour tout confirmer, avec nos coordonnées bancaires pour régler par virement.</p>
+      <label class="accord"><input type="checkbox" id="accord"><span>J'ai bien noté : 190 € la création pendant la promotion (200 € ensuite), puis 10 € par mois. Ou 100 € pour l'application web sur mesure seule, puis 30 € par an. L'option web marketing (vidéos, réseaux et annuaires) est à 25 € par mois. La boutique en ligne, le logo et la retouche photo ont un prix à part, que nous vous confirmons avant de commencer.</span></label>
+      <p class="aide" style="margin-top:14px">Une fois votre questionnaire reçu, nous vous écrivons pour tout confirmer. Un acompte à la commande, par virement, et le solde à la livraison.</p>
     </fieldset>
 
     <input class="piege" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none">
@@ -651,7 +670,12 @@
   // la partie vidéos ne s'ouvre que si elles intéressent
   const domaines = { "Artisan du bâtiment": "bat", "Autre artisan": "art", "Nettoyage, ménage": "net", "Freelance, indépendant": "fre", "Autre activité": "autre" };
   function selonActivite() { const c = form.querySelector('[name="Activité"]:checked'); const d = c ? domaines[c.value] : "";
-    form.querySelectorAll("[data-dom]").forEach(el => { el.hidden = el.dataset.dom !== d; }); }
+    form.querySelectorAll("[data-dom]").forEach(el => { el.hidden = !el.dataset.dom.split(" ").includes(d); }); }
+  // devis, réservation, commande : on ne pose que les questions qui vont avec (tant que rien n'est coché, les questions de devis restent)
+  function selonMode() { const m = [...form.querySelectorAll('[name="Mode"]:checked')].map(x => x.value);
+    const voit = { devis: !m.length || m.includes("Un devis"), resa: m.includes("Une réservation, un rendez-vous"), commande: m.includes("Une commande") };
+    form.querySelectorAll("[data-si]").forEach(el => { el.hidden = !voit[el.dataset.si]; }); }
+  form.querySelectorAll('[name="Mode"]').forEach(c => c.addEventListener("change", selonMode)); selonMode();
   // le menu des métiers : tous les métiers au départ, puis seulement ceux de l'activité choisie
   const menu = document.getElementById("metier"), tousGroupes = [...menu.querySelectorAll("optgroup")].map(g => g.cloneNode(true)), autreOpt = menu.querySelector('option[value="Autre"]');
   function filtrerMetiers(d) { const v = menu.value; menu.querySelectorAll("optgroup").forEach(g => g.remove());
@@ -680,29 +704,51 @@
     img.onload = () => { const r = Math.min(1, 1400 / Math.max(img.width, img.height)), c = document.createElement("canvas"); c.width = Math.round(img.width * r); c.height = Math.round(img.height * r);
       c.getContext("2d").drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(u); c.toBlob(b => ok(b || f), "image/jpeg", .78); };
     img.onerror = () => ok(f); img.src = u; });
+  // les réponses et les fichiers vont dans la base (lue dans l'espace patron) ; l'e-mail prévient, sans les fichiers
+  const SB = window.NORA_SB && NORA_SB.url && window.supabase ? supabase.createClient(NORA_SB.url, NORA_SB.cle, { auth: { persistSession: false } }) : null;
+  const propre = n => n.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9.]+/g, "-").replace(/^-+|-+$/g, "").slice(-60) || "fichier";
   form.addEventListener("submit", async e => {
     e.preventDefault();
     const nom = form["Nom et prénom"].value.trim(), tel = form["Téléphone"].value.trim(), mail = form.email.value.trim();
     if (!nom || !tel || !mail) { dire("erreur", "Merci d'indiquer votre nom, votre téléphone et votre e-mail."); return; }
-    bouton.disabled = true; bouton.textContent = photos.length ? "Envoi des photos…" : "Envoi…";
+    bouton.disabled = true; bouton.textContent = "Envoi…";
     try {
-      const fd = new FormData();
-      // les cases cochées d'une même question sont regroupées sur une ligne
+      const fd = new FormData(), reponses = [];
+      const ajoute = (el, v) => { fd.append(el.name, v); const l = el.closest("fieldset")?.querySelector("legend"); reponses.push({ s: l ? l.firstChild.textContent.trim() : "", q: el.name, v }); };
+      // les cases cochées d'une même question sont regroupées sur une ligne ; ce qui est masqué ne part pas
       const vu = new Set();
       for (const el of form.elements) {
-        if (!el.name || el.type === "file" || vu.has(el.name)) continue;
-        if (el.type === "checkbox" || el.type === "radio") { vu.add(el.name); const v = [...form.querySelectorAll(`[name="${el.name}"]:checked`)].map(x => x.value).join(", "); if (v) fd.append(el.name, v); continue; }
-        if (el.value.trim()) fd.append(el.name, el.value.trim());
+        if (!el.name || el.type === "file" || el.name === "_honey" || vu.has(el.name) || el.closest("[hidden]")) continue;
+        if (el.type === "checkbox" || el.type === "radio") { vu.add(el.name); const v = [...form.querySelectorAll(`[name="${el.name}"]:checked`)].map(x => x.value).join(", "); if (v) ajoute(el, v); continue; }
+        if (el.value.trim()) ajoute(el, el.value.trim());
       }
-      fd.append("Accord tarifs", document.getElementById("accord").checked ? "Oui" : "Non coché");
+      const accord = document.getElementById("accord").checked ? "Oui" : "Non coché";
+      fd.append("Accord tarifs", accord); reponses.push({ s: "12. Pour finir", q: "Accord tarifs", v: accord });
+      // les fichiers : photos réduites, logo, anciens devis
+      const aEnvoyer = [];
+      for (const [i, f] of photos.entries()) aEnvoyer.push({ type: "Réalisation", nom: `realisation-${i + 1}.jpg`, f: await reduire(f), mime: "image/jpeg" });
+      const logo = document.getElementById("logo").files[0]; if (logo) aEnvoyer.push({ type: "Logo", nom: "logo-" + propre(logo.name), f: logo, mime: logo.type });
+      [...document.getElementById("documents").files].slice(0, 3).forEach((f, i) => aEnvoyer.push({ type: "Document", nom: `document-${i + 1}-` + propre(f.name), f, mime: f.type }));
+      let enBase = false, fichiers = [], manquants = 0;
+      const piege = form._honey.value; if (piege) fd.append("_honey", piege);
+      if (SB && !piege) {
+        const id = crypto.randomUUID();
+        for (const [i, x] of aEnvoyer.entries()) {
+          bouton.textContent = `Envoi des fichiers… ${i + 1} / ${aEnvoyer.length}`;
+          const chemin = `${id}/${x.nom}`, { error } = await SB.storage.from("questionnaires").upload(chemin, x.f, { contentType: x.mime || undefined });
+          if (error) manquants++; else fichiers.push({ chemin, nom: x.nom, type: x.type });
+        }
+        bouton.textContent = "Envoi…";
+        const { error } = await SB.from("demandes").insert({ id, nom, tel, email: mail, reponses, fichiers,
+          activite: form.querySelector('[name="Activité"]:checked')?.value || null, metier: menu.value || form["Métier (autre)"].value.trim() || null });
+        enBase = !error;
+      }
+      fd.append("Fichiers", !aEnvoyer.length ? "Aucun" : enBase ? `${fichiers.length} fichier(s), à voir dans l'espace patron` + (manquants ? ` (${manquants} n'ont pas pu partir)` : "") : `${aEnvoyer.length} fichier(s) choisi(s), non reçus`);
       fd.append("_subject", `Questionnaire — ${nom}`); fd.append("_template", "table"); fd.append("_captcha", "false");
-      for (const [i, f] of photos.entries()) fd.append(`realisation_${i + 1}`, await reduire(f), `realisation-${i + 1}.jpg`);
-      const logo = document.getElementById("logo").files[0]; if (logo) fd.append("logo", logo, logo.name);
-      [...document.getElementById("documents").files].slice(0, 3).forEach((f, i) => fd.append(`document_${i + 1}`, f, f.name));
-      const r = await fetch("https://formsubmit.co/ajax/contact@noraeditions.com", { method: "POST", headers: { Accept: "application/json" }, body: fd });
-      if (!r.ok) throw new Error("envoi");
-      form.reset(); photos = []; afficher();
-      dire("ok", "Merci, votre questionnaire est bien arrivé. Nous vous écrivons très vite pour tout confirmer, avec nos coordonnées bancaires pour le virement.");
+      const r = await fetch("https://formsubmit.co/ajax/contact@noraeditions.com", { method: "POST", headers: { Accept: "application/json" }, body: fd }).catch(() => null);
+      if (!enBase && !(r && r.ok)) throw new Error("envoi");
+      form.reset(); photos = []; afficher(); selonActivite(); selonMode();
+      dire("ok", "Merci, votre questionnaire est bien arrivé. Nous vous écrivons très vite pour tout confirmer, avec nos coordonnées bancaires pour l'acompte.");
     } catch (err) { dire("erreur", "L'envoi n'a pas abouti. Réessayez, ou écrivez-nous à contact@noraeditions.com."); }
     bouton.disabled = false; bouton.textContent = "Envoyer mes réponses";
   });

@@ -1,0 +1,14 @@
+{
+  "name": "Nora Éditions",
+  "short_name": "Nora",
+  "start_url": "/espace-patron/",
+  "scope": "/espace-patron/",
+  "display": "standalone",
+  "background_color": "#0f1240",
+  "theme_color": "#0f1240",
+  "lang": "fr",
+  "icons": [
+    { "src": "/medias/icone-site-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/medias/icone-site-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

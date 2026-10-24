@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
 Disallow: /questionnaire.html
+Disallow: /espace-patron/
 Sitemap: https://creation-site-internet.noraeditions.fr/sitemap.xml

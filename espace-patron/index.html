@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nora Éditions</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0f1240">
+<link rel="icon" type="image/png" sizes="32x32" href="/medias/favicon-site-32.png">
+<link rel="apple-touch-icon" href="/medias/apple-touch-site.png">
+<link rel="manifest" href="/espace-patron/manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Nora">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --nuit: #0f1240; --violet: #5b4bff; --jaune: #ffd426; --fond: #f4f5fb; --carte: #fff; --encre: #14152e; --gris: #6b7090; --trait: #e3e5f2;
+    --vert: #0f9d58; --orange: #e8710a; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { font: 16px/1.5 Inter, Arial, sans-serif; color: var(--encre); background: var(--fond); min-height: 100vh; }
+  button, input, textarea, select { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  [hidden] { display: none !important; }
+  .marque { display: flex; align-items: center; gap: 12px; }
+  .marque img { width: 40px; height: 40px; border-radius: 12px; }
+  .marque b { display: block; font: 800 18px "Bricolage Grotesque", Inter, sans-serif; letter-spacing: .02em; }
+  .marque span { display: block; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--jaune); }
+
+  /* connexion */
+  #connexion { min-height: 100vh; display: grid; place-items: center; padding: 24px 16px; background: radial-gradient(120% 80% at 50% 0%, #2b2f9e 0%, var(--nuit) 70%); color: #fff; }
+  #connexion form { width: 100%; max-width: 380px; display: grid; gap: 14px; }
+  #connexion h1 { font: 800 30px/1.15 "Bricolage Grotesque", Inter, sans-serif; margin: 26px 0 4px; }
+  #connexion p { color: #c9ccf5; font-size: 15px; }
+  #connexion label { display: grid; gap: 6px; font-size: 14px; font-weight: 600; color: #dfe1ff; }
+  #connexion input { padding: 15px 16px; border-radius: 14px; border: 0; background: #fff; color: var(--encre); font-size: 17px; }
+  .bouton { padding: 15px 20px; border: 0; border-radius: 999px; background: var(--jaune); color: var(--nuit); font-weight: 700; font-size: 17px; }
+  #erreurCnx { color: #ffb4b4; font-size: 14px; min-height: 20px; }
+
+  /* liste */
+  header { position: sticky; top: 0; z-index: 5; background: var(--nuit); color: #fff; padding: 14px 16px; padding-top: max(14px, env(safe-area-inset-top)); }
+  header .ligne { display: flex; align-items: center; justify-content: space-between; gap: 12px; max-width: 980px; margin: 0 auto; }
+  header .marque b { white-space: nowrap; } header .marque { min-width: 0; }
+  .petit { padding: 8px 12px; border-radius: 999px; border: 1px solid rgba(255,255,255,.35); background: transparent; color: #fff; font-size: 14px; font-weight: 600; }
+  main { max-width: 980px; margin: 0 auto; padding: 16px 16px 60px; }
+  .filtres { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+  .filtres button { flex: none; padding: 9px 15px; border-radius: 999px; border: 1px solid var(--trait); background: #fff; font-size: 14px; font-weight: 600; color: var(--gris); }
+  .filtres button.actif { background: var(--nuit); border-color: var(--nuit); color: #fff; }
+  .filtres i { font-style: normal; margin-left: 6px; padding: 0 7px; border-radius: 999px; background: var(--jaune); color: var(--nuit); font-size: 12px; }
+  #cherche { width: 100%; margin: 12px 0 16px; padding: 13px 16px; border-radius: 14px; border: 1px solid var(--trait); background: #fff; font-size: 16px; }
+  .carte { display: block; width: 100%; text-align: left; margin-bottom: 10px; padding: 16px; border-radius: 18px; border: 1px solid var(--trait); background: var(--carte); box-shadow: 0 4px 14px rgba(20,21,46,.04); }
+  .carte .haut { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+  .carte b { font-size: 17px; }
+  .carte time { flex: none; font-size: 13px; color: var(--gris); }
+  .carte .metier { color: var(--violet); font-weight: 600; font-size: 14px; }
+  .carte .veut { margin-top: 6px; font-size: 14px; color: var(--gris); }
+  .carte .bas { display: flex; gap: 8px; align-items: center; margin-top: 10px; font-size: 13px; color: var(--gris); }
+  .pastille { padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+  .s-nouvelle { background: var(--jaune); color: var(--nuit); }
+  .s-en-cours { background: #e6e3ff; color: #3b2fd1; }
+  .s-faite { background: #dcf3e6; color: #0b6b3c; }
+  .s-archivee { background: #eceef4; color: var(--gris); }
+  .vide { padding: 50px 10px; text-align: center; color: var(--gris); }
+
+  /* fiche d'une demande */
+  #fiche { position: fixed; inset: 0; z-index: 10; background: var(--fond); overflow-y: auto; }
+  #fiche header .ligne { justify-content: flex-start; }
+  #fiche h2 { font: 800 26px/1.2 "Bricolage Grotesque", Inter, sans-serif; }
+  .bloc-f { margin-top: 16px; padding: 16px; border-radius: 18px; background: #fff; border: 1px solid var(--trait); }
+  .bloc-f h3 { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--gris); margin-bottom: 10px; }
+  .actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
+  .actions a { display: grid; place-items: center; padding: 12px 6px; border-radius: 14px; background: var(--nuit); color: #fff; text-decoration: none; font-weight: 600; font-size: 15px; }
+  .statuts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .statuts button { padding: 11px 4px; border-radius: 12px; border: 1px solid var(--trait); background: #fff; font-size: 14px; font-weight: 600; color: var(--gris); }
+  .statuts button.actif { background: var(--violet); border-color: var(--violet); color: #fff; }
+  textarea#note { width: 100%; min-height: 90px; padding: 12px; border-radius: 12px; border: 1px solid var(--trait); resize: vertical; font-size: 16px; }
+  .enreg { margin-top: 6px; font-size: 13px; color: var(--vert); min-height: 18px; }
+  .fichiers { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
+  .fichiers a { position: relative; display: block; aspect-ratio: 1; border-radius: 12px; overflow: hidden; background: #eceef7; text-decoration: none; color: var(--encre); }
+  .fichiers img { width: 100%; height: 100%; object-fit: cover; }
+  .fichiers .doc { display: grid; place-items: center; height: 100%; padding: 8px; text-align: center; font-size: 12px; font-weight: 600; word-break: break-all; }
+  .fichiers small { position: absolute; left: 6px; bottom: 6px; padding: 1px 7px; border-radius: 999px; background: rgba(15,18,64,.8); color: #fff; font-size: 11px; }
+  .section-r { margin-top: 14px; }
+  .section-r:first-of-type { margin-top: 0; }
+  .section-r h4 { font-size: 15px; color: var(--violet); margin-bottom: 6px; }
+  .section-r dl { display: grid; gap: 8px; }
+  .section-r dt { font-size: 13px; color: var(--gris); }
+  .section-r dd { white-space: pre-wrap; word-break: break-word; }
+  .archiver { width: 100%; margin-top: 16px; padding: 14px; border-radius: 14px; border: 1px solid var(--trait); background: #fff; font-weight: 600; color: var(--gris); }
+  #bandeau { position: fixed; left: 16px; right: 16px; bottom: max(16px, env(safe-area-inset-bottom)); z-index: 20; display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    max-width: 520px; margin: 0 auto; padding: 12px 16px; border-radius: 16px; background: var(--nuit); color: #fff; box-shadow: 0 14px 34px rgba(0,0,0,.25); }
+  #bandeau button { border: 0; background: none; color: var(--jaune); font-weight: 700; }
+  .tableau { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+  .tableau button { text-align: left; padding: 14px; border-radius: 16px; border: 1px solid var(--trait); background: #fff; }
+  .tableau b { display: block; font: 800 26px/1.1 "Bricolage Grotesque", Inter, sans-serif; color: var(--nuit); }
+  .tableau span { font-size: 13px; color: var(--gris); }
+  .tableau .chaud { background: var(--nuit); border-color: var(--nuit); } .tableau .chaud b { color: var(--jaune); } .tableau .chaud span { color: #c9ccf5; }
+  .rappel-badge { background: #ffe1d6; color: #9a3412; }
+  .progres { flex: 1; height: 6px; border-radius: 999px; background: #eceef7; overflow: hidden; max-width: 90px; margin-left: auto; }
+  .progres i { display: block; height: 100%; background: var(--violet); }
+  .essentiel { display: grid; gap: 8px; }
+  .essentiel div { display: grid; grid-template-columns: 110px 1fr; gap: 10px; font-size: 15px; }
+  .essentiel dt { color: var(--gris); font-size: 13px; padding-top: 2px; }
+  .actions.quatre { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+  .actions.quatre a { padding: 12px 2px; font-size: 14px; }
+  .actions a.wa { background: #128c4a; }
+  .reponse { width: 100%; margin-top: 8px; padding: 13px; border-radius: 14px; border: 0; background: var(--jaune); color: var(--nuit); font-weight: 700; font-size: 15px; }
+  .prix-lignes { display: grid; gap: 4px; font-size: 15px; }
+  .prix-lignes div { display: flex; justify-content: space-between; gap: 10px; }
+  .prix-lignes .a-part { color: var(--orange); }
+  .champs2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+  .champs2 label, .rappel label { display: grid; gap: 4px; font-size: 13px; color: var(--gris); }
+  .champs2 input, .rappel input, #rib { width: 100%; padding: 11px 12px; border-radius: 12px; border: 1px solid var(--trait); font-size: 16px; background: #fff; }
+  .paiements { margin-top: 10px; display: grid; gap: 6px; }
+  .paiements div { display: flex; justify-content: space-between; align-items: center; padding: 9px 12px; border-radius: 12px; background: #f1f7f3; font-size: 15px; }
+  .paiements button, .lien-btn { border: 0; background: none; color: var(--violet); font-weight: 600; font-size: 14px; text-transform: none; letter-spacing: 0; }
+  .reste { margin-top: 8px; font-weight: 700; }
+  .etapes { display: grid; gap: 6px; }
+  .etapes button { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; padding: 11px 12px; border-radius: 12px; border: 1px solid var(--trait); background: #fff; font-size: 15px; }
+  .etapes button::before { content: ""; flex: none; width: 22px; height: 22px; border-radius: 50%; border: 2px solid #c9cbe0; }
+  .etapes button.fait { background: #f3f1ff; border-color: #d9d4ff; }
+  .etapes button.fait::before { border-color: var(--violet); background: var(--violet) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M6 12l4 4 8-8' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/></svg>") center / 16px no-repeat; }
+  .etapes small { margin-left: auto; color: var(--gris); font-size: 12px; }
+  .rappel { display: grid; gap: 8px; }
+  .rappel .vite { display: flex; gap: 6px; flex-wrap: wrap; }
+  .rappel .vite button { padding: 8px 12px; border-radius: 999px; border: 1px solid var(--trait); background: #fff; font-size: 14px; font-weight: 600; }
+  #reglages { margin: 0 0 14px; }
+  #installer { width: 100%; margin-bottom: 14px; padding: 13px; border-radius: 14px; border: 1px dashed var(--violet); background: #f3f1ff; color: var(--violet); font-weight: 700; }
+  .essai { margin-bottom: 14px; padding: 10px 14px; border-radius: 12px; background: #fff6cc; color: #6e4b00; font-size: 14px; }
+  @media (min-width: 760px) { .liste { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; } }
+</style>
+</head>
+<body>
+
+<section id="connexion" hidden>
+  <form id="formCnx">
+    <div class="marque"><img src="/medias/icone-site-512.png" alt=""><div><b>NORA ÉDITIONS</b><span>Création de site internet</span></div></div>
+    <h1>Vos demandes,<br>au même endroit.</h1>
+    <p>Les questionnaires reçus, avec les photos, les logos et les anciens devis.</p>
+    <label>E-mail<input type="email" id="cnxMail" autocomplete="username" value="contact@noraeditions.com" required></label>
+    <label>Mot de passe<input type="password" id="cnxMdp" autocomplete="current-password" required></label>
+    <button class="bouton" type="submit">Entrer</button>
+    <p id="erreurCnx" role="alert"></p>
+  </form>
+</section>
+
+<section id="appli" hidden>
+  <header><div class="ligne">
+    <div class="marque"><img src="/medias/icone-site-512.png" alt=""><div><b>Bonjour Patronne</b><span>Vos demandes</span></div></div>
+    <div style="display:flex;gap:8px"><button class="petit" id="btnReglages" type="button" aria-label="Réglages" style="padding:7px 9px;display:grid;place-items:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button><button class="petit" id="deconnexion" type="button">Sortir</button></div>
+  </div></header>
+  <main>
+    <p class="essai" id="essai" hidden>Aperçu avec deux demandes d'exemple : la base n'est pas encore branchée.</p>
+    <div class="tableau" id="tableau"></div>
+    <button type="button" id="notifs" class="reponse" style="margin:0 0 14px" hidden>Recevoir une notification à chaque nouvelle demande</button>
+    <p class="essai" id="notifsIphone" hidden>Pour les notifications sur iPhone, installez d'abord l'appli : dans Safari, touchez Partager, puis « Sur l'écran d'accueil ». Ouvrez-la ensuite depuis son icône.</p>
+    <button type="button" id="installer" hidden>Installer l'appli sur mon téléphone</button>
+    <div class="filtres" id="filtres"></div>
+    <div class="bloc-f" id="reglages" hidden><h3>Vos coordonnées bancaires</h3>
+      <p style="font-size:14px;color:var(--gris);margin-bottom:8px">Elles se glissent dans les réponses toutes prêtes. Gardées sur ce téléphone seulement.</p>
+      <textarea id="rib" rows="3" placeholder="Titulaire, IBAN, BIC"></textarea>
+      <h3 style="margin-top:14px">Votre acompte à la commande</h3>
+      <label style="display:flex;align-items:center;gap:8px;font-size:15px"><input type="number" id="pctAcompte" min="0" max="100" step="5" inputmode="numeric" style="width:90px;padding:11px 12px;border-radius:12px;border:1px solid var(--trait);font-size:16px"> % du prix · le solde à la livraison</label></div>
+    <input type="search" id="cherche" placeholder="Chercher un nom, un métier, une ville…">
+    <div class="liste" id="liste"></div>
+  </main>
+</section>
+
+<section id="fiche" hidden>
+  <header><div class="ligne">
+    <button class="petit" id="retour" type="button">← Demandes</button>
+  </div></header>
+  <main id="ficheCorps"></main>
+</section>
+
+<div id="bandeau" hidden><span id="bandeauTxt"></span><button type="button" id="annuler">Annuler</button></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.js"></script>
+<script src="/medias/supabase-config.js"></script>
+<script>
+  const $ = id => document.getElementById(id);
+  const ESSAI = !(window.NORA_SB && NORA_SB.url);
+  const sb = ESSAI ? null : supabase.createClient(NORA_SB.url, NORA_SB.cle);
+  const STATUTS = [["nouvelle", "Nouvelles"], ["en cours", "En cours"], ["faite", "Faites"], ["archivee", "Archivées"]];
+  const NOM_STATUT = { nouvelle: "Nouvelle", "en cours": "En cours", faite: "Faite", archivee: "Archivée" };
+  const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const classe = s => "s-" + s.replace(" ", "-");
+  const quand = d => { const x = new Date(d), j = Math.floor((Date.now() - x) / 864e5);
+    return j < 1 && new Date().toDateString() === x.toDateString() ? "aujourd'hui, " + x.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })
+      : j < 2 ? "hier" : j < 7 ? `il y a ${j} jours` : x.toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" }); };
+  const rep = (d, q) => (d.reponses.find(r => r.q === q) || {}).v || "";
+
+  let demandes = [], filtre = "nouvelle", ouverte = null;
+  const eur = n => (Math.round(n * 100) / 100).toLocaleString("fr-FR", { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }) + " €";
+  const iso = x => `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, "0")}-${String(x.getDate()).padStart(2, "0")}`;
+  const aujourdhui = () => iso(new Date());
+  const dansJours = n => { const x = new Date(); x.setDate(x.getDate() + n); return iso(x); };
+  const jourFr = d => new Date(d + "T12:00").toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" });
+  const encaisse = d => (d.paiements || []).reduce((t, p) => t + Number(p.montant || 0), 0);
+  const aRappeler = d => d.rappel && d.rappel <= aujourdhui() && !["faite", "archivee"].includes(d.statut);
+  const lire = k => { try { return localStorage.getItem(k) || ""; } catch (e) { return ""; } };
+  const garder = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+
+  // ce qu'il veut → le prix, d'après les tarifs annoncés dans le questionnaire
+  function estimation(d) {
+    const v = rep(d, "Je veux"), a = x => v.includes(x), l = [], aPart = [], suite = [];
+    let unique = 0;
+    if (a("Un site internet") || a("dans mon site") || a("Le référencement local") || a("Une fiche Google")) { unique = 190; l.push(["Création du site (promotion)", "190 €"]); suite.push("10 € par mois"); }
+    else if (a("Seulement l'application")) { unique = 100; l.push(["Application web sur mesure seule", "100 €"]); suite.push("30 € par an"); }
+    if (a("Web marketing") || a("Community manager") || rep(d, "Vidéos") === "Oui") suite.push("25 € par mois (web marketing)");
+    if (a("boutique")) aPart.push("la boutique en ligne"); if (a("Un logo")) aPart.push("le logo"); if (a("Retouche")) aPart.push("la retouche photo");
+    return { unique, suite, l, aPart };
+  }
+  const acompteDe = total => { const p = parseFloat(lire("nora_acompte")); return p > 0 && total ? Math.round(total * p / 100) : 0; };
+  const ETAPES = [["echange", "Premier échange"], ["acompte", "Acompte reçu"], ["contenus", "Textes et photos reçus"], ["maquette", "Maquette envoyée"],
+    ["en_ligne", "Site en ligne"], ["google", "Fiche Google prête"], ["appli", "Appli livrée"], ["solde", "Solde reçu à la livraison"]];
+  const etapesDe = d => { const v = rep(d, "Je veux"), seuleAppli = /Seulement l'application/.test(v) && !/Un site internet/.test(v);
+    return ETAPES.filter(([k]) => (k !== "appli" || /appli/i.test(v)) && (!["en_ligne", "maquette", "google"].includes(k) || !seuleAppli)); };
+  const avance = d => { const e = etapesDe(d); return e.filter(([k]) => (d.etapes || {})[k]).length / e.length; };
+
+  function dessinerTableau() {
+    const mois = aujourdhui().slice(0, 7);
+    const ceMois = demandes.reduce((t, d) => t + (d.paiements || []).filter(p => (p.date || "").startsWith(mois)).reduce((u, p) => u + Number(p.montant || 0), 0), 0);
+    const n = s => demandes.filter(d => d.statut === s).length, r = demandes.filter(aRappeler).length;
+    $("tableau").innerHTML = `<button type="button" data-s="nouvelle" class="${n("nouvelle") ? "chaud" : ""}"><b>${n("nouvelle")}</b><span>nouvelles demandes</span></button>
+      <button type="button" data-s="rappeler" class="${r ? "chaud" : ""}"><b>${r}</b><span>à rappeler aujourd'hui</span></button>
+      <button type="button" data-s="en cours"><b>${n("en cours")}</b><span>projets en cours</span></button>
+      <button type="button" data-s="toutes"><b>${eur(ceMois)}</b><span>encaissés ce mois</span></button>`;
+  }
+
+  // la réponse toute prête : récapitulatif, prix, virement
+  function reponsePrete(d) {
+    const e = estimation(d), rib = lire("nora_rib").trim(), veut = rep(d, "Je veux");
+    const corps = [`Bonjour ${d.nom},`, "", "Merci pour votre questionnaire, il est bien arrivé.", "",
+      veut ? "Ce que nous avons noté :\n" + veut.split(", ").map(x => "- " + x).join("\n") : "", "",
+      e.unique ? `Pour démarrer : ${e.unique} €` + (e.suite.length ? `, puis ${e.suite.join(" et ")}.` : ".") : "",
+      e.aPart.length ? `Pour ${e.aPart.join(", ")}, nous vous envoyons un prix à part.` : "", "",
+      e.unique ? (ac => `Pour lancer la création : ${ac ? `un acompte de ${ac} €` : "un acompte"} à la commande, par virement, et le solde à la livraison.\n\n${rib || "[vos coordonnées bancaires]"}`)(acompteDe(d.prix || e.unique)) : "", "",
+      "Nous vous appelons très vite pour la suite.", "", "À bientôt,", "Nora Éditions"]
+      .filter((x, i, t) => x !== "" || (i > 0 && t[i - 1] !== "")).join("\n");
+    return `mailto:${encodeURIComponent(d.email)}?subject=${encodeURIComponent("Votre site · Nora Éditions")}&body=${encodeURIComponent(corps)}`;
+  }
+
+  // exemples pour l'aperçu, tant que la base n'est pas branchée
+  const EXEMPLES = [
+    { id: "e1", created_at: new Date(Date.now() - 2 * 36e5).toISOString(), nom: "Inès Morel", tel: "06 12 34 56 78", email: "ines@exemple.fr", activite: "Freelance, indépendant", metier: "Esthéticienne", statut: "nouvelle", note: "", etapes: {}, prix: null, paiements: [], rappel: null,
+      fichiers: [{ chemin: "/medias/appli-flex.jpg", nom: "realisation-1.jpg", type: "Réalisation" }, { chemin: "/medias/ka-site.jpg", nom: "realisation-2.jpg", type: "Réalisation" }, { chemin: "/medias/icone-site-512.png", nom: "logo-belle-peau.png", type: "Logo" }, { chemin: "#", nom: "document-1-ancienne-facture.pdf", type: "Document" }],
+      reponses: [{ s: "1. Vous et votre entreprise", q: "Activité", v: "Freelance, indépendant" }, { s: "1. Vous et votre entreprise", q: "Métier", v: "Esthéticienne" }, { s: "1. Vous et votre entreprise", q: "Entreprise", v: "Belle Peau Institut" }, { s: "1. Vous et votre entreprise", q: "Ville", v: "Montpellier" },
+        { s: "2. Ce que vous voulez", q: "Je veux", v: "Un site internet, L'application web sur mesure dans mon site" }, { s: "2. Ce que vous voulez", q: "Appli", v: "Réservations en ligne, Paiement en ligne et acomptes, Fichier clients et prestations" },
+        { s: "5. Votre façon de travailler", q: "Mode", v: "Une réservation, un rendez-vous" }, { s: "5. Votre façon de travailler", q: "Annulation", v: "gratuite jusqu'à 24 h avant" }, { s: "12. Pour finir", q: "Délai", v: "Dans le mois" }, { s: "12. Pour finir", q: "Accord tarifs", v: "Oui" }] },
+    { id: "e2", created_at: new Date(Date.now() - 3 * 864e5).toISOString(), nom: "Karim Benali", tel: "07 98 76 54 32", email: "karim@exemple.fr", activite: "Artisan du bâtiment", metier: "Carrelage", statut: "en cours", note: "Rappeler mardi pour le logo.", etapes: { echange: "2026-10-21", acompte: "2026-10-22" }, prix: 290, paiements: [{ date: aujourdhui(), montant: 190 }], rappel: aujourdhui(),
+      fichiers: [], reponses: [{ s: "1. Vous et votre entreprise", q: "Ville", v: "Poissy" }, { s: "2. Ce que vous voulez", q: "Je veux", v: "Un site internet, Un logo" }, { s: "12. Pour finir", q: "Délai", v: "Dès que possible" }] }
+  ];
+
+  async function charger() {
+    if (ESSAI) { if (!demandes.length) demandes = EXEMPLES.map(d => ({ ...d })); }
+    else { const { data, error } = await sb.from("demandes").select("*").order("created_at", { ascending: false }); if (error) throw error; demandes = data; }
+    dessinerListe(); if (ouverte) { const d = demandes.find(x => x.id === ouverte); if (d) dessinerFiche(d); }
+  }
+
+  function dessinerListe() {
+    dessinerTableau();
+    $("filtres").innerHTML = [["rappeler", "À rappeler"]].concat(STATUTS, [["toutes", "Toutes"]]).map(([s, n]) => { const c = s === "toutes" ? 0 : demandes.filter(d => d.statut === s).length;
+      return s === "rappeler" && !demandes.some(aRappeler) && filtre !== "rappeler" ? "" : `<button type="button" data-s="${s}" class="${s === filtre ? "actif" : ""}">${n}${s === "nouvelle" && c ? `<i>${c}</i>` : ""}</button>`; }).join("");
+    const q = $("cherche").value.trim().toLowerCase();
+    const l = demandes.filter(d => (filtre === "toutes" ? d.statut !== "archivee" || q : filtre === "rappeler" ? aRappeler(d) : d.statut === filtre))
+      .filter(d => !q || [d.nom, d.metier, d.activite, d.email, d.tel, ...d.reponses.map(r => r.v)].join(" ").toLowerCase().includes(q));
+    $("liste").innerHTML = l.length ? l.map(d => `<button type="button" class="carte" data-id="${d.id}">
+        <div class="haut"><b>${esc(d.nom)}</b><time>${quand(d.created_at)}</time></div>
+        <div class="metier">${esc([d.metier, rep(d, "Entreprise"), rep(d, "Ville")].filter(Boolean).join(" · "))}</div>
+        ${rep(d, "Je veux") ? `<div class="veut">${esc(rep(d, "Je veux"))}</div>` : ""}
+        <div class="bas"><span class="pastille ${classe(d.statut)}">${NOM_STATUT[d.statut]}</span>${aRappeler(d) ? `<span class="pastille rappel-badge">À rappeler</span>` : ""}${d.fichiers.length ? `<span>${d.fichiers.length} fichier${d.fichiers.length > 1 ? "s" : ""}</span>` : ""}${d.statut === "en cours" ? `<span class="progres"><i style="width:${Math.round(avance(d) * 100)}%"></i></span>` : ""}</div>
+      </button>`).join("") : `<p class="vide">${q ? "Aucune demande ne correspond." : "Aucune demande ici pour l'instant."}</p>`;
+  }
+
+  async function liens(d) {
+    if (ESSAI || !d.fichiers.length) return d.fichiers.map(f => f.chemin);
+    const { data, error } = await sb.storage.from("questionnaires").createSignedUrls(d.fichiers.map(f => f.chemin), 3600);
+    return error ? d.fichiers.map(() => "#") : data.map(x => x.signedUrl);
+  }
+
+  async function dessinerFiche(d) {
+    if ($("fiche").hidden) history.pushState({ fiche: 1 }, "");
+    ouverte = d.id; $("fiche").hidden = false; document.body.style.overflow = "hidden";
+    const tel = (d.tel || "").replace(/[^\d+]/g, "");
+    const sections = []; d.reponses.forEach(r => { let s = sections.find(x => x.s === r.s); if (!s) sections.push(s = { s: r.s, l: [] }); s.l.push(r); });
+    $("ficheCorps").innerHTML = `
+      <h2>${esc(d.nom)}</h2>
+      <div class="metier" style="color:var(--violet);font-weight:600">${esc([d.metier, rep(d, "Entreprise"), rep(d, "Ville")].filter(Boolean).join(" · "))}</div>
+      <div style="color:var(--gris);font-size:14px;margin-top:2px">Reçue ${quand(d.created_at)} · ${esc(d.tel)} · ${esc(d.email)}</div>
+      <div class="actions quatre"><a href="tel:${esc(tel)}">Appeler</a><a href="sms:${esc(tel)}">SMS</a><a class="wa" href="https://wa.me/${esc(tel.replace(/^\+/, "").replace(/^0/, "33"))}" target="_blank" rel="noopener">WhatsApp</a><a href="mailto:${esc(d.email)}">E-mail</a></div>
+      <button type="button" class="reponse" id="repondre">Réponse toute prête par e-mail</button>
+      <div class="bloc-f"><h3>L'essentiel</h3><dl class="essentiel">${[["Activité", d.activite], ["Veut", rep(d, "Je veux")], ["Dans l'appli", rep(d, "Appli")], ["Ses clients", rep(d, "Mode")], ["Pour quand", rep(d, "Délai")], ["Tarifs", rep(d, "Accord tarifs") === "Oui" ? "acceptés" : rep(d, "Accord tarifs") ? "pas cochés" : ""]]
+        .filter(x => x[1]).map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl></div>
+      <div class="bloc-f"><h3>Le prix</h3>${(() => { const e = estimation(d); return `<div class="prix-lignes">${e.l.map(([k, v]) => `<div><span>${esc(k)}</span><b>${v}</b></div>`).join("")}${e.suite.map(x => `<div><span>Ensuite</span><span>${x}</span></div>`).join("")}${e.aPart.map(x => `<div class="a-part"><span>${x[0].toUpperCase() + x.slice(1)}</span><span>à chiffrer</span></div>`).join("")}${!e.l.length && !e.aPart.length ? `<div><span style="color:var(--gris)">Rien de coché : à voir ensemble.</span></div>` : ""}</div>`; })()}
+        <div class="champs2"><label>Prix convenu<input type="number" inputmode="decimal" id="prix" min="0" step="1" value="${d.prix ?? ""}" placeholder="${estimation(d).unique || ""}"></label>
+          <label>Paiement reçu<span style="display:flex;gap:6px"><input type="number" inputmode="decimal" id="montantPaie" min="0" step="1" placeholder="ex. 190"><button type="button" class="reponse" id="ajoutPaie" style="width:auto;margin:0;padding:0 14px">+</button></span></label></div>
+        <div class="paiements">${(d.paiements || []).map((p, i) => `<div><span>${new Date(p.date + "T12:00").toLocaleDateString("fr-FR")} · <b>${eur(Number(p.montant))}</b></span><button type="button" data-retire-paie="${i}">Retirer</button></div>`).join("")}</div>
+        ${(() => { const total = d.prix || estimation(d).unique, ac = acompteDe(total); return total ? `<div class="prix-lignes" style="margin-top:10px"><div><span>Acompte à la commande</span><b>${ac ? eur(ac) : "à régler dans Réglages"}</b></div><div><span>Solde à la livraison</span><b>${ac ? eur(total - ac) : "—"}</b></div></div>` : ""; })()}
+        ${d.prix || encaisse(d) ? `<div class="reste">${d.prix ? (encaisse(d) >= d.prix ? "Tout est réglé." : `Reste à régler : ${eur(d.prix - encaisse(d))}`) : `Encaissé : ${eur(encaisse(d))}`}</div>` : ""}</div>
+      <div class="bloc-f"><h3>Avancement</h3><div class="etapes">${etapesDe(d).map(([k, n]) => `<button type="button" data-etape="${k}" class="${(d.etapes || {})[k] ? "fait" : ""}">${n}${(d.etapes || {})[k] ? `<small>${new Date(d.etapes[k] + "T12:00").toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}</small>` : ""}</button>`).join("")}</div></div>
+      <div class="bloc-f rappel"><h3>Rappel</h3>${d.rappel ? `<div><b>${d.rappel <= aujourdhui() ? "À rappeler " + (d.rappel === aujourdhui() ? "aujourd'hui" : "depuis " + jourFr(d.rappel)) : "À rappeler " + jourFr(d.rappel)}</b></div>` : `<div style="color:var(--gris);font-size:15px">Aucun rappel prévu.</div>`}
+        <div class="vite"><button type="button" data-rappel="1">Demain</button><button type="button" data-rappel="3">Dans 3 jours</button><button type="button" data-rappel="7">Dans une semaine</button>${d.rappel ? `<button type="button" data-rappel="0">Effacer</button>` : ""}</div>
+        <label>Ou choisir une date<input type="date" id="dateRappel" value="${d.rappel || ""}"></label></div>
+      <div class="bloc-f"><h3>Où en est-elle</h3><div class="statuts">${STATUTS.slice(0, 3).map(([s]) => `<button type="button" data-statut="${s}" class="${d.statut === s ? "actif" : ""}">${NOM_STATUT[s]}</button>`).join("")}</div>
+        <h3 style="margin-top:14px">Votre note <span style="text-transform:none;letter-spacing:0">(vous seule la voyez)</span></h3>
+        <textarea id="note" placeholder="ex. rappeler mardi, devis envoyé…">${esc(d.note || "")}</textarea><div class="enreg" id="enreg"></div></div>
+      ${d.fichiers.length ? `<div class="bloc-f"><h3>Fichiers · ${d.fichiers.length}</h3><div class="fichiers" id="fichiers">${d.fichiers.map(f => `<a target="_blank" rel="noopener"><div class="doc">${esc(f.nom)}</div><small>${esc(f.type)}</small></a>`).join("")}</div></div>` : ""}
+      <div class="bloc-f"><h3 style="display:flex;justify-content:space-between;align-items:center">Ses réponses<button type="button" class="lien-btn" id="copier">Copier</button></h3>${sections.map(s => `<div class="section-r"><h4>${esc(s.s)}</h4><dl>${s.l.map(r => `<div><dt>${esc(r.q)}</dt><dd>${esc(r.v)}</dd></div>`).join("")}</dl></div>`).join("")}</div>
+      <button type="button" class="archiver" id="archiver">${d.statut === "archivee" ? "Remettre dans les demandes" : "Archiver cette demande"}</button>`;
+    $("fiche").scrollTop = 0;
+    if (d.fichiers.length) { const u = await liens(d); if (ouverte !== d.id) return;
+      [...$("fichiers").children].forEach((a, i) => { a.href = u[i]; const f = d.fichiers[i]; if (/\.(jpe?g|png|webp|gif|heic|heif)$/i.test(f.nom) && u[i] !== "#") a.firstElementChild.outerHTML = `<img src="${esc(u[i])}" alt="${esc(f.nom)}" loading="lazy">`; }); }
+  }
+
+  async function modifier(d, champs, message, ancien) {
+    Object.assign(d, champs);
+    if (!ESSAI) { const { error } = await sb.from("demandes").update(champs).eq("id", d.id); if (error) { Object.assign(d, ancien); montrer("Pas enregistré : vérifiez la connexion."); dessinerListe(); return false; } }
+    dessinerListe(); if (message) montrer(message, () => modifier(d, ancien, "C'est annulé.", champs).then(() => { if (ouverte === d.id) dessinerFiche(d); }));
+    return true;
+  }
+
+  let minuteur;
+  function montrer(t, annuler) { $("bandeauTxt").textContent = t; $("annuler").hidden = !annuler; $("annuler").onclick = () => { $("bandeau").hidden = true; annuler(); }; $("bandeau").hidden = false;
+    clearTimeout(minuteur); minuteur = setTimeout(() => { $("bandeau").hidden = true; }, 6000); }
+
+  function fermerFiche() { ouverte = null; $("fiche").hidden = true; document.body.style.overflow = ""; }
+
+  // les gestes
+  $("filtres").onclick = e => { const b = e.target.closest("button"); if (b) { filtre = b.dataset.s; dessinerListe(); } };
+  $("cherche").oninput = dessinerListe;
+  $("liste").onclick = e => { const c = e.target.closest(".carte"); if (c) dessinerFiche(demandes.find(d => String(d.id) === c.dataset.id)); };
+  $("retour").onclick = () => history.state && history.state.fiche ? history.back() : fermerFiche();
+  $("ficheCorps").onclick = e => {
+    const d = demandes.find(x => x.id === ouverte); if (!d) return;
+    const s = e.target.closest("[data-statut]");
+    if (s && s.dataset.statut !== d.statut) { const ancien = { statut: d.statut }; modifier(d, { statut: s.dataset.statut }, `Passée en « ${NOM_STATUT[s.dataset.statut]} ».`, ancien).then(() => dessinerFiche(d)); }
+    if (e.target.id === "repondre") location.href = reponsePrete(d);
+    if (e.target.id === "copier") { const t = d.reponses.map(r => `${r.q} : ${r.v}`).join("\n"); navigator.clipboard.writeText(`${d.nom} · ${d.tel} · ${d.email}\n${t}`).then(() => montrer("Réponses copiées."), () => montrer("La copie n'a pas marché.")); }
+    const et = e.target.closest("[data-etape]");
+    if (et) { const k = et.dataset.etape, avant = { ...(d.etapes || {}) }, apres = { ...avant }; if (apres[k]) delete apres[k]; else apres[k] = aujourdhui();
+      const champs = { etapes: apres }; if (!avant.acompte && apres.acompte && d.statut === "nouvelle") champs.statut = "en cours";
+      modifier(d, champs, apres[k] ? `« ${ETAPES.find(x => x[0] === k)[1]} » coché.` : "Étape décochée.", { etapes: avant, statut: d.statut }).then(() => dessinerFiche(d)); }
+    const rp = e.target.closest("[data-rappel]");
+    if (rp) { const n = +rp.dataset.rappel, v = n ? dansJours(n) : null; modifier(d, { rappel: v }, v ? `Rappel ${jourFr(v)}.` : "Rappel effacé.", { rappel: d.rappel }).then(() => dessinerFiche(d)); }
+    if (e.target.id === "ajoutPaie") { const m = parseFloat(($("montantPaie").value || "").replace(",", ".")); if (!(m > 0)) { $("montantPaie").focus(); return; }
+      const avant = d.paiements || []; modifier(d, { paiements: avant.concat([{ date: aujourdhui(), montant: m }]) }, `${eur(m)} encaissés.`, { paiements: avant }).then(() => dessinerFiche(d)); }
+    const rpa = e.target.closest("[data-retire-paie]");
+    if (rpa) { const avant = d.paiements || []; modifier(d, { paiements: avant.filter((_, i) => i !== +rpa.dataset.retirePaie) }, "Paiement retiré.", { paiements: avant }).then(() => dessinerFiche(d)); }
+    if (e.target.id === "archiver") { const ancien = { statut: d.statut }, vers = d.statut === "archivee" ? "nouvelle" : "archivee";
+      modifier(d, { statut: vers }, vers === "archivee" ? "Demande archivée." : "Demande remise.", ancien).then(() => $("retour").click()); }
+  };
+  let attente;
+  $("ficheCorps").oninput = e => { if (e.target.id !== "note") return; const d = demandes.find(x => x.id === ouverte); $("enreg").textContent = "…";
+    clearTimeout(attente); attente = setTimeout(async () => { const ok = await modifier(d, { note: e.target.value }, null, { note: d.note }); $("enreg").textContent = ok ? "Enregistré" : ""; }, 700); };
+  $("ficheCorps").onchange = e => { const d = demandes.find(x => x.id === ouverte); if (!d) return;
+    if (e.target.id === "prix") { const v = e.target.value === "" ? null : Math.max(0, parseFloat(e.target.value)); modifier(d, { prix: v }, "Prix enregistré.", { prix: d.prix }).then(() => dessinerFiche(d)); }
+    if (e.target.id === "dateRappel") { const v = e.target.value || null; modifier(d, { rappel: v }, v ? `Rappel ${jourFr(v)}.` : "Rappel effacé.", { rappel: d.rappel }).then(() => dessinerFiche(d)); } };
+  $("tableau").onclick = e => { const b = e.target.closest("button"); if (b) { filtre = b.dataset.s; dessinerListe(); } };
+  $("btnReglages").onclick = () => { $("reglages").hidden = !$("reglages").hidden; };
+  $("pctAcompte").value = lire("nora_acompte"); $("pctAcompte").oninput = () => { garder("nora_acompte", $("pctAcompte").value); if (ouverte) dessinerFiche(demandes.find(x => x.id === ouverte)); };
+  $("rib").value = lire("nora_rib"); $("rib").oninput = () => garder("nora_rib", $("rib").value);
+  // l'appli sur l'écran d'accueil
+  let invite = null; const installee = matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+  window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); invite = e; $("installer").hidden = installee; });
+  $("installer").onclick = async () => { if (!invite) return; invite.prompt(); await invite.userChoice; invite = null; $("installer").hidden = true; };
+  // les notifications : ce téléphone s'abonne, la base le prévient à chaque nouvelle demande
+  const b64 = t => { const p = (t + "===".slice((t.length + 3) % 4)).replace(/-/g, "+").replace(/_/g, "/"); return Uint8Array.from(atob(p), c => c.charCodeAt(0)); };
+  const pushPossible = "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
+  async function etatNotifs() {
+    const iphone = /iPhone|iPad/.test(navigator.userAgent);
+    $("notifsIphone").hidden = !(iphone && !installee);
+    if (!pushPossible) { $("notifs").hidden = true; return; }
+    const reg = await navigator.serviceWorker.ready, ab = await reg.pushManager.getSubscription();
+    $("notifs").hidden = !!ab && Notification.permission === "granted";
+  }
+  $("notifs").onclick = async () => {
+    if (Notification.permission === "denied") { montrer("Les notifications sont bloquées : autorisez-les dans les réglages du téléphone."); return; }
+    if (await Notification.requestPermission() !== "granted") return;
+    try {
+      const reg = await navigator.serviceWorker.ready;
+      const ab = await reg.pushManager.getSubscription() || await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64(NORA_SB.vapid) });
+      const j = ab.toJSON();
+      if (!ESSAI) { const { error } = await sb.from("abonnements").upsert({ endpoint: j.endpoint, cles: j.keys, appareil: navigator.userAgent.slice(0, 200) }); if (error) throw error; }
+      $("notifs").hidden = true; montrer("C'est fait : ce téléphone sera prévenu.");
+    } catch (e) { montrer("Les notifications n'ont pas pu s'activer."); }
+  };
+  if ("serviceWorker" in navigator) navigator.serviceWorker.register("/espace-patron/sw.js").catch(() => {});
+  window.addEventListener("popstate", fermerFiche);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden && !$("appli").hidden) charger().catch(() => {}); });
+
+  // connexion
+  async function entrer() { $("connexion").hidden = true; $("appli").hidden = false; $("essai").hidden = !ESSAI;
+    etatNotifs().catch(() => {});
+    try { await charger(); const id = new URLSearchParams(location.search).get("d"); const d = id && demandes.find(x => String(x.id) === id);
+      if (d) { history.replaceState(null, "", location.pathname); dessinerFiche(d); } } catch (e) { $("liste").innerHTML = `<p class="vide">Impossible de lire les demandes. Vérifiez la connexion, puis rouvrez la page.</p>`; } }
+  $("formCnx").onsubmit = async e => { e.preventDefault(); $("erreurCnx").textContent = "";
+    if (ESSAI) return entrer();
+    const { error } = await sb.auth.signInWithPassword({ email: $("cnxMail").value.trim(), password: $("cnxMdp").value });
+    if (error) { $("erreurCnx").textContent = "E-mail ou mot de passe incorrect."; return; } entrer(); };
+  $("deconnexion").onclick = async () => { if (sb) await sb.auth.signOut(); $("appli").hidden = true; $("connexion").hidden = false; $("cnxMdp").value = ""; };
+  (async () => { if (!ESSAI) { const { data } = await sb.auth.getSession(); if (data.session) return entrer(); } $("connexion").hidden = false; })();
+</script>
+</body>
+</html>

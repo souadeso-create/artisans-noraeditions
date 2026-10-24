@@ -500,9 +500,13 @@
   /* la vidéo « site + application », à côté du texte de la section Création de site internet */
   .banniere + .heros .bloc { display: grid; gap: 34px; align-items: center; }
   .video-appli { justify-self: center; width: 100%; max-width: 380px; text-align: center; }
-  .video-appli video { display: block; width: 100%; aspect-ratio: 9 / 16; border-radius: 34px; background: #0f1240; object-fit: cover;
+  .video-appli video { position: static; inset: auto; height: auto; display: block; width: 100%; aspect-ratio: 9 / 16; border-radius: 34px; background: #0f1240; object-fit: cover;
     box-shadow: 0 30px 70px rgba(15,18,64,.35), 0 0 0 8px #fff, 0 0 0 10px #e3e5ff; }
   .video-appli p { margin-top: 18px; font: 600 15px Inter, sans-serif; color: #5b5f8f; }
+  .video-appli { position: relative; }
+  .video-appli .lien-video { position: absolute; left: 18%; right: 18%; top: 54%; height: 11%; border-radius: 40px; display: none; }
+  .video-appli .lien-video.vu { display: block; }
+  @media (max-width: 600px) { .video-appli { max-width: 260px; } .video-appli video { border-radius: 26px; } }
   @media (min-width: 900px) { .banniere + .heros .bloc { grid-template-columns: 1fr .8fr; } }
   /* écrans dessinés */
   .ecrans { position: relative; height: 270px; max-width: 520px; width: 100%; margin: 0 auto; }
@@ -547,7 +551,7 @@
   .menu a { white-space: nowrap; } @media (max-width: 960px) { .menu { gap: 14px !important; } .menu a { font-size: 14px; } }
 </style>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "ProfessionalService", "name": "Nora Éditions Artisans", "description": "Création de site internet référencé sur Google (SEO), fiche Google, logo et application web sur mesure pour les freelances, les artisans, les entreprises de nettoyage et tous les indépendants, adaptés à chaque métier. Réseaux sociaux, vidéos et articles en option.", "url": "https://creation-site-internet.noraeditions.fr/", "email": "contact@noraeditions.com", "logo": "https://creation-site-internet.noraeditions.fr/medias/icone-site-512.png", "image": "https://creation-site-internet.noraeditions.fr/medias/icone-site-512.png", "areaServed": {"@type": "Country", "name": "France"}, "parentOrganization": {"@type": "Organization", "name": "Nora Éditions", "url": "https://noraeditions.fr/"}, "makesOffer": [{"@type": "Offer", "name": "Création : site internet, fiche Google, logo et appli", "price": "200", "priceCurrency": "EUR"}, {"@type": "Offer", "name": "Abonnement : site et appli en ligne", "priceSpecification": {"@type": "UnitPriceSpecification", "price": "10", "priceCurrency": "EUR", "unitText": "mois"}}]}</script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Je suis auto-entrepreneur, c'est fait pour moi ?", "acceptedAnswer": {"@type": "Answer", "text": "Oui, c'est pensé pour vous : devis et factures prêts à envoyer, un outil simple sur le téléphone, et un prix adapté."}}, {"@type": "Question", "name": "Mon site sera à mon nom ?", "acceptedAnswer": {"@type": "Answer", "text": "Oui. Votre site porte le nom de votre entreprise et votre logo, sur votre propre adresse."}}, {"@type": "Question", "name": "Je ne suis pas à l'aise avec l'informatique.", "acceptedAnswer": {"@type": "Answer", "text": "L'appli se prend en main en quelques minutes, avec un tuto vidéo. Pour le site et la fiche Google, nous nous occupons de tout."}}, {"@type": "Question", "name": "Ça marche pour mon métier ?", "acceptedAnswer": {"@type": "Answer", "text": "Artisans du bâtiment et autres artisans, entreprises de nettoyage, freelances, coachs, photographes, consultants… : le site et l'appli s'adaptent à votre métier."}}, {"@type": "Question", "name": "Mon site sera visible sur Google ?", "acceptedAnswer": {"@type": "Answer", "text": "Oui. Chaque site est bien référencé sur Google : nous nous en occupons, pour que les clients qui cherchent votre métier près de chez eux vous trouvent."}}, {"@type": "Question", "name": "Que faut-il pour créer mon site ?", "acceptedAnswer": {"@type": "Answer", "text": "Vous remplissez le questionnaire et vous nous envoyez vos réalisations : photos et vidéos de votre travail. Nous nous occupons du reste."}}, {"@type": "Question", "name": "Vous débutez et vous n'avez pas encore de photos ?", "acceptedAnswer": {"@type": "Answer", "text": "Pas de souci, on se débrouille. Votre site démarre avec des visuels qui présentent vos prestations, et vos réalisations s'ajoutent au fur et à mesure : vous prenez les photos avec votre appli, elles arrivent sur votre site."}}, {"@type": "Question", "name": "Qui voit mes clients et mes devis ?", "acceptedAnswer": {"@type": "Answer", "text": "Vous seul. Vos clients, vos devis et vos factures restent à vous, dans votre application. Nous ne recevons que les photos et vidéos que vous choisissez de nous envoyer pour vos vidéos."}}, {"@type": "Question", "name": "Comment je paie ?", "acceptedAnswer": {"@type": "Answer", "text": "Par virement. Pour l'abonnement, le plus simple est un virement permanent depuis votre banque, mis en place une fois pour toutes. Vous recevez une facture à chaque paiement."}}, {"@type": "Question", "name": "Je peux arrêter l'abonnement ?", "acceptedAnswer": {"@type": "Answer", "text": "Oui, quand vous voulez : envoyez-nous un e-mail à contact@noraeditions.com, et l'abonnement s'arrête."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Je suis auto-entrepreneur, c'est fait pour moi ?", "acceptedAnswer": {"@type": "Answer", "text": "Oui, c'est pensé pour vous : devis et factures prêts à envoyer, un outil simple sur le téléphone, et un prix adapté."}}, {"@type": "Question", "name": "Mon site sera à mon nom ?", "acceptedAnswer": {"@type": "Answer", "text": "Oui. Votre site porte le nom de votre entreprise et votre logo, sur votre propre adresse."}}, {"@type": "Question", "name": "Je ne suis pas à l'aise avec l'informatique.", "acceptedAnswer": {"@type": "Answer", "text": "L'appli se prend en main en quelques minutes, avec un tuto vidéo. Pour le site et la fiche Google, nous nous occupons de tout."}}, {"@type": "Question", "name": "Ça marche pour mon métier ?", "acceptedAnswer": {"@type": "Answer", "text": "Artisans du bâtiment et autres artisans, entreprises de nettoyage, freelances, coachs, photographes, consultants… : le site et l'appli s'adaptent à votre métier."}}, {"@type": "Question", "name": "Mon site sera visible sur Google ?", "acceptedAnswer": {"@type": "Answer", "text": "Oui. Chaque site est bien référencé sur Google : nous nous en occupons, pour que les clients qui cherchent votre métier près de chez eux vous trouvent."}}, {"@type": "Question", "name": "Que faut-il pour créer mon site ?", "acceptedAnswer": {"@type": "Answer", "text": "Vous remplissez le questionnaire et vous nous envoyez vos réalisations : photos et vidéos de votre travail. Nous nous occupons du reste."}}, {"@type": "Question", "name": "Vous débutez et vous n'avez pas encore de photos ?", "acceptedAnswer": {"@type": "Answer", "text": "Pas de souci, on se débrouille. Votre site démarre avec des visuels qui présentent vos prestations, et vos réalisations s'ajoutent au fur et à mesure : vous prenez les photos avec votre appli, elles arrivent sur votre site."}}, {"@type": "Question", "name": "Qui voit mes clients et mes devis ?", "acceptedAnswer": {"@type": "Answer", "text": "Vous seul. Vos clients, vos devis et vos factures restent à vous, dans votre application. Nous ne recevons que les photos et vidéos que vous choisissez de nous envoyer pour vos vidéos."}}, {"@type": "Question", "name": "Comment je paie ?", "acceptedAnswer": {"@type": "Answer", "text": "Par virement : un acompte à la commande, puis le solde à la livraison. Pour l'abonnement, le plus simple est un virement permanent depuis votre banque, mis en place une fois pour toutes. Vous recevez une facture à chaque paiement."}}, {"@type": "Question", "name": "Je peux arrêter l'abonnement ?", "acceptedAnswer": {"@type": "Answer", "text": "Oui, quand vous voulez : envoyez-nous un e-mail à contact@noraeditions.com, et l'abonnement s'arrête."}}]}</script>
 <script src="/medias/clic.js" defer></script>
 </head>
 <body>
@@ -594,14 +598,13 @@
    <div>
     <span class="label">Création de site internet</span>
     <h1 class="titre-banniere titre-clair"><span class="t1">Votre entreprise,</span><span class="t2"><span class="minus">de</span> A <span class="minus">à</span> Z.</span></h1>
-    <p>Création de votre site internet, de votre fiche Google et de votre logo, avec son application web sur mesure pour vos devis, vos factures et vos paiements. Vous faites votre métier, nous nous occupons du reste.</p>
     <div class="actions">
       <a class="btn btn-sombre" href="questionnaire.html">Remplir le questionnaire</a>
     </div>
    </div>
     <div class="video-appli">
       <video src="medias/video-site-et-application.mp4" poster="medias/video-site-et-application.jpg" playsinline muted autoplay loop controls preload="metadata" aria-label="Vidéo : le site et l'application web sur mesure, en action"></video>
-      <p>Le site et l'application, en vrai · touchez le son</p>
+      <a class="lien-video" href="questionnaire.html" aria-label="Je veux mon site et mon appli : remplir le questionnaire"></a>
     </div>
   </div>
 </section>
@@ -669,7 +672,7 @@
       <details><summary>Que faut-il pour créer mon site ?</summary><p>Vous remplissez le questionnaire et vous nous envoyez vos réalisations : photos et vidéos de votre travail. Nous nous occupons du reste.</p></details>
       <details><summary>Vous débutez et vous n'avez pas encore de photos ?</summary><p>Pas de souci, on se débrouille. Votre site démarre avec des visuels qui présentent vos prestations, et vos réalisations s'ajoutent au fur et à mesure : vous prenez les photos avec votre appli, elles arrivent sur votre site.</p></details>
       <details><summary>Qui voit mes clients et mes devis ?</summary><p>Vous seul. Vos clients, vos devis et vos factures restent à vous, dans votre application. Nous ne recevons que les photos et vidéos que vous choisissez de nous envoyer pour vos vidéos.</p></details>
-      <details><summary>Comment je paie ?</summary><p>Par virement. Pour l'abonnement, le plus simple est un virement permanent depuis votre banque, mis en place une fois pour toutes. Vous recevez une facture à chaque paiement.</p></details>
+      <details><summary>Comment je paie ?</summary><p>Par virement : un acompte à la commande, puis le solde à la livraison. Pour l'abonnement, le plus simple est un virement permanent depuis votre banque, mis en place une fois pour toutes. Vous recevez une facture à chaque paiement.</p></details>
       <details><summary>Je peux arrêter l'abonnement ?</summary><p>Oui, quand vous voulez : envoyez-nous un e-mail à contact@noraeditions.com, et l'abonnement s'arrête.</p></details>
     </div>
   </div>
@@ -710,6 +713,19 @@
   const vue = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) e.target.classList.add("vu"); }), { threshold: .12 });
   document.querySelectorAll(".apparait").forEach(el => vue.observe(el));
 
+</script>
+<script>
+  // la vidéo prend le son dès qu'elle arrive à l'écran ; si le navigateur refuse tant qu'on n'a pas touché la page,
+  // le son part au premier toucher. Elle se tait quand elle quitte l'écran.
+  (function () {
+    const v = document.querySelector(".video-appli video"); if (!v || !("IntersectionObserver" in window)) return;
+    let visible = false, touche = false;
+    const sonner = () => { if (!visible) return; v.muted = false; v.play().catch(() => { v.muted = true; v.play(); }); };
+    new IntersectionObserver(es => es.forEach(e => { visible = e.intersectionRatio >= .5; if (visible) sonner(); else v.muted = true; }), { threshold: [0, .5] }).observe(v);
+    const lien = document.querySelector(".lien-video"); v.addEventListener("timeupdate", () => lien.classList.toggle("vu", v.currentTime > 47.9));
+    const premier = () => { if (touche) return; touche = true; sonner(); };
+    ["pointerdown", "touchend", "keydown"].forEach(t => window.addEventListener(t, premier, { once: true, passive: true }));
+  })();
 </script>
 </body>
 </html>
