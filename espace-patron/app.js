@@ -2,7 +2,7 @@
 // abonnements, agenda, carnet de projet, notifications.
 import * as db from "./store.js";
 // version des fichiers chargés à la demande : à changer à chaque mise en ligne, pour que le téléphone ne garde pas l'ancienne
-const V = "20261024l";
+const V = "20261024m";
 import { UNITES } from "./donnees.js";
 import { telechargerPDF, totaux, eur, poserTVA, avecTVA, TAUX_TVA, tauxTxt, avenantDe } from "./pdf.js";
 import { CATEGORIES, etatPaiements } from "./carnet.js";
@@ -108,11 +108,12 @@ const prenomDe = c => String(c?.prenom || c?.nom || "").trim().split(" ")[0];
 const moisLong = (m = aujourdhui().slice(0, 7)) => new Date(m + "-15").toLocaleDateString("fr-FR", { month: "long", year: "numeric" });
 const deMois = (m = moisLong()) => (/^[aeiou]/i.test(m) ? "d'" : "de ") + m;
 // La période d'abonnement en cours : du jour de mise en ligne du site (abonnement_debut) au même jour du mois suivant.
-// Sans date de mise en ligne, l'abonnement suit le mois du calendrier. cle = le mois où la période commence (rangé dans la facture).
+// Sans date de mise en ligne, l'abonnement n'a pas commencé : rien à facturer. cle = le mois où la période commence (rangé dans la facture).
 const finDuMois = (a, m) => new Date(Date.UTC(a, m + 1, 0)).getUTCDate();
 const dateIso = (a, m, j) => `${a}-${String(m + 1).padStart(2, "0")}-${String(j).padStart(2, "0")}`;
 function periodeAbo(c, jour = aujourdhui()) {
-  const debut = c?.abonnement_debut || null, jj = debut ? Number(debut.slice(8, 10)) : 1;
+  const debut = c?.abonnement_debut || null; if (!debut) return null; // pas encore en ligne
+  const jj = Number(debut.slice(8, 10));
   let [a, m] = jour.split("-").map(Number); m -= 1;
   const le = (a, m) => dateIso(a, m, Math.min(jj, finDuMois(a, m)));
   let d = le(a, m);
