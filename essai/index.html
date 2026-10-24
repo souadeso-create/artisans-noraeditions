@@ -93,7 +93,7 @@
     const ent = v.entreprise || "Nora Éditions";
     vue.innerHTML = `
       <span class="label">Votre site · ${esc(v.titre)}</span>
-      <h1>Bonjour ${esc(politesse(v.client))},<br>voici votre site.</h1>
+      <h1>Bonjour${politesse(v.client) ? " " + esc(politesse(v.client)) : ""},<br>voici votre site.</h1>
       <p class="gris" style="margin-top:10px">Regardez-le tranquillement, sur votre téléphone et sur un ordinateur si vous pouvez. Puis dites-nous s'il vous convient, ou ce que vous voulez changer.</p>
       ${v.lien ? `<div class="carte apercu"><div><b style="display:block">Votre site, en essai</b><small class="gris">${esc(v.lien.replace(/^https?:\/\//, ""))}</small></div><a class="btn" href="${esc(v.lien)}" target="_blank" rel="noopener">Voir mon site →</a></div>` : ""}
       ${v.signe_le ? reponse(v) : `
