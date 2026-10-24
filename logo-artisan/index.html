@@ -390,8 +390,8 @@
   .carte-lien .lire:hover { color: var(--filet); }
   /* Souris dessinée (ordinateur) */
   @media (hover: hover) and (pointer: fine) {
-    html, body { cursor: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2232%22%20height%3D%2232%22%20viewBox%3D%220%200%2032%2032%22%3E%3Cpath%20d%3D%22M5%203.5c0-1%201.1-1.6%201.9-1l19.6%2014.2c.9.7.5%202.1-.6%202.2l-8.4.9c-.4%200-.8.3-1%20.7l-4%207.6c-.5%201-2%20.9-2.3-.2L5%204.2z%22%20fill%3D%22%231b1a18%22%20stroke%3D%22%23fff%22%20stroke-width%3D%222.2%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E") 5 3, auto; }
-    a, button, summary, label, .btn, [role="button"], input[type="checkbox"], input[type="radio"], select { cursor: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2232%22%20height%3D%2232%22%20viewBox%3D%220%200%2032%2032%22%3E%3Cpath%20d%3D%22M5%203.5c0-1%201.1-1.6%201.9-1l19.6%2014.2c.9.7.5%202.1-.6%202.2l-8.4.9c-.4%200-.8.3-1%20.7l-4%207.6c-.5%201-2%20.9-2.3-.2L5%204.2z%22%20fill%3D%22%23d1402a%22%20stroke%3D%22%23fff%22%20stroke-width%3D%222.2%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E") 5 3, pointer; }
+    html, body { cursor: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2232%22%20height%3D%2232%22%20viewBox%3D%220%200%2032%2032%22%3E%3Cpath%20d%3D%22M5%203.5c0-1%201.1-1.6%201.9-1l19.6%2014.2c.9.7.5%202.1-.6%202.2l-8.4.9c-.4%200-.8.3-1%20.7l-4%207.6c-.5%201-2%20.9-2.3-.2L5%204.2z%22%20fill%3D%22%230f1240%22%20stroke%3D%22%23fff%22%20stroke-width%3D%222.2%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E") 5 3, auto; }
+    a, button, summary, label, .btn, [role="button"], input[type="checkbox"], input[type="radio"], select { cursor: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2232%22%20height%3D%2232%22%20viewBox%3D%220%200%2032%2032%22%3E%3Cpath%20d%3D%22M5%203.5c0-1%201.1-1.6%201.9-1l19.6%2014.2c.9.7.5%202.1-.6%202.2l-8.4.9c-.4%200-.8.3-1%20.7l-4%207.6c-.5%201-2%20.9-2.3-.2L5%204.2z%22%20fill%3D%22%235b4bff%22%20stroke%3D%22%23fff%22%20stroke-width%3D%222.2%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E") 5 3, pointer; }
     input[type="text"], input[type="email"], input[type="tel"], textarea { cursor: text; }
   }
 
@@ -480,6 +480,12 @@
   .btn-banniere:hover { transform: translateY(3px); box-shadow: 0 3px 0 #2e1065, 0 8px 16px rgba(0,0,0,.35); }
   .btn-banniere::before, .btn-banniere::after { content: "◀"; font-size: 12px; }
   .btn-banniere::after { content: "▶"; }
+  /* ordinateur : l'encadré à côté du titre (le téléphone garde la liste sous le titre) */
+  @media (min-width: 1000px) {
+    .banniere .bloc > div { display: grid; grid-template-columns: auto minmax(340px, 470px); grid-template-areas: "badges liste" "titre liste" "bouton liste"; column-gap: 60px; align-items: center; justify-content: start; }
+    .banniere .badges-tech { grid-area: badges; } .banniere .titre-banniere { grid-area: titre; } .banniere .btn-banniere { grid-area: bouton; justify-self: start; }
+    .banniere .liste-banniere { grid-area: liste; margin-top: 0; }
+  }
   .duo-videos { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; max-width: 520px; width: 100%; margin: 0 auto; }
   .duo-videos figure { margin: 0; }
   .duo-videos figure:nth-child(2) { transform: translateY(26px); }
@@ -519,7 +525,7 @@
   /* sous la vidéo : le titre de l'accroche, dans le style de « Votre entreprise, de A à Z », en petit */
   .titre-video { margin: 26px 0 0; text-align: center; width: min(92vw, 520px); position: relative; left: 50%; transform: translateX(-50%); }
   .titre-video span { white-space: nowrap; line-height: 1.12; }
-  .titre-video .qui { margin: 0 0 8px; color: #5b21b6; font: 700 12px/1.4 "JetBrains Mono", monospace; letter-spacing: 2px; }
+  .titre-video .qui { margin: 0 0 8px; color: #5b21b6; font: 700 12px/1.6 "JetBrains Mono", monospace; letter-spacing: 2px; white-space: normal; }
   .titre-video .t1 { font-size: clamp(16px, 4.5vw, 24px); text-shadow: 0 2px 0 #b9bdf5, 0 3px 0 #8f95e6; }
   .titre-video .t2 { font-size: clamp(23px, 6.8vw, 42px); transform: rotate(-2deg); transform-origin: center; margin: 4px 0 6px; text-shadow: 0 2px 0 #d98a00, 0 4px 0 #a65f00, 0 5px 0 #6e3d00; -webkit-text-stroke: .6px #6e3d00; }
   .video-appli .lien-video.vu { display: block; }

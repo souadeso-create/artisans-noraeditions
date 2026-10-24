@@ -2,7 +2,7 @@
 // abonnements, agenda, carnet de projet, notifications.
 import * as db from "./store.js";
 // version des fichiers chargés à la demande : à changer à chaque mise en ligne, pour que le téléphone ne garde pas l'ancienne
-const V = "20261024e";
+const V = "20261024f";
 import { UNITES } from "./donnees.js";
 import { telechargerPDF, totaux, eur, poserTVA, avecTVA, TAUX_TVA, tauxTxt, avenantDe } from "./pdf.js";
 import { CATEGORIES, etatPaiements } from "./carnet.js";
@@ -683,7 +683,7 @@ async function vueDemande(id) {
   const veut = repDe(x, "Je veux"), nomDom = repDe(x, "Nom de domaine"), ext = repDe(x, "Extension") || ".fr", mailPro = repDe(x, "Adresse e-mail professionnelle").startsWith("Oui");
   const domaine = [nomDom ? (/\.(fr|com)$/i.test(nomDom) ? nomDom : nomDom + ext) : "", repDe(x, "Nom de domaine : disponibilité").replace(/^.*? : /, ""), repDe(x, "Nom de domaine déjà à moi") ? "déjà à lui" : "", repDe(x, "Aide pour le nom de domaine") ? "veut de l'aide pour le choisir" : ""].filter(Boolean).join(" · ");
   const parMois = (/Un site internet|dans mon site/.test(veut) || nomDom ? 10 + (ext === ".com" ? 0.6 : 0) + (mailPro ? 1.5 : 0) : 0) + (/Web marketing/.test(veut) || repDe(x, "Vidéos") === "Oui" ? 25 : 0);
-  const essentiel = [["Activité", x.activite], ["Métier", x.metier], ["Veut", veut], ["Nom de domaine", domaine], ["E-mail pro", mailPro ? "Oui · + 1,50 € par mois" : ""], ["Abonnement prévu", parMois ? eur(parMois) + " € par mois" : ""], ["Dans l'appli", repDe(x, "Appli")], ["Ses clients", repDe(x, "Mode")], ["Pour quand", repDe(x, "Délai")], ["Questions", repDe(x, "Remarques")]].filter(r => r[1]);
+  const essentiel = [["Activité", x.activite], ["Métier", x.metier], ["Veut", veut], ["Nom de domaine", domaine], ["E-mail pro", mailPro ? "Oui · + 1,50 € par mois" : ""], ["Abonnement prévu", parMois ? eur(parMois) + " € par mois" : ""], ["Dans l'appli", repDe(x, "Appli")], ["Ses clients", repDe(x, "Mode")], ["Reçoit ses patients", repDe(x, "Lieu des soins")], ["Rendez-vous aujourd'hui", repDe(x, "Rendez-vous aujourd'hui")], ["Liste d'attente", repDe(x, "Liste d'attente")], ["Pour quand", repDe(x, "Délai")], ["Questions", repDe(x, "Remarques")]].filter(r => r[1]);
   const majDem = async (champs, msg) => { Object.assign(x, champs); try { await db.enregistrer("demandes", { ...x }); if (msg) toast(msg); } catch (e) { erreur(e); } };
   vue.innerHTML = `
     <div class="entete"><div><div class="petit">Demande du ${new Date(x.created_at).toLocaleDateString("fr-FR", { dateStyle: "long" })}</div><h1>${esc(x.nom)}</h1>
