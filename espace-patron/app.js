@@ -2,7 +2,7 @@
 // abonnements, agenda, carnet de projet, notifications.
 import * as db from "./store.js";
 // version des fichiers chargés à la demande : à changer à chaque mise en ligne, pour que le téléphone ne garde pas l'ancienne
-const V = "20261024m";
+const V = "20261024n";
 import { UNITES } from "./donnees.js";
 import { telechargerPDF, totaux, eur, poserTVA, avecTVA, TAUX_TVA, tauxTxt, avenantDe } from "./pdf.js";
 import { CATEGORIES, etatPaiements } from "./carnet.js";
@@ -188,14 +188,18 @@ async function vueAccueil() {
   const devisAttente = docs.filter(d => d.type === "devis" && ["brouillon", "envoye"].includes(d.statut));
   const aEncaisser = docs.filter(d => d.type === "facture" && d.statut === "envoye");
   const mois = aujourdhui().slice(0, 7);
-  const encaisse = docs.filter(d => d.type === "facture" && d.statut === "paye" && String(d.date).slice(0, 7) === mois);
+  // ce qu'une facture encaisse vraiment : la facture finale sans l'acompte déjà facturé à part
+  const acompteDeduit = f => estAcompte(f) || !f.devis_id ? 0 : docs.filter(x => estAcompte(x) && x.devis_id === f.devis_id && x.statut !== "annule").reduce((a, x) => a + totaux(x).ttc, 0);
+  const net = f => Math.max(0, Math.round((totaux(f).ttc - acompteDeduit(f)) * 100) / 100);
+  // encaissé ce mois : les factures payées ce mois-ci (date du paiement, sinon de la dernière modification)
+  const encaisse = docs.filter(d => d.type === "facture" && d.statut === "paye" && String(d.paye_le || d.updated_at || d.date).slice(0, 7) === mois);
   const somme = l => l.reduce((a, d) => a + totaux(d).ttc, 0);
   vue.innerHTML = `
     <div class="entete"><div><div class="petit">Bonjour Patronne</div><h1>${esc(new Date().toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" }))}</h1></div></div>
     <div class="stats">
       <div class="stat"><span class="petit">Devis en attente</span><b>${devisAttente.length}</b><small class="gris">${eur(somme(devisAttente))} €</small></div>
       <div class="stat"><span class="petit">À encaisser</span><b>${eur(aEncaisser.reduce((a, d) => a + totaux(d).reste, 0))} €</b><small class="gris">${aEncaisser.length} facture(s)</small></div>
-      <div class="stat"><span class="petit">Encaissé ce mois</span><b>${eur(somme(encaisse))} €</b></div>
+      <div class="stat"><span class="petit">Encaissé ce mois</span><b>${eur(encaisse.reduce((a, f) => a + net(f), 0))} €</b><small class="gris">${encaisse.length} facture(s)</small></div>
       <div class="stat"><span class="petit">Devis signés</span><b>${eur(somme(signesEnCours))} €</b><small class="gris">${signesEnCours.length} en cours</small></div>
     </div>
     ${acomptesAEnvoyer.map(f => `<a class="alerte" href="#/document/${f.id}">${ICO.liste}<span><b>Facture d'acompte à envoyer</b><small>${esc(nomClient(f.client))} · ${eur(totaux(f).ttc)} € · devis ${esc(f.devis_numero || "")}</small></span><span>›</span></a>`).join("")}
@@ -203,6 +207,7 @@ async function vueAccueil() {
     ${blocChantiers(docs, clients, depenses, montants)}
     ${blocDepenses(depenses, clients, mois)}
     ${aboAlerte(clients, docs)}
+    <div id="alertesEssais"></div>
     ${nouvelles.length ? `<a class="alerte" href="#/demandes">${ICO.boite}<span><b>${nouvelles.length} nouvelle${nouvelles.length > 1 ? "s" : ""} demande${nouvelles.length > 1 ? "s" : ""}</b><small>${esc(nouvelles.slice(0, 3).map(x => x.nom).join(", "))}</small></span><span>›</span></a>` : ""}
     ${relances.length ? `<h2 style="margin-bottom:12px">À relancer</h2>
     <p class="gris" style="font-size:14px;margin:-6px 0 12px">Devis envoyés il y a plus de 7 jours, toujours sans réponse.</p>
@@ -234,6 +239,8 @@ async function vueAccueil() {
     try { await db.enregistrer("documents", { ...d }); } catch (er) { erreur(er); } // repart pour 7 jours
     b.closest(".ligne-liste").remove(); toast("Relance envoyée ✓");
   };
+  alerteEssais(clients).then(h => { const z = document.getElementById("alertesEssais"); if (!z) return; z.innerHTML = h;
+    z.querySelectorAll("[data-essai-vu]").forEach(a => a.addEventListener("click", () => { try { const v = JSON.parse(localStorage.getItem("nora_essais_vus") || "[]"); v.push(a.dataset.essaiVu); localStorage.setItem("nora_essais_vus", JSON.stringify(v.slice(-200))); } catch (e) {} })); });
 }
 
 // Rendez-vous des deux semaines à venir, avec l'agenda du téléphone et le rappel au client en un toucher
@@ -884,6 +891,8 @@ async function vueClient(id, params) {
           <p class="gris" style="font-size:13px;margin:-4px 0 10px">L'abonnement court à partir de cette date, et revient le même jour chaque mois. <a href="#/abonnements">Tous les abonnements ›</a></p>
           <div class="champ"><label>Libellé sur la facture</label><input type="text" name="abonnement_libelle" value="${esc(c.abonnement_libelle || "")}" placeholder="${esc(P.abonnement_libelle || "Abonnement du site")}"><small class="gris" id="aboApercu">Sur la facture : ${esc(c.abonnement_libelle || P.abonnement_libelle || "Abonnement du site")} · ${esc(periodeTxt(periodeAbo(c) || periodeAbo({ abonnement_debut: c.abonnement_debut || aujourdhui() }, c.abonnement_debut || aujourdhui())))}</small></div>
           <button class="btn petit-btn">Enregistrer l'abonnement</button></form></details>
+        <details class="section-fiche" ${params?.get("essai") ? "open" : ""}><summary>Essais du site<span id="nbEssais"></span></summary>
+        <div id="essais" style="margin-top:6px"><p class="gris">Chargement…</p></div></details>
         <details class="section-fiche" ${params?.get("carnet") ? "open" : ""}><summary>Carnet du projet<span></span></summary>
         <div id="carnet" style="margin-top:6px"><p class="gris">Chargement du carnet…</p></div></details>
         <details class="section-fiche"><summary>Devis et factures<span>${docs.length}</span></summary>
@@ -900,6 +909,7 @@ async function vueClient(id, params) {
     document.getElementById("aboApercu").textContent = `Sur la facture : ${fa.abonnement_libelle.value.trim() || P.abonnement_libelle || "Abonnement du site"} · ${periodeTxt(p)}`; };
   if (fa) fa.onsubmit = async e => { e.preventDefault(); const o = lireForm(e.target, {});
     try { await db.enregistrer("clients", { ...c, abonnement_mensuel: o.abonnement_mensuel === "" ? null : Number(o.abonnement_mensuel), abonnement_libelle: o.abonnement_libelle || null, abonnement_debut: o.abonnement_debut || null }); toast("Abonnement enregistré ✓"); vueClient(c.id, params); } catch (er) { erreur(er); } };
+  if (c.id) monterEssais(c);
   if (c.id) import("./carnet.js").then(async m => {
     await m.monterCarnet(document.getElementById("carnet"), { db, client: c, P, toast, esc, erreur, envoyerMessage });
     if (params?.get("carnet")) document.getElementById("carnet").closest("details")?.scrollIntoView({ block: "start" });
@@ -1002,6 +1012,50 @@ async function vueAbonnements() {
       d.statut = "paye"; d.deja_regle = totaux(d).ttc; await db.enregistrer("documents", d); toast("Abonnement payé ✓"); vueAbonnements();
     } catch (er) { if (er.name !== "AbortError") erreur(er); }
   };
+}
+
+/* =================== Essais du site : le client valide ou demande des modifications =================== */
+const lienEssai = v => location.origin + "/essai/?v=" + v.jeton;
+const msgEssai = (c, v) => `Bonjour ${politesse(c)},\n\nVoici ${/premier/i.test(v.titre) ? "un premier essai de votre site" : "une nouvelle version de votre site, avec les modifications demandées"}. Regardez-le tranquillement, puis dites-nous s'il vous convient ou ce que vous voulez changer, directement sur cette page :\n${lienEssai(v)}\n\nÀ bientôt,\n${P.entreprise}`;
+async function monterEssais(c) {
+  const zone = document.getElementById("essais"); if (!zone) return;
+  let l = [];
+  try { l = (await db.lister("validations")).filter(v => v.client_id === c.id); }
+  catch (e) { zone.innerHTML = '<p class="gris" style="font-size:14px">Les essais ne sont pas encore disponibles.</p>'; return; }
+  document.getElementById("nbEssais").textContent = l.length || "";
+  const etat = v => !v.signe_le ? '<span class="badge envoye">En attente</span>' : v.reponse === "oui" ? '<span class="badge paye">✓ Validé</span>' : '<span class="badge refuse">Modifications</span>';
+  zone.innerHTML = `
+    <div class="actions-doc" style="margin:0 0 10px"><button class="btn petit-btn" id="nvEssai">${ICO.plus}Faire valider un essai</button></div>
+    <div class="liste">${l.map(v => `<div class="carte" style="margin-bottom:10px">
+      <div class="ligne-bilan" style="border:0;padding:0"><b>${esc(v.titre)}</b>${etat(v)}</div>
+      <small class="gris">Envoyé le ${new Date(v.created_at).toLocaleDateString("fr-FR")}${v.signe_le ? ` · réponse le ${new Date(v.signe_le).toLocaleDateString("fr-FR")} par ${esc(v.signe_nom)}` : ""}</small>
+      ${v.reponse === "modifs" ? `<p style="white-space:pre-line;margin-top:8px;font-size:14px">${esc(v.modifications)}</p>` : ""}
+      <div class="actions-doc" style="margin:8px 0 0">${v.lien ? `<a class="btn discret petit-btn" href="${esc(v.lien)}" target="_blank" rel="noopener">Voir l'essai</a>` : ""}
+        ${v.signe_le ? "" : `<button class="btn clair petit-btn" data-envoyer-essai="${v.id}">Envoyer le lien</button>`}<button class="btn discret petit-btn" data-copier-essai="${v.id}">Copier le lien</button></div></div>`).join("")
+      || '<p class="gris" style="font-size:14px">Quand l\'essai du site est prêt, envoyez-le ici : le client le regarde, dit si c\'est bon ou ce qu\'il veut changer, et signe.</p>'}</div>`;
+  zone.querySelector("#nvEssai").onclick = () => {
+    const n = l.length + 1, f = fenetre("Faire valider un essai", `<div class="champ"><label>Titre</label><input type="text" id="eTitre" value="${n === 1 ? "Premier essai du site" : `Essai n° ${n} du site`}" maxlength="120"></div>
+      <div class="champ"><label>Le lien de l'essai du site</label><input type="url" id="eLien" placeholder="https://…" inputmode="url"></div>
+      <button class="btn" id="eOk" style="width:100%">Créer et envoyer au client</button>`);
+    f.el.querySelector("#eOk").onclick = async () => {
+      const titre = f.el.querySelector("#eTitre").value.trim() || "Premier essai du site", lien = f.el.querySelector("#eLien").value.trim();
+      if (!/^https?:\/\//.test(lien)) return toast("Collez le lien de l'essai du site (https://…).");
+      try {
+        const v = await db.enregistrer("validations", { client_id: c.id, titre, lien, jeton: crypto.randomUUID() });
+        f.fermer(); toast("Essai prêt ✓"); await envoyerMessage({ client: c }, msgEssai(c, v), "Votre site, " + titre.toLowerCase()); monterEssais(c);
+      } catch (e) { erreur(e); }
+    };
+  };
+  zone.querySelectorAll("[data-envoyer-essai]").forEach(b => b.onclick = () => { const v = l.find(x => x.id === b.dataset.envoyerEssai); envoyerMessage({ client: c }, msgEssai(c, v), "Votre site, " + v.titre.toLowerCase()); });
+  zone.querySelectorAll("[data-copier-essai]").forEach(b => b.onclick = async () => { const v = l.find(x => x.id === b.dataset.copierEssai); await navigator.clipboard.writeText(lienEssai(v)); toast("Lien copié ✓"); });
+}
+// l'accueil : les réponses des 7 derniers jours, jusqu'à ce qu'on les ait vues
+async function alerteEssais(clients) {
+  let l = []; try { l = await db.lister("validations"); } catch (e) { return ""; }
+  let vus = []; try { vus = JSON.parse(localStorage.getItem("nora_essais_vus") || "[]"); } catch (e) {}
+  const recents = l.filter(v => v.signe_le && Date.now() - new Date(v.signe_le) < 7 * 864e5 && !vus.includes(v.id));
+  return recents.map(v => { const c = clients.find(x => x.id === v.client_id);
+    return `<a class="alerte" href="#/client/${v.client_id}?essai=1" data-essai-vu="${v.id}">${ICO.liste}<span><b>${v.reponse === "oui" ? "✓ Essai du site validé" : "Modifications demandées sur l'essai"}</b><small>${esc(c ? nomClient(c) : v.signe_nom)} · ${esc(v.titre)}</small></span><span>›</span></a>`; }).join("");
 }
 
 /* =================== Visites du site : le compteur fait maison =================== */

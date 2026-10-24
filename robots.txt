@@ -3,4 +3,5 @@ Allow: /
 Disallow: /questionnaire.html
 Disallow: /espace-patron/
 Disallow: /devis/
+Disallow: /essai/
 Sitemap: https://creation-site-internet.noraeditions.fr/sitemap.xml

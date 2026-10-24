@@ -68,7 +68,11 @@ export async function lire(table, id) {
 
 export async function enregistrer(table, obj) {
   const ligne = { ...obj };
-  if (table === "documents") ligne.updated_at = new Date().toISOString();
+  if (table === "documents") {
+    ligne.updated_at = new Date().toISOString();
+    // la date du paiement : retenue quand la facture passe en « Payée », effacée si elle n'est plus payée
+    if (ligne.type === "facture" && ligne.statut) ligne.paye_le = ligne.statut === "paye" ? (ligne.paye_le || ligne.updated_at.slice(0, 10)) : null;
+  }
   if (MODE_ESSAI) {
     const l = lireLocal(table);
     if (!ligne.id) { ligne.id = uuid(); ligne.created_at = ligne.created_at || new Date().toISOString(); l.push(ligne); }
