@@ -2,7 +2,7 @@
 // abonnements, agenda, carnet de projet, notifications.
 import * as db from "./store.js";
 // version des fichiers chargés à la demande : à changer à chaque mise en ligne, pour que le téléphone ne garde pas l'ancienne
-const V = "20261024o";
+const V = "20261024p";
 import { UNITES } from "./donnees.js";
 import { telechargerPDF, totaux, eur, poserTVA, avecTVA, TAUX_TVA, tauxTxt, avenantDe } from "./pdf.js";
 import { CATEGORIES, etatPaiements } from "./carnet.js";
@@ -180,6 +180,9 @@ async function vueAccueil() {
   const montants = depenses.splice(0); depenses.push(...montants.filter(x => (x.type || "depense") === "depense"));
   const nbAcomptes = await acomptesAutomatiques(docs);
   if (nbAcomptes) toast(nbAcomptes > 1 ? `${nbAcomptes} factures d'acompte préparées ✓` : "Facture d'acompte préparée ✓");
+  const nbFinales = await facturesFinalesAutomatiques(docs);
+  if (nbFinales) toast(nbFinales > 1 ? `Essais validés : ${nbFinales} factures finales préparées ✓` : "Essai validé : facture finale préparée ✓");
+  const finalesAEnvoyer = docs.filter(f => f.type === "facture" && f.devis_id && !estAcompte(f) && f.statut === "brouillon");
   const acomptesAEnvoyer = docs.filter(f => estAcompte(f) && f.statut === "brouillon");
   // devis signés en cours : pas encore facturés en entier, ou pas encore payés
   const signesEnCours = docs.filter(d => d.type === "devis" && d.statut === "signe" && !docs.some(f => f.type === "facture" && f.devis_id === d.id && !estAcompte(f) && f.statut === "paye"));
@@ -209,6 +212,7 @@ async function vueAccueil() {
       <div class="stat"><span class="petit">Encaissé ce mois</span><b>${eur(encaisseMois)} €</b><small class="gris">reçu en ${esc(moisLong())}</small></div>
       <div class="stat"><span class="petit">Devis signés</span><b>${eur(somme(signesEnCours))} €</b><small class="gris">${signesEnCours.length} en cours</small></div>
     </div>
+    ${finalesAEnvoyer.map(f => `<a class="alerte" href="#/document/${f.id}">${ICO.liste}<span><b>Facture finale à envoyer</b><small>${esc(nomClient(f.client))} · reste dû ${eur(totaux(f).reste)} € · devis ${esc(f.devis_numero || "")}</small></span><span>›</span></a>`).join("")}
     ${acomptesAEnvoyer.map(f => `<a class="alerte" href="#/document/${f.id}">${ICO.liste}<span><b>Facture d'acompte à envoyer</b><small>${esc(nomClient(f.client))} · ${eur(totaux(f).ttc)} € · devis ${esc(f.devis_numero || "")}</small></span><span>›</span></a>`).join("")}
     ${blocRdv(montants, clients)}
     ${blocChantiers(docs, clients, depenses, montants)}
@@ -283,7 +287,8 @@ function blocChantiers(docs, clients, depenses, montants) {
 
 // Abonnements dont la période en cours n'est pas payée : une alerte sur l'accueil
 function aboAlerte(clients, docs) {
-  const reste = clients.filter(c => { if (c.archive || !(Number(c.abonnement_mensuel) > 0)) return false; const p = periodeAbo(c); return p && factureAbo(docs, c, p)?.statut !== "paye"; });
+  // le premier mois porté par la facture finale du site se suit avec cette facture, pas ici
+  const reste = clients.filter(c => { if (c.archive || !(Number(c.abonnement_mensuel) > 0)) return false; const p = periodeAbo(c), fa = p && factureAbo(docs, c, p); return p && fa?.statut !== "paye" && !fa?.devis_id; });
   if (!reste.length) return "";
   const total = reste.reduce((a, c) => a + Number(c.abonnement_mensuel), 0);
   return `<a class="alerte" href="#/abonnements">${ICO.liste}<span><b>Abonnements : ${reste.length} à encaisser</b><small>${eur(total)} € · ${esc(reste.slice(0, 3).map(c => c.nom).join(", "))}</small></span><span>›</span></a>`;
@@ -559,34 +564,7 @@ async function vueDocument(id, type, params) {
     if (vf) vf.onclick = async () => {
       try {
         await enregistrer();
-        const acomptes = (await db.lister("documents")).filter(x => estAcompte(x) && x.devis_id === d.id && x.statut !== "annule");
-        const verse = Math.round(acomptes.reduce((a, x) => a + totaux(x).ttc, 0) * 100) / 100;
-        const f = { type: "facture", numero: numeroSuivant("facture"), date: aujourdhui(), statut: "brouillon", client_id: d.client_id, client: d.client,
-          objet: d.objet, sections: JSON.parse(JSON.stringify(d.sections)), acompte_pct: 0, deja_regle: verse, devis_id: d.id, devis_numero: d.numero, devis_date: d.date,
-          notes: acomptes.length ? `Acompte déjà facturé (${acomptes.map(x => x.numero).join(", ")}) : ${eur(verse)} €, déduit du total.` : "" };
-        // le premier mois d'abonnement : celui du devis s'il y est, sinon ajouté (pas pour l'application seule, à l'année)
-        const c = d.client_id ? (await db.lister("clients")).find(x => x.id === d.client_id) : null;
-        const lignes = f.sections.flatMap(x => x.lignes || []), aAbo = lignes.some(l => /^abonnement/i.test(l.designation || "")), alAnnee = lignes.some(l => l.unite === "an");
-        if (c && !alAnnee) {
-          const ps = await db.lister("prestations").catch(() => []);
-          const prixAbo = Number(c.abonnement_mensuel) > 0 ? Number(c.abonnement_mensuel) : Number(ps.find(p => /^Abonnement du site/i.test(p.designation || ""))?.prix_ht) || 10;
-          const maj = {};
-          if (!c.abonnement_debut) maj.abonnement_debut = aujourdhui();
-          if (!(Number(c.abonnement_mensuel) > 0)) maj.abonnement_mensuel = prixAbo;
-          if (Object.keys(maj).length) { Object.assign(c, maj); await db.enregistrer("clients", { ...c }); }
-          const per = periodeAbo(c) || periodeAbo({ abonnement_debut: aujourdhui() });
-          lignes.filter(l => l.unite === "mois" && !l.designation.includes(" · du ") && !/\d{4}$/.test(l.designation)).forEach(l => { l.designation += ` · ${periodeTxt(per)}`; });
-          if (!aAbo) {
-            const taux = lignes.find(l => l.tva != null && l.tva !== "")?.tva, ligne = { designation: `${c.abonnement_libelle || P.abonnement_libelle || "Abonnement du site"} · premier mois, ${periodeTxt(per)}`, qte: 1, unite: "mois", pu: prixAbo };
-            if (taux != null) ligne.tva = Number(taux);
-            f.sections.push({ titre: "Abonnement", lignes: [ligne] });
-          }
-          f.abo = per.cle; // ce mois-là est facturé : la page Abonnements ne le refacture pas
-        }
-        f.total_ht = totaux(f).ht;
-        const n = await db.enregistrer("documents", f);
-        P.prochain_facture = Number(P.prochain_facture) + 1; await db.enregistrerParametres(P);
-        if (d.statut !== "signe") { d.statut = "signe"; await db.enregistrer("documents", { ...d }); }
+        const n = await creerFactureFinale(d);
         toast("Facture créée ✓"); location.hash = "#/document/" + n.id;
       } catch (e) { erreur(e); }
     };
@@ -675,6 +653,52 @@ async function acomptesAutomatiques(docs) {
     && !docs.some(f => f.type === "facture" && f.devis_id === d.id) && Date.now() - new Date(d.signe_le || d.updated_at || d.created_at) < 30 * 864e5);
   for (const d of aFaire) { try { const f = await creerFactureAcompte(d); if (f) docs.unshift(f); } catch (e) { console.error(e); } }
   return aFaire.length;
+}
+
+// La facture finale d'un devis : ses lignes, le premier mois d'abonnement, l'acompte déjà facturé déduit (il reste le montant dû).
+async function creerFactureFinale(d) {
+  const acomptes = (await db.lister("documents")).filter(x => estAcompte(x) && x.devis_id === d.id && x.statut !== "annule");
+  const verse = Math.round(acomptes.reduce((a, x) => a + totaux(x).ttc, 0) * 100) / 100;
+  const f = { type: "facture", numero: numeroSuivant("facture"), date: aujourdhui(), statut: "brouillon", client_id: d.client_id, client: d.client,
+    objet: d.objet, sections: JSON.parse(JSON.stringify(d.sections)), acompte_pct: 0, deja_regle: verse, devis_id: d.id, devis_numero: d.numero, devis_date: d.date,
+    notes: acomptes.length ? `Acompte déjà facturé (${acomptes.map(x => x.numero).join(", ")}) : ${eur(verse)} €, déduit du total.` : "" };
+  // le premier mois d'abonnement : celui du devis s'il y est, sinon ajouté (pas pour l'application seule, à l'année)
+  const c = d.client_id ? (await db.lister("clients")).find(x => x.id === d.client_id) : null;
+  const lignes = f.sections.flatMap(x => x.lignes || []), aAbo = lignes.some(l => /^abonnement/i.test(l.designation || "")), alAnnee = lignes.some(l => l.unite === "an");
+  if (c && !alAnnee) {
+    const ps = await db.lister("prestations").catch(() => []);
+    const prixAbo = Number(c.abonnement_mensuel) > 0 ? Number(c.abonnement_mensuel) : Number(ps.find(p => /^Abonnement du site/i.test(p.designation || ""))?.prix_ht) || 10;
+    const maj = {};
+    if (!c.abonnement_debut) maj.abonnement_debut = aujourdhui();
+    if (!(Number(c.abonnement_mensuel) > 0)) maj.abonnement_mensuel = prixAbo;
+    if (Object.keys(maj).length) { Object.assign(c, maj); await db.enregistrer("clients", { ...c }); }
+    const per = periodeAbo(c) || periodeAbo({ abonnement_debut: aujourdhui() });
+    lignes.filter(l => l.unite === "mois" && !l.designation.includes(" · du ") && !/\d{4}$/.test(l.designation)).forEach(l => { l.designation += ` · ${periodeTxt(per)}`; });
+    if (!aAbo) {
+      const taux = lignes.find(l => l.tva != null && l.tva !== "")?.tva, ligne = { designation: `${c.abonnement_libelle || P.abonnement_libelle || "Abonnement du site"} · premier mois, ${periodeTxt(per)}`, qte: 1, unite: "mois", pu: prixAbo };
+      if (taux != null) ligne.tva = Number(taux);
+      f.sections.push({ titre: "Abonnement", lignes: [ligne] });
+    }
+    f.abo = per.cle; // ce mois-là est facturé : la page Abonnements ne le refacture pas
+  }
+  f.total_ht = totaux(f).ht;
+  const n = await db.enregistrer("documents", f);
+  P.prochain_facture = Number(P.prochain_facture) + 1; await db.enregistrerParametres(P);
+  if (d.statut !== "signe") { d.statut = "signe"; await db.enregistrer("documents", { ...d }); }
+  return n;
+}
+// l'essai du site validé par le client (depuis moins de 30 jours) : la facture finale de son devis se crée toute seule
+async function facturesFinalesAutomatiques(docs) {
+  let vals = []; try { vals = await db.lister("validations"); } catch (e) { return 0; }
+  let n = 0;
+  for (const v of vals.filter(x => x.reponse === "oui" && x.client_id && Date.now() - new Date(x.signe_le) < 30 * 864e5)) {
+    const devis = docs.filter(x => x.type === "devis" && x.client_id === v.client_id && !avenantDe(x) && ["signe", "envoye"].includes(x.statut))
+      .sort((a, b) => (a.statut === "signe" ? 0 : 1) - (b.statut === "signe" ? 0 : 1) || String(b.date).localeCompare(String(a.date)));
+    const d = devis[0];
+    if (!d || docs.some(f => f.type === "facture" && f.devis_id === d.id && !estAcompte(f))) continue;
+    try { docs.unshift(await creerFactureFinale(d)); n++; } catch (e) { console.error(e); }
+  }
+  return n;
 }
 
 async function enregistrerNouveau(doc) {
