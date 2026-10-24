@@ -2,7 +2,7 @@
 // abonnements, agenda, carnet de projet, notifications.
 import * as db from "./store.js";
 // version des fichiers chargés à la demande : à changer à chaque mise en ligne, pour que le téléphone ne garde pas l'ancienne
-const V = "20261024j";
+const V = "20261024k";
 import { UNITES } from "./donnees.js";
 import { telechargerPDF, totaux, eur, poserTVA, avecTVA, TAUX_TVA, tauxTxt, avenantDe } from "./pdf.js";
 import { CATEGORIES, etatPaiements } from "./carnet.js";
@@ -618,10 +618,16 @@ async function vueDocument(id, type, params) {
 const estAcompte = f => f.type === "facture" && f.devis_id && f.sections?.[0]?.titre === "Acompte";
 async function creerFactureAcompte(d) {
   const pct = Number(d.acompte_pct) || 0; if (!pct) return null;
-  const t = totaux(d), pu = Math.round(t.ht * pct) / 100;
-  return enregistrerNouveau({ type: "facture", numero: numeroSuivant("facture"), date: aujourdhui(), statut: "brouillon", client_id: d.client_id, client: d.client,
-    objet: `Acompte · ${d.objet || "devis " + d.numero}`, sections: [{ titre: "Acompte", lignes: [{ designation: `Acompte de ${pct} % sur le devis ${d.numero} du ${dateFr(d.date)}`, qte: 1, unite: "forfait", pu }] }],
-    acompte_pct: 0, deja_regle: 0, devis_id: d.id, devis_numero: d.numero, devis_date: d.date, notes: "" });
+  const t = totaux(d), taux = (d.sections || []).flatMap(x => x.lignes || []).find(l => l.tva != null && l.tva !== "")?.tva;
+  const ligne = { designation: `Acompte de ${pct} % sur le devis ${d.numero} du ${dateFr(d.date)}`, qte: 1, unite: "forfait", pu: Math.round(t.ht * pct) / 100 };
+  if (taux != null) ligne.tva = Number(taux);  // le taux du devis, pour que l'acompte tombe juste
+  const f = { type: "facture", numero: numeroSuivant("facture"), date: aujourdhui(), statut: "brouillon", client_id: d.client_id, client: d.client,
+    objet: `Acompte · ${d.objet || "devis " + d.numero}`, sections: [{ titre: "Acompte", lignes: [ligne] }],
+    acompte_pct: 0, deja_regle: 0, devis_id: d.id, devis_numero: d.numero, devis_date: d.date, notes: "" };
+  f.total_ht = totaux(f).ht;
+  const n = await db.enregistrer("documents", f);
+  P.prochain_facture = Number(P.prochain_facture) + 1; await db.enregistrerParametres(P);
+  return n;
 }
 // les devis signés depuis moins de 30 jours, avec un acompte, sans aucune facture : leur facture d'acompte se crée toute seule
 async function acomptesAutomatiques(docs) {
