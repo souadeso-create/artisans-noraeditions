@@ -2,11 +2,11 @@
 // abonnements, agenda, carnet de projet, notifications.
 import * as db from "./store.js";
 // version des fichiers chargés à la demande : à changer à chaque mise en ligne, pour que le téléphone ne garde pas l'ancienne
-const V = "20261024f";
+const V = "20261024g";
 import { UNITES } from "./donnees.js";
 import { telechargerPDF, totaux, eur, poserTVA, avecTVA, TAUX_TVA, tauxTxt, avenantDe } from "./pdf.js";
 import { CATEGORIES, etatPaiements } from "./carnet.js";
-import { carteRdv, lierRdv, reglerSignature, OBJETS_RDV, jourRdv, heureRdv } from "./agenda.js";
+import { carteRdv, lierRdv, reglerSignature, OBJETS_RDV, jourRdv, heureRdv, champVisio, avecLien } from "./agenda.js";
 
 const vue = document.getElementById("vue");
 const nav = document.getElementById("nav");
@@ -938,11 +938,11 @@ async function vueAgenda() {
     const d = new Date(); d.setDate(d.getDate() + 1);
     const f = fenetre("Rendez-vous avec " + nomClient(c), `<div class="champ"><label>Rendez-vous</label><select id="rObjet">${OBJETS_RDV.map(o => `<option>${o}</option>`).join("")}</select></div>
       <div class="deux"><div class="champ"><label>Date</label><input type="date" id="rDate" value="${d.toISOString().slice(0, 10)}"></div><div class="champ"><label>Heure</label><input type="time" id="rHeure" value="10:00"></div></div>
-      <div class="champ"><label>Précision (facultatif)</label><input type="text" id="rTexte" maxlength="200"></div><button class="btn" id="rOk" style="width:100%">Enregistrer</button>`);
+      <div class="champ"><label>Précision (facultatif)</label><input type="text" id="rTexte" maxlength="200"></div>${champVisio("rVisio", P.lien_visio, esc)}<button class="btn" id="rOk" style="width:100%">Enregistrer</button>`);
     f.el.querySelector("#rOk").onclick = async () => {
       const quand = new Date(`${f.el.querySelector("#rDate").value}T${f.el.querySelector("#rHeure").value || "10:00"}`); if (isNaN(quand)) return toast("Indiquez la date et l'heure.");
       const objet = f.el.querySelector("#rObjet").value, t = f.el.querySelector("#rTexte").value.trim();
-      try { await db.ajouterCarnet({ client_id: c.id, etape: "pendant", type: "rdv", texte: t ? `${objet} · ${t}` : objet, created_at: quand.toISOString() }); f.fermer(); toast("Rendez-vous noté ✓"); vueAgenda(); } catch (e) { erreur(e); }
+      try { await db.ajouterCarnet({ client_id: c.id, etape: "pendant", type: "rdv", texte: avecLien(t ? `${objet} · ${t}` : objet, f.el.querySelector("#rVisio").value), created_at: quand.toISOString() }); f.fermer(); toast("Rendez-vous noté ✓"); vueAgenda(); } catch (e) { erreur(e); }
     };
   });
 }
@@ -1012,7 +1012,7 @@ const CHAMPS_P = [
   ["TVA", [["tva_taux", "Taux de TVA par défaut (%)", "number"]]],
   ["Paiement", [["iban", "IBAN"], ["bic", "BIC"], ["titulaire", "Titulaire du compte"], ["moyen_paiement", "Moyen de paiement"], ["acompte_pct", "Acompte par défaut (%)", "number"], ["validite_jours", "Validité des devis (jours)", "number"], ["echeance_jours", "Échéance (jours)", "number"]]],
   ["Numérotation", [["prochain_devis", "Prochain n° de devis", "number"], ["prochain_facture", "Prochain n° de facture", "number"]]],
-  ["Divers", [["taux_horaire", "Coût d'une heure de travail (€)", "number"], ["lien_avis", "Lien de vos avis Google"], ["abonnement_libelle", "Libellé de l'abonnement sur les factures"]]]
+  ["Divers", [["taux_horaire", "Coût d'une heure de travail (€)", "number"], ["lien_avis", "Lien de vos avis Google"], ["lien_visio", "Votre lien de visio habituel (Google Meet, Zoom…)"], ["abonnement_libelle", "Libellé de l'abonnement sur les factures"]]]
 ];
 function vueReglages() {
   vue.innerHTML = `

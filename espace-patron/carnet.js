@@ -1,7 +1,7 @@
 // Carnet de projet (repris du carnet de chantier de l'appli Flex) : photos, notes, choses à faire, retours du client,
 // dépenses, heures, paiements et rendez-vous, datés et rangés par étape (avant, création, en ligne).
 
-import { OBJETS_RDV, carteRdv, lierRdv } from "./agenda.js";
+import { OBJETS_RDV, carteRdv, lierRdv, champVisio, avecLien } from "./agenda.js";
 import { totaux } from "./pdf.js";
 
 const ETAPES = { avant: "Avant", pendant: "Création", apres: "En ligne" };
@@ -157,7 +157,7 @@ export async function monterCarnet(el, { db, client, P = {}, toast, esc, erreur,
             <div class="champ"><label>Ticket (facultatif)</label><label class="btn discret petit-btn" style="display:inline-flex">${"Photo du ticket"}<input type="file" id="cTicket" accept="image/*" hidden></label></div></div>` : ""}
           ${saisie === "rdv" ? (() => { const d = new Date(); d.setDate(d.getDate() + 1); return `<div class="champ"><label for="cRdvObjet">Rendez-vous</label><select id="cRdvObjet">${OBJETS_RDV.map(o => `<option>${o}</option>`).join("")}</select></div>
             <div class="deux"><div class="champ"><label for="cRdvDate">Date</label><input type="date" id="cRdvDate" value="${d.toISOString().slice(0, 10)}"></div>
-            <div class="champ"><label for="cRdvHeure">Heure</label><input type="time" id="cRdvHeure" value="09:00"></div></div>`; })() : ""}
+            <div class="champ"><label for="cRdvHeure">Heure</label><input type="time" id="cRdvHeure" value="09:00"></div></div>${champVisio("cRdvVisio", P.lien_visio, esc)}`; })() : ""}
           ${saisie === "paiement" ? `<div class="champ"><label for="cMontant">Montant reçu €</label><input type="number" id="cMontant" step="0.01" min="0" inputmode="decimal"></div>` : ""}
           ${saisie === "heures" ? `<div class="deux"><div class="champ"><label for="cHeures">Nombre d'heures</label><input type="number" id="cHeures" step="0.25" min="0" inputmode="decimal" placeholder="7,5"></div>
             <div class="champ"><label for="cDebut">Début</label><input type="time" id="cDebut" value="08:00"></div></div>` : ""}
@@ -284,7 +284,7 @@ export async function monterCarnet(el, { db, client, P = {}, toast, esc, erreur,
         if (isNaN(quand)) return toast("Indiquez la date et l'heure.");
         const objet = el.querySelector("#cRdvObjet").value;
         try {
-          const n = await db.ajouterCarnet({ client_id: client.id, etape, type: "rdv", texte: texte ? `${objet} · ${texte}` : objet, created_at: quand.toISOString() });
+          const n = await db.ajouterCarnet({ client_id: client.id, etape, type: "rdv", texte: avecLien(texte ? `${objet} · ${texte}` : objet, el.querySelector("#cRdvVisio").value), created_at: quand.toISOString() });
           lignes.unshift(n); lignes.sort((a, b) => a.created_at < b.created_at ? 1 : -1); toast("Rendez-vous noté ✓"); saisie = null; dessiner();
         } catch (e) { erreur(e); }
         return;

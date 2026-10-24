@@ -14,20 +14,28 @@ const majuscule = t => t.charAt(0).toUpperCase() + t.slice(1);
 const lieuDe = c => !c ? "" : c.adresse ? `au ${adresse(c)}` : c.ville ? `à ${c.ville}` : "";
 const estDemain = iso => { const d = new Date(iso), t = new Date(); t.setDate(t.getDate() + 1); return d.toDateString() === t.toDateString(); };
 const estAujourdhui = iso => new Date(iso).toDateString() === new Date().toDateString();
+// le lien de visio est rangé à la fin du texte du rendez-vous : « Point de suivi · https://meet.google.com/… »
+export const lienVisio = r => ((r?.texte || "").match(/https?:\/\/\S+/) || [""])[0];
+export const sansLien = t => String(t || "").replace(/\s*·?\s*https?:\/\/\S+/, "").trim();
+export const avecLien = (texte, lien) => [texte, String(lien || "").trim()].filter(Boolean).join(" · ");
+// le champ du lien dans les fenêtres de rendez-vous, avec le lien habituel des Réglages en un toucher
+export const champVisio = (id, lienHabituel, esc) => `<div class="champ"><label for="${id}">Lien de la visio <small>(facultatif)</small></label><input type="url" id="${id}" placeholder="https://meet.google.com/…" inputmode="url">
+  ${lienHabituel ? `<button type="button" class="btn discret petit-btn" style="margin-top:6px" onclick="document.getElementById('${id}').value=this.dataset.lien" data-lien="${esc(lienHabituel)}">Mon lien habituel</button>` : ""}</div>`;
 
 export function messageRdv(genre, rdv, client) {
   const quand = estAujourdhui(rdv.created_at) ? "aujourd'hui" : estDemain(rdv.created_at) ? "demain" : `le ${jourRdv(rdv.created_at)}`;
-  const objet = (rdv.texte || "Rendez-vous").toLowerCase(), lieu = lieuDe(client);
+  const lien = lienVisio(rdv), objet = (sansLien(rdv.texte) || "Rendez-vous").toLowerCase(), lieu = lien ? "en visio" : lieuDe(client);
+  const visio = lien ? `\n\nLe lien de la visio : ${lien}` : "";
   if (genre === "rappel")
-    return `Bonjour ${politesse(client)},\n\nPetit rappel : ${objet} ${quand} à ${heureRdv(rdv.created_at)}${lieu ? `, ${lieu}` : ""}.\n\nÀ ${quand === "demain" ? "demain" : "bientôt"} !\n${SIGNATURE}`;
-  return `Bonjour ${politesse(client)},\n\nJe vous confirme notre rendez-vous (${objet}) ${quand} à ${heureRdv(rdv.created_at)}${lieu ? `, ${lieu}` : ""}.\n\nÀ bientôt,\n${SIGNATURE}`;
+    return `Bonjour ${politesse(client)},\n\nPetit rappel : ${objet} ${quand} à ${heureRdv(rdv.created_at)}${lieu ? `, ${lieu}` : ""}.${visio}\n\nÀ ${quand === "demain" ? "demain" : "bientôt"} !\n${SIGNATURE}`;
+  return `Bonjour ${politesse(client)},\n\nJe vous confirme notre rendez-vous (${objet}) ${quand} à ${heureRdv(rdv.created_at)}${lieu ? `, ${lieu}` : ""}.${visio}\n\nÀ bientôt,\n${SIGNATURE}`;
 }
 
 // ajoute le rendez-vous à l'agenda du téléphone
 export function versAgenda(rdv, client) {
-  const debut = new Date(rdv.created_at), fin = new Date(debut.getTime() + (DUREES[rdv.texte] || 60) * 60000);
+  const objet = sansLien(rdv.texte), lien = lienVisio(rdv), debut = new Date(rdv.created_at), fin = new Date(debut.getTime() + (DUREES[objet.split(" · ")[0]] || 60) * 60000);
   const z = d => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
-  const titre = `${rdv.texte || "Rendez-vous"} – ${politesse(client) || "client"}`, lieu = adresse(client), notes = client?.tel ? `Tél. ${client.tel}` : "";
+  const titre = `${objet || "Rendez-vous"} – ${politesse(client) || "client"}`, lieu = lien || adresse(client), notes = [client?.tel ? `Tél. ${client.tel}` : "", lien ? `Visio : ${lien}` : ""].filter(Boolean).join("\n");
   if (/android/i.test(navigator.userAgent)) {
     const u = new URL("https://calendar.google.com/calendar/render");
     u.searchParams.set("action", "TEMPLATE"); u.searchParams.set("text", titre); u.searchParams.set("dates", `${z(debut)}/${z(fin)}`);
@@ -46,8 +54,9 @@ export function carteRdv(rdv, esc, { client = null, retirer = false } = {}) {
   const passe = new Date(rdv.created_at) < Date.now() - 3600000;
   return `<div class="note-carnet rdv ${passe ? "passe" : ""}">
     <small>Rendez-vous${client ? " · " + esc(politesse(client)) : ""}</small>
-    <p><b>${esc(majuscule(jourRdv(rdv.created_at)))} · ${heureRdv(rdv.created_at)}</b><br>${esc(rdv.texte || "")}</p>
+    <p><b>${esc(majuscule(jourRdv(rdv.created_at)))} · ${heureRdv(rdv.created_at)}</b><br>${esc(sansLien(rdv.texte))}${lienVisio(rdv) ? " · en visio" : ""}</p>
     ${passe ? "" : `<div class="actions-doc" style="margin:8px 0 0">
+      ${lienVisio(rdv) ? `<a class="btn petit-btn" href="${esc(lienVisio(rdv))}" target="_blank" rel="noopener">Rejoindre la visio</a>` : ""}
       <button type="button" class="btn petit-btn" data-rdv-agenda="${rdv.id}">Mon agenda</button>
       <button type="button" class="btn clair petit-btn" data-rdv-confirmer="${rdv.id}">Prévenir le client</button>
       <button type="button" class="btn clair petit-btn" data-rdv-rappel="${rdv.id}">Rappel</button></div>`}
