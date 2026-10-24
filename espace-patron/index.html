@@ -325,7 +325,7 @@
     if (a("Un site internet") || a("dans mon site") || a("Le référencement local") || a("Une fiche Google")) { unique = 190; l.push(["Création du site (promotion)", "190 €"]); suite.push("10 € par mois"); }
     else if (a("Seulement l'application")) { unique = 100; l.push(["Application web sur mesure seule", "100 €"]); suite.push("30 € par an"); }
     if (a("Web marketing") || a("Community manager") || rep(d, "Vidéos") === "Oui") suite.push("25 € par mois (web marketing)");
-    if (a("boutique")) aPart.push("la boutique en ligne"); if (a("Un logo")) aPart.push("le logo"); if (a("Retouche")) aPart.push("la retouche photo");
+    if (a("boutique")) aPart.push("la boutique en ligne"); if (a("Un logo")) aPart.push("le logo"); if (a("Retouche")) aPart.push("la retouche photo"); if (a("articles de blog")) aPart.push("les articles de blog"); if (a("montage vidéo")) aPart.push("le montage vidéo"); if (a("pages en plus")) aPart.push("les pages en plus");
     return { unique, suite, l, aPart };
   }
   const acompteDe = total => { const p = parseFloat(reg("acompte")); return p > 0 && total ? Math.round(total * p / 100) : 0; };
