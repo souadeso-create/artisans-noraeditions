@@ -505,6 +505,7 @@
   .video-appli p { margin-top: 18px; font: 600 15px Inter, sans-serif; color: #5b5f8f; }
   .video-appli { position: relative; }
   .video-appli .lien-video { position: absolute; left: 18%; right: 18%; top: 54%; height: 11%; border-radius: 40px; display: none; }
+  .video-appli .son-video { position: absolute; left: 50%; top: 16px; transform: translateX(-50%); z-index: 2; padding: 10px 18px; border: 0; border-radius: 999px; background: #ffd426; color: #0f1240; font: 700 15px Inter, sans-serif; box-shadow: 0 8px 20px rgba(0,0,0,.3); cursor: pointer; white-space: nowrap; }
   .video-appli .lien-video.vu { display: block; }
   @media (max-width: 600px) { .video-appli { max-width: 260px; } .video-appli video { border-radius: 26px; } }
   @media (min-width: 900px) { .banniere + .heros .bloc { grid-template-columns: 1fr .8fr; } }
@@ -604,6 +605,7 @@
    </div>
     <div class="video-appli">
       <video src="medias/video-site-et-application.mp4" poster="medias/video-site-et-application.jpg" playsinline muted autoplay loop controls preload="metadata" aria-label="Vidéo : le site et l'application web sur mesure, en action"></video>
+      <button type="button" class="son-video" hidden>Activer le son</button>
       <a class="lien-video" href="questionnaire.html" aria-label="Je veux mon site et mon appli : remplir le questionnaire"></a>
     </div>
   </div>
@@ -715,16 +717,20 @@
 
 </script>
 <script>
-  // la vidéo prend le son dès qu'elle arrive à l'écran ; si le navigateur refuse tant qu'on n'a pas touché la page,
-  // le son part au premier toucher. Elle se tait quand elle quitte l'écran.
+  // la vidéo prend le son dès qu'elle arrive à l'écran. Le téléphone le refuse tant qu'on n'a pas touché la page :
+  // alors il part au premier toucher, et un bouton « Activer le son » reste sur la vidéo. Elle se tait quand elle quitte l'écran.
   (function () {
-    const v = document.querySelector(".video-appli video"); if (!v || !("IntersectionObserver" in window)) return;
-    let visible = false, touche = false;
-    const sonner = () => { if (!visible) return; v.muted = false; v.play().catch(() => { v.muted = true; v.play(); }); };
-    new IntersectionObserver(es => es.forEach(e => { visible = e.intersectionRatio >= .5; if (visible) sonner(); else v.muted = true; }), { threshold: [0, .5] }).observe(v);
+    const v = document.querySelector(".video-appli video"), bouton = document.querySelector(".son-video"); if (!v || !("IntersectionObserver" in window)) return;
+    let visible = false, parNous = false, coupe = false;
+    const maj = () => { bouton.hidden = !(visible && v.muted); };
+    const muet = m => { parNous = true; v.muted = m; setTimeout(() => { parNous = false; }, 0); };
+    const sonner = () => { if (!visible || coupe) return maj(); muet(false); const p = v.play(); if (p) p.catch(() => { muet(true); v.play().catch(() => {}); maj(); }); maj(); };
+    const active = () => !navigator.userActivation || navigator.userActivation.hasBeenActive;
+    new IntersectionObserver(es => es.forEach(e => { visible = e.intersectionRatio >= .5; if (visible) { if (active()) sonner(); } else muet(true); maj(); }), { threshold: [0, .5] }).observe(v);
+    ["pointerup", "touchend", "click", "keydown"].forEach(t => window.addEventListener(t, () => { if (visible && v.muted && !coupe) sonner(); }, { passive: true }));
+    bouton.addEventListener("click", () => { coupe = false; sonner(); });
+    v.addEventListener("volumechange", () => { if (!parNous) coupe = v.muted; maj(); });
     const lien = document.querySelector(".lien-video"); v.addEventListener("timeupdate", () => lien.classList.toggle("vu", v.currentTime > 47.9));
-    const premier = () => { if (touche) return; touche = true; sonner(); };
-    ["pointerdown", "touchend", "keydown"].forEach(t => window.addEventListener(t, premier, { once: true, passive: true }));
   })();
 </script>
 </body>
