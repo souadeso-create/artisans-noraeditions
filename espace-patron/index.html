@@ -169,6 +169,7 @@
   .essai { margin-bottom: 14px; padding: 10px 14px; border-radius: 12px; background: #fff6cc; color: #6e4b00; font-size: 14px; }
   @media (min-width: 760px) { .liste { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; } }
 </style>
+<script src="/medias/clic.js" defer></script>
 </head>
 <body>
 
@@ -418,7 +419,7 @@ table{width:100%;border-collapse:collapse;margin:26px 0 10px}th,td{padding:10px 
     const corps = [`Bonjour ${d.nom},`, "", "Merci pour votre questionnaire, il est bien arrivé.", "",
       veut ? "Ce que nous avons noté :\n" + veut.split(", ").map(x => "- " + x).join("\n") : "", "",
       e.unique ? `Pour démarrer : ${e.unique} €` + (e.suite.length ? `, puis ${e.suite.join(" et ")}.` : ".") : "",
-      e.aPart.length ? `Pour ${e.aPart.join(", ")}, nous vous envoyons un prix à part.` : "", "",
+      e.aPart.length ? `Pour ${e.aPart.join(", ")}, nous en parlons ensemble au téléphone.` : "", "",
       e.unique ? (ac => `Pour lancer la création : ${ac ? `un acompte de ${ac} €` : "un acompte"} à la commande, par virement, et le solde à la livraison.\n\n${rib || "[vos coordonnées bancaires]"}`)(acompteDe(d.prix || e.unique)) : "", "",
       "Nous vous appelons très vite pour la suite.", "", "À bientôt,", "Nora Éditions"]
       .filter((x, i, t) => x !== "" || (i > 0 && t[i - 1] !== "")).join("\n");
