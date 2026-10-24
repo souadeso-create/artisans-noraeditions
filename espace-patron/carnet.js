@@ -19,12 +19,12 @@ export const CATEGORIES = { domaine: "Noms de domaine", hebergement: "Hébergeme
   formation: "Formation", banque: "Banque et assurance", autre: "Autre" };
 const duree = h => { const t = Math.round((Number(h) || 0) * 60); return `${Math.floor(t / 60)} h ${String(t % 60).padStart(2, "0")}`; };
 // échéancier de Nora Éditions : un acompte à la commande, le solde à la livraison
-export const AVANCEMENTS = acompte => [["signature", "Commande", Number(acompte) || 30], ["fin", "Livré", 100]];
+export const AVANCEMENTS = acompte => [["signature", "Commande", Number(acompte) || 10], ["fin", "Livré", 100]];
 // ce que le client a versé, comparé à ce qui est dû selon l'avancement
 export function etatPaiements(lignes, totalDevis, acompte) {
   const verse = lignes.filter(l => l.type === "paiement").reduce((a, l) => a + (Number(l.montant) || 0), 0);
   const av = lignes.filter(l => l.type === "avancement").sort((a, b) => a.created_at < b.created_at ? 1 : -1)[0];
-  const pct = av ? Number(av.montant) || 0 : totalDevis ? Number(acompte) || 30 : 0;
+  const pct = av ? Number(av.montant) || 0 : totalDevis ? Number(acompte) || 10 : 0;
   const du = Math.round(totalDevis * pct) / 100;
   return { verse, pct, du, aReclamer: Math.max(0, Math.round((du - verse) * 100) / 100) };
 }
@@ -91,7 +91,7 @@ async function partagerFichier(blob, nom) {
 }
 
 export async function monterCarnet(el, { db, client, P = {}, toast, esc, erreur, envoyerMessage }) {
-  let devisSignes = 0, devisTTC = 0, acompte = Number(P.acompte_pct) || 30;
+  let devisSignes = 0, devisTTC = 0, acompte = Number(P.acompte_pct) || 10;
   try {
     const signes = (await db.lister("documents")).filter(d => d.client_id === client.id && d.type === "devis" && d.statut === "signe");
     devisSignes = signes.reduce((a, d) => a + (Number(d.total_ht) || 0), 0); // la marge se calcule sur le HT

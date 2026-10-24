@@ -193,6 +193,12 @@ export async function ajouterNouvellesPrestations() {
   const faits = brut.ajouts_prestations || [];
   const reste = AJOUTS_PRESTATIONS.filter(a => !faits.includes(a.cle));
   const corr = (CORRECTIONS_PRESTATIONS || []).filter(c => !faits.includes(c.cle));
+  if (!faits.includes("acompte-10-2026-10")) {
+    if (brut.acompte_pct == null || Number(brut.acompte_pct) === 30) brut.acompte_pct = 10;
+    if (brut.conditions) brut.conditions = brut.conditions.replace("Paiement : un acompte à la commande", "Paiement : un acompte de 10 % à la commande");
+    faits.push("acompte-10-2026-10");
+    if (!reste.length && !corr.length) { await enregistrerParametres({ ...brut, ajouts_prestations: faits }); return; }
+  }
   if (!reste.length && !corr.length) return;
   const toutes = await lister("prestations");
   for (const c of corr) {

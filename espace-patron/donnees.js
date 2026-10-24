@@ -21,7 +21,7 @@ export const PARAMETRES_DEFAUT = {
   bic: "",
   titulaire: "",
   moyen_paiement: "Virement",
-  acompte_pct: 30,
+  acompte_pct: 10,
   validite_jours: 30,
   echeance_jours: 15,
   prochain_devis: 1,
@@ -29,10 +29,10 @@ export const PARAMETRES_DEFAUT = {
   lien_avis: "https://share.google/eR0V54QFO9la7MvI6",
   abonnement_libelle: "Abonnement du site (hébergement, mises à jour, application)",
   conditions:
-    "Prestations incluses : la création du site sur mesure, le nom de domaine, le référencement sur Google, la fiche Google, le logo s'il est prévu au devis, et l'application web sur mesure.\n" +
+    "Prestations incluses : la création du site sur mesure, le nom de domaine, le référencement sur Google, la fiche Google, le logo et la retouche des photos si besoin, et l'application web sur mesure.\n" +
     "Abonnement : après la mise en ligne, l'abonnement mensuel couvre l'hébergement, les mises à jour, l'accès à l'application et le renouvellement du nom de domaine. Il est sans durée minimale.\n" +
     "Délais : mise en ligne environ une semaine après réception des textes et des photos.\n" +
-    "Paiement : un acompte à la commande, par virement, puis le solde à la livraison.",
+    "Paiement : un acompte de 10 % à la commande, par virement, puis le solde à la livraison.",
   penalites:
     "En cas de retard de paiement, des pénalités au taux de trois fois le taux d'intérêt légal sont exigibles, ainsi qu'une indemnité forfaitaire de 40 € pour frais de recouvrement (clients professionnels). Pas d'escompte pour paiement anticipé."
 };
@@ -41,18 +41,18 @@ export const UNITES = ["forfait", "presta", "mois", "an", "page", "u", "h"];
 
 // [catégorie, désignation, unité, prix HT] — vos tarifs ; les prestations à 0 € se chiffrent au cas par cas
 export const PRESTATIONS_DEFAUT = [
-  ["Création", "Site internet sur mesure + application web sur mesure (promotion) : site à votre nom, nom de domaine, référencement sur Google, fiche Google, application pour vos demandes, devis, factures et rendez-vous", "forfait", 190],
+  ["Création", "Site internet sur mesure + application web sur mesure (promotion) : site à votre nom, nom de domaine, référencement sur Google, fiche Google, logo et retouche photo si besoin, application pour vos demandes, devis, factures et rendez-vous", "forfait", 190],
   ["Création", "Application web sur mesure seule, au nom de votre entreprise", "forfait", 100],
   ["Abonnements", "Abonnement du site : hébergement, mises à jour, application, nom de domaine", "mois", 10],
   ["Abonnements", "Abonnement de l'application seule", "an", 30],
   ["Abonnements", "Web marketing : vidéos, réseaux sociaux, annuaires", "mois", 25],
   ["Abonnements", "Extension .com du nom de domaine (au lieu du .fr compris)", "mois", 0.6],
   ["Abonnements", "Adresse e-mail professionnelle", "mois", 1.5],
-  ["En plus", "Logo", "forfait", 0],
+  ["Création", "Logo (compris dans la création)", "forfait", 0],
   ["En plus", "Boutique en ligne", "forfait", 0],
   ["En plus", "Article de blog", "u", 0],
   ["En plus", "Montage vidéo", "u", 0],
-  ["En plus", "Retouche photo", "u", 0],
+  ["Création", "Retouche photo (comprise dans la création)", "u", 0],
   ["En plus", "Page en plus sur le site", "page", 0]
 ];
 
@@ -63,4 +63,11 @@ export const AJOUTS_PRESTATIONS = [
     ["Abonnements", "Adresse e-mail professionnelle", "mois", 1.5]
   ] }
 ];
-export const CORRECTIONS_PRESTATIONS = [];
+// le logo et la retouche photo sont compris dans la création, si besoin (24/10/2026)
+export const CORRECTIONS_PRESTATIONS = [
+  { cle: "logo-retouche-compris-2026-10", remplacer: [
+    [/^Logo$/, "Logo (compris dans la création)"],
+    [/^Retouche photo$/, "Retouche photo (comprise dans la création)"],
+    ["fiche Google, application", "fiche Google, logo et retouche photo si besoin, application"]
+  ] }
+];

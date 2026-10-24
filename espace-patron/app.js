@@ -2,7 +2,7 @@
 // abonnements, agenda, carnet de projet, notifications.
 import * as db from "./store.js";
 // version des fichiers chargés à la demande : à changer à chaque mise en ligne, pour que le téléphone ne garde pas l'ancienne
-const V = "20261024b";
+const V = "20261024d";
 import { UNITES } from "./donnees.js";
 import { telechargerPDF, totaux, eur, poserTVA, avecTVA, TAUX_TVA, tauxTxt, avenantDe } from "./pdf.js";
 import { CATEGORIES, etatPaiements } from "./carnet.js";
@@ -38,14 +38,25 @@ const lienSignature = d => d.jeton ? location.origin + "/devis/?d=" + d.jeton : 
 const numeroWa = t => { const n = String(t || "").replace(/\D/g, ""); return n.startsWith("0") ? "33" + n.slice(1) : n; };
 const politesse = c => c ? [c.civilite, c.nom].filter(Boolean).join(" ") : "";
 const quelDoc = d => { const av = avenantDe(d); return av ? `l'avenant n° ${av.n} au devis ${av.devis}` : `le devis ${d.numero}`; };
-const msgSignature = d => `Bonjour ${politesse(d.client)},\n\nVoici ${avenantDe(d) ? quelDoc(d) : `votre devis ${d.numero}`} de ${P.entreprise}. Vous pouvez le lire, le télécharger et le signer en ligne ici :\n${lienSignature(d)}\n\nBonne journée,\n${P.entreprise}`;
+// le montant tel qu'il figure sur le document : TTC s'il y a de la TVA, sinon le montant tout court (franchise)
+const montantTxt = d => { const t = totaux(d); return `${eur(t.ttc)} €${t.tva.length ? " TTC" : ""}`; };
+const acompteTxt = d => Number(d.acompte_pct) > 0 ? ` (acompte de ${d.acompte_pct} % à la commande, soit ${eur(totaux(d).ttc * d.acompte_pct / 100)} €)` : "";
+const msgSignature = d => `Bonjour ${politesse(d.client)},\n\nVoici ${avenantDe(d) ? quelDoc(d) : `votre devis ${d.numero}`} de ${P.entreprise} : ${montantTxt(d)}${acompteTxt(d)}. Vous pouvez le lire, le télécharger et le signer en ligne ici :\n${lienSignature(d)}\n\nBonne journée,\n${P.entreprise}`;
 const msgRelance = d => `Bonjour ${politesse(d.client)},\n\nJe reviens vers vous au sujet de ${quelDoc(d)}. Il est toujours consultable et à signer en ligne ici :\n${lienSignature(d)}\n\nN'hésitez pas si vous avez des questions.\n${P.entreprise}`;
 const SEPT_JOURS = 7 * 864e5;
 // Relance d'une facture envoyée et pas encore payée : le reste à payer, et l'IBAN s'il est dans les réglages
 const echeanceFacture = d => { const e = new Date(d.date + "T12:00:00"); e.setDate(e.getDate() + (Number(P?.echeance_jours) || 30)); return e; };
+const virementTxt = d => P?.iban ? `\n\nVous pouvez faire le virement sur ce compte :\nIBAN : ${P.iban}${P.bic ? `\nBIC : ${P.bic}` : ""}${P.titulaire ? `\nTitulaire : ${P.titulaire}` : ""}\nRéférence : ${d.numero}` : "";
+// la facture envoyée en simple message, sans PDF : le détail, le total, ce qui reste à payer, l'échéance et le RIB
+const msgFacture = d => {
+  const t = totaux(d), deja = Math.round((t.ttc - t.reste) * 100) / 100;
+  const lignes = (d.sections || []).flatMap(x => x.lignes || []).filter(l => l.designation)
+    .map(l => `- ${Number(l.qte) && Number(l.qte) !== 1 ? `${String(l.qte).replace(".", ",")} × ` : ""}${l.designation} : ${eur((Number(l.qte) || 0) * (Number(l.pu) || 0))} €`).join("\n");
+  return `Bonjour ${politesse(d.client)},\n\nVoici votre facture ${d.numero} du ${dateFr(d.date)}, de ${P.entreprise} :\n${lignes}\n\nTotal : ${montantTxt(d)}.${deja > 0.01 ? `\nDéjà réglé : ${eur(deja)} €. Reste à payer : ${eur(t.reste)} €.` : ""}\nÀ régler avant le ${echeanceFacture(d).toLocaleDateString("fr-FR")}.${virementTxt(d)}\n\nMerci, et bonne journée.\n${P.entreprise}`;
+};
 const msgRelanceFacture = d => {
   const t = totaux(d), echue = Date.now() > echeanceFacture(d);
-  const virement = P?.iban ? `\n\nVous pouvez faire le virement sur ce compte :\nIBAN : ${P.iban}${P.bic ? `\nBIC : ${P.bic}` : ""}${P.titulaire ? `\nTitulaire : ${P.titulaire}` : ""}\nRéférence : ${d.numero}` : "";
+  const virement = virementTxt(d);
   return `Bonjour ${politesse(d.client)},\n\nSauf erreur de ma part, la facture ${d.numero} du ${dateFr(d.date)} n'est pas encore réglée : il reste ${eur(t.reste)} € à payer${echue ? ` (échéance au ${echeanceFacture(d).toLocaleDateString("fr-FR")})` : ""}.${virement}\n\nMerci d'avance, et n'hésitez pas si vous avez une question.\n${P.entreprise}`;
 };
 // à relancer : envoyée, pas payée, échéance passée, et pas relancée (ni modifiée) depuis 7 jours
@@ -369,6 +380,7 @@ async function vueDocument(id, type, params) {
             <button class="btn clair" id="partage">${ICO.partage}Envoyer</button>
             ${estDevis && d.id ? `<button class="btn discret" id="versFacture">Transformer en facture</button>` : ""}
             ${estDevis && d.id && !av && d.statut === "signe" ? `<button class="btn clair" id="avenant">${ICO.plus}Créer un avenant</button>` : ""}
+            ${!estDevis && d.id && d.statut !== "annule" ? `<button class="btn clair" id="msgFacture">Envoyer par message, sans PDF</button>` : ""}
             ${!estDevis && d.id && d.statut === "envoye" && totaux(d).reste > 0.01 ? `<button class="btn clair" id="relanceF">Relancer le paiement</button>` : ""}
             ${d.id ? `<button class="btn discret" id="dupliquer">Dupliquer</button>` : ""}
             ${d.id && (estDevis || d.statut === "brouillon") ? `<button class="btn danger" id="suppr">${ICO.poubelle}Supprimer</button>` : ""}
@@ -501,6 +513,14 @@ async function vueDocument(id, type, params) {
         poserTVA(a, P); a.total_ht = totaux(a).ht;
         const r = await db.enregistrer("documents", a); // l'avenant ne prend pas de numéro de devis
         toast("Avenant créé ✓"); location.hash = "#/document/" + r.id;
+      } catch (e) { erreur(e); }
+    };
+    const mf = document.getElementById("msgFacture");
+    if (mf) mf.onclick = async () => {
+      try {
+        await enregistrer();
+        await envoyerMessage(d, msgFacture(d), `Facture ${d.numero}`);
+        if (d.statut === "brouillon") { d.statut = "envoye"; modifie = true; await enregistrer(); dessiner(); }
       } catch (e) { erreur(e); }
     };
     const rlf = document.getElementById("relanceF");
