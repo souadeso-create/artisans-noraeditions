@@ -340,6 +340,19 @@
   .tarif ul { list-style: none; margin-top: 14px; display: grid; gap: 8px; color: var(--gris); font-size: 15px; }
   .tarif li::before { content: "✓  "; color: var(--filet); font-weight: 600; }
   .tarif.option { background: transparent; border: 1px dashed var(--sable); box-shadow: none; }
+  .options-abo { margin-top: 14px; font-size: 13px; line-height: 1.5; opacity: .85; }
+  .verif-dom { margin-top: 30px; max-width: 560px; background: rgba(255,255,255,.1); border: 2px solid rgba(255,255,255,.8); border-radius: 20px; padding: 22px; color: #fff; box-shadow: 0 6px 0 rgba(10,10,60,.45); }
+  .verif-dom h3 { color: #fff; margin: 0 0 12px; font-size: 20px; }
+  .verif-dom .dom-ligne { display: flex; gap: 8px; }
+  .verif-dom input[type=text] { flex: 1; min-width: 0; font: 16px var(--sans); padding: 13px 14px; border-radius: 12px; border: 0; background: #fff; color: var(--encre); }
+  .verif-dom button { flex: none; font: 700 15px var(--sans); padding: 0 18px; border-radius: 12px; border: 0; background: var(--jauneT, #ffd426); color: var(--nuit, #0f1240); cursor: pointer; }
+  .verif-dom .dom-ext { display: flex; gap: 18px; margin-top: 12px; font-weight: 600; }
+  .verif-dom .dom-ext input { accent-color: var(--jauneT, #ffd426); margin-right: 4px; }
+  .verif-dom .dom-res { margin-top: 12px; font-weight: 600; }
+  .verif-dom .dom-res:empty { display: none; }
+  .verif-dom .dom-res.libre { color: #7dffb0; } .verif-dom .dom-res.pris { color: #ffb4a8; } .verif-dom .dom-res.attente { color: #d9ddff; font-weight: 500; }
+  .verif-dom .btn[hidden] { display: none; }
+  .verif-dom .btn { margin-top: 14px; max-width: 100%; white-space: normal; text-align: center; }
   .exemple-ka { display: grid; gap: 28px; align-items: center; margin-top: 34px; }
   .exemple-ka video { width: 100%; max-width: 320px; border-radius: 22px; background: #000; box-shadow: 0 14px 36px rgba(0,0,0,.22); }
   @media (min-width: 760px) { .tarifs { grid-template-columns: repeat(2, 1fr); } .exemple-ka { grid-template-columns: 340px 1fr; } }
@@ -561,6 +574,17 @@
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "ProfessionalService", "name": "Nora Éditions Artisans", "description": "Création de site internet référencé sur Google (SEO), fiche Google, logo et application web sur mesure pour les freelances, les artisans, les entreprises de nettoyage et tous les indépendants, adaptés à chaque métier. Réseaux sociaux, vidéos et articles en option.", "url": "https://creation-site-internet.noraeditions.fr/", "email": "contact@noraeditions.com", "logo": "https://creation-site-internet.noraeditions.fr/medias/icone-site-512.png", "image": "https://creation-site-internet.noraeditions.fr/medias/icone-site-512.png", "areaServed": {"@type": "Country", "name": "France"}, "parentOrganization": {"@type": "Organization", "name": "Nora Éditions", "url": "https://noraeditions.fr/"}, "makesOffer": [{"@type": "Offer", "name": "Création : site internet, fiche Google, logo et appli", "price": "200", "priceCurrency": "EUR"}, {"@type": "Offer", "name": "Abonnement : site et appli en ligne", "priceSpecification": {"@type": "UnitPriceSpecification", "price": "10", "priceCurrency": "EUR", "unitText": "mois"}}]}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Je suis auto-entrepreneur, c'est fait pour moi ?", "acceptedAnswer": {"@type": "Answer", "text": "Oui, c'est pensé pour vous : devis et factures prêts à envoyer, un outil simple sur le téléphone, et un prix adapté."}}, {"@type": "Question", "name": "Mon site sera à mon nom ?", "acceptedAnswer": {"@type": "Answer", "text": "Oui. Votre site porte le nom de votre entreprise et votre logo, sur votre propre adresse."}}, {"@type": "Question", "name": "Je ne suis pas à l'aise avec l'informatique.", "acceptedAnswer": {"@type": "Answer", "text": "L'appli se prend en main en quelques minutes, avec un tuto vidéo. Pour le site et la fiche Google, nous nous occupons de tout."}}, {"@type": "Question", "name": "Ça marche pour mon métier ?", "acceptedAnswer": {"@type": "Answer", "text": "Artisans du bâtiment et autres artisans, entreprises de nettoyage, freelances, coachs, photographes, consultants… : le site et l'appli s'adaptent à votre métier."}}, {"@type": "Question", "name": "Mon site sera visible sur Google ?", "acceptedAnswer": {"@type": "Answer", "text": "Oui. Chaque site est bien référencé sur Google : nous nous en occupons, pour que les clients qui cherchent votre métier près de chez eux vous trouvent."}}, {"@type": "Question", "name": "Que faut-il pour créer mon site ?", "acceptedAnswer": {"@type": "Answer", "text": "Vous remplissez le questionnaire et vous nous envoyez vos réalisations : photos et vidéos de votre travail. Nous nous occupons du reste."}}, {"@type": "Question", "name": "Vous débutez et vous n'avez pas encore de photos ?", "acceptedAnswer": {"@type": "Answer", "text": "Pas de souci, on se débrouille. Votre site démarre avec des visuels qui présentent vos prestations, et vos réalisations s'ajoutent au fur et à mesure : vous prenez les photos avec votre appli, elles arrivent sur votre site."}}, {"@type": "Question", "name": "Qui voit mes clients et mes devis ?", "acceptedAnswer": {"@type": "Answer", "text": "Vous seul. Vos clients, vos devis et vos factures restent à vous, dans votre application. Nous ne recevons que les photos et vidéos que vous choisissez de nous envoyer pour vos vidéos."}}, {"@type": "Question", "name": "Comment je paie ?", "acceptedAnswer": {"@type": "Answer", "text": "Par virement : un acompte à la commande, puis le solde à la livraison. Pour l'abonnement, le plus simple est un virement permanent depuis votre banque, mis en place une fois pour toutes. Vous recevez une facture à chaque paiement."}}, {"@type": "Question", "name": "Je peux arrêter l'abonnement ?", "acceptedAnswer": {"@type": "Answer", "text": "Oui, quand vous voulez : envoyez-nous un e-mail à contact@noraeditions.com, et l'abonnement s'arrête."}}]}</script>
 <script src="/medias/clic.js" defer></script>
+<script src="/medias/domaine.js" defer></script>
+<script>
+  // le vérificateur de nom de domaine des tarifs : s'il est libre, on file au questionnaire avec le nom déjà rempli
+  addEventListener("DOMContentLoaded", () => {
+    const nom = document.getElementById("vdNom"), lien = document.getElementById("vdLien"); if (!nom || !window.NoraDomaine) return;
+    NoraDomaine.brancher({ champ: nom, extensions: [...document.querySelectorAll('[name="vdExt"]')], bouton: document.getElementById("vdBouton"), reponse: document.getElementById("vdRes"),
+      apres: r => { lien.hidden = r.etat !== "libre"; const ext = r.domaine.slice(r.domaine.lastIndexOf("."));
+        lien.href = "/questionnaire.html?domaine=" + encodeURIComponent(NoraDomaine.nettoyer(nom.value)) + "&ext=" + encodeURIComponent(ext); } });
+    nom.addEventListener("input", () => { lien.hidden = true; });
+  });
+</script>
 </head>
 <body>
 
@@ -660,11 +684,19 @@
       <div class="tarif apparait"><span class="promo">Promo · durée limitée</span><div class="chiffre"><s>200 €</s> 190 €</div><h3>La création</h3><p class="gris">Une seule fois.</p>
         <ul><li>Votre site internet, avec vos réalisations</li><li>Un site bien référencé sur Google</li><li>Votre fiche Google</li><li>Votre logo si besoin</li><li>L'application web sur mesure de votre site, au nom de votre entreprise</li></ul></div>
       <div class="tarif apparait"><div class="chiffre">10 € <small>/ mois</small></div><h3>L'abonnement</h3><p class="gris">Votre site et son application web sur mesure, en ligne.</p>
-        <ul><li>Site hébergé et à jour</li><li>L'application web sur mesure complète</li><li>Les nouveautés de l'application</li></ul></div>
+        <ul><li>Site hébergé et à jour</li><li>Votre nom de domaine en .fr</li><li>L'application web sur mesure complète</li><li>Les nouveautés de l'application</li></ul>
+        <p class="options-abo">En .com : + 0,60 € par mois<br>Adresse e-mail professionnelle : + 1,50 € par mois</p></div>
       <div class="tarif apparait"><div class="chiffre">100 €</div><h3>L'application web sur mesure seule</h3><p class="gris">Puis 30 € par an.</p>
         <ul><li>L'application complète, au nom de votre entreprise et avec votre logo</li><li>Devis, factures, relances, signature en ligne</li><li>Agenda, rappels, dépenses et paiements</li></ul></div>
       <div class="tarif option apparait"><span class="promo">En option</span><div class="chiffre">25 € <small>/ mois</small></div><h3>Web marketing</h3><p class="gris">Vidéos, réseaux, articles et annuaires.</p>
         <ul><li>Vous envoyez photos et vidéos depuis votre application</li><li>Nous créons vos réseaux et nous les faisons vivre : nous postons régulièrement</li><li>Nous montons vos vidéos, au bon format pour chaque réseau</li><li>Nous écrivons des articles pour votre site, pour qu'il soit bien vu par Google</li><li>Nous vous inscrivons sur tous les annuaires pro</li></ul></div>
+    </div>
+    <div class="verif-dom apparait">
+      <h3>Votre nom de domaine est-il libre ?</h3>
+      <div class="dom-ligne"><input type="text" id="vdNom" placeholder="ex. dupont-plomberie" aria-label="Le nom de votre site" autocomplete="off" autocapitalize="off" spellcheck="false"><button type="button" id="vdBouton">Vérifier</button></div>
+      <div class="dom-ext"><label><input type="radio" name="vdExt" value=".fr" checked> .fr</label><label><input type="radio" name="vdExt" value=".com"> .com</label></div>
+      <p class="dom-res" id="vdRes" role="status"></p>
+      <a class="btn btn-sombre" id="vdLien" href="/questionnaire.html" hidden>Je le réserve →</a>
     </div>
   </div>
 </section>
@@ -681,6 +713,7 @@
       <details><summary>Je ne suis pas à l'aise avec l'informatique.</summary><p>L'appli se prend en main en quelques minutes, avec un tuto vidéo. Pour le site et la fiche Google, nous nous occupons de tout.</p></details>
       <details><summary>Ça marche pour mon métier ?</summary><p>Artisans du bâtiment et autres artisans, entreprises de nettoyage, freelances, coachs, photographes, consultants… : le site et l'appli s'adaptent à votre métier.</p></details>
       <details><summary>Mon site sera visible sur Google ?</summary><p>Oui. Chaque site est bien référencé sur Google : nous nous en occupons, pour que les clients qui cherchent votre métier près de chez eux vous trouvent.</p></details>
+      <details><summary>Et le nom de domaine ?</summary><p>Il est compris dans l'abonnement en .fr ; en .com, c'est 0,60 € de plus par mois. Vous ne savez pas encore lequel choisir ? Cochez la case dans le questionnaire, nous vous aidons à le trouver. Vous voulez une adresse e-mail à votre nom, comme contact@votre-entreprise.fr ? C'est 1,50 € de plus par mois.</p></details>
       <details><summary>Que faut-il pour créer mon site ?</summary><p>Vous remplissez le questionnaire et vous nous envoyez vos réalisations : photos et vidéos de votre travail. Nous nous occupons du reste.</p></details>
       <details><summary>Vous débutez et vous n'avez pas encore de photos ?</summary><p>Pas de souci, on se débrouille. Votre site démarre avec des visuels qui présentent vos prestations, et vos réalisations s'ajoutent au fur et à mesure : vous prenez les photos avec votre appli, elles arrivent sur votre site.</p></details>
       <details><summary>Qui voit mes clients et mes devis ?</summary><p>Vous seul. Vos clients, vos devis et vos factures restent à vous, dans votre application. Nous ne recevons que les photos et vidéos que vous choisissez de nous envoyer pour vos vidéos.</p></details>

@@ -2,7 +2,7 @@
 // abonnements, agenda, carnet de projet, notifications.
 import * as db from "./store.js";
 // version des fichiers chargés à la demande : à changer à chaque mise en ligne, pour que le téléphone ne garde pas l'ancienne
-const V = "20261024a";
+const V = "20261024b";
 import { UNITES } from "./donnees.js";
 import { telechargerPDF, totaux, eur, poserTVA, avecTVA, TAUX_TVA, tauxTxt, avenantDe } from "./pdf.js";
 import { CATEGORIES, etatPaiements } from "./carnet.js";
@@ -551,7 +551,9 @@ function ajouterPrestation(d, p, indexLot) {
     if (lot && !lot.lignes.length && ["Prestations", "Nouvelle partie"].includes(lot.titre)) { lot.titre = p.categorie || lot.titre; i = indexLot; }
     else { d.sections.push({ titre: p.categorie || "Prestations", lignes: [] }); i = d.sections.length - 1; }
   }
-  d.sections[i].lignes.push({ designation: p.designation, description: p.description || "", qte: 1, unite: p.unite, pu: Number(p.prix_ht) });
+  // sur une facture, une prestation au mois porte le mois facturé : « Abonnement du site · novembre 2026 »
+  const auMois = d.type === "facture" && p.unite === "mois";
+  d.sections[i].lignes.push({ designation: auMois ? `${p.designation} · ${moisLong((d.date || aujourdhui()).slice(0, 7))}` : p.designation, description: p.description || "", qte: 1, unite: p.unite, pu: Number(p.prix_ht) });
 }
 
 /* =================== Sélecteurs =================== */
@@ -633,7 +635,11 @@ async function vueDemande(id) {
   const tel = String(x.tel || "").replace(/\s/g, "");
   const contact = { nom: x.nom, tel: x.tel, email: x.email, societe: repDe(x, "Entreprise"), ville: repDe(x, "Ville") };
   const sections = []; (x.reponses || []).forEach(r => { let g = sections.find(z => z.s === r.s); if (!g) sections.push(g = { s: r.s, l: [] }); g.l.push(r); });
-  const essentiel = [["Activité", x.activite], ["Métier", x.metier], ["Veut", repDe(x, "Je veux")], ["Dans l'appli", repDe(x, "Appli")], ["Ses clients", repDe(x, "Mode")], ["Pour quand", repDe(x, "Délai")], ["Questions", repDe(x, "Remarques")]].filter(r => r[1]);
+  // le nom de domaine et l'abonnement prévu : site 10 €, .com + 0,60 €, e-mail pro + 1,50 €, web marketing 25 €
+  const veut = repDe(x, "Je veux"), nomDom = repDe(x, "Nom de domaine"), ext = repDe(x, "Extension") || ".fr", mailPro = repDe(x, "Adresse e-mail professionnelle").startsWith("Oui");
+  const domaine = [nomDom ? (/\.(fr|com)$/i.test(nomDom) ? nomDom : nomDom + ext) : "", repDe(x, "Nom de domaine : disponibilité").replace(/^.*? : /, ""), repDe(x, "Nom de domaine déjà à moi") ? "déjà à lui" : "", repDe(x, "Aide pour le nom de domaine") ? "veut de l'aide pour le choisir" : ""].filter(Boolean).join(" · ");
+  const parMois = (/Un site internet|dans mon site/.test(veut) || nomDom ? 10 + (ext === ".com" ? 0.6 : 0) + (mailPro ? 1.5 : 0) : 0) + (/Web marketing/.test(veut) || repDe(x, "Vidéos") === "Oui" ? 25 : 0);
+  const essentiel = [["Activité", x.activite], ["Métier", x.metier], ["Veut", veut], ["Nom de domaine", domaine], ["E-mail pro", mailPro ? "Oui · + 1,50 € par mois" : ""], ["Abonnement prévu", parMois ? eur(parMois) + " € par mois" : ""], ["Dans l'appli", repDe(x, "Appli")], ["Ses clients", repDe(x, "Mode")], ["Pour quand", repDe(x, "Délai")], ["Questions", repDe(x, "Remarques")]].filter(r => r[1]);
   const majDem = async (champs, msg) => { Object.assign(x, champs); try { await db.enregistrer("demandes", { ...x }); if (msg) toast(msg); } catch (e) { erreur(e); } };
   vue.innerHTML = `
     <div class="entete"><div><div class="petit">Demande du ${new Date(x.created_at).toLocaleDateString("fr-FR", { dateStyle: "long" })}</div><h1>${esc(x.nom)}</h1>
@@ -748,7 +754,7 @@ async function vueClient(id, params) {
         <details class="section-fiche" ${Number(c.abonnement_mensuel) ? "open" : ""}><summary>Abonnement<span>${Number(c.abonnement_mensuel) ? eur(c.abonnement_mensuel) + " € / mois" : "aucun"}</span></summary>
         <form id="fAbo" class="carte" style="margin-top:6px"><div class="deux"><div class="champ"><label>Par mois €</label><input type="number" step="0.01" min="0" inputmode="decimal" name="abonnement_mensuel" value="${esc(c.abonnement_mensuel ?? "")}" placeholder="10"></div>
           <div class="champ"><label>&nbsp;</label><a class="btn discret petit-btn" href="#/abonnements">Tous les abonnements</a></div></div>
-          <div class="champ"><label>Libellé sur la facture</label><input type="text" name="abonnement_libelle" value="${esc(c.abonnement_libelle || "")}" placeholder="${esc(P.abonnement_libelle || "Abonnement du site")}"></div>
+          <div class="champ"><label>Libellé sur la facture</label><input type="text" name="abonnement_libelle" value="${esc(c.abonnement_libelle || "")}" placeholder="${esc(P.abonnement_libelle || "Abonnement du site")}"><small class="gris" id="aboApercu">Sur la facture : ${esc(c.abonnement_libelle || P.abonnement_libelle || "Abonnement du site")} · ${esc(moisLong())}</small></div>
           <button class="btn petit-btn">Enregistrer l'abonnement</button></form></details>
         <details class="section-fiche" ${params?.get("carnet") ? "open" : ""}><summary>Carnet du projet<span></span></summary>
         <div id="carnet" style="margin-top:6px"><p class="gris">Chargement du carnet…</p></div></details>
@@ -762,6 +768,7 @@ async function vueClient(id, params) {
   if (ec) { const mois = aujourdhui().slice(0, 7), docsAbo = docs.filter(d => d.abo === mois && d.statut === "paye");
     ec.onclick = () => choisirMessage(c, { abonnementDu: Number(c.abonnement_mensuel) && !docsAbo.length ? Number(c.abonnement_mensuel) : 0 }); }
   const fa = document.getElementById("fAbo");
+  if (fa) fa.abonnement_libelle.oninput = e => { document.getElementById("aboApercu").textContent = `Sur la facture : ${e.target.value.trim() || P.abonnement_libelle || "Abonnement du site"} · ${moisLong()}`; };
   if (fa) fa.onsubmit = async e => { e.preventDefault(); const o = lireForm(e.target, {});
     try { await db.enregistrer("clients", { ...c, abonnement_mensuel: o.abonnement_mensuel === "" ? null : Number(o.abonnement_mensuel), abonnement_libelle: o.abonnement_libelle || null }); toast("Abonnement enregistré ✓"); vueClient(c.id, params); } catch (er) { erreur(er); } };
   if (c.id) import("./carnet.js").then(async m => {

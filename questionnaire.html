@@ -339,6 +339,13 @@
   .q .retour { font-size: 15px; margin-top: 10px; }
   .q .retour.ok { color: #2f6f4f; } .q .retour.erreur { color: #a3261f; }
   .q .si-video[hidden] { display: none; }
+  .q .dom-ligne { display: flex; gap: 8px; }
+  .q .dom-ligne input { flex: 1; min-width: 0; }
+  .q .dom-ligne .btn { flex: none; padding: 0 18px; border-radius: 12px; }
+  .q .case small { font-weight: 400; color: var(--gris); }
+  .q .dom-res { font-size: 14px; font-weight: 600; margin: 8px 0 0; min-height: 0; }
+  .q .dom-res:empty { display: none; }
+  .q .dom-res.libre { color: #0b6b3c; } .q .dom-res.pris { color: #a3261f; } .q .dom-res.attente { color: var(--gris); font-weight: 500; }
   .q [data-dom][hidden], .q #choixMetier[hidden] { display: none !important; }
   @media (min-width: 700px) { .q .deux { grid-template-columns: 1fr 1fr; } }
   /* Style « affiche » : titres en capitales épaisses, boutons et cartes à contour noir et ombre décalée */
@@ -438,6 +445,7 @@
 <script src="/medias/clic.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.js"></script>
 <script src="/medias/supabase-config.js"></script>
+<script src="/medias/domaine.js"></script>
 </head>
 <body>
 <header>
@@ -597,11 +605,18 @@
       <div class="champ">Une fiche Google ?<div class="cases"><label class="case"><input type="radio" name="Fiche Google" value="Oui"><span>Oui</span></label><label class="case"><input type="radio" name="Fiche Google" value="Non"><span>Non</span></label><label class="case"><input type="radio" name="Fiche Google" value="Je ne sais pas"><span>Je ne sais pas</span></label></div></div>
       <label class="champ">Lien de la fiche Google <small>(si oui)</small><input type="url" name="Lien fiche Google" placeholder="https://"></label>
       <label class="champ">Vos pages sur les réseaux <small>(liens)</small><textarea name="Réseaux" placeholder="Un lien par ligne"></textarea></label>
-      <label class="champ">L'adresse de site que vous aimeriez<input type="text" name="Adresse souhaitée" placeholder="ex. dupont-photo.fr"></label>
     </fieldset>
 
     <fieldset>
       <legend>8. Votre site</legend>
+      <div class="champ dom">Votre nom de domaine <small>(l'adresse de votre site)</small>
+        <div class="dom-ligne"><input type="text" name="Nom de domaine" id="domNom" placeholder="ex. dupont-plomberie" autocomplete="off" autocapitalize="off" spellcheck="false"><button type="button" class="btn btn-trait" id="domVerif">Vérifier</button></div>
+        <div class="cases"><label class="case"><input type="radio" name="Extension" value=".fr" checked><span>.fr <small>compris</small></span></label><label class="case"><input type="radio" name="Extension" value=".com"><span>.com <small>+0,60 € par mois</small></span></label></div>
+        <p class="dom-res" id="domRes" role="status"></p>
+        <input type="hidden" name="Nom de domaine : disponibilité" id="domDispo">
+        <div class="cases"><label class="case"><input type="checkbox" name="Aide pour le nom de domaine" value="Je ne sais pas encore, aidez-moi à le choisir"><span>Je ne sais pas encore, aidez-moi à le choisir</span></label><label class="case"><input type="checkbox" name="Nom de domaine déjà à moi" value="J'ai déjà ce nom de domaine"><span>J'ai déjà ce nom de domaine</span></label></div>
+      </div>
+      <div class="champ">Une adresse e-mail professionnelle ? <small>(ex. contact@dupont-plomberie.fr · +1,50 € par mois)</small><div class="cases"><label class="case"><input type="radio" name="Adresse e-mail professionnelle" value="Oui (+1,50 € par mois)"><span>Oui</span></label><label class="case"><input type="radio" name="Adresse e-mail professionnelle" value="Non"><span>Non</span></label></div></div>
       <label class="champ">Vos prestations, celles à mettre en avant<textarea name="Prestations" placeholder="ex. celles qui vous rapportent le plus, celles que vous aimez faire"></textarea></label>
       <label class="champ">Ce qui vous distingue<textarea name="Points forts" placeholder="ex. réponse sous 48 h, 15 ans d'expérience, travail soigné…"></textarea></label>
       <div class="deux">
@@ -648,7 +663,7 @@
       <legend>12. Pour finir</legend>
       <label class="champ">Pour quand ?<select name="Délai"><option>Dès que possible</option><option>Dans le mois</option><option>Pas pressé</option></select></label>
       <label class="champ">Vos questions, vos demandes particulières<textarea name="Remarques" placeholder="ex. une question sur le prix, un délai à respecter, une idée pour votre site…"></textarea></label>
-      <label class="accord"><input type="checkbox" id="accord"><span>J'ai bien noté : 190 € la création pendant la promotion (200 € ensuite), puis 10 € par mois. Ou 100 € pour l'application web sur mesure seule, puis 30 € par an. L'option web marketing (vidéos, réseaux et annuaires) est à 25 € par mois. Pour la boutique en ligne, le logo ou la retouche photo, nous vous contactons pour en parler.</span></label>
+      <label class="accord"><input type="checkbox" id="accord"><span>J'ai bien noté : 190 € la création pendant la promotion (200 € ensuite), puis 10 € par mois. Ou 100 € pour l'application web sur mesure seule, puis 30 € par an. Le nom de domaine en .fr est compris ; en .com, c'est 0,60 € de plus par mois. L'adresse e-mail professionnelle : 1,50 € de plus par mois. L'option web marketing (vidéos, réseaux et annuaires) est à 25 € par mois. Pour la boutique en ligne, le logo ou la retouche photo, nous vous contactons pour en parler.</span></label>
       <p class="aide" style="margin-top:14px">Une fois votre questionnaire reçu, nous vous écrivons pour tout confirmer. Un acompte à la commande, par virement, et le solde à la livraison.</p>
     </fieldset>
 
@@ -694,6 +709,16 @@
   const voir = (valeur, id) => { const c = form.querySelector(`[name="Je veux"][value="${valeur}"]`); const maj = () => { document.getElementById(id).hidden = !c.checked; }; c.addEventListener("change", maj); maj(); };
   voir("Une boutique en ligne", "siBoutique"); voir("Retouche de mes photos", "siRetouche");
   form.querySelectorAll('[name="Vidéos"]').forEach(r => r.addEventListener("change", () => { document.getElementById("siVideo").hidden = r.value !== "Oui" || !r.checked; }));
+  // le nom de domaine : vérifié en direct auprès des registres ; le résultat part avec les réponses
+  const domNom = document.getElementById("domNom"), domDispo = document.getElementById("domDispo"), extensions = [...form.querySelectorAll('[name="Extension"]')];
+  const verifDomaine = NoraDomaine.brancher({ champ: domNom, extensions, bouton: document.getElementById("domVerif"), reponse: document.getElementById("domRes"),
+    apres: r => { domDispo.value = r.etat === "libre" ? `${r.domaine} : libre` : r.etat === "pris" ? `${r.domaine} : déjà pris` : ""; } });
+  domNom.addEventListener("change", verifDomaine);
+  domNom.addEventListener("input", () => { domDispo.value = ""; });
+  // venu du vérificateur de l'accueil : ?domaine=dupont-plomberie&ext=.com
+  { const u = new URLSearchParams(location.search), nomU = u.get("domaine"), extU = u.get("ext");
+    if (extU) { const x = extensions.find(e => e.value === extU); if (x) x.checked = true; }
+    if (nomU) { domNom.value = NoraDomaine.nettoyer(nomU); verifDomaine(); } }
   // photos : réduites dans le téléphone avant l'envoi
   let photos = [];
   const vign = document.getElementById("vignettes");
@@ -747,7 +772,7 @@
       fd.append("_subject", `Questionnaire — ${nom}`); fd.append("_template", "table"); fd.append("_captcha", "false");
       const r = await fetch("https://formsubmit.co/ajax/contact@noraeditions.com", { method: "POST", headers: { Accept: "application/json" }, body: fd }).catch(() => null);
       if (!enBase && !(r && r.ok)) throw new Error("envoi");
-      form.reset(); photos = []; afficher(); selonActivite(); selonMode();
+      form.reset(); photos = []; afficher(); selonActivite(); selonMode(); domDispo.value = ""; document.getElementById("domRes").textContent = "";
       dire("ok", "Merci, votre questionnaire est bien arrivé. Nous vous écrivons très vite pour tout confirmer, avec nos coordonnées bancaires pour l'acompte.");
     } catch (err) { dire("erreur", "L'envoi n'a pas abouti. Réessayez, ou écrivez-nous à contact@noraeditions.com."); }
     bouton.disabled = false; bouton.textContent = "Envoyer mes réponses";

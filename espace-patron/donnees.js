@@ -46,6 +46,8 @@ export const PRESTATIONS_DEFAUT = [
   ["Abonnements", "Abonnement du site : hébergement, mises à jour, application, nom de domaine", "mois", 10],
   ["Abonnements", "Abonnement de l'application seule", "an", 30],
   ["Abonnements", "Web marketing : vidéos, réseaux sociaux, annuaires", "mois", 25],
+  ["Abonnements", "Extension .com du nom de domaine (au lieu du .fr compris)", "mois", 0.6],
+  ["Abonnements", "Adresse e-mail professionnelle", "mois", 1.5],
   ["En plus", "Logo", "forfait", 0],
   ["En plus", "Boutique en ligne", "forfait", 0],
   ["En plus", "Article de blog", "u", 0],
@@ -54,5 +56,11 @@ export const PRESTATIONS_DEFAUT = [
   ["En plus", "Page en plus sur le site", "page", 0]
 ];
 
-export const AJOUTS_PRESTATIONS = [];
+// le nom de domaine en .com et l'adresse e-mail professionnelle, options de l'abonnement (24/10/2026)
+export const AJOUTS_PRESTATIONS = [
+  { cle: "domaine-2026-10", lignes: [
+    ["Abonnements", "Extension .com du nom de domaine (au lieu du .fr compris)", "mois", 0.6],
+    ["Abonnements", "Adresse e-mail professionnelle", "mois", 1.5]
+  ] }
+];
 export const CORRECTIONS_PRESTATIONS = [];
