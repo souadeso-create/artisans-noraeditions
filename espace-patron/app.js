@@ -2,7 +2,7 @@
 // abonnements, agenda, carnet de projet, notifications.
 import * as db from "./store.js";
 // version des fichiers chargés à la demande : à changer à chaque mise en ligne, pour que le téléphone ne garde pas l'ancienne
-const V = "20261024h";
+const V = "20261024j";
 import { UNITES } from "./donnees.js";
 import { telechargerPDF, totaux, eur, poserTVA, avecTVA, TAUX_TVA, tauxTxt, avenantDe } from "./pdf.js";
 import { CATEGORIES, etatPaiements } from "./carnet.js";
@@ -54,6 +54,24 @@ const msgFacture = d => {
     .map(l => `- ${Number(l.qte) && Number(l.qte) !== 1 ? `${String(l.qte).replace(".", ",")} × ` : ""}${l.designation} : ${eur((Number(l.qte) || 0) * (Number(l.pu) || 0))} €`).join("\n");
   return `Bonjour ${politesse(d.client)},\n\nVoici votre facture ${d.numero} du ${dateFr(d.date)}, de ${P.entreprise} :\n${lignes}\n\nTotal : ${montantTxt(d)}.${deja > 0.01 ? `\nDéjà réglé : ${eur(deja)} €. Reste à payer : ${eur(t.reste)} €.` : ""}\nÀ régler avant le ${echeanceFacture(d).toLocaleDateString("fr-FR")}.${virementTxt(d)}\n\nMerci, et bonne journée.\n${P.entreprise}`;
 };
+// le message qui accompagne le PDF d'un devis ou d'une facture
+const msgPDF = d => {
+  const t = totaux(d), deja = Math.round((t.ttc - t.reste) * 100) / 100;
+  if (d.type === "devis") return `Bonjour ${politesse(d.client)},\n\nVoici ${avenantDe(d) ? quelDoc(d) : `votre devis ${d.numero}`} de ${P.entreprise}, en pièce jointe : ${montantTxt(d)}${acompteTxt(d)}.${d.jeton ? `\nVous pouvez aussi le lire et le signer en ligne ici :\n${lienSignature(d)}` : ""}\n\nN'hésitez pas si vous avez une question.\nBonne journée,\n${P.entreprise}`;
+  return `Bonjour ${politesse(d.client)},\n\nVoici votre facture ${d.numero} du ${dateFr(d.date)}, en pièce jointe : ${montantTxt(d)}.${deja > 0.01 ? `\nDéjà réglé : ${eur(deja)} €. Reste à payer : ${eur(t.reste)} €.` : ""}${t.reste > 0.01 ? `\nÀ régler avant le ${echeanceFacture(d).toLocaleDateString("fr-FR")}.${virementTxt(d)}` : "\nElle est réglée : merci !"}\n\nMerci, et bonne journée.\n${P.entreprise}`;
+};
+// « Envoyer » : on relit le message, puis le PDF part avec lui
+function envoyerPDF(d, apres) {
+  const f = fenetre(d.type === "devis" ? "Envoyer le devis" : "Envoyer la facture", `<p class="gris" style="font-size:14px;margin-bottom:8px">Le PDF part avec ce message. Vous pouvez le modifier.</p>
+    <textarea id="msgPDF" rows="9" style="width:100%;font:15px var(--sans);padding:12px;border-radius:12px;border:1px solid var(--sable)">${esc(msgPDF(d))}</textarea>
+    <div class="actions-doc" style="margin:12px 0 0"><button class="btn" id="okPDF">${ICO.partage}Envoyer le PDF et le message</button></div>
+    <p class="gris" style="font-size:12px;margin-top:8px">Si l'application choisie ne reprend pas le texte, il est copié : collez-le dans le message.</p>`);
+  f.el.querySelector("#okPDF").onclick = async () => {
+    const texte = f.el.querySelector("#msgPDF").value.trim(); f.fermer();
+    try { const parti = await telechargerPDF(d, P, { partager: true, texte }); if (!parti && texte) { try { await navigator.clipboard.writeText(texte); toast("PDF téléchargé, message copié ✓"); } catch (e) {} } if (apres) await apres(); }
+    catch (e) { if (e.name !== "AbortError") erreur(e); }
+  };
+}
 const msgRelanceFacture = d => {
   const t = totaux(d), echue = Date.now() > echeanceFacture(d);
   const virement = virementTxt(d);
@@ -159,6 +177,11 @@ function confirmer(message, oui = "Confirmer") {
 async function vueAccueil() {
   const [docs, clients, demandes, depenses] = await Promise.all([db.lister("documents"), db.lister("clients"), listerDemandes(), db.listerDepenses(["depense", "paiement", "avancement", "rdv"]).catch(() => [])]);
   const montants = depenses.splice(0); depenses.push(...montants.filter(x => (x.type || "depense") === "depense"));
+  const nbAcomptes = await acomptesAutomatiques(docs);
+  if (nbAcomptes) toast(nbAcomptes > 1 ? `${nbAcomptes} factures d'acompte préparées ✓` : "Facture d'acompte préparée ✓");
+  const acomptesAEnvoyer = docs.filter(f => estAcompte(f) && f.statut === "brouillon");
+  // devis signés en cours : pas encore facturés en entier, ou pas encore payés
+  const signesEnCours = docs.filter(d => d.type === "devis" && d.statut === "signe" && !docs.some(f => f.type === "facture" && f.devis_id === d.id && !estAcompte(f) && f.statut === "paye"));
   const nouvelles = (demandes || []).filter(x => x.statut === "nouvelle");
   const relances = docs.filter(aRelancer), relancesF = docs.filter(aRelancerFacture);
   const devisAttente = docs.filter(d => d.type === "devis" && ["brouillon", "envoye"].includes(d.statut));
@@ -172,8 +195,9 @@ async function vueAccueil() {
       <div class="stat"><span class="petit">Devis en attente</span><b>${devisAttente.length}</b><small class="gris">${eur(somme(devisAttente))} €</small></div>
       <div class="stat"><span class="petit">À encaisser</span><b>${eur(aEncaisser.reduce((a, d) => a + totaux(d).reste, 0))} €</b><small class="gris">${aEncaisser.length} facture(s)</small></div>
       <div class="stat"><span class="petit">Encaissé ce mois</span><b>${eur(somme(encaisse))} €</b></div>
-      <div class="stat"><span class="petit">Clients</span><b>${clients.length}</b></div>
+      <div class="stat"><span class="petit">Devis signés</span><b>${eur(somme(signesEnCours))} €</b><small class="gris">${signesEnCours.length} en cours</small></div>
     </div>
+    ${acomptesAEnvoyer.map(f => `<a class="alerte" href="#/document/${f.id}">${ICO.liste}<span><b>Facture d'acompte à envoyer</b><small>${esc(nomClient(f.client))} · ${eur(totaux(f).ttc)} € · devis ${esc(f.devis_numero || "")}</small></span><span>›</span></a>`).join("")}
     ${blocRdv(montants, clients)}
     ${blocChantiers(docs, clients, depenses, montants)}
     ${blocDepenses(depenses, clients, mois)}
@@ -412,6 +436,9 @@ async function vueDocument(id, type, params) {
           ${avenants.length ? `<div class="carte" style="margin-bottom:12px"><b>Avenants</b>
             <div class="liste" style="margin-top:8px">${avenants.map(ligneDoc).join("")}</div>
             <div class="ligne-bilan" style="margin-top:8px"><span>Devis et avenants signés</span><span><b>${eur([d, ...avenants].filter(x => x.statut === "signe").reduce((a, x) => a + totaux(x).ttc, 0))} €</b></span></div></div>` : ""}
+          ${estDevis && d.id && d.statut === "signe" && Number(d.acompte_pct) > 0 ? `<div class="carte" style="margin-bottom:12px"><b>Acompte de ${esc(d.acompte_pct)} % : ${eur(totaux(d).acompte)} €</b>
+            <p class="gris" style="font-size:14px;margin:4px 0 12px">La facture d'acompte se prépare dès que le devis est signé.</p>
+            <div class="actions-doc" style="margin:0"><button class="btn" id="factAcompte">${ICO.plus}Facture d'acompte</button></div></div>` : ""}
           ${estDevis && d.id && d.jeton ? (d.signe_le
             ? `<div class="carte signe-ok"><b>✓ Signé en ligne</b><small>le ${new Date(d.signe_le).toLocaleString("fr-FR", { dateStyle: "long", timeStyle: "short" })} par ${esc(d.signe_nom)}</small></div>`
             : `<div class="carte" style="margin-bottom:12px"><b>Signature en ligne</b><p class="gris" style="font-size:14px;margin:4px 0 12px">Le client reçoit un lien pour lire, télécharger et signer ce devis sur son téléphone.</p>
@@ -502,13 +529,26 @@ async function vueDocument(id, type, params) {
     };
     document.getElementById("enreg").onclick = () => enregistrer().then(() => toast("Enregistré ✓")).catch(erreur);
     document.getElementById("pdf").onclick = async () => { try { await enregistrer(); await telechargerPDF(d, P); } catch (e) { erreur(e); } };
-    document.getElementById("partage").onclick = async () => { try { await enregistrer(); await telechargerPDF(d, P, { partager: true }); } catch (e) { if (e.name !== "AbortError") erreur(e); } };
+    document.getElementById("partage").onclick = async () => { try { await enregistrer(); envoyerPDF(d, async () => { if (d.statut === "brouillon") { d.statut = "envoye"; modifie = true; await enregistrer(); dessiner(); } }); } catch (e) { erreur(e); } };
+    const fa = document.getElementById("factAcompte");
+    if (fa) fa.onclick = async () => {
+      try {
+        await enregistrer();
+        const tous = await db.lister("documents"), deja = tous.find(f => estAcompte(f) && f.devis_id === d.id);
+        const f = deja || await creerFactureAcompte(d);
+        if (!deja) toast("Facture d'acompte créée ✓");
+        location.hash = "#/document/" + f.id;
+      } catch (e) { erreur(e); }
+    };
     const vf = document.getElementById("versFacture");
     if (vf) vf.onclick = async () => {
       try {
         await enregistrer();
+        const acomptes = (await db.lister("documents")).filter(x => estAcompte(x) && x.devis_id === d.id && x.statut !== "annule");
+        const verse = Math.round(acomptes.reduce((a, x) => a + totaux(x).ttc, 0) * 100) / 100;
         const f = { type: "facture", numero: numeroSuivant("facture"), date: aujourdhui(), statut: "brouillon", client_id: d.client_id, client: d.client,
-          objet: d.objet, sections: JSON.parse(JSON.stringify(d.sections)), acompte_pct: 0, deja_regle: 0, devis_id: d.id, devis_numero: d.numero, devis_date: d.date, notes: "" };
+          objet: d.objet, sections: JSON.parse(JSON.stringify(d.sections)), acompte_pct: 0, deja_regle: verse, devis_id: d.id, devis_numero: d.numero, devis_date: d.date,
+          notes: acomptes.length ? `Acompte déjà facturé (${acomptes.map(x => x.numero).join(", ")}) : ${eur(verse)} €, déduit du total.` : "" };
         f.total_ht = totaux(f).ht;
         const n = await db.enregistrer("documents", f);
         P.prochain_facture = Number(P.prochain_facture) + 1; await db.enregistrerParametres(P);
@@ -572,6 +612,23 @@ async function vueDocument(id, type, params) {
     modifie = false;
   }
   dessiner();
+}
+
+// La facture d'acompte d'un devis signé : une ligne « Acompte de 10 % sur le devis … », rattachée au devis.
+const estAcompte = f => f.type === "facture" && f.devis_id && f.sections?.[0]?.titre === "Acompte";
+async function creerFactureAcompte(d) {
+  const pct = Number(d.acompte_pct) || 0; if (!pct) return null;
+  const t = totaux(d), pu = Math.round(t.ht * pct) / 100;
+  return enregistrerNouveau({ type: "facture", numero: numeroSuivant("facture"), date: aujourdhui(), statut: "brouillon", client_id: d.client_id, client: d.client,
+    objet: `Acompte · ${d.objet || "devis " + d.numero}`, sections: [{ titre: "Acompte", lignes: [{ designation: `Acompte de ${pct} % sur le devis ${d.numero} du ${dateFr(d.date)}`, qte: 1, unite: "forfait", pu }] }],
+    acompte_pct: 0, deja_regle: 0, devis_id: d.id, devis_numero: d.numero, devis_date: d.date, notes: "" });
+}
+// les devis signés depuis moins de 30 jours, avec un acompte, sans aucune facture : leur facture d'acompte se crée toute seule
+async function acomptesAutomatiques(docs) {
+  const aFaire = docs.filter(d => d.type === "devis" && d.statut === "signe" && Number(d.acompte_pct) > 0 && d.client_id
+    && !docs.some(f => f.type === "facture" && f.devis_id === d.id) && Date.now() - new Date(d.signe_le || d.updated_at || d.created_at) < 30 * 864e5);
+  for (const d of aFaire) { try { const f = await creerFactureAcompte(d); if (f) docs.unshift(f); } catch (e) { console.error(e); } }
+  return aFaire.length;
 }
 
 async function enregistrerNouveau(doc) {
@@ -915,7 +972,7 @@ async function vueAbonnements() {
     if (b.dataset.rappelAbo) { const c = abonnes.find(x => x.id === b.dataset.rappelAbo); const m = messagesClient(c, { abonnementDu: Number(c.abonnement_mensuel) }).find(x => x[0] === "Rappel d'abonnement"); return envoyerMessage({ client: c }, m[2], m[1]); }
     const d = docs.find(x => x.id === (b.dataset.paye || b.dataset.envoyer));
     try {
-      if (b.dataset.envoyer) { await telechargerPDF(d, P, { partager: true }); if (d.statut === "brouillon") { d.statut = "envoye"; await db.enregistrer("documents", d); } vueAbonnements(); return; }
+      if (b.dataset.envoyer) { envoyerPDF(d, async () => { if (d.statut === "brouillon") { d.statut = "envoye"; await db.enregistrer("documents", d); } vueAbonnements(); }); return; }
       d.statut = "paye"; d.deja_regle = totaux(d).ttc; await db.enregistrer("documents", d); toast("Abonnement payé ✓"); vueAbonnements();
     } catch (er) { if (er.name !== "AbortError") erreur(er); }
   };

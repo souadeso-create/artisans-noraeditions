@@ -217,15 +217,17 @@ export function nomFichier(d) {
   return `${avenantDe(d) ? "Avenant" : d.type === "devis" ? "Devis" : "Facture"}_${nom || "client"}_${d.numero}.pdf`;
 }
 
-// Télécharge le PDF ; sur téléphone, propose aussi de le partager (WhatsApp, e-mail…).
-export async function telechargerPDF(d, p, { partager = false } = {}) {
+// Télécharge le PDF ; sur téléphone, propose aussi de le partager (WhatsApp, e-mail…), avec son message.
+export async function telechargerPDF(d, p, { partager = false, texte = "" } = {}) {
   const pdf = await creerPDF(d, p);
   const nom = nomFichier(d);
   if (partager) {
     const fichier = new File([pdf.output("blob")], nom, { type: "application/pdf" });
     if (navigator.canShare && navigator.canShare({ files: [fichier] })) {
-      await navigator.share({ files: [fichier], title: nom });
-      return;
+      // certaines applications ne reprennent pas le texte avec un fichier : il est aussi copié, prêt à coller
+      if (texte) { try { await navigator.clipboard.writeText(texte); } catch (e) {} }
+      await navigator.share(texte ? { files: [fichier], title: nom, text: texte } : { files: [fichier], title: nom });
+      return true;
     }
   }
   pdf.save(nom);
