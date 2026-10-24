@@ -3,892 +3,265 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Nora Éditions</title>
 <meta name="robots" content="noindex, nofollow">
+<title>Nora Éditions</title>
 <meta name="theme-color" content="#0f1240">
-<link rel="icon" type="image/png" sizes="32x32" href="/medias/favicon-site-32.png">
-<link rel="apple-touch-icon" href="/medias/apple-touch-site.png">
-<link rel="manifest" href="/espace-patron/manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Nora">
+<link rel="icon" type="image/png" sizes="32x32" href="/medias/favicon-site-32.png">
+<link rel="apple-touch-icon" href="/medias/apple-touch-site.png">
+<link rel="manifest" href="/espace-patron/manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root { --nuit: #0f1240; --violet: #5b4bff; --jaune: #ffd426; --fond: #f4f5fb; --carte: #fff; --encre: #14152e; --gris: #6b7090; --trait: #e3e5f2;
-    --vert: #0f9d58; --orange: #e8710a; }
+  /* aux couleurs de Nora Éditions : bleu nuit, violet, jaune */
+  :root { --fond: #f4f5fb; --pierre: #eceef8; --sable: #dcdff0; --encre: #14152e; --gris: #6b7090; --clair: #9aa0bd; --blanc: #fff; --filet: #5b4bff; --ok: #0b6b3c; --att: #9a6b12;
+    --nuit: #0f1240; --violet: #5b4bff; --jaune: #ffd426;
+    --serif: "Bricolage Grotesque", Inter, Arial, sans-serif; --sans: "Inter", Arial, sans-serif; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
-  body { font: 16px/1.5 Inter, Arial, sans-serif; color: var(--encre); background: var(--fond); min-height: 100vh; }
-  button, input, textarea, select { font: inherit; color: inherit; }
-  button { cursor: pointer; }
-  [hidden] { display: none !important; }
-  .marque { display: flex; align-items: center; gap: 12px; }
-  .marque img { width: 40px; height: 40px; border-radius: 12px; }
-  .marque b { display: block; font: 800 18px "Bricolage Grotesque", Inter, sans-serif; letter-spacing: .02em; }
-  .marque span { display: block; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--jaune); }
+  body { font-family: var(--sans); background: var(--fond); color: var(--encre); font-size: 15px; line-height: 1.5; padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  a { color: inherit; }
+  h1 { font-family: var(--serif); font-weight: 800; font-size: 30px; line-height: 1.1; }
+  h2 { font-family: var(--serif); font-weight: 800; font-size: 21px; }
+  .petit { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--gris); font-weight: 600; }
+  .gris { color: var(--gris); }
 
-  /* connexion */
-  #connexion { min-height: 100vh; display: grid; place-items: center; padding: 24px 16px; background: radial-gradient(120% 80% at 50% 0%, #2b2f9e 0%, var(--nuit) 70%); color: #fff; }
-  #connexion form { width: 100%; max-width: 380px; display: grid; gap: 14px; }
-  #connexion h1 { font: 800 30px/1.15 "Bricolage Grotesque", Inter, sans-serif; margin: 26px 0 4px; }
-  #connexion p { color: #c9ccf5; font-size: 15px; }
-  #connexion label { display: grid; gap: 6px; font-size: 14px; font-weight: 600; color: #dfe1ff; }
-  #connexion input { padding: 15px 16px; border-radius: 14px; border: 0; background: #fff; color: var(--encre); font-size: 17px; }
-  .bouton { padding: 15px 20px; border: 0; border-radius: 999px; background: var(--jaune); color: var(--nuit); font-weight: 700; font-size: 17px; }
-  #erreurCnx { color: #ffb4b4; font-size: 14px; min-height: 20px; }
+  /* Structure */
+  .haut { position: sticky; top: 0; z-index: 30; background: var(--nuit); color: #fff; padding-top: env(safe-area-inset-top); }
+  .haut .in { display: flex; align-items: center; justify-content: space-between; height: 58px; padding: 0 16px; max-width: 1100px; margin: 0 auto; }
+  .haut a { display: flex; align-items: center; gap: 10px; text-decoration: none; color: #fff; }
+  .haut img { height: 34px; width: 34px; border-radius: 10px; }
+  .haut b { display: block; font: 800 15px var(--serif); letter-spacing: .04em; } .haut small { display: block; font-size: 10px; font-weight: 700; letter-spacing: .1em; color: var(--jaune); text-transform: uppercase; }
+  .haut .mode { font-size: 11px; padding: 3px 8px; border-radius: 99px; background: #fff3d6; color: var(--att); font-weight: 600; }
+  main { max-width: 1100px; margin: 0 auto; padding: 22px 16px 40px; }
+  .entete { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
 
-  /* liste */
-  header { position: sticky; top: 0; z-index: 5; background: var(--nuit); color: #fff; padding: 14px 16px; padding-top: max(14px, env(safe-area-inset-top)); }
-  header .ligne { display: flex; align-items: center; justify-content: space-between; gap: 12px; max-width: 980px; margin: 0 auto; }
-  header .marque b { white-space: nowrap; } header .marque { min-width: 0; }
-  .petit { padding: 8px 12px; border-radius: 999px; border: 1px solid rgba(255,255,255,.35); background: transparent; color: #fff; font-size: 14px; font-weight: 600; }
-  main { max-width: 980px; margin: 0 auto; padding: 16px 16px 60px; }
-  .filtres { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
-  .filtres button { flex: none; padding: 9px 15px; border-radius: 999px; border: 1px solid var(--trait); background: #fff; font-size: 14px; font-weight: 600; color: var(--gris); }
-  .filtres button.actif { background: var(--nuit); border-color: var(--nuit); color: #fff; }
-  .filtres i { font-style: normal; margin-left: 6px; padding: 0 7px; border-radius: 999px; background: var(--jaune); color: var(--nuit); font-size: 12px; }
-  #cherche { width: 100%; margin: 12px 0 16px; padding: 13px 16px; border-radius: 14px; border: 1px solid var(--trait); background: #fff; font-size: 16px; }
-  .carte { display: block; width: 100%; text-align: left; margin-bottom: 10px; padding: 16px; border-radius: 18px; border: 1px solid var(--trait); background: var(--carte); box-shadow: 0 4px 14px rgba(20,21,46,.04); }
-  .carte .haut { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
-  .carte b { font-size: 17px; }
-  .carte time { flex: none; font-size: 13px; color: var(--gris); }
-  .carte .metier { color: var(--violet); font-weight: 600; font-size: 14px; }
-  .carte .veut { margin-top: 6px; font-size: 14px; color: var(--gris); }
-  .carte .bas { display: flex; gap: 8px; align-items: center; margin-top: 10px; font-size: 13px; color: var(--gris); }
-  .pastille { padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; }
-  .s-nouvelle { background: var(--jaune); color: var(--nuit); }
-  .s-en-cours { background: #e6e3ff; color: #3b2fd1; }
-  .s-faite { background: #dcf3e6; color: #0b6b3c; }
-  .s-archivee { background: #eceef4; color: var(--gris); }
-  .vide { padding: 50px 10px; text-align: center; color: var(--gris); }
+  nav.bas { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: rgba(255,255,255,.97); backdrop-filter: blur(10px); border-top: 1px solid rgba(0,0,0,.08); display: grid; grid-template-columns: repeat(6, 1fr); padding-bottom: env(safe-area-inset-bottom); }
+  nav.bas a { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 9px 2px 8px; text-decoration: none; font-size: 11px; color: var(--clair); }
+  nav.bas a svg { width: 22px; height: 22px; }
+  nav.bas a.actif { color: var(--violet); font-weight: 600; }
+  nav.bas a { position: relative; }
+  .compte-nav { position: absolute; top: 5px; left: calc(50% + 6px); min-width: 17px; height: 17px; padding: 0 5px; border-radius: 9px; background: var(--jaune); color: var(--nuit); font-size: 10px; font-weight: 600; line-height: 17px; text-align: center; }
+  .alerte { display: flex; align-items: center; gap: 14px; background: #fff; border-left: 3px solid var(--filet); border-radius: 14px; padding: 14px 16px; margin-bottom: 22px; text-decoration: none; }
+  .alerte svg { width: 26px; height: 26px; flex: none; }
+  .alerte span:nth-child(2) { flex: 1; }
+  .alerte small { display: block; color: var(--gris); }
+  .photos-demande { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+  .photos-demande img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 12px; display: block; }
+  .signe-ok { margin-bottom: 12px; background: #e3f0e8; color: var(--ok); }
+  .signe-ok small { display: block; }
 
-  /* fiche d'une demande */
-  #fiche { position: fixed; inset: 0; z-index: 10; background: var(--fond); overflow-y: auto; }
-  #fiche header .ligne { justify-content: flex-start; }
-  #fiche h2 { font: 800 26px/1.2 "Bricolage Grotesque", Inter, sans-serif; }
-  .bloc-f { margin-top: 16px; padding: 16px; border-radius: 18px; background: #fff; border: 1px solid var(--trait); }
-  .bloc-f h3 { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--gris); margin-bottom: 10px; }
-  .actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
-  .actions a { display: grid; place-items: center; padding: 12px 6px; border-radius: 14px; background: var(--nuit); color: #fff; text-decoration: none; font-weight: 600; font-size: 15px; }
-  .statuts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-  .statuts button { padding: 11px 4px; border-radius: 12px; border: 1px solid var(--trait); background: #fff; font-size: 14px; font-weight: 600; color: var(--gris); }
-  .statuts button.actif { background: var(--violet); border-color: var(--violet); color: #fff; }
-  textarea#note { width: 100%; min-height: 90px; padding: 12px; border-radius: 12px; border: 1px solid var(--trait); resize: vertical; font-size: 16px; }
-  .enreg { margin-top: 6px; font-size: 13px; color: var(--vert); min-height: 18px; }
-  .fichiers { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
-  .fichiers a { position: relative; display: block; aspect-ratio: 1; border-radius: 12px; overflow: hidden; background: #eceef7; text-decoration: none; color: var(--encre); }
-  .fichiers img { width: 100%; height: 100%; object-fit: cover; }
-  .fichiers .doc { display: grid; place-items: center; height: 100%; padding: 8px; text-align: center; font-size: 12px; font-weight: 600; word-break: break-all; }
-  .fichiers small { position: absolute; left: 6px; bottom: 6px; padding: 1px 7px; border-radius: 999px; background: rgba(15,18,64,.8); color: #fff; font-size: 11px; }
-  .section-r { margin-top: 14px; }
-  .section-r:first-of-type { margin-top: 0; }
-  .section-r h4 { font-size: 15px; color: var(--violet); margin-bottom: 6px; }
-  .section-r dl { display: grid; gap: 8px; }
-  .section-r dt { font-size: 13px; color: var(--gris); }
-  .section-r dd { white-space: pre-wrap; word-break: break-word; }
-  .archiver { width: 100%; margin-top: 16px; padding: 14px; border-radius: 14px; border: 1px solid var(--trait); background: #fff; font-weight: 600; color: var(--gris); }
-  #bandeau { position: fixed; left: 16px; right: 16px; bottom: max(16px, env(safe-area-inset-bottom)); z-index: 20; display: flex; justify-content: space-between; align-items: center; gap: 12px;
-    max-width: 520px; margin: 0 auto; padding: 12px 16px; border-radius: 16px; background: var(--nuit); color: #fff; box-shadow: 0 14px 34px rgba(0,0,0,.25); }
-  #bandeau button { border: 0; background: none; color: var(--jaune); font-weight: 700; }
-  .tableau { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
-  .tableau button { text-align: left; padding: 14px; border-radius: 16px; border: 1px solid var(--trait); background: #fff; }
-  .tableau b { display: block; font: 800 26px/1.1 "Bricolage Grotesque", Inter, sans-serif; color: var(--nuit); }
-  .tableau span { font-size: 13px; color: var(--gris); }
-  .tableau .chaud { background: var(--nuit); border-color: var(--nuit); } .tableau .chaud b { color: var(--jaune); } .tableau .chaud span { color: #c9ccf5; }
-  .rappel-badge { background: #ffe1d6; color: #9a3412; }
-  .progres { flex: 1; height: 6px; border-radius: 999px; background: #eceef7; overflow: hidden; max-width: 90px; margin-left: auto; }
-  .progres i { display: block; height: 100%; background: var(--violet); }
-  .essentiel { display: grid; gap: 8px; }
-  .essentiel div { display: grid; grid-template-columns: 110px 1fr; gap: 10px; font-size: 15px; }
-  .essentiel dt { color: var(--gris); font-size: 13px; padding-top: 2px; }
-  .actions.quatre { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
-  .actions.quatre a { padding: 12px 2px; font-size: 14px; }
-  .actions a.wa { background: #128c4a; }
-  .reponse { width: 100%; margin-top: 8px; padding: 13px; border-radius: 14px; border: 0; background: var(--jaune); color: var(--nuit); font-weight: 700; font-size: 15px; }
-  .prix-lignes { display: grid; gap: 4px; font-size: 15px; }
-  .prix-lignes div { display: flex; justify-content: space-between; gap: 10px; }
-  .prix-lignes .a-part { color: var(--orange); }
-  .champs2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
-  .champs2 label, .rappel label { display: grid; gap: 4px; font-size: 13px; color: var(--gris); }
-  .champs2 input, .rappel input, #rib { width: 100%; padding: 11px 12px; border-radius: 12px; border: 1px solid var(--trait); font-size: 16px; background: #fff; }
-  .paiements { margin-top: 10px; display: grid; gap: 6px; }
-  .paiements div { display: flex; justify-content: space-between; align-items: center; padding: 9px 12px; border-radius: 12px; background: #f1f7f3; font-size: 15px; }
-  .paiements button, .lien-btn { border: 0; background: none; color: var(--violet); font-weight: 600; font-size: 14px; text-transform: none; letter-spacing: 0; }
-  .reste { margin-top: 8px; font-weight: 700; }
-  .etapes { display: grid; gap: 6px; }
-  .etapes button { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; padding: 11px 12px; border-radius: 12px; border: 1px solid var(--trait); background: #fff; font-size: 15px; }
-  .etapes button::before { content: ""; flex: none; width: 22px; height: 22px; border-radius: 50%; border: 2px solid #c9cbe0; }
-  .etapes button.fait { background: #f3f1ff; border-color: #d9d4ff; }
-  .etapes button.fait::before { border-color: var(--violet); background: var(--violet) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M6 12l4 4 8-8' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/></svg>") center / 16px no-repeat; }
-  .etapes small { margin-left: auto; color: var(--gris); font-size: 12px; }
-  .rappel { display: grid; gap: 8px; }
-  .rappel .vite { display: flex; gap: 6px; flex-wrap: wrap; }
-  .rappel .vite button { padding: 8px 12px; border-radius: 999px; border: 1px solid var(--trait); background: #fff; font-size: 14px; font-weight: 600; }
-  #reglages { margin: 0 0 14px; }
-  #installer { width: 100%; margin-bottom: 14px; padding: 13px; border-radius: 14px; border: 1px dashed var(--violet); background: #f3f1ff; color: var(--violet); font-weight: 700; }
-  #ajouter { position: fixed; right: 16px; bottom: max(18px, env(safe-area-inset-bottom)); z-index: 6; width: 58px; height: 58px; border-radius: 50%; border: 0;
-    background: var(--jaune); color: var(--nuit); font: 700 32px/1 Inter; box-shadow: 0 12px 26px rgba(15,18,64,.3); }
-  .panneau { position: fixed; inset: 0; z-index: 10; background: var(--fond); overflow-y: auto; }
-  .panneau h2 { font: 800 26px/1.2 "Bricolage Grotesque", Inter, sans-serif; }
-  .chiffres { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
-  .chiffres div { padding: 14px; border-radius: 16px; background: #fff; border: 1px solid var(--trait); }
-  .chiffres b { display: block; font: 800 24px/1.1 "Bricolage Grotesque", Inter, sans-serif; color: var(--nuit); }
-  .chiffres span { font-size: 13px; color: var(--gris); }
-  .barres { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; align-items: end; height: 170px; margin-top: 8px; }
-  .barres div { display: grid; grid-template-rows: auto 1fr auto; height: 100%; text-align: center; font-size: 12px; color: var(--gris); }
-  .barres i { align-self: end; display: block; border-radius: 8px 8px 3px 3px; background: var(--violet); min-height: 3px; }
-  .barres .ce-mois i { background: var(--jaune); }
-  .form-ajout { display: grid; gap: 10px; }
-  .form-ajout label { display: grid; gap: 4px; font-size: 13px; color: var(--gris); }
-  .form-ajout input, .form-ajout textarea, .form-ajout select { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--trait); font-size: 16px; background: #fff; }
-  .messages { display: grid; gap: 6px; }
-  .messages div { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--trait); }
-  .messages span { flex: 1; font-size: 15px; }
-  .messages a { padding: 7px 11px; border-radius: 999px; background: var(--nuit); color: #fff; text-decoration: none; font-size: 13px; font-weight: 600; }
-  .messages a.wa { background: #128c4a; }
-  .journal { display: grid; gap: 8px; border-left: 2px solid var(--trait); padding-left: 14px; }
-  .journal div { font-size: 14px; } .journal time { display: block; font-size: 12px; color: var(--gris); }
-  .extras, .factures { display: grid; gap: 6px; }
-  .extras > div, .factures > div { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--trait); font-size: 15px; }
-  .extras b, .factures b { margin-left: auto; }
-  .extras .bas, .factures .bas { flex-basis: 100%; display: flex; gap: 14px; justify-content: flex-end; }
-  .ajout-extra { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
-  .ajout-extra select, .ajout-extra input { width: 100%; padding: 11px 12px; border-radius: 12px; border: 1px solid var(--trait); font-size: 16px; background: #fff; }
-  .ajout-extra .large { grid-column: 1 / -1; }
-  .pastille.payee { background: #dcf3e6; color: #0b6b3c; } .pastille.apayer { background: #ffe1d6; color: #9a3412; }
-  .cat { display: grid; gap: 8px; margin-top: 8px; }
-  .cat > div { display: grid; grid-template-columns: 1fr 92px; gap: 6px; padding: 10px; border-radius: 14px; border: 1px solid var(--trait); background: #fff; }
-  .cat textarea { resize: none; font: inherit; line-height: 1.35; }
-  .cat input, .cat select, .cat textarea { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid var(--trait); font-size: 16px; background: #fff; }
-  .cat .nom { grid-column: 1 / -1; font-weight: 600; }
-  .cat .ligne-b { grid-column: 1 / -1; display: flex; gap: 6px; align-items: center; }
-  .cat .ligne-b select { flex: 1; } .cat .ligne-b input { width: 110px; }
-  /* la barre d'onglets, comme une appli */
-  #onglets { position: fixed; left: 0; right: 0; bottom: 0; z-index: 15; display: grid; grid-template-columns: repeat(4, 1fr); background: #fff; border-top: 1px solid var(--trait);
-    padding: 6px 4px max(8px, env(safe-area-inset-bottom)); box-shadow: 0 -6px 20px rgba(20,21,46,.05); }
-  #onglets button { border: 0; background: none; display: grid; justify-items: center; gap: 2px; padding: 4px 0; font-size: 11px; font-weight: 600; color: var(--gris); }
-  #onglets svg { width: 24px; height: 24px; }
-  #onglets button.actif { color: var(--violet); }
-  #appli main, .panneau main { padding-bottom: 110px; }
-  #ajouter { bottom: calc(78px + env(safe-area-inset-bottom)); }
-  #bandeau { bottom: calc(80px + env(safe-area-inset-bottom)); }
-  #fiche, #ajout { z-index: 20; }
-  .panneau.vue { z-index: 10; }
-  .titre-vue { font: 800 20px "Bricolage Grotesque", Inter, sans-serif; color: #fff; }
-  /* l'accueil : un petit résumé seulement */
-  .resume { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
-  .resume button { padding: 10px 14px; border: 0; border-radius: 14px; font-weight: 700; font-size: 15px; }
-  .resume .n { background: var(--jaune); color: var(--nuit); } .resume .r { background: #ffe1d6; color: #9a3412; }
-  .resume p { color: var(--gris); font-size: 15px; padding: 6px 2px; }
-  .bande-install { display: flex; align-items: center; gap: 10px; width: 100%; margin-bottom: 14px; padding: 12px 14px; border-radius: 14px; border: 1px dashed var(--violet); background: #f3f1ff; color: var(--violet); font-weight: 700; font-size: 15px; text-align: left; }
-  /* la fiche en onglets */
-  .seg-fiche { position: sticky; top: 58px; z-index: 4; display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin: 14px -16px 0; padding: 8px 16px; background: var(--fond); }
-  .seg-fiche button { padding: 10px 2px; border-radius: 12px; border: 1px solid var(--trait); background: #fff; font-size: 14px; font-weight: 700; color: var(--gris); }
-  .seg-fiche button.actif { background: var(--nuit); border-color: var(--nuit); color: #fff; }
-  .aide-install { font-size: 15px; color: var(--encre); line-height: 1.5; }
-  .aide-install b { color: var(--violet); }
-  .ok-vert { color: var(--vert); font-weight: 700; font-size: 15px; }
-  #onglets { grid-template-columns: repeat(5, 1fr); }
-  .jour { margin: 18px 0 8px; font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--gris); }
-  .jour.auj { color: var(--violet); }
-  .rdv { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 8px; padding: 12px 14px; border-radius: 16px; background: #fff; border: 1px solid var(--trait); }
-  .rdv .h { flex: none; min-width: 52px; font: 800 18px "Bricolage Grotesque", Inter, sans-serif; color: var(--nuit); }
-  .rdv .t { flex: 1; min-width: 0; } .rdv .t b { display: block; font-size: 15px; } .rdv .t small { display: block; color: var(--gris); font-size: 13px; }
-  .rdv .t .lien-btn { padding: 0; margin-top: 2px; }
-  .rdv .bt { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
-  .rdv.rappel-item { border-style: dashed; border-color: #f2b8a0; background: #fff8f4; }
-  .grille2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .lignes-devis { display: grid; gap: 6px; margin-top: 8px; }
-  .lignes-devis > div { display: grid; grid-template-columns: 1fr 86px 28px; gap: 6px; align-items: center; }
-  .lignes-devis input, .compose select { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid var(--trait); font-size: 16px; background: #fff; }
-  .lignes-devis button { border: 0; background: none; color: var(--gris); font-size: 20px; }
-  .compose { margin-top: 10px; padding: 12px; border-radius: 14px; background: #f6f7fc; }
-  .depense-form { display: grid; grid-template-columns: 1fr 96px; gap: 6px; }
-  .depense-form input, .depense-form select { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid var(--trait); font-size: 16px; background: #fff; }
-  details.ajout-plus > summary { list-style: none; text-align: center; cursor: pointer; } details.ajout-plus > summary::-webkit-details-marker { display: none; }
-  details.ajout-plus[open] > summary { background: #fff; border: 1px solid var(--trait); color: var(--gris); }
-  .essai { margin-bottom: 14px; padding: 10px 14px; border-radius: 12px; background: #fff6cc; color: #6e4b00; font-size: 14px; }
-  @media (min-width: 760px) { .liste { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; } }
+  /* Éléments */
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 18px; border-radius: 999px; border: 1px solid transparent; background: var(--nuit); color: #fff; font-weight: 600; text-decoration: none; cursor: pointer; white-space: nowrap; }
+  .btn svg { width: 17px; height: 17px; }
+  .btn.clair { background: #fff; color: var(--encre); border-color: var(--sable); }
+  .btn.discret { background: transparent; color: var(--encre); border-color: var(--sable); }
+  .btn.danger { background: transparent; color: #a3261f; border-color: #e7c3c0; }
+  .btn.petit-btn { padding: 8px 13px; font-size: 13px; }
+  .btn:disabled { opacity: .45; cursor: default; }
+  .carte { background: var(--blanc); border-radius: 16px; padding: 18px; box-shadow: 0 1px 0 rgba(0,0,0,.04), 0 6px 22px rgba(0,0,0,.04); }
+  .grille { display: grid; gap: 12px; }
+  .liste { display: grid; gap: 8px; }
+  .ligne-liste { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #fff; border-radius: 14px; padding: 14px 16px; text-decoration: none; box-shadow: 0 1px 0 rgba(0,0,0,.04); }
+  .ligne-liste b { display: block; font-weight: 600; }
+  .ligne-liste small { color: var(--gris); }
+  .ligne-liste .droite { text-align: right; flex: none; }
+  .montant { font-family: var(--serif); font-weight: 800; font-size: 18px; white-space: nowrap; }
+  .badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 99px; background: var(--pierre); color: var(--gris); text-transform: capitalize; }
+  .badge.envoye { background: #e9eef6; color: #2c4f80; }
+  .badge.signe, .badge.paye { background: #e3f0e8; color: var(--ok); }
+  .badge.annule, .badge.refuse { background: #f6e5e4; color: #a3261f; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+  .stat { background: #fff; border-radius: 16px; padding: 16px; }
+  .stat b { display: block; font-family: var(--serif); font-weight: 800; font-size: 26px; margin-top: 4px; color: var(--nuit); }
+  .raccourcis { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 26px; }
+  .raccourcis a { display: flex; flex-direction: column; gap: 10px; background: var(--nuit); color: #fff; border-radius: 16px; padding: 16px; text-decoration: none; font-weight: 500; }
+  .raccourcis a:nth-child(n+2) { background: #fff; color: var(--encre); }
+  .raccourcis svg { width: 24px; height: 24px; }
+  .recherche { width: 100%; padding: 12px 16px; border-radius: 999px; border: 1px solid var(--sable); background: #fff; margin-bottom: 14px; }
+  .onglets { display: inline-flex; background: var(--pierre); padding: 4px; border-radius: 999px; margin-bottom: 14px; }
+  .onglets a { padding: 7px 16px; border-radius: 999px; text-decoration: none; font-size: 14px; color: var(--gris); }
+  .onglets a.actif { background: #fff; color: var(--encre); font-weight: 500; }
+  .vide { text-align: center; color: var(--gris); padding: 40px 10px; }
+
+  /* Formulaires */
+  label { display: block; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--gris); margin-bottom: 5px; }
+  .champ { margin-bottom: 12px; }
+  input[type=text], input[type=email], input[type=tel], input[type=number], input[type=date], input[type=password], select, textarea {
+    width: 100%; padding: 11px 12px; border: 1px solid var(--sable); border-radius: 10px; background: #fff; font-size: 16px; }
+  textarea { resize: vertical; min-height: 44px; }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--encre); outline-offset: -1px; }
+  .deux { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .trois { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  fieldset { border: 0; margin-bottom: 18px; }
+  legend { font-family: var(--serif); font-size: 19px; margin-bottom: 12px; }
+
+  /* Éditeur de document */
+  .lot { background: #fff; border-radius: 16px; margin-bottom: 12px; overflow: hidden; }
+  .lot-tete { display: flex; align-items: center; gap: 8px; padding: 12px 12px 12px 16px; background: var(--pierre); }
+  .lot-tete input { background: transparent; border: 0; font-weight: 600; padding: 6px 4px; font-size: 16px; }
+  .lot-tete .st { font-family: var(--serif); white-space: nowrap; }
+  .ligne-doc { padding: 12px 14px; border-top: 1px solid var(--pierre); display: grid; gap: 8px; }
+  .ligne-doc .chiffres { display: grid; grid-template-columns: 1fr 1fr 1.2fr auto; gap: 8px; align-items: end; }
+  .ligne-doc .tot { font-family: var(--serif); text-align: right; padding-bottom: 10px; white-space: nowrap; }
+  .icone { background: transparent; border: 0; width: 36px; height: 36px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; color: var(--gris); }
+  .icone:hover { background: var(--pierre); }
+  .icone svg { width: 18px; height: 18px; }
+  .lot-pied { display: flex; gap: 8px; padding: 10px 14px 14px; flex-wrap: wrap; }
+  .barre-total { position: sticky; bottom: calc(66px + env(safe-area-inset-bottom)); z-index: 20; background: var(--encre); color: #fff; border-radius: 16px; padding: 12px 14px 12px 18px; display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 16px; box-shadow: 0 10px 30px rgba(0,0,0,.2); }
+  .barre-total .montant { font-size: 22px; }
+  .barre-total small { color: #bdb6ac; display: block; font-size: 12px; }
+  .photos-pv { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .photos-pv div { position: relative; }
+  .photos-pv img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 10px; display: block; }
+  .photos-pv .icone { position: absolute; top: 4px; right: 4px; background: rgba(255,255,255,.9); width: 30px; height: 30px; }
+  .pad-signature { width: 100%; height: 200px; background: #fff; border: 1px dashed var(--sable); border-radius: 12px; touch-action: none; display: block; }
+  .vignette { position: relative; padding: 0; border: 0; background: none; cursor: pointer; display: block; }
+  .vignette img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 10px; display: block; background: var(--sable); }
+  .vignette span { position: absolute; left: 6px; bottom: 6px; background: rgba(15,18,64,.7); color: #fff; font-size: 11px; padding: 2px 7px; border-radius: 99px; }
+  .note-carnet { position: relative; background: #fff; border-radius: 12px; padding: 10px 40px 10px 12px; margin-top: 8px; }
+  .note-carnet small { color: var(--gris); font-size: 12px; }
+  .note-carnet .icone { position: absolute; top: 6px; right: 6px; }
+  .pointage { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #fff; border-radius: 16px; padding: 14px 16px; margin-bottom: 12px; border: 1px solid var(--sable); }
+  .pointage small { display: block; color: var(--gris); font-size: 13px; }
+  .pointage.actif { background: #e3f0e8; border-color: #b9d6c4; }
+  .note-carnet.heures p b { font-family: var(--serif); font-weight: 400; font-size: 18px; }
+  .note-carnet.mesures { border-left: 3px solid var(--encre); }
+  .note-carnet.mesures p b { font-family: var(--serif); font-weight: 400; font-size: 18px; }
+  .liste-mesures { margin-top: 6px; }
+  .murs-mesures { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 6px; }
+  .murs-mesures input { min-width: 0; }
+  .partie-mesure { display: grid; grid-template-columns: 1fr auto 1fr; gap: 6px; align-items: center; margin-top: 6px; }
+  .partie-mesure input { min-width: 0; }
+  .titre-mesures { margin-top: 8px; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--gris); font-weight: 600; }
+  .btn[hidden] { display: none !important; }
+  .etapes-visite { display: flex; gap: 6px; }
+  .etapes-visite span { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 600; background: var(--pierre); color: var(--gris); }
+  .etapes-visite span.actif { background: var(--encre); color: #fff; }
+  .etapes-visite span.fait { background: #e3f0e8; color: #2f6f4f; }
+  .piece-mesures { display: block; font-family: var(--serif); font-weight: 400; font-size: 19px; }
+  .liste-mesures div { display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; border-top: 1px solid var(--pierre); font-size: 14px; }
+  .liste-mesures b { font-weight: 600; white-space: nowrap; }
+  .ligne-mesure { display: grid; grid-template-columns: 1fr 1fr 36px; gap: 6px; margin-bottom: 6px; align-items: center; }
+  .ligne-mesure input { min-width: 0; }
+  @media (min-width: 700px) { .resume-carnet { grid-template-columns: repeat(4, 1fr) !important; } }
+  .resume-carnet { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 10px; }
+  .resume-carnet button { background: #fff; border: 1px solid var(--sable); border-radius: 12px; padding: 10px; text-align: left; font: inherit; font-size: 12px; color: var(--gris); cursor: pointer; }
+  .resume-carnet b { display: block; font-family: var(--serif); font-weight: 400; font-size: 20px; color: var(--encre); }
+  .note-carnet.imprevu { border-left: 4px solid #c8141a; }
+  .note-carnet.depense p b { font-family: var(--serif); font-weight: 400; font-size: 18px; }
+  .note-carnet.tache label { display: flex; gap: 10px; align-items: flex-start; text-transform: none; letter-spacing: 0; font-size: 15px; font-weight: 400; color: var(--encre); margin: 0; }
+  .note-carnet.tache input { width: 22px; height: 22px; flex: none; accent-color: var(--encre); }
+  .note-carnet.faite span { text-decoration: line-through; color: var(--gris); }
+  .ligne-bilan { display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-top: 1px solid var(--pierre); font-size: 14px; }
+  .ligne-bilan.total { font-weight: 600; border-top-color: var(--sable); }
+  .ligne-bilan span:first-child { flex: 1; min-width: 0; }
+  .ligne-bilan a { color: inherit; }
+  .barre-dep { display: block; height: 4px; background: var(--encre); opacity: .18; border-radius: 4px; margin-top: 4px; }
+  .cat-dep summary { list-style: none; cursor: pointer; }
+  .cat-dep summary::-webkit-details-marker { display: none; }
+  .ligne-bilan.sous { font-size: 13px; color: var(--gris); padding-left: 12px; border-top-style: dashed; }
+  .video-tuto { display: block; width: 100%; max-width: 440px; aspect-ratio: 9 / 16; border-radius: 18px; background: #1b1a18; box-shadow: 0 10px 30px rgba(0,0,0,.18); }
+  .etapes-install { padding-left: 20px; margin-bottom: 12px; line-height: 1.7; }
+  .reste-carnet { display: flex; justify-content: space-between; align-items: center; gap: 12px; width: 100%; text-align: left; background: #e3f0e8; border: 1px solid #b9d6c4; border-radius: 14px; padding: 12px 14px; margin-bottom: 12px; font: inherit; color: var(--encre); cursor: pointer; }
+  .reste-carnet small { display: block; color: var(--gris); font-size: 12px; }
+  .reste-carnet b { font-family: var(--serif); font-weight: 400; font-size: 22px; white-space: nowrap; }
+  .ligne-chantier { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid var(--pierre); color: inherit; text-decoration: none; }
+  .ligne-chantier[hidden] { display: none; }
+  .ligne-chantier small { display: block; color: var(--gris); font-size: 12px; font-weight: 400; }
+  .ligne-chantier .reste { text-align: right; font-family: var(--serif); font-size: 20px; white-space: nowrap; color: #2f6f4f; }
+  .ligne-chantier .reste small { font-family: var(--sans); }
+  .a-reclamer, .ligne-bilan.a-reclamer span { color: #a3261f; }
+  .note-carnet.paiement { border-left: 4px solid #2f6f4f; }
+  .note-carnet.paiement p b { font-family: var(--serif); font-weight: 400; font-size: 18px; }
+  .section-fiche { margin-bottom: 14px; }
+  .section-piece > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px; }
+  .section-piece > summary::-webkit-details-marker { display: none; }
+  .section-piece > summary span { margin-left: auto; font-size: 13px; font-weight: 500; color: var(--gris); }
+  .section-piece > summary::after { content: "+"; font-size: 20px; color: var(--gris); width: 16px; text-align: center; }
+  .section-piece[open] > summary::after { content: "–"; }
+  .section-fiche > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; font-family: var(--serif); font-size: 22px; padding: 8px 0; }
+  .section-fiche > summary::-webkit-details-marker { display: none; }
+  .section-fiche > summary span { margin-left: auto; font-family: var(--sans); font-size: 13px; color: var(--gris); }
+  .section-fiche > summary::after { content: "+"; font-family: var(--sans); font-size: 22px; color: var(--gris); width: 18px; text-align: center; }
+  .section-fiche[open] > summary::after { content: "–"; }
+  .note-carnet.rdv { border-left: 4px solid #1b1a18; }
+  .note-carnet.rdv p b { font-family: var(--serif); font-weight: 400; font-size: 18px; }
+  .note-carnet.rdv.passe { opacity: .55; }
+  .lien-ticket { background: none; border: 0; padding: 0; color: var(--gris); text-decoration: underline; font: inherit; font-size: 13px; cursor: pointer; }
+  .vignette em { position: absolute; left: 6px; right: 6px; top: 6px; background: rgba(255,255,255,.88); color: var(--encre); font-style: normal; font-size: 11px; padding: 2px 7px; border-radius: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .detail-ligne { font-size: 13px; color: var(--gris); margin-top: 6px; }
+  .actions-doc { display: flex; gap: 8px; flex-wrap: wrap; margin: 18px 0; }
+
+  /* Fenêtre */
+  .voile { position: fixed; inset: 0; z-index: 60; background: rgba(15,18,64,.5); display: flex; align-items: flex-end; justify-content: center; }
+  .fenetre { background: var(--fond); width: 100%; max-width: 620px; max-height: 88vh; overflow: auto; border-radius: 20px 20px 0 0; padding: 20px 16px calc(20px + env(safe-area-inset-bottom)); }
+  .fenetre .tete { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .cat-titre { font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--gris); margin: 16px 0 6px; }
+  .groupe-ajout { border-bottom: 1px solid var(--sable); }
+  .groupe-ajout summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; padding: 14px 2px; font-weight: 600; font-size: 15px; }
+  .groupe-ajout summary::-webkit-details-marker { display: none; }
+  .groupe-ajout summary span { margin-left: auto; margin-right: 12px; font-size: 12px; font-weight: 500; color: var(--gris); }
+  .groupe-ajout summary::after { content: "+"; font-size: 20px; font-weight: 400; color: var(--gris); width: 16px; text-align: center; }
+  .groupe-ajout[open] summary::after { content: "–"; }
+  .groupe-ajout .objets { padding-bottom: 14px; }
+  .deroule-couleur { padding-bottom: 0; }
+  .deroule-couleur[open] { padding-bottom: 14px; }
+  .deroule-couleur summary span { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .deroule-couleur summary b { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 130px; }
+  .deroule-couleur .mini { width: 20px; height: 20px; border-radius: 50%; flex: none; box-shadow: 0 0 0 1px var(--sable); background-size: cover; }
+  .choix { display: flex; justify-content: space-between; gap: 10px; width: 100%; text-align: left; background: #fff; border: 1px solid transparent; border-radius: 12px; padding: 12px 14px; margin-bottom: 6px; cursor: pointer; }
+  .choix:hover { border-color: var(--sable); }
+
+  .toast { position: fixed; left: 50%; bottom: calc(90px + env(safe-area-inset-bottom)); transform: translateX(-50%); background: var(--encre); color: #fff; padding: 11px 18px; border-radius: 99px; z-index: 80; font-size: 14px; box-shadow: 0 8px 24px rgba(0,0,0,.25); }
+  .connexion { max-width: 380px; margin: 12vh auto 0; }
+  .marque-cnx { display: flex; align-items: center; gap: 12px; margin-bottom: 26px; }
+  .marque-cnx img { width: 48px; height: 48px; border-radius: 14px; }
+  .marque-cnx b { display: block; font: 800 18px var(--serif); letter-spacing: .04em; color: var(--nuit); } .marque-cnx span { display: block; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--violet); }
+  .apercu-message { white-space: pre-line; background: #fff; border-radius: 12px; padding: 12px 14px; margin-bottom: 14px; font-size: 14px; max-height: 220px; overflow: auto; border: 1px solid var(--sable); }
+  .onglets.defile { display: flex; max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+  .onglets.defile a { flex: none; }
+  .photos-demande .fichier { display: grid; place-items: center; aspect-ratio: 1; padding: 8px; border-radius: 12px; background: #fff; border: 1px solid var(--sable); text-decoration: none; text-align: center; font-size: 12px; word-break: break-all; position: relative; overflow: hidden; }
+  .photos-demande .fichier img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .photos-demande .fichier small { position: absolute; left: 6px; bottom: 6px; background: rgba(15,18,64,.8); color: #fff; padding: 1px 7px; border-radius: 99px; font-size: 11px; }
+
+  @media (min-width: 900px) {
+    body { padding-bottom: 0; padding-left: 230px; }
+    nav.bas { top: 0; right: auto; width: 230px; grid-template-columns: 1fr; align-content: start; padding: 90px 14px 0; border-top: 0; border-right: 1px solid rgba(0,0,0,.08); background: #fff; }
+    nav.bas a { flex-direction: row; gap: 12px; font-size: 15px; padding: 11px 14px; border-radius: 12px; color: var(--gris); }
+    nav.bas a.actif { background: var(--pierre); color: var(--violet); }
+    .compte-nav { position: static; margin-left: auto; }
+    .haut { margin-left: -230px; padding-left: 230px; }
+    .stats { grid-template-columns: repeat(4, 1fr); }
+    .raccourcis { grid-template-columns: repeat(4, 1fr); }
+    .barre-total { bottom: 16px; }
+    .voile { align-items: center; }
+    .fenetre { border-radius: 20px; }
+    .toast { bottom: 30px; }
+    .deux-col { display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px; align-items: start; }
+  }
 </style>
+<script src="/medias/supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
-
-<section id="connexion" hidden>
-  <form id="formCnx">
-    <div class="marque"><img src="/medias/icone-site-512.png" alt=""><div><b>NORA ÉDITIONS</b><span>Création de site internet</span></div></div>
-    <div style="height:18px"></div>
-    <label>E-mail<input type="email" id="cnxMail" autocomplete="username" value="contact@noraeditions.com" required></label>
-    <label>Mot de passe<input type="password" id="cnxMdp" autocomplete="current-password" required></label>
-    <button class="bouton" type="submit">Entrer</button>
-    <p id="erreurCnx" role="alert"></p>
-  </form>
-</section>
-
-<section id="appli" hidden>
-  <header><div class="ligne">
-    <div class="marque"><img src="/medias/icone-site-512.png" alt=""><div><b>Bonjour Patronne</b><span id="dateJour">Vos demandes</span></div></div>
-  </div></header>
-  <main>
-    <p class="essai" id="essai" hidden>Aperçu avec deux demandes d'exemple : la base n'est pas encore branchée.</p>
-    <div class="resume" id="tableau" hidden></div>
-    <button type="button" class="bande-install" id="bandeInstall" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="22" height="22"><path d="M4 5h16v11H8l-4 4z"/><path d="M8 9h8M8 12h5"/></svg>Mettre l'appli sur l'écran de mon téléphone</button>
-    <div class="filtres" id="filtres"></div>
-    <input type="search" id="cherche" placeholder="Chercher un nom, un métier, une ville…">
-    <div class="liste" id="liste"></div>
-  </main>
-</section>
-
-<section id="fiche" hidden>
-  <header><div class="ligne">
-    <button class="petit" id="retour" type="button">← Demandes</button>
-  </div></header>
-  <main id="ficheCorps"></main>
-</section>
-
-<section id="chiffres" class="panneau vue" hidden>
-  <header><div class="ligne"><span class="titre-vue">Vos chiffres</span></div></header>
-  <main id="chiffresCorps"></main>
-</section>
-
-<section id="catalogue" class="panneau vue" hidden>
-  <header><div class="ligne"><span class="titre-vue">Mes tarifs</span></div></header>
-  <main><h2>Mes prestations et forfaits</h2>
-    <p style="color:var(--gris);font-size:14px;margin-top:4px">Laissez le prix vide pour ce qui se chiffre au cas par cas.</p>
-    <div id="catalogueCorps"></div><div class="enreg" id="enregCatalogue"></div>
-  </main>
-</section>
-
-<section id="vueAgenda" class="panneau vue" hidden>
-  <header><div class="ligne"><span class="titre-vue">Agenda</span></div></header>
-  <main>
-    <button type="button" class="reponse" id="nouveauRdv" style="margin:0 0 6px">+ Nouveau rendez-vous</button>
-    <form class="bloc-f form-ajout" id="formRdv" hidden>
-      <div class="grille2"><label>Date<input type="date" name="date" required></label><label>Heure<input type="time" name="heure" value="10:00" required></label></div>
-      <label>Objet<input name="titre" required autocomplete="off" placeholder="ex. appel pour le devis, rendez-vous maquette"></label>
-      <div class="grille2"><label>Client<select name="client"><option value="">Aucun</option></select></label>
-        <label>Durée<select name="duree"><option value="15">15 min</option><option value="30">30 min</option><option value="60" selected>1 h</option><option value="90">1 h 30</option><option value="120">2 h</option></select></label></div>
-      <label>Note<textarea name="note" rows="2"></textarea></label>
-      <div class="grille2"><button type="button" class="archiver" id="annulerRdv" style="margin:0">Annuler</button><button type="submit" class="reponse" style="margin:0">Enregistrer</button></div>
-    </form>
-    <div id="agendaCorps"></div>
-  </main>
-</section>
-
-<section id="vueReglages" class="panneau vue" hidden>
-  <header><div class="ligne"><span class="titre-vue">Réglages</span></div></header>
-  <main>
-    <div class="bloc-f"><h3>Mon téléphone</h3>
-      <div id="etatInstall"></div>
-      <div style="margin-top:14px" id="etatNotifs"><button type="button" id="notifs" class="reponse" style="margin:0">Recevoir une notification à chaque nouvelle demande</button></div>
-    </div>
-    <div class="bloc-f form-ajout" id="reglages"><h3>Vos réglages · ils figurent sur vos factures</h3>
-      <label>Nom de l'entreprise<input data-reg="entreprise" autocomplete="off"></label>
-      <label>Adresse<textarea data-reg="adresse" rows="2"></textarea></label>
-      <label>SIRET<input data-reg="siret" inputmode="numeric" autocomplete="off"></label>
-      <label>Téléphone<input data-reg="tel" type="tel" autocomplete="off"></label>
-      <label>E-mail<input data-reg="email" type="email" autocomplete="off"></label>
-      <label>Mention de TVA<input data-reg="tva" autocomplete="off"></label>
-      <label>Coordonnées bancaires<textarea data-reg="rib" rows="3" placeholder="Titulaire, IBAN, BIC"></textarea></label>
-      <label>Acompte à la commande, en % du prix · le solde à la livraison<input data-reg="acompte" type="number" min="0" max="100" step="5" inputmode="numeric"></label>
-      <label>Lien de vos avis Google <small>(envoyé à vos clients pour leur demander un avis)</small><input data-reg="avis" type="url" autocomplete="off"></label>
-      <div class="enreg" id="enregReglages"></div>
-    </div>
-    <button type="button" class="archiver" id="deconnexion">Se déconnecter</button>
-  </main>
-</section>
-
-<section id="ajout" class="panneau" hidden>
-  <header><div class="ligne"><button class="petit" type="button" data-fermer>← Demandes</button></div></header>
-  <main><h2>Nouveau client</h2>
-    <form class="form-ajout bloc-f" id="formAjout">
-      <label>Nom et prénom *<input name="nom" required autocomplete="off"></label>
-      <label>Téléphone<input name="tel" type="tel" autocomplete="off"></label>
-      <label>E-mail<input name="email" type="email" autocomplete="off"></label>
-      <label>Métier<input name="metier" autocomplete="off" placeholder="ex. coiffeuse, plombier"></label>
-      <label>Ville<input name="ville" autocomplete="off"></label>
-      <label>Ce qu'il veut<select name="veut"><option>Un site internet</option><option>Un site internet, L'application web sur mesure dans mon site</option><option>Seulement l'application web sur mesure (100 € + 30 € par an)</option><option>Une boutique en ligne</option><option>Un logo</option><option value="">À voir ensemble</option></select></label>
-      <label>Venu par<select name="source"><option>Téléphone</option><option>Bouche-à-oreille</option><option>Instagram</option><option>TikTok</option><option>Facebook</option><option>Google</option><option>Autre</option></select></label>
-      <label>Note<textarea name="note" rows="3"></textarea></label>
-      <button class="reponse" type="submit">Ajouter</button>
-    </form>
-  </main>
-</section>
-
-<button type="button" id="ajouter" aria-label="Ajouter un client" hidden>+</button>
-
-<nav id="onglets" hidden><button type="button" data-vue="demandes" class="actif"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H8l-4 4z"/><path d="M8 9h8M8 12h5"/></svg>Demandes</button><button type="button" data-vue="agenda" class=""><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Agenda</button><button type="button" data-vue="chiffres" class=""><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Chiffres</button><button type="button" data-vue="tarifs" class=""><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.5"/></svg>Tarifs</button><button type="button" data-vue="reglages" class=""><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Réglages</button></nav>
-
-<div id="bandeau" hidden><span id="bandeauTxt"></span><button type="button" id="annuler">Annuler</button></div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.js"></script>
-<script src="/medias/supabase-config.js"></script>
-<script>
-  const $ = id => document.getElementById(id);
-  const ESSAI = !(window.NORA_SB && NORA_SB.url);
-  const sb = ESSAI ? null : supabase.createClient(NORA_SB.url, NORA_SB.cle);
-  const STATUTS = [["nouvelle", "Nouvelles"], ["en cours", "En cours"], ["faite", "Faites"], ["archivee", "Archivées"]];
-  const NOM_STATUT = { nouvelle: "Nouvelle", "en cours": "En cours", faite: "Faite", archivee: "Archivée" };
-  const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const classe = s => "s-" + s.replace(" ", "-");
-  const quand = d => { const x = new Date(d), j = Math.floor((Date.now() - x) / 864e5);
-    return j < 1 && new Date().toDateString() === x.toDateString() ? "aujourd'hui, " + x.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })
-      : j < 2 ? "hier" : j < 7 ? `il y a ${j} jours` : x.toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" }); };
-  const rep = (d, q) => (d.reponses.find(r => r.q === q) || {}).v || "";
-
-  let demandes = [], filtre = "nouvelle", ouverte = null, agenda = [], depenses = [];
-  const eur = n => (Math.round(n * 100) / 100).toLocaleString("fr-FR", { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }) + " €";
-  const iso = x => `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, "0")}-${String(x.getDate()).padStart(2, "0")}`;
-  const aujourdhui = () => iso(new Date());
-  const dansJours = n => { const x = new Date(); x.setDate(x.getDate() + n); return iso(x); };
-  const jourFr = d => new Date(d + "T12:00").toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" });
-  const encaisse = d => (d.paiements || []).reduce((t, p) => t + Number(p.montant || 0), 0);
-  const aRappeler = d => d.rappel && d.rappel <= aujourdhui() && !["faite", "archivee"].includes(d.statut);
-  const lire = k => { try { return localStorage.getItem(k) || ""; } catch (e) { return ""; } };
-  // vos réglages : dans la base (dans le navigateur pour l'aperçu)
-  const DEFAUTS = { entreprise: "Nora Éditions", email: "contact@noraeditions.com", tva: "TVA non applicable, article 293 B du CGI", rib: "", acompte: "", avis: "https://share.google/eR0V54QFO9la7MvI6" };
-  let R = {};
-  const CATALOGUE = [
-    { type: "forfait", quoi: "Site internet + application web sur mesure (promotion)", prix: 190, rythme: "une fois" },
-    { type: "forfait", quoi: "Abonnement du site (hébergement, mises à jour, appli)", prix: 10, rythme: "par mois" },
-    { type: "forfait", quoi: "Application web sur mesure seule", prix: 100, rythme: "une fois" },
-    { type: "forfait", quoi: "Abonnement de l'application seule", prix: 30, rythme: "par an" },
-    { type: "forfait", quoi: "Web marketing : vidéos, réseaux, annuaires", prix: 25, rythme: "par mois" },
-    { type: "prestation", quoi: "Article de blog", prix: "", rythme: "une fois" },
-    { type: "prestation", quoi: "Montage vidéo", prix: "", rythme: "une fois" },
-    { type: "prestation", quoi: "Logo", prix: "", rythme: "une fois" },
-    { type: "prestation", quoi: "Boutique en ligne", prix: "", rythme: "une fois" },
-    { type: "prestation", quoi: "Retouche photo", prix: "", rythme: "une fois" },
-    { type: "prestation", quoi: "Page en plus sur le site", prix: "", rythme: "une fois" },
-    { type: "prestation", quoi: "Fiche Google", prix: "", rythme: "une fois" }];
-  const catalogue = () => Array.isArray(R.catalogue) ? R.catalogue : CATALOGUE.map(x => ({ ...x }));
-  const RYTHMES = ["une fois", "par mois", "par an"];
-  const parRythme = r => r === "par mois" ? " / mois" : r === "par an" ? " / an" : "";
-  const reg = k => (R[k] ?? "") !== "" ? R[k] : DEFAUTS[k] || "";
-  async function chargerReglages() {
-    if (ESSAI) { try { R = JSON.parse(lire("nora_reglages") || "{}"); } catch (e) { R = {}; } }
-    else { const { data } = await sb.from("reglages").select("data").eq("id", 1).maybeSingle(); R = (data && data.data) || {}; }
-    if (!R.rib && lire("nora_rib")) R.rib = lire("nora_rib"); if (!R.acompte && lire("nora_acompte")) R.acompte = lire("nora_acompte");
-    document.querySelectorAll("[data-reg]").forEach(el => { el.value = reg(el.dataset.reg); });
-  }
-  let attenteReg;
-  function sauverReglages(temoin = "enregReglages") { $(temoin).textContent = "…"; clearTimeout(attenteReg); attenteReg = setTimeout(async () => {
-    if (ESSAI) garder("nora_reglages", JSON.stringify(R)); else { const { error } = await sb.from("reglages").upsert({ id: 1, data: R }); if (error) { $(temoin).textContent = "Pas enregistré : vérifiez la connexion."; return; } }
-    $(temoin).textContent = "Enregistré"; }, 700); }
-  function dessinerCatalogue() {
-    const c = catalogue(), bloc = (type, titre) => `<div class="bloc-f"><h3>${titre}</h3><div class="cat">${c.map((x, i) => x.type !== type ? "" : `<div>
-        <textarea class="nom" rows="2" data-cat="${i}" data-champ="quoi" placeholder="Nom">${esc(x.quoi)}</textarea>
-        <div class="ligne-b"><input type="number" inputmode="decimal" min="0" step="1" data-cat="${i}" data-champ="prix" value="${x.prix ?? ""}" placeholder="Prix €">
-          <select data-cat="${i}" data-champ="rythme">${RYTHMES.map(r => `<option${r === x.rythme ? " selected" : ""}>${r}</option>`).join("")}</select>
-          <button type="button" class="lien-btn" data-retire-cat="${i}">Retirer</button></div></div>`).join("")}</div>
-      <button type="button" class="reponse" data-ajout-cat="${type}">+ ${type === "forfait" ? "Ajouter un forfait" : "Ajouter une prestation"}</button></div>`;
-    $("catalogueCorps").innerHTML = bloc("forfait", "Mes forfaits") + bloc("prestation", "Mes prestations");
-  }
-  const garder = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
-
-  // ce qu'il veut → le prix, d'après les tarifs annoncés dans le questionnaire
-  function estimation(d) {
-    const v = rep(d, "Je veux"), a = x => v.includes(x), l = [], aPart = [], suite = [];
-    let unique = 0;
-    if (a("Un site internet") || a("dans mon site") || a("Le référencement local") || a("Une fiche Google")) { unique = 190; l.push(["Création du site (promotion)", "190 €"]); suite.push("10 € par mois"); }
-    else if (a("Seulement l'application")) { unique = 100; l.push(["Application web sur mesure seule", "100 €"]); suite.push("30 € par an"); }
-    if (a("Web marketing") || a("Community manager") || rep(d, "Vidéos") === "Oui") suite.push("25 € par mois (web marketing)");
-    if (a("boutique")) aPart.push("la boutique en ligne"); if (a("Un logo")) aPart.push("le logo"); if (a("Retouche")) aPart.push("la retouche photo"); if (a("articles de blog")) aPart.push("les articles de blog"); if (a("montage vidéo")) aPart.push("le montage vidéo"); if (a("pages en plus")) aPart.push("les pages en plus");
-    return { unique, suite, l, aPart };
-  }
-  const acompteDe = total => { const p = parseFloat(reg("acompte")); return p > 0 && total ? Math.round(total * p / 100) : 0; };
-  const ETAPES = [["echange", "Premier échange"], ["acompte", "Acompte reçu"], ["contenus", "Textes et photos reçus"], ["maquette", "Maquette envoyée"],
-    ["en_ligne", "Site en ligne"], ["google", "Fiche Google prête"], ["appli", "Appli livrée"], ["solde", "Solde reçu à la livraison"]];
-  const etapesDe = d => { const v = rep(d, "Je veux"), seuleAppli = /Seulement l'application/.test(v) && !/Un site internet/.test(v);
-    return ETAPES.filter(([k]) => (k !== "appli" || /appli/i.test(v)) && (!["en_ligne", "maquette", "google"].includes(k) || !seuleAppli)); };
-  const avance = d => { const e = etapesDe(d); return e.filter(([k]) => (d.etapes || {})[k]).length / e.length; };
-
-  function dessinerTableau() {
-    const n = demandes.filter(d => d.statut === "nouvelle").length, r = demandes.filter(aRappeler).length;
-    $("tableau").innerHTML = n || r ? `${n ? `<button type="button" class="n" data-s="nouvelle">${n} nouvelle${n > 1 ? "s" : ""}</button>` : ""}${r ? `<button type="button" class="r" data-s="rappeler">${r} à rappeler</button>` : ""}`
-      : `<p>Tout est à jour.</p>`;
-  }
-
-  // prestations en plus : ce que le client ajoute, une fois ou chaque mois
-  const presets = () => catalogue().filter(x => x.quoi).map(x => [x.quoi, x.prix ?? "", x.rythme, x.type]).concat([["Autre chose", "", "une fois", ""]]);
-  const moisFr = () => new Date().toLocaleDateString("fr-FR", { month: "long", year: "numeric" });
-  // factures : numérotées à la suite, par année (F-2026-001…)
-  function numeroFacture() { const an = aujourdhui().slice(0, 4), deja = demandes.flatMap(d => d.factures || []).filter(x => x.num.startsWith(`F-${an}-`)).map(x => +x.num.slice(7));
-    return `F-${an}-${String((deja.length ? Math.max(...deja) : 0) + 1).padStart(3, "0")}`; }
-  async function facturer(d, lignes, fenetre) {
-    const fa = { num: numeroFacture(), date: aujourdhui(), lignes, total: lignes.reduce((t, l) => t + Number(l.prix || 0), 0), payee: null };
-    const avant = d.factures || [];
-    if (await modifier(d, { factures: avant.concat([fa]) }, `Facture ${fa.num} faite (${eur(fa.total)}).`, { factures: avant })) { dessinerFiche(d); afficherFacture(d, fa, fenetre); } else if (fenetre) fenetre.close();
-  }
-  function afficherFacture(d, fa, w) {
-    w = w || window.open("", "_blank"); if (!w) { montrer("Autorisez l'ouverture de fenêtres pour voir la facture."); return; }
-    const l = x => esc(x).replace(/\n/g, "<br>"), client = [rep(d, "Entreprise"), d.nom, rep(d, "Adresse"), rep(d, "SIRET") && "SIRET " + rep(d, "SIRET"), d.email].filter(Boolean);
-    w.document.open(); w.document.write(`<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Facture ${fa.num}</title>
-<style>*{box-sizing:border-box;margin:0}body{font:15px/1.5 Inter,Arial,sans-serif;color:#14152e;background:#fff;padding:28px 20px;max-width:760px;margin:0 auto}
-.haut{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}h1{font-size:26px;letter-spacing:.04em}.gris{color:#6b7090;font-size:13px}
-table{width:100%;border-collapse:collapse;margin:26px 0 10px}th,td{padding:10px 8px;border-bottom:1px solid #e3e5f2;text-align:left}th:last-child,td:last-child{text-align:right;white-space:nowrap}
-.total{display:flex;justify-content:flex-end;gap:30px;font-size:18px;font-weight:700;padding:8px}.bloc{margin-top:22px}.imprimer{margin-top:28px;padding:13px 22px;border:0;border-radius:999px;background:#ffd426;color:#0f1240;font-weight:700;font-size:16px}
-@media print{.imprimer{display:none}body{padding:0}}</style></head><body>
-<div class="haut"><div><b style="font-size:18px">${l(reg("entreprise"))}</b><br>${l(reg("adresse"))}${reg("siret") ? `<br>SIRET ${l(reg("siret"))}` : ""}${reg("tel") ? `<br>${l(reg("tel"))}` : ""}<br>${l(reg("email"))}</div>
-<div style="text-align:right"><h1>FACTURE</h1><b>N° ${fa.num}</b><br>du ${new Date(fa.date + "T12:00").toLocaleDateString("fr-FR")}</div></div>
-<div class="bloc"><div class="gris">Facturé à</div>${client.map(l).join("<br>")}</div>
-<table><thead><tr><th>Désignation</th><th>Montant</th></tr></thead><tbody>${fa.lignes.map(x => `<tr><td>${l(x.quoi)}</td><td>${eur(Number(x.prix))}</td></tr>`).join("")}</tbody></table>
-<div class="total"><span>Total à payer</span><span>${eur(fa.total)}</span></div>
-<div class="bloc gris">${l(reg("tva"))}</div>
-<div class="bloc">${fa.payee ? `<b>Payée le ${new Date(fa.payee + "T12:00").toLocaleDateString("fr-FR")}. Merci !</b>` : `Paiement par virement, à réception de la facture.${reg("rib") ? `<br><br>${l(reg("rib"))}` : ""}`}</div>
-<div class="bloc gris">Pénalités de retard : trois fois le taux d'intérêt légal. Indemnité forfaitaire pour frais de recouvrement : 40 €. Pas d'escompte pour paiement anticipé.</div>
-<button class="imprimer" onclick="print()">Imprimer ou enregistrer en PDF</button></body></html>`); w.document.close();
-  }
-
-  // les messages courts, du premier contact au solde
-  function messagesDe(d) {
-    const e = estimation(d), total = d.prix || e.unique, ac = acompteDe(total), reste = total ? Math.max(0, total - encaisse(d)) : 0, prenom = d.nom.split(" ")[0];
-    return [["Bien reçu", `Bonjour ${prenom}, c'est Nora Éditions. Votre questionnaire est bien arrivé, merci ! Je vous appelle très vite pour en parler.`],
-      ["Rappel de l'acompte", `Bonjour ${prenom}, c'est Nora Éditions. Pour lancer la création de votre site, il reste l'acompte${ac ? ` de ${ac} €` : ""} à régler par virement. Je vous renvoie le RIB si besoin.`],
-      ["Site en ligne", `Bonjour ${prenom}, bonne nouvelle : votre site est en ligne ! Regardez-le et dites-moi ce que vous en pensez.`],
-      ["Rappel du solde", `Bonjour ${prenom}, c'est Nora Éditions. Votre site est livré : il reste le solde${reste ? ` de ${eur(reste)}` : ""} à régler par virement. Merci !`],
-      ["Envoyer mon RIB", reg("rib").trim() ? `Bonjour ${prenom}, voici nos coordonnées bancaires pour le virement${ac ? ` de l'acompte (${ac} €)` : ""} :
-${reg("rib").trim()}
-Merci ! Nora Éditions` : ""],
-      ["Demander un avis", `Bonjour ${prenom}, merci pour votre confiance ! Si votre site vous plaît, un petit avis Google nous aiderait beaucoup : ${reg("avis")}`]];
-  }
-
-  function dessinerChiffres() {
-    const auj = aujourdhui(), mois = auj.slice(0, 7), an = auj.slice(0, 4), tous = demandes.flatMap(d => (d.paiements || []).map(p => p));
-    const somme = l => l.reduce((t, p) => t + Number(p.montant || 0), 0);
-    const actifs = demandes.filter(d => d.statut !== "archivee");
-    const reste = actifs.reduce((t, d) => t + (d.prix ? Math.max(0, d.prix - encaisse(d)) : 0), 0);
-    const enLigne = demandes.filter(d => (d.etapes || {}).en_ligne && d.statut !== "archivee");
-    const enPlus = demandes.filter(d => d.statut !== "archivee").reduce((t, d) => t + (d.extras || []).filter(x => x.rythme === "par mois").reduce((u, x) => u + Number(x.prix || 0), 0), 0);
-    const mensuel = enPlus + enLigne.reduce((t, d) => t + (/Seulement l'application/.test(rep(d, "Je veux")) ? 0 : 10) + (/Web marketing|Community/.test(rep(d, "Je veux")) ? 25 : 0), 0);
-    const six = [...Array(6)].map((_, i) => { const x = new Date(); x.setDate(1); x.setMonth(x.getMonth() - 5 + i); const k = iso(x).slice(0, 7); return { k, n: x.toLocaleDateString("fr-FR", { month: "short" }), v: somme(tous.filter(p => (p.date || "").startsWith(k))) }; });
-    const max = Math.max(1, ...six.map(m => m.v));
-    const depMois = depenses.filter(x => (x.date || "").startsWith(mois)), totalDep = depMois.reduce((t, x) => t + Number(x.montant || 0), 0), encMois = somme(tous.filter(p => (p.date || "").startsWith(mois)));
-    const moisNom = new Date().toLocaleDateString("fr-FR", { month: "long" }), deM = /^[aeiouy]/i.test(moisNom) ? "d'" + moisNom : "de " + moisNom;
-    const abonnes = demandes.filter(d => d.statut !== "archivee").map(d => ({ d, m: ((d.etapes || {}).en_ligne && !/Seulement l'application/.test(rep(d, "Je veux")) ? 10 : 0) + (d.extras || []).filter(x => x.rythme === "par mois").reduce((t, x) => t + Number(x.prix || 0), 0) })).filter(x => x.m > 0);
-    $("chiffresCorps").innerHTML = `
-      <div class="chiffres"><div><b>${eur(encMois)}</b><span>encaissés en ${moisNom}</span></div><div><b>${eur(totalDep)}</b><span>dépensés en ${moisNom}</span></div>
-        <div><b>${eur(encMois - totalDep)}</b><span>bénéfice ${deM}</span></div><div><b>${eur(reste)}</b><span>reste à encaisser</span></div>
-        <div><b>${eur(mensuel)}</b><span>d'abonnements chaque mois</span></div><div><b>${eur(somme(tous.filter(p => (p.date || "").startsWith(an))))}</b><span>encaissés en ${an}</span></div></div>
-      <div class="bloc-f"><h3>Abonnements ${deM}</h3>${abonnes.length ? abonnes.map(({ d, m }) => { const paye = (d.paiements || []).some(p => p.abo === mois);
-          return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--trait)"><span style="flex:1">${esc(d.nom)}</span><b>${eur(m)}</b>${paye ? `<span class="pastille payee">payé</span>` : `<button type="button" class="lien-btn" data-abo="${d.id}" data-m="${m}">Payé</button>`}</div>`; }).join("")
-        : `<p style="color:var(--gris)">Ils apparaîtront ici quand un site sera en ligne.</p>`}</div>
-      <div class="bloc-f"><h3>Dépenses ${deM}</h3>
-        <div class="depense-form"><input id="depQuoi" placeholder="ex. nom de domaine, logiciel"><input id="depMontant" type="number" inputmode="decimal" min="0" step="0.01" placeholder="€">
-          <select id="depCat"><option>Nom de domaine</option><option>Hébergement</option><option>Logiciels</option><option>Publicité</option><option>Matériel</option><option>Déplacements</option><option>Autre</option></select>
-          <button type="button" class="reponse" id="depAjout" style="margin:0">Ajouter</button></div>
-        <div class="paiements">${depMois.map(x => `<div><span>${new Date(x.date + "T12:00").toLocaleDateString("fr-FR", { day: "numeric", month: "short" })} · ${esc(x.quoi)} · <b>${eur(Number(x.montant))}</b></span><button type="button" data-retire-dep="${x.id}">Retirer</button></div>`).join("")}</div></div>
-      <div class="bloc-f"><h3>Encaissé, mois par mois</h3><div class="barres">${six.map(m => `<div class="${m.k === mois ? "ce-mois" : ""}"><small>${m.v ? eur(m.v) : ""}</small><i style="height:${Math.round(m.v / max * 100)}%"></i><span>${m.n}</span></div>`).join("")}</div></div>
-      <div class="bloc-f"><h3>Sites en ligne · ${enLigne.length}</h3>${enLigne.length ? enLigne.map(d => `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--trait)"><span>${esc(d.nom)}</span><span style="color:var(--gris)">${esc(d.metier || "")}</span></div>`).join("") : `<p style="color:var(--gris)">Ils apparaîtront ici quand vous cocherez « Site en ligne ».</p>`}</div>
-      <button type="button" class="archiver" id="exporter">Télécharger toutes les demandes (tableur)</button>`;
-  }
-  function exporter() {
-    const col = ["Reçue", "Nom", "Téléphone", "E-mail", "Activité", "Métier", "Statut", "Prix convenu", "Encaissé", "Rappel", "Note"];
-    const lignes = demandes.map(d => [new Date(d.created_at).toLocaleDateString("fr-FR"), d.nom, d.tel, d.email, d.activite, d.metier, NOM_STATUT[d.statut], d.prix ?? "", encaisse(d), d.rappel || "", d.note || ""]);
-    const csv = "\ufeff" + [col].concat(lignes).map(l => l.map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(";")).join("\r\n");
-    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" })); a.download = `demandes-${aujourdhui()}.csv`; a.click();
-  }
-  function ouvrirPanneau(id) { history.pushState({ fiche: 1 }, ""); $(id).hidden = false; document.body.style.overflow = "hidden"; $(id).scrollTop = 0; }
-
-  // l'agenda : les rendez-vous, et les clients à rappeler, jour par jour
-  const heureFr = q => new Date(q).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
-  const nomJour = j => j === aujourdhui() ? "Aujourd'hui" : j === dansJours(1) ? "Demain" : jourFr(j);
-  let voirPasses = false;
-  function dessinerAgenda() {
-    const auj = aujourdhui(), jourDe = q => iso(new Date(q));
-    const items = agenda.map(r => ({ jour: jourDe(r.quand), cle: r.quand, r }))
-      .concat(demandes.filter(d => d.rappel && !["faite", "archivee"].includes(d.statut)).map(d => ({ jour: d.rappel < auj ? auj : d.rappel, cle: (d.rappel < auj ? auj : d.rappel) + "T00", rappel: d, retard: d.rappel < auj })))
-      .filter(x => voirPasses || x.jour >= auj).sort((a, b) => a.cle < b.cle ? -1 : 1);
-    const jours = [...new Set(items.map(x => x.jour))];
-    const nomClient = id => (demandes.find(d => d.id === id) || {}).nom;
-    $("agendaCorps").innerHTML = (items.length ? jours.map(j => `<p class="jour ${j === auj ? "auj" : ""}">${nomJour(j)}</p>` + items.filter(x => x.jour === j).map(x => x.rappel
-        ? `<div class="rdv rappel-item"><span class="h" style="color:#9a3412"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></span><div class="t"><b>À rappeler${x.retard ? " (en retard)" : ""}</b><button type="button" class="lien-btn" data-ouvrir-client="${x.rappel.id}">${esc(x.rappel.nom)}${x.rappel.tel ? " · " + esc(x.rappel.tel) : ""}</button></div></div>`
-        : `<div class="rdv"><span class="h">${heureFr(x.r.quand)}</span><div class="t"><b>${esc(x.r.titre)}</b>${x.r.demande_id && nomClient(x.r.demande_id) ? `<button type="button" class="lien-btn" data-ouvrir-client="${x.r.demande_id}">${esc(nomClient(x.r.demande_id))}</button>` : ""}${x.r.note ? `<small>${esc(x.r.note)}</small>` : ""}<small>${x.r.duree >= 60 ? (x.r.duree / 60).toString().replace(".5", " h 30").replace(/^(\d+)$/, "$1 h") : x.r.duree + " min"}</small></div>
-           <div class="bt"><button type="button" class="lien-btn" data-ics="${x.r.id}">Calendrier</button><button type="button" class="lien-btn" data-retire-rdv="${x.r.id}" style="color:var(--gris)">Retirer</button></div></div>`).join("")).join("")
-      : `<p class="vide">Rien de prévu pour l'instant.</p>`)
-      + `<button type="button" class="archiver" id="voirPasses">${voirPasses ? "Cacher les rendez-vous passés" : "Voir les rendez-vous passés"}</button>`;
-  }
-  function ouvrirFormRdv(demandeId) {
-    const f = $("formRdv"); f.reset(); f.date.value = aujourdhui();
-    f.client.innerHTML = `<option value="">Aucun</option>` + demandes.filter(d => d.statut !== "archivee").map(d => `<option value="${d.id}">${esc(d.nom)}</option>`).join("");
-    f.client.value = demandeId || ""; f.hidden = false; $("nouveauRdv").hidden = true; f.titre.focus();
-  }
-  // le rendez-vous dans le calendrier du téléphone (fichier .ics, avec une alerte 30 minutes avant)
-  function versCalendrier(r) {
-    const p = n => String(n).padStart(2, "0"), fmt = x => `${x.getFullYear()}${p(x.getMonth() + 1)}${p(x.getDate())}T${p(x.getHours())}${p(x.getMinutes())}00`;
-    const deb = new Date(r.quand), fin = new Date(deb.getTime() + r.duree * 6e4), c = demandes.find(d => d.id === r.demande_id);
-    const txt = v => String(v || "").replace(/[\\;,]/g, m => "\\" + m).replace(/\n/g, "\\n");
-    const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Nora Editions//Agenda//FR", "BEGIN:VEVENT", `UID:${r.id}@noraeditions.com`, `DTSTAMP:${fmt(new Date())}`,
-      `DTSTART:${fmt(deb)}`, `DTEND:${fmt(fin)}`, `SUMMARY:${txt(r.titre + (c ? " · " + c.nom : ""))}`, `DESCRIPTION:${txt([c && c.tel, c && c.email, r.note].filter(Boolean).join("\n"))}`,
-      "BEGIN:VALARM", "TRIGGER:-PT30M", "ACTION:DISPLAY", "DESCRIPTION:Rendez-vous", "END:VALARM", "END:VEVENT", "END:VCALENDAR"].join("\r\n");
-    if (iphone) { location.href = "data:text/calendar;charset=utf-8," + encodeURIComponent(ics); return; }
-    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([ics], { type: "text/calendar" })); a.download = "rendez-vous.ics"; a.click();
-  }
-  $("nouveauRdv").onclick = () => ouvrirFormRdv("");
-  $("annulerRdv").onclick = () => { $("formRdv").hidden = true; $("nouveauRdv").hidden = false; };
-  $("formRdv").onsubmit = async e => { e.preventDefault(); const f = e.target;
-    const r = { id: ESSAI ? "a" + Date.now() : crypto.randomUUID(), quand: new Date(`${f.date.value}T${f.heure.value}:00`).toISOString(), duree: +f.duree.value, titre: f.titre.value.trim(), demande_id: f.client.value || null, note: f.note.value.trim() || null };
-    if (!ESSAI) { const { error } = await sb.from("agenda").insert(r); if (error) { montrer("Pas enregistré : vérifiez la connexion."); return; } }
-    agenda.push(r); agenda.sort((a, b) => a.quand < b.quand ? -1 : 1); f.hidden = true; $("nouveauRdv").hidden = false; dessinerAgenda();
-    const c = demandes.find(d => d.id === r.demande_id);
-    if (c) modifier(c, {}, `Rendez-vous ${nomJour(iso(new Date(r.quand))).toLowerCase()} à ${heureFr(r.quand)} : ${r.titre}.`, {});
-    montrer(`Rendez-vous enregistré.`); };
-  $("agendaCorps").onclick = async e => {
-    const c = e.target.closest("[data-ouvrir-client]"); if (c) { const d = demandes.find(x => x.id === c.dataset.ouvrirClient); if (d) dessinerFiche(d); return; }
-    const i = e.target.closest("[data-ics]"); if (i) { versCalendrier(agenda.find(r => r.id === i.dataset.ics)); return; }
-    if (e.target.id === "voirPasses") { voirPasses = !voirPasses; dessinerAgenda(); return; }
-    const x = e.target.closest("[data-retire-rdv]"); if (!x) return;
-    const r = agenda.find(a => a.id === x.dataset.retireRdv);
-    if (!ESSAI) { const { error } = await sb.from("agenda").delete().eq("id", r.id); if (error) { montrer("Pas retiré : vérifiez la connexion."); return; } }
-    agenda = agenda.filter(a => a !== r); dessinerAgenda();
-    montrer("Rendez-vous retiré.", async () => { if (!ESSAI) await sb.from("agenda").insert(r); agenda.push(r); agenda.sort((a, b) => a.quand < b.quand ? -1 : 1); dessinerAgenda(); });
-  };
-
-  // les devis : à partir de vos tarifs, numérotés à la suite (D-2026-001…)
-  let brouillon = null;
-  function numeroDevis() { const an = aujourdhui().slice(0, 4), deja = demandes.flatMap(d => d.devis || []).filter(x => x.num.startsWith(`D-${an}-`)).map(x => +x.num.slice(7));
-    return `D-${an}-${String((deja.length ? Math.max(...deja) : 0) + 1).padStart(3, "0")}`; }
-  function blocDevis(d) {
-    const liste = (d.devis || []).slice().reverse().map(dv => `<div><span>${dv.num}</span><span class="pastille ${dv.accepte ? "payee" : "apayer"}">${dv.accepte ? "accepté" : "envoyé"}</span><b>${eur(dv.total)}</b>
-      <div class="bas"><span style="margin-right:auto;font-size:13px;color:var(--gris)">${new Date(dv.date + "T12:00").toLocaleDateString("fr-FR")}</span><button type="button" class="lien-btn" data-ouvrir-devis="${dv.num}">Ouvrir</button>${dv.accepte ? "" : `<button type="button" class="lien-btn" data-accepte="${dv.num}">Accepté</button>`}</div></div>`).join("");
-    const b = brouillon && brouillon.id === d.id ? brouillon : null, total = b ? b.lignes.reduce((t, l) => t + (Number(l.prix) || 0), 0) : 0;
-    return `<div class="bloc-f"><h3>Devis</h3><div class="factures">${liste}</div>
-      ${b ? `<div class="compose"><div class="lignes-devis">${b.lignes.map((l, i) => `<div><input data-dl="${i}" data-k="quoi" value="${esc(l.quoi)}" placeholder="Désignation"><input data-dl="${i}" data-k="prix" type="number" inputmode="decimal" value="${l.prix}" placeholder="€"><button type="button" data-retire-ligne="${i}" aria-label="Retirer la ligne">×</button></div>`).join("")}</div>
-        <select id="devisCat" style="margin-top:8px"><option value="">+ Ajouter une ligne de mes tarifs</option>${catalogue().filter(x => x.quoi).map((x, i) => `<option value="${i}">${esc(x.quoi)}${x.prix !== "" ? " · " + eur(Number(x.prix)) + parRythme(x.rythme) : ""}</option>`).join("")}<option value="libre">Une ligne libre</option></select>
-        <div class="reste" style="display:flex;justify-content:space-between">Total <span>${eur(total)}</span></div>
-        <div class="grille2" style="margin-top:8px"><button type="button" class="archiver" data-devis="annuler" style="margin:0">Annuler</button><button type="button" class="reponse" data-devis="creer" style="margin:0">Créer le devis</button></div></div>`
-      : `<button type="button" class="reponse" data-devis="composer">Faire un devis</button>`}</div>`;
-  }
-  function afficherDevis(d, dv, w) {
-    w = w || window.open("", "_blank"); if (!w) { montrer("Autorisez l'ouverture de fenêtres pour voir le devis."); return; }
-    const l = x => esc(x).replace(/\n/g, "<br>"), client = [rep(d, "Entreprise"), d.nom, rep(d, "Adresse"), rep(d, "SIRET") && "SIRET " + rep(d, "SIRET"), d.email].filter(Boolean);
-    const ac = acompteDe(dv.total), fin = new Date(dv.date + "T12:00"); fin.setDate(fin.getDate() + 30);
-    w.document.open(); w.document.write(`<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Devis ${dv.num}</title>
-<style>*{box-sizing:border-box;margin:0}body{font:15px/1.5 Inter,Arial,sans-serif;color:#14152e;background:#fff;padding:28px 20px;max-width:760px;margin:0 auto}
-.haut{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}h1{font-size:26px;letter-spacing:.04em}.gris{color:#6b7090;font-size:13px}
-table{width:100%;border-collapse:collapse;margin:26px 0 10px}th,td{padding:10px 8px;border-bottom:1px solid #e3e5f2;text-align:left}th:last-child,td:last-child{text-align:right;white-space:nowrap}
-.total{display:flex;justify-content:flex-end;gap:30px;font-size:18px;font-weight:700;padding:8px}.bloc{margin-top:22px}.accord{margin-top:26px;padding:16px;border:1px solid #c9cbe0;border-radius:12px;min-height:120px}
-.imprimer{margin-top:28px;padding:13px 22px;border:0;border-radius:999px;background:#ffd426;color:#0f1240;font-weight:700;font-size:16px}@media print{.imprimer{display:none}body{padding:0}}</style></head><body>
-<div class="haut"><div><b style="font-size:18px">${l(reg("entreprise"))}</b><br>${l(reg("adresse"))}${reg("siret") ? `<br>SIRET ${l(reg("siret"))}` : ""}${reg("tel") ? `<br>${l(reg("tel"))}` : ""}<br>${l(reg("email"))}</div>
-<div style="text-align:right"><h1>DEVIS</h1><b>N° ${dv.num}</b><br>du ${new Date(dv.date + "T12:00").toLocaleDateString("fr-FR")}<br><span class="gris">valable jusqu'au ${fin.toLocaleDateString("fr-FR")}</span></div></div>
-<div class="bloc"><div class="gris">Pour</div>${client.map(l).join("<br>")}</div>
-<table><thead><tr><th>Désignation</th><th>Montant</th></tr></thead><tbody>${dv.lignes.map(x => `<tr><td>${l(x.quoi)}</td><td>${eur(Number(x.prix))}</td></tr>`).join("")}</tbody></table>
-<div class="total"><span>Total</span><span>${eur(dv.total)}</span></div>
-${dv.suite && dv.suite.length ? `<div class="bloc">Ensuite : ${l(dv.suite.join(" et "))}, sans durée minimale.</div>` : ""}
-<div class="bloc">${ac ? `Un acompte de ${eur(ac)} à la commande, par virement, puis le solde de ${eur(dv.total - ac)} à la livraison.` : "Un acompte à la commande, par virement, puis le solde à la livraison."}</div>
-<div class="bloc gris">${l(reg("tva"))}</div>
-<div class="accord"><b>Bon pour accord</b><br><span class="gris">Date et signature du client</span></div>
-<button class="imprimer" onclick="print()">Imprimer ou enregistrer en PDF</button></body></html>`); w.document.close();
-  }
-
-  // la réponse toute prête : récapitulatif, prix, virement
-  function reponsePrete(d) {
-    const e = estimation(d), rib = reg("rib").trim(), veut = rep(d, "Je veux");
-    const corps = [`Bonjour ${d.nom},`, "", "Merci pour votre questionnaire, il est bien arrivé.", "",
-      veut ? "Ce que nous avons noté :\n" + veut.split(", ").map(x => "- " + x).join("\n") : "", "",
-      e.unique ? `Pour démarrer : ${e.unique} €` + (e.suite.length ? `, puis ${e.suite.join(" et ")}.` : ".") : "",
-      e.aPart.length ? `Pour ${e.aPart.join(", ")}, nous en parlons ensemble au téléphone.` : "", "",
-      e.unique ? (ac => `Pour lancer la création : ${ac ? `un acompte de ${ac} €` : "un acompte"} à la commande, par virement, et le solde à la livraison.\n\n${rib || "[vos coordonnées bancaires]"}`)(acompteDe(d.prix || e.unique)) : "", "",
-      "Nous vous appelons très vite pour la suite.", "", "À bientôt,", "Nora Éditions"]
-      .filter((x, i, t) => x !== "" || (i > 0 && t[i - 1] !== "")).join("\n");
-    return `mailto:${encodeURIComponent(d.email)}?subject=${encodeURIComponent("Votre site · Nora Éditions")}&body=${encodeURIComponent(corps)}`;
-  }
-
-  // exemples pour l'aperçu, tant que la base n'est pas branchée
-  const EXEMPLES = [
-    { id: "e1", created_at: new Date(Date.now() - 2 * 36e5).toISOString(), nom: "Inès Morel", tel: "06 12 34 56 78", email: "ines@exemple.fr", activite: "Freelance, indépendant", metier: "Esthéticienne", statut: "nouvelle", note: "", etapes: {}, prix: null, paiements: [], rappel: null, extras: [], factures: [],
-      fichiers: [{ chemin: "/medias/appli-flex.jpg", nom: "realisation-1.jpg", type: "Réalisation" }, { chemin: "/medias/ka-site.jpg", nom: "realisation-2.jpg", type: "Réalisation" }, { chemin: "/medias/icone-site-512.png", nom: "logo-belle-peau.png", type: "Logo" }, { chemin: "#", nom: "document-1-ancienne-facture.pdf", type: "Document" }],
-      reponses: [{ s: "1. Vous et votre entreprise", q: "Activité", v: "Freelance, indépendant" }, { s: "1. Vous et votre entreprise", q: "Métier", v: "Esthéticienne" }, { s: "1. Vous et votre entreprise", q: "Entreprise", v: "Belle Peau Institut" }, { s: "1. Vous et votre entreprise", q: "Ville", v: "Montpellier" },
-        { s: "2. Ce que vous voulez", q: "Je veux", v: "Un site internet, L'application web sur mesure dans mon site" }, { s: "2. Ce que vous voulez", q: "Appli", v: "Réservations en ligne, Paiement en ligne et acomptes, Fichier clients et prestations" },
-        { s: "5. Votre façon de travailler", q: "Mode", v: "Une réservation, un rendez-vous" }, { s: "5. Votre façon de travailler", q: "Annulation", v: "gratuite jusqu'à 24 h avant" }, { s: "12. Pour finir", q: "Délai", v: "Dans le mois" }, { s: "12. Pour finir", q: "Accord tarifs", v: "Oui" }] },
-    { id: "e2", created_at: new Date(Date.now() - 3 * 864e5).toISOString(), nom: "Karim Benali", tel: "07 98 76 54 32", email: "karim@exemple.fr", activite: "Artisan du bâtiment", metier: "Carrelage", statut: "en cours", note: "Rappeler mardi pour le logo.", etapes: { echange: "2026-10-21", acompte: "2026-10-22" }, prix: 290, paiements: [{ date: aujourdhui(), montant: 190 }], rappel: aujourdhui(), extras: [{ quoi: "Web marketing : vidéos, réseaux, annuaires", prix: 25, rythme: "par mois", date: "2026-10-22" }], factures: [{ num: "F-2026-001", date: "2026-10-22", lignes: [{ quoi: "Création du site internet · acompte de 50 % à la commande", prix: 145 }], total: 145, payee: "2026-10-22" }],
-      journal: [{ q: "2026-10-21T10:12:00", t: "« Premier échange » coché." }, { q: "2026-10-22T18:40:00", t: "190 € encaissés." }],
-      fichiers: [], reponses: [{ s: "1. Vous et votre entreprise", q: "Ville", v: "Poissy" }, { s: "2. Ce que vous voulez", q: "Je veux", v: "Un site internet, Un logo" }, { s: "12. Pour finir", q: "Délai", v: "Dès que possible" }] }
-  ];
-
-  async function charger() {
-    if (ESSAI) { if (!demandes.length) demandes = EXEMPLES.map(d => ({ ...d })); }
-    else { const { data, error } = await sb.from("demandes").select("*").order("created_at", { ascending: false }); if (error) throw error; demandes = data; }
-    if (ESSAI) { if (!agenda.length) agenda = [{ id: "a1", quand: aujourdhui() + "T15:00:00", duree: 30, titre: "Appel pour le devis", demande_id: "e2", note: "" }, { id: "a2", quand: dansJours(2) + "T10:00:00", duree: 60, titre: "Présenter la maquette", demande_id: "e1", note: "" }];
-      if (!depenses.length) depenses = [{ id: "p1", date: aujourdhui(), montant: 12, quoi: "Nom de domaine belle-peau-institut.fr", categorie: "Nom de domaine" }]; }
-    else {
-      const [a, p] = await Promise.all([sb.from("agenda").select("*").order("quand"), sb.from("depenses").select("*").order("date", { ascending: false })]);
-      agenda = a.data || []; depenses = p.data || [];
-    }
-    if (!$("vueAgenda").hidden) dessinerAgenda(); if (!$("chiffres").hidden) dessinerChiffres();
-    dessinerListe(); if (ouverte) { const d = demandes.find(x => x.id === ouverte); if (d) dessinerFiche(d); }
-  }
-
-  function dessinerListe() {
-    dessinerTableau();
-    $("filtres").innerHTML = [["rappeler", "À rappeler"]].concat(STATUTS, [["toutes", "Toutes"]]).map(([s, n]) => { const c = s === "toutes" ? 0 : demandes.filter(d => d.statut === s).length;
-      return s === "rappeler" && !demandes.some(aRappeler) && filtre !== "rappeler" ? "" : `<button type="button" data-s="${s}" class="${s === filtre ? "actif" : ""}">${n}${s === "nouvelle" && c ? `<i>${c}</i>` : ""}</button>`; }).join("");
-    const q = $("cherche").value.trim().toLowerCase();
-    const l = demandes.filter(d => (filtre === "toutes" ? d.statut !== "archivee" || q : filtre === "rappeler" ? aRappeler(d) : d.statut === filtre))
-      .filter(d => !q || [d.nom, d.metier, d.activite, d.email, d.tel, ...d.reponses.map(r => r.v)].join(" ").toLowerCase().includes(q));
-    $("liste").innerHTML = l.length ? l.map(d => `<button type="button" class="carte" data-id="${d.id}">
-        <div class="haut"><b>${esc(d.nom)}</b><time>${quand(d.created_at)}</time></div>
-        <div class="metier">${esc([d.metier, rep(d, "Entreprise"), rep(d, "Ville")].filter(Boolean).join(" · "))}</div>
-        ${rep(d, "Je veux") ? `<div class="veut">${esc(rep(d, "Je veux"))}</div>` : ""}
-        <div class="bas"><span class="pastille ${classe(d.statut)}">${NOM_STATUT[d.statut]}</span>${aRappeler(d) ? `<span class="pastille rappel-badge">À rappeler</span>` : ""}${d.fichiers.length ? `<span>${d.fichiers.length} fichier${d.fichiers.length > 1 ? "s" : ""}</span>` : ""}${d.statut === "en cours" ? `<span class="progres"><i style="width:${Math.round(avance(d) * 100)}%"></i></span>` : ""}</div>
-      </button>`).join("") : `<p class="vide">${q ? "Aucune demande ne correspond." : "Aucune demande ici pour l'instant."}</p>`;
-  }
-
-  async function liens(d) {
-    if (ESSAI || !d.fichiers.length) return d.fichiers.map(f => f.chemin);
-    const { data, error } = await sb.storage.from("questionnaires").createSignedUrls(d.fichiers.map(f => f.chemin), 3600);
-    return error ? d.fichiers.map(() => "#") : data.map(x => x.signedUrl);
-  }
-
-  // la fiche en onglets : chaque bloc va dans son onglet, d'après son titre
-  const ONGLETS_FICHE = [["contact", "Contact"], ["prix", "Prix"], ["suivi", "Suivi"], ["reponses", "Réponses"]];
-  const RANGEMENT = [["Messages prêts", "contact"], ["L'essentiel", "contact"], ["Le prix", "prix"], ["Forfaits et prestations", "prix"], ["Factures", "prix"], ["Devis", "prix"], ["Rendez-vous", "suivi"],
-    ["Où en est-elle", "suivi"], ["Avancement", "suivi"], ["Rappel", "suivi"], ["Journal", "suivi"], ["Fichiers", "reponses"], ["Ses réponses", "reponses"]];
-  let ongletFiche = "contact";
-  function rangerFiche() {
-    const c = $("ficheCorps"), blocs = [...c.querySelectorAll(".bloc-f")];
-    blocs.forEach(b => { const t = (b.querySelector("h3")?.firstChild?.textContent || "").trim(); b.dataset.onglet = (RANGEMENT.find(([x]) => t.startsWith(x)) || [, "contact"])[1]; });
-    const ou = blocs.find(b => b.querySelector("h3")?.textContent.startsWith("Où en est-elle")), av = blocs.find(b => b.querySelector("h3")?.textContent.startsWith("Avancement"));
-    if (ou && av) av.before(ou);
-    $("repondre").dataset.onglet = "contact"; $("archiver").dataset.onglet = "reponses";
-    const seg = document.createElement("div"); seg.className = "seg-fiche";
-    seg.innerHTML = ONGLETS_FICHE.map(([k, n]) => `<button type="button" data-ongletf="${k}">${n}</button>`).join("");
-    c.querySelector(".actions").after(seg); montrerOnglet();
-  }
-  function montrerOnglet() {
-    $("ficheCorps").querySelectorAll("[data-onglet]").forEach(e => { e.hidden = e.dataset.onglet !== ongletFiche; });
-    $("ficheCorps").querySelectorAll("[data-ongletf]").forEach(b => b.classList.toggle("actif", b.dataset.ongletf === ongletFiche));
-  }
-
-  async function dessinerFiche(d) {
-    if (ouverte !== d.id) ongletFiche = "contact";
-    if ($("fiche").hidden) history.pushState({ fiche: 1 }, "");
-    ouverte = d.id; $("fiche").hidden = false; document.body.style.overflow = "hidden";
-    const tel = (d.tel || "").replace(/[^\d+]/g, "");
-    const sections = []; d.reponses.forEach(r => { let s = sections.find(x => x.s === r.s); if (!s) sections.push(s = { s: r.s, l: [] }); s.l.push(r); });
-    $("ficheCorps").innerHTML = `
-      <h2>${esc(d.nom)}</h2>
-      <div class="metier" style="color:var(--violet);font-weight:600">${esc([d.metier, rep(d, "Entreprise"), rep(d, "Ville")].filter(Boolean).join(" · "))}</div>
-      <div style="color:var(--gris);font-size:14px;margin-top:2px">${esc([(rep(d, "Venu par") ? "Ajouté " : "Reçue ") + quand(d.created_at), d.tel, d.email].filter(Boolean).join(" · "))}</div>
-      <div class="actions quatre"><a href="tel:${esc(tel)}">Appeler</a><a href="sms:${esc(tel)}">SMS</a><a class="wa" href="https://wa.me/${esc(tel.replace(/^\+/, "").replace(/^0/, "33"))}" target="_blank" rel="noopener">WhatsApp</a><a href="mailto:${esc(d.email)}">E-mail</a></div>
-      <button type="button" class="reponse" id="repondre">Réponse toute prête par e-mail</button>
-      <div class="bloc-f"><h3>Messages prêts</h3><div class="messages">${messagesDe(d).filter(([, m]) => m).map(([n, m]) => `<div><span>${n}</span><a href="sms:${esc(tel)}?&body=${encodeURIComponent(m)}">SMS</a><a class="wa" href="https://wa.me/${esc(tel.replace(/^\+/, "").replace(/^0/, "33"))}?text=${encodeURIComponent(m)}" target="_blank" rel="noopener">WhatsApp</a></div>`).join("")}</div></div>
-      <div class="bloc-f"><h3>L'essentiel</h3><dl class="essentiel">${[["Activité", d.activite], ["Veut", rep(d, "Je veux")], ["Dans l'appli", rep(d, "Appli")], ["Ses clients", rep(d, "Mode")], ["Pour quand", rep(d, "Délai")], ["Tarifs", rep(d, "Accord tarifs") === "Oui" ? "acceptés" : rep(d, "Accord tarifs") ? "pas cochés" : ""]]
-        .filter(x => x[1]).map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl></div>
-      <div class="bloc-f"><h3>Le prix</h3>${(() => { const e = estimation(d); return `<div class="prix-lignes">${e.l.map(([k, v]) => `<div><span>${esc(k)}</span><b>${v}</b></div>`).join("")}${e.suite.map(x => `<div><span>Ensuite</span><span>${x}</span></div>`).join("")}${e.aPart.map(x => `<div class="a-part"><span>${x[0].toUpperCase() + x.slice(1)}</span><span>à chiffrer</span></div>`).join("")}${!e.l.length && !e.aPart.length ? `<div><span style="color:var(--gris)">Rien de coché : à voir ensemble.</span></div>` : ""}</div>`; })()}
-        <div class="champs2"><label>Prix convenu<input type="number" inputmode="decimal" id="prix" min="0" step="1" value="${d.prix ?? ""}" placeholder="${estimation(d).unique || ""}"></label>
-          <label>Paiement reçu<span style="display:flex;gap:6px"><input type="number" inputmode="decimal" id="montantPaie" min="0" step="1" placeholder="ex. 190"><button type="button" class="reponse" id="ajoutPaie" style="width:auto;margin:0;padding:0 14px">+</button></span></label></div>
-        <div class="paiements">${(d.paiements || []).map((p, i) => `<div><span>${new Date(p.date + "T12:00").toLocaleDateString("fr-FR")} · <b>${eur(Number(p.montant))}</b></span><button type="button" data-retire-paie="${i}">Retirer</button></div>`).join("")}</div>
-        ${(() => { const total = d.prix || estimation(d).unique, ac = acompteDe(total); return total ? `<div class="prix-lignes" style="margin-top:10px"><div><span>Acompte à la commande</span><b>${ac ? eur(ac) : "à régler dans Réglages"}</b></div><div><span>Solde à la livraison</span><b>${ac ? eur(total - ac) : "—"}</b></div></div>` : ""; })()}
-        ${d.prix || encaisse(d) ? `<div class="reste">${d.prix ? (encaisse(d) >= d.prix ? "Tout est réglé." : `Reste à régler : ${eur(d.prix - encaisse(d))}`) : `Encaissé : ${eur(encaisse(d))}`}</div>` : ""}</div>
-      ${blocDevis(d)}
-      <div class="bloc-f"><h3>Forfaits et prestations en plus</h3><div class="extras">${(d.extras || []).map((x, i) => `<div><span>${esc(x.quoi)}</span><b>${eur(Number(x.prix))}${parRythme(x.rythme)}</b>
-          <div class="bas"><span class="gris" style="margin-right:auto;font-size:13px;color:var(--gris)">depuis le ${new Date(x.date + "T12:00").toLocaleDateString("fr-FR")}</span><button type="button" class="lien-btn" data-facturer-extra="${i}">Facturer${x.rythme === "par mois" ? " ce mois" : x.rythme === "par an" ? " cette année" : ""}</button><button type="button" class="lien-btn" data-retire-extra="${i}">Retirer</button></div></div>`).join("")}</div>
-        <details class="ajout-plus"><summary class="reponse">+ Ajouter un forfait ou une prestation</summary><div class="ajout-extra">${(() => { const P = presets(), p0 = P[0]; return `<select id="extraPreset" class="large">${["forfait", "prestation", ""].map(t => { const l = P.map((p, i) => [p, i]).filter(([p]) => p[3] === t);
-            return !l.length ? "" : t ? `<optgroup label="${t === "forfait" ? "Mes forfaits" : "Mes prestations"}">${l.map(([p, i]) => `<option value="${i}">${esc(p[0])}${p[1] !== "" ? " · " + eur(Number(p[1])) + parRythme(p[2]) : ""}</option>`).join("")}</optgroup>` : l.map(([p, i]) => `<option value="${i}">${esc(p[0])}</option>`).join(""); }).join("")}</select>
-          <input id="extraQuoi" class="large" placeholder="Ce que le client veut" value="${esc(p0[0] === "Autre chose" ? "" : p0[0])}">
-          <input id="extraPrix" type="number" inputmode="decimal" min="0" step="1" placeholder="Prix en €" value="${p0[1]}">
-          <select id="extraRythme">${RYTHMES.map(r => `<option${r === p0[2] ? " selected" : ""}>${r}</option>`).join("")}</select>`; })()}
-          <button type="button" class="reponse large" id="ajoutExtra" style="margin:0">Ajouter cette prestation</button></div></details></div>
-      <div class="bloc-f"><h3>Factures</h3><div class="factures">${(d.factures || []).slice().reverse().map(fa => `<div><span>${fa.num}</span><span class="pastille ${fa.payee ? "payee" : "apayer"}">${fa.payee ? "payée" : "à payer"}</span><b>${eur(fa.total)}</b>
-          <div class="bas"><span style="margin-right:auto;font-size:13px;color:var(--gris)">${esc(fa.lignes.map(x => x.quoi).join(", "))}</span><button type="button" class="lien-btn" data-ouvrir-facture="${fa.num}">Ouvrir</button>${fa.payee ? "" : `<button type="button" class="lien-btn" data-payee="${fa.num}">Payée</button>`}</div></div>`).join("")}</div>
-        ${(() => { const total = d.prix || estimation(d).unique, ac = acompteDe(total); return total ? `<div class="vite" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">${ac ? `<button type="button" class="petit" style="color:var(--nuit);border-color:var(--trait)" data-facturer="acompte">Facturer l'acompte · ${eur(ac)}</button>` : ""}<button type="button" class="petit" style="color:var(--nuit);border-color:var(--trait)" data-facturer="solde">Facturer ${ac ? "le solde · " + eur(total - ac) : "la création · " + eur(total)}</button></div>` : ""; })()}</div>
-      <div class="bloc-f"><h3>Avancement</h3><div class="etapes">${etapesDe(d).map(([k, n]) => `<button type="button" data-etape="${k}" class="${(d.etapes || {})[k] ? "fait" : ""}">${n}${(d.etapes || {})[k] ? `<small>${new Date(d.etapes[k] + "T12:00").toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}</small>` : ""}</button>`).join("")}</div></div>
-      <div class="bloc-f rappel"><h3>Rappel</h3>${d.rappel ? `<div><b>${d.rappel <= aujourdhui() ? "À rappeler " + (d.rappel === aujourdhui() ? "aujourd'hui" : "depuis " + jourFr(d.rappel)) : "À rappeler " + jourFr(d.rappel)}</b></div>` : `<div style="color:var(--gris);font-size:15px">Aucun rappel prévu.</div>`}
-        <div class="vite"><button type="button" data-rappel="1">Demain</button><button type="button" data-rappel="3">Dans 3 jours</button><button type="button" data-rappel="7">Dans une semaine</button>${d.rappel ? `<button type="button" data-rappel="0">Effacer</button>` : ""}</div>
-        <label>Ou choisir une date<input type="date" id="dateRappel" value="${d.rappel || ""}"></label></div>
-      <div class="bloc-f"><h3>Où en est-elle</h3><div class="statuts">${STATUTS.slice(0, 3).map(([s]) => `<button type="button" data-statut="${s}" class="${d.statut === s ? "actif" : ""}">${NOM_STATUT[s]}</button>`).join("")}</div>
-        <h3 style="margin-top:14px">Votre note <span style="text-transform:none;letter-spacing:0">(vous seule la voyez)</span></h3>
-        <textarea id="note" placeholder="ex. rappeler mardi, devis envoyé…">${esc(d.note || "")}</textarea><div class="enreg" id="enreg"></div></div>
-      ${d.fichiers.length ? `<div class="bloc-f"><h3>Fichiers · ${d.fichiers.length}</h3><div class="fichiers" id="fichiers">${d.fichiers.map(f => `<a target="_blank" rel="noopener"><div class="doc">${esc(f.nom)}</div><small>${esc(f.type)}</small></a>`).join("")}</div></div>` : ""}
-      <div class="bloc-f"><h3 style="display:flex;justify-content:space-between;align-items:center">Ses réponses<button type="button" class="lien-btn" id="copier">Copier</button></h3>${sections.map(s => `<div class="section-r"><h4>${esc(s.s)}</h4><dl>${s.l.map(r => `<div><dt>${esc(r.q)}</dt><dd>${esc(r.v)}</dd></div>`).join("")}</dl></div>`).join("")}</div>
-      <div class="bloc-f"><h3>Rendez-vous</h3>${agenda.filter(r => r.demande_id === d.id).map(r => `<div class="rdv" style="margin-bottom:6px"><span class="h">${heureFr(r.quand)}</span><div class="t"><b>${esc(r.titre)}</b><small>${nomJour(iso(new Date(r.quand)))}</small></div></div>`).join("") || `<p style="color:var(--gris);font-size:15px">Aucun rendez-vous.</p>`}
-        <button type="button" class="reponse" data-rdv-client="${d.id}">Prendre un rendez-vous</button></div>
-      <div class="bloc-f"><h3>Journal</h3><div class="journal">${[{ q: d.created_at, t: rep(d, "Venu par") ? `Ajouté à la main (venu par ${rep(d, "Venu par").toLowerCase()})` : "Questionnaire reçu" }].concat(d.journal || []).reverse()
-        .map(x => `<div><time>${new Date(x.q).toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</time>${esc(x.t)}</div>`).join("")}</div></div>
-      <button type="button" class="archiver" id="archiver">${d.statut === "archivee" ? "Remettre dans les demandes" : "Archiver cette demande"}</button>`;
-    rangerFiche();
-    if (d.fichiers.length) { const u = await liens(d); if (ouverte !== d.id) return;
-      [...$("fichiers").children].forEach((a, i) => { a.href = u[i]; const f = d.fichiers[i]; if (/\.(jpe?g|png|webp|gif|heic|heif)$/i.test(f.nom) && u[i] !== "#") a.firstElementChild.outerHTML = `<img src="${esc(u[i])}" alt="${esc(f.nom)}" loading="lazy">`; }); }
-  }
-
-  async function modifier(d, champs, message, ancien) {
-    if (message && !("journal" in champs)) { const j = (d.journal || []).concat([{ q: new Date().toISOString(), t: message }]).slice(-80); champs = { ...champs, journal: j }; ancien = { ...ancien, journal: d.journal || [] }; }
-    Object.assign(d, champs);
-    if (!ESSAI) { const { error } = await sb.from("demandes").update(champs).eq("id", d.id); if (error) { Object.assign(d, ancien); montrer("Pas enregistré : vérifiez la connexion."); dessinerListe(); return false; } }
-    dessinerListe(); if (message) montrer(message, () => modifier(d, ancien, "C'est annulé.", champs).then(() => { if (ouverte === d.id) dessinerFiche(d); }));
-    return true;
-  }
-
-  let minuteur;
-  function montrer(t, annuler) { $("bandeauTxt").textContent = t; $("annuler").hidden = !annuler; $("annuler").onclick = () => { $("bandeau").hidden = true; annuler(); }; $("bandeau").hidden = false;
-    clearTimeout(minuteur); minuteur = setTimeout(() => { $("bandeau").hidden = true; }, 6000); }
-
-  function fermerFiche() { ouverte = null; $("fiche").hidden = true; $("ajout").hidden = true; document.body.style.overflow = ""; }
-  // les onglets du bas : Demandes, Chiffres, Tarifs, Réglages
-  const VUES = { agenda: "vueAgenda", chiffres: "chiffres", tarifs: "catalogue", reglages: "vueReglages" };
-  function allerA(v) {
-    Object.values(VUES).forEach(id => { $(id).hidden = VUES[v] !== id; });
-    if (v === "agenda") dessinerAgenda(); if (v === "chiffres") dessinerChiffres(); if (v === "tarifs") dessinerCatalogue(); if (v === "reglages") etatTelephone();
-    if (VUES[v]) $(VUES[v]).scrollTop = 0; else window.scrollTo(0, 0);
-    $("ajouter").hidden = v !== "demandes";
-    document.querySelectorAll("#onglets button").forEach(b => b.classList.toggle("actif", b.dataset.vue === v));
-  }
-  $("onglets").onclick = e => { const b = e.target.closest("button"); if (b) allerA(b.dataset.vue); };
-
-  // les gestes
-  $("filtres").onclick = e => { const b = e.target.closest("button"); if (b) { filtre = b.dataset.s; dessinerListe(); } };
-  $("cherche").oninput = dessinerListe;
-  $("liste").onclick = e => { const c = e.target.closest(".carte"); if (c) dessinerFiche(demandes.find(d => String(d.id) === c.dataset.id)); };
-  $("retour").onclick = () => history.state && history.state.fiche ? history.back() : fermerFiche();
-  $("ficheCorps").onclick = e => {
-    const og = e.target.closest("[data-ongletf]"); if (og) { ongletFiche = og.dataset.ongletf; montrerOnglet(); $("fiche").scrollTop = 0; return; }
-    const d = demandes.find(x => x.id === ouverte); if (!d) return;
-    const s = e.target.closest("[data-statut]");
-    if (s && s.dataset.statut !== d.statut) { const ancien = { statut: d.statut }; modifier(d, { statut: s.dataset.statut }, `Passée en « ${NOM_STATUT[s.dataset.statut]} ».`, ancien).then(() => dessinerFiche(d)); }
-    if (e.target.id === "repondre") location.href = reponsePrete(d);
-    const rc = e.target.closest("[data-rdv-client]"); if (rc) { $("retour").click(); setTimeout(() => { allerA("agenda"); ouvrirFormRdv(d.id); }, 50); return; }
-    const dv = e.target.closest("[data-devis]");
-    if (dv && dv.dataset.devis === "composer") { const es = estimation(d);
-      brouillon = { id: d.id, lignes: (es.unique ? [{ quoi: es.l[0][0], prix: es.unique }] : []).concat((d.extras || []).filter(x => x.rythme === "une fois").map(x => ({ quoi: x.quoi, prix: Number(x.prix) || 0 }))), suite: es.suite };
-      if (!brouillon.lignes.length) brouillon.lignes.push({ quoi: "", prix: "" }); dessinerFiche(d); return; }
-    if (dv && dv.dataset.devis === "annuler") { brouillon = null; dessinerFiche(d); return; }
-    if (dv && dv.dataset.devis === "creer") { const lignes = brouillon.lignes.filter(l => l.quoi.trim() && Number(l.prix) >= 0).map(l => ({ quoi: l.quoi.trim(), prix: Number(l.prix) || 0 }));
-      if (!lignes.length) { montrer("Ajoutez au moins une ligne."); return; }
-      const w = window.open("", "_blank"), nv = { num: numeroDevis(), date: aujourdhui(), lignes, total: lignes.reduce((t, l) => t + l.prix, 0), suite: brouillon.suite, accepte: null }, avant = d.devis || [];
-      brouillon = null;
-      modifier(d, { devis: avant.concat([nv]) }, `Devis ${nv.num} fait (${eur(nv.total)}).`, { devis: avant }).then(ok => { dessinerFiche(d); if (ok) afficherDevis(d, nv, w); else if (w) w.close(); }); return; }
-    const rl = e.target.closest("[data-retire-ligne]"); if (rl) { brouillon.lignes.splice(+rl.dataset.retireLigne, 1); dessinerFiche(d); return; }
-    const od = e.target.closest("[data-ouvrir-devis]"); if (od) { afficherDevis(d, d.devis.find(x => x.num === od.dataset.ouvrirDevis)); return; }
-    const ak = e.target.closest("[data-accepte]");
-    if (ak) { const avant = d.devis, x = avant.find(v => v.num === ak.dataset.accepte), champs = { devis: avant.map(v => v === x ? { ...v, accepte: aujourdhui() } : v) };
-      if (!d.prix) champs.prix = x.total;
-      modifier(d, champs, `Devis ${x.num} accepté.`, { devis: avant, prix: d.prix }).then(() => dessinerFiche(d)); return; }
-    if (e.target.id === "copier") { const t = d.reponses.map(r => `${r.q} : ${r.v}`).join("\n"); navigator.clipboard.writeText(`${d.nom} · ${d.tel} · ${d.email}\n${t}`).then(() => montrer("Réponses copiées."), () => montrer("La copie n'a pas marché.")); }
-    const et = e.target.closest("[data-etape]");
-    if (et) { const k = et.dataset.etape, avant = { ...(d.etapes || {}) }, apres = { ...avant }; if (apres[k]) delete apres[k]; else apres[k] = aujourdhui();
-      const champs = { etapes: apres }; if (!avant.acompte && apres.acompte && d.statut === "nouvelle") champs.statut = "en cours";
-      modifier(d, champs, apres[k] ? `« ${ETAPES.find(x => x[0] === k)[1]} » coché.` : "Étape décochée.", { etapes: avant, statut: d.statut }).then(() => dessinerFiche(d)); }
-    const rp = e.target.closest("[data-rappel]");
-    if (rp) { const n = +rp.dataset.rappel, v = n ? dansJours(n) : null; modifier(d, { rappel: v }, v ? `Rappel ${jourFr(v)}.` : "Rappel effacé.", { rappel: d.rappel }).then(() => dessinerFiche(d)); }
-    if (e.target.id === "ajoutPaie") { const m = parseFloat(($("montantPaie").value || "").replace(",", ".")); if (!(m > 0)) { $("montantPaie").focus(); return; }
-      const avant = d.paiements || []; modifier(d, { paiements: avant.concat([{ date: aujourdhui(), montant: m }]) }, `${eur(m)} encaissés.`, { paiements: avant }).then(() => dessinerFiche(d)); }
-    const rpa = e.target.closest("[data-retire-paie]");
-    if (rpa) { const avant = d.paiements || []; modifier(d, { paiements: avant.filter((_, i) => i !== +rpa.dataset.retirePaie) }, "Paiement retiré.", { paiements: avant }).then(() => dessinerFiche(d)); }
-    if (e.target.id === "ajoutExtra") { const quoi = $("extraQuoi").value.trim(), prix = parseFloat(($("extraPrix").value || "").replace(",", "."));
-      if (!quoi) { $("extraQuoi").focus(); return; } if (!(prix >= 0)) { $("extraPrix").focus(); return; }
-      const avant = d.extras || []; modifier(d, { extras: avant.concat([{ quoi, prix, rythme: $("extraRythme").value, date: aujourdhui() }]) }, `Ajouté : ${quoi} (${eur(prix)}${parRythme($("extraRythme").value)}).`, { extras: avant }).then(() => dessinerFiche(d)); }
-    const rx = e.target.closest("[data-retire-extra]");
-    if (rx) { const avant = d.extras || [], x = avant[+rx.dataset.retireExtra]; modifier(d, { extras: avant.filter((_, i) => i !== +rx.dataset.retireExtra) }, `Retiré : ${x.quoi}.`, { extras: avant }).then(() => dessinerFiche(d)); }
-    const fx = e.target.closest("[data-facturer-extra]");
-    if (fx) { const x = d.extras[+fx.dataset.facturerExtra]; facturer(d, [{ quoi: x.quoi + (x.rythme === "par mois" ? ` · ${moisFr()}` : x.rythme === "par an" ? ` · ${aujourdhui().slice(0, 4)}` : ""), prix: Number(x.prix) }], window.open("", "_blank")); }
-    const fc = e.target.closest("[data-facturer]");
-    if (fc) { const total = d.prix || estimation(d).unique, ac = acompteDe(total), pct = reg("acompte");
-      facturer(d, fc.dataset.facturer === "acompte" ? [{ quoi: `Création du site internet · acompte de ${pct} % à la commande`, prix: ac }]
-        : [{ quoi: ac ? "Création du site internet · solde à la livraison" : "Création du site internet", prix: total - ac }], window.open("", "_blank")); }
-    const of = e.target.closest("[data-ouvrir-facture]");
-    if (of) afficherFacture(d, d.factures.find(x => x.num === of.dataset.ouvrirFacture));
-    const py = e.target.closest("[data-payee]");
-    if (py) { const avantF = d.factures, avantP = d.paiements || [], fa = avantF.find(x => x.num === py.dataset.payee);
-      modifier(d, { factures: avantF.map(x => x.num === fa.num ? { ...x, payee: aujourdhui() } : x), paiements: avantP.concat([{ date: aujourdhui(), montant: fa.total, facture: fa.num }]) },
-        `Facture ${fa.num} payée : ${eur(fa.total)} encaissés.`, { factures: avantF, paiements: avantP }).then(() => dessinerFiche(d)); }
-    if (e.target.id === "archiver") { const ancien = { statut: d.statut }, vers = d.statut === "archivee" ? "nouvelle" : "archivee";
-      modifier(d, { statut: vers }, vers === "archivee" ? "Demande archivée." : "Demande remise.", ancien).then(() => $("retour").click()); }
-  };
-  let attente;
-  $("ficheCorps").oninput = e => { if (e.target.dataset.dl !== undefined && brouillon) { brouillon.lignes[+e.target.dataset.dl][e.target.dataset.k] = e.target.value;
-      const t = $("ficheCorps").querySelector(".compose .reste span"); if (t) t.textContent = eur(brouillon.lignes.reduce((s, l) => s + (Number(l.prix) || 0), 0)); return; }
-    if (e.target.id !== "note") return; const d = demandes.find(x => x.id === ouverte); $("enreg").textContent = "…";
-    clearTimeout(attente); attente = setTimeout(async () => { const ok = await modifier(d, { note: e.target.value }, null, { note: d.note }); $("enreg").textContent = ok ? "Enregistré" : ""; }, 700); };
-  $("ficheCorps").onchange = e => { const d = demandes.find(x => x.id === ouverte); if (!d) return;
-    if (e.target.id === "prix") { const v = e.target.value === "" ? null : Math.max(0, parseFloat(e.target.value)); modifier(d, { prix: v }, "Prix enregistré.", { prix: d.prix }).then(() => dessinerFiche(d)); }
-    if (e.target.id === "extraPreset") { const p = presets()[+e.target.value]; $("extraQuoi").value = p[0] === "Autre chose" ? "" : p[0]; $("extraPrix").value = p[1]; $("extraRythme").value = p[2]; if (p[0] === "Autre chose") $("extraQuoi").focus(); }
-    if (e.target.id === "devisCat" && brouillon) { const v = e.target.value; if (!v) return; const x = v === "libre" ? { quoi: "", prix: "" } : catalogue().filter(c => c.quoi)[+v];
-      brouillon.lignes.push({ quoi: x.quoi, prix: x.prix === "" ? "" : Number(x.prix) }); dessinerFiche(d); return; }
-    if (e.target.id === "dateRappel") { const v = e.target.value || null; modifier(d, { rappel: v }, v ? `Rappel ${jourFr(v)}.` : "Rappel effacé.", { rappel: d.rappel }).then(() => dessinerFiche(d)); } };
-  $("tableau").onclick = e => { const b = e.target.closest("button"); if (!b) return; filtre = b.dataset.s; dessinerListe(); };
-  $("bandeInstall").onclick = () => allerA("reglages");
-  document.querySelectorAll("[data-fermer]").forEach(b => b.onclick = () => $("retour").click());
-  $("chiffresCorps").onclick = async e => {
-    if (e.target.id === "exporter") exporter();
-    const ab = e.target.closest("[data-abo]"); if (ab) { const d = demandes.find(x => x.id === ab.dataset.abo), mois = aujourdhui().slice(0, 7), m = Number(ab.dataset.m), avant = d.paiements || [];
-      await modifier(d, { paiements: avant.concat([{ date: aujourdhui(), montant: m, abo: mois, quoi: "Abonnement " + new Date().toLocaleDateString("fr-FR", { month: "long" }) }]) }, `Abonnement de ${d.nom} payé : ${eur(m)}.`, { paiements: avant }); dessinerChiffres(); }
-    if (e.target.id === "depAjout") { const quoi = $("depQuoi").value.trim(), montant = parseFloat(($("depMontant").value || "").replace(",", "."));
-      if (!quoi) { $("depQuoi").focus(); return; } if (!(montant >= 0)) { $("depMontant").focus(); return; }
-      const x = { id: ESSAI ? "p" + Date.now() : crypto.randomUUID(), date: aujourdhui(), montant, quoi, categorie: $("depCat").value };
-      if (!ESSAI) { const { error } = await sb.from("depenses").insert(x); if (error) { montrer("Pas enregistré : vérifiez la connexion."); return; } }
-      depenses.unshift(x); dessinerChiffres(); montrer(`Dépense ajoutée : ${eur(montant)}.`); }
-    const rd = e.target.closest("[data-retire-dep]"); if (rd) { const x = depenses.find(p => p.id === rd.dataset.retireDep);
-      if (!ESSAI) { const { error } = await sb.from("depenses").delete().eq("id", x.id); if (error) { montrer("Pas retiré : vérifiez la connexion."); return; } }
-      depenses = depenses.filter(p => p !== x); dessinerChiffres();
-      montrer("Dépense retirée.", async () => { if (!ESSAI) await sb.from("depenses").insert(x); depenses.unshift(x); dessinerChiffres(); }); }
-  };
-  $("catalogueCorps").oninput = e => { const i = e.target.dataset.cat; if (i === undefined) return; const c = catalogue(); const k = e.target.dataset.champ;
-    c[+i][k] = k === "prix" ? (e.target.value === "" ? "" : Math.max(0, parseFloat(e.target.value))) : e.target.value; R.catalogue = c; sauverReglages("enregCatalogue"); };
-  $("catalogueCorps").onclick = e => { const c = catalogue();
-    const a = e.target.closest("[data-ajout-cat]"); if (a) { c.push({ type: a.dataset.ajoutCat, quoi: "", prix: "", rythme: "une fois" }); R.catalogue = c; sauverReglages("enregCatalogue"); dessinerCatalogue();
-      const l = $("catalogueCorps").querySelectorAll(`[data-champ="quoi"]`); l[l.length - (a.dataset.ajoutCat === "forfait" ? c.filter(x => x.type === "prestation").length + 1 : 1)].focus(); }
-    const r = e.target.closest("[data-retire-cat]"); if (r) { const avant = c.map(x => ({ ...x })), x = c.splice(+r.dataset.retireCat, 1)[0]; R.catalogue = c; sauverReglages("enregCatalogue"); dessinerCatalogue();
-      montrer(`Retiré : ${x.quoi || "la ligne"}.`, () => { R.catalogue = avant; sauverReglages("enregCatalogue"); dessinerCatalogue(); }); } };
-  $("ajouter").onclick = () => { $("formAjout").reset(); ouvrirPanneau("ajout"); };
-  $("formAjout").onsubmit = async e => { e.preventDefault(); const v = Object.fromEntries(new FormData(e.target));
-    const S = "1. Vous et votre entreprise", reponses = [["Venu par", v.source], ["Ville", v.ville], ["Je veux", v.veut]].filter(x => x[1]).map(([q, r]) => ({ s: q === "Je veux" ? "2. Ce que vous voulez" : S, q, v: r }));
-    const d = { id: ESSAI ? "m" + Date.now() : crypto.randomUUID(), created_at: new Date().toISOString(), nom: v.nom.trim(), tel: v.tel.trim(), email: v.email.trim(), activite: null, metier: v.metier.trim() || null,
-      reponses, fichiers: [], statut: "nouvelle", note: v.note.trim() || null, etapes: {}, prix: null, paiements: [], rappel: null, journal: [], extras: [], factures: [] };
-    if (!ESSAI) { const { error } = await sb.from("demandes").insert(d); if (error) { montrer("Pas enregistré : vérifiez la connexion."); return; } }
-    demandes.unshift(d); $("ajout").hidden = true; filtre = "nouvelle"; dessinerListe(); dessinerFiche(d); montrer(`${d.nom} est ajouté.`); };
-  $("reglages").oninput = e => { const k = e.target.dataset.reg; if (!k) return; R[k] = e.target.value; sauverReglages(); };
-  // l'appli sur l'écran d'accueil
-  let invite = null; const installee = matchMedia("(display-mode: standalone)").matches || navigator.standalone;
-  const iphone = /iPhone|iPad/.test(navigator.userAgent);
-  window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); invite = e; etatTelephone(); });
-  window.addEventListener("appinstalled", () => { invite = null; $("bandeInstall").hidden = true; etatTelephone(); });
-  function etatTelephone() {
-    $("bandeInstall").hidden = installee;
-    $("etatInstall").innerHTML = installee ? `<p class="ok-vert">✓ L'appli est sur l'écran de votre téléphone.</p>`
-      : invite ? `<button type="button" class="reponse" id="installer" style="margin:0">Mettre l'appli sur l'écran de mon téléphone</button>`
-      : iphone ? `<p class="aide-install">Pour l'avoir sur l'écran de votre iPhone :<br>1. Ouvrez cette page dans <b>Safari</b>.<br>2. Touchez <b>Partager</b>, le carré avec une flèche vers le haut.<br>3. Touchez <b>Sur l'écran d'accueil</b>, puis <b>Ajouter</b>.<br>Ensuite, ouvrez toujours l'appli depuis son icône.</p>`
-      : `<p class="aide-install">Pour l'avoir sur l'écran de votre téléphone : dans <b>Chrome</b>, touchez le menu <b>⋮</b> en haut à droite, puis <b>Ajouter à l'écran d'accueil</b> (ou <b>Installer l'application</b>).</p>`;
-    etatNotifs().catch(() => {});
-  }
-  $("etatInstall").onclick = async e => { if (e.target.id !== "installer" || !invite) return; invite.prompt(); await invite.userChoice; invite = null; etatTelephone(); };
-  // les notifications : ce téléphone s'abonne, la base le prévient à chaque nouvelle demande
-  const b64 = t => { const p = (t + "===".slice((t.length + 3) % 4)).replace(/-/g, "+").replace(/_/g, "/"); return Uint8Array.from(atob(p), c => c.charCodeAt(0)); };
-  const pushPossible = "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
-  async function etatNotifs() {
-    if (!pushPossible) { $("etatNotifs").innerHTML = iphone && !installee ? `<p class="aide-install">Les notifications marchent une fois l'appli sur l'écran de votre iPhone.</p>` : ""; return; }
-    const reg = await navigator.serviceWorker.ready, ab = await reg.pushManager.getSubscription();
-    if (ab && Notification.permission === "granted") $("etatNotifs").innerHTML = `<p class="ok-vert">✓ Ce téléphone sonne à chaque nouvelle demande.</p>`;
-  }
-  $("etatNotifs").onclick = async e => { if (e.target.id !== "notifs") return;
-    if (Notification.permission === "denied") { montrer("Les notifications sont bloquées : autorisez-les dans les réglages du téléphone."); return; }
-    if (await Notification.requestPermission() !== "granted") return;
-    try {
-      const reg = await navigator.serviceWorker.ready;
-      const ab = await reg.pushManager.getSubscription() || await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64(NORA_SB.vapid) });
-      const j = ab.toJSON();
-      if (!ESSAI) { const { error } = await sb.from("abonnements").upsert({ endpoint: j.endpoint, cles: j.keys, appareil: navigator.userAgent.slice(0, 200) }); if (error) throw error; }
-      etatNotifs(); montrer("C'est fait : ce téléphone sera prévenu.");
-    } catch (e) { montrer("Les notifications n'ont pas pu s'activer."); }
-  };
-  if ("serviceWorker" in navigator) navigator.serviceWorker.register("/espace-patron/sw.js").catch(() => {});
-  window.addEventListener("popstate", fermerFiche);
-  document.addEventListener("visibilitychange", () => { if (!document.hidden && !$("appli").hidden) charger().catch(() => {}); });
-
-  // connexion
-  async function entrer() { $("connexion").hidden = true; $("appli").hidden = false; $("essai").hidden = !ESSAI;
-    etatTelephone(); chargerReglages().catch(() => {}); $("onglets").hidden = false; allerA("demandes");
-    $("dateJour").textContent = new Date().toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" });
-    try { await charger(); const id = new URLSearchParams(location.search).get("d"); const d = id && demandes.find(x => String(x.id) === id);
-      if (d) { history.replaceState(null, "", location.pathname); dessinerFiche(d); } } catch (e) { $("liste").innerHTML = `<p class="vide">Impossible de lire les demandes. Vérifiez la connexion, puis rouvrez la page.</p>`; } }
-  $("formCnx").onsubmit = async e => { e.preventDefault(); $("erreurCnx").textContent = "";
-    if (ESSAI) return entrer();
-    const { error } = await sb.auth.signInWithPassword({ email: $("cnxMail").value.trim(), password: $("cnxMdp").value });
-    if (error) { $("erreurCnx").textContent = "E-mail ou mot de passe incorrect."; return; } entrer(); };
-  $("deconnexion").onclick = async () => { if (sb) await sb.auth.signOut(); $("appli").hidden = true; $("ajouter").hidden = true; $("onglets").hidden = true; Object.values(VUES).forEach(id => { $(id).hidden = true; }); $("connexion").hidden = false; $("cnxMdp").value = ""; };
-  (async () => { if (!ESSAI) { const { data } = await sb.auth.getSession(); if (data.session) return entrer(); } $("connexion").hidden = false; })();
-</script>
+<header class="haut"><div class="in"><a href="#/accueil"><img src="/medias/icone-site-512.png" alt=""><span><b>NORA ÉDITIONS</b><small>Création de site internet</small></span></a><span id="etat"></span></div></header>
+<main id="vue"><p class="gris">Chargement…</p></main>
+<nav class="bas" id="nav" hidden>
+  <a href="#/accueil" data-r="accueil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Accueil</a>
+  <a href="#/demandes" data-r="demandes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 13h5l1.5 3h5l1.5-3h5"/><path d="M5.5 5h13L21 13v6H3v-6z"/></svg>Demandes</a>
+  <a href="#/documents/devis" data-r="documents"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/></svg>Devis</a>
+  <a href="#/clients" data-r="clients"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"/></svg>Clients</a>
+  <a href="#/agenda" data-r="agenda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Agenda</a>
+  <a href="#/plus" data-r="plus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>Plus</a>
+</nav>
+<script type="module" src="app.js?v=20261024a"></script>
 </body>
 </html>
