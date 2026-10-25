@@ -592,6 +592,19 @@
   });
 </script>
 <script src="/medias/compteur.js" defer></script>
+<style>
+  /* le « + » entre la création et l'abonnement : au-dessus sur téléphone, à gauche quand les tarifs sont côte à côte */
+  #tarifs .tarif-plus { position: relative; overflow: visible; }
+  #tarifs .plus-tarif { position: absolute; z-index: 3; left: 50%; top: -50px; width: 76px; height: 76px; margin-left: -38px;
+    border-radius: 50%; background: #ffd426; border: 4px solid #fff; font-size: 0; color: transparent !important;
+    box-shadow: 0 6px 0 #a65f00, 0 14px 26px rgba(0,0,0,.3); pointer-events: none; }
+  /* le « + » dessiné : deux barres épaisses */
+  #tarifs .plus-tarif::before, #tarifs .plus-tarif::after { content: ""; position: absolute; left: 50%; top: 50%; background: #0f1240; border-radius: 6px; }
+  #tarifs .plus-tarif::before { width: 38px; height: 11px; margin: -5.5px 0 0 -19px; }
+  #tarifs .plus-tarif::after { width: 11px; height: 38px; margin: -19px 0 0 -5.5px; }
+  #tarifs .tarifs { row-gap: 40px; }
+  @media (min-width: 760px) { #tarifs .plus-tarif { left: -46px; top: 50%; margin: -38px 0 0 0; } #tarifs .tarifs { column-gap: 34px; } }
+</style>
 </head>
 <body>
 
@@ -664,7 +677,7 @@
       <div class="presta carte-lien apparait"><span class="num">01</span><h3>Votre logo</h3><p>Un logo dessiné pour votre entreprise, prêt à mettre sur vos devis, votre site, vos réseaux, votre vitrine et vos tenues.</p><a class="lire" href="/logo-artisan/">En savoir plus</a><a class="fleche" href="/logo-artisan/" aria-label="En savoir plus">→</a></div>
       <div class="presta carte-lien apparait"><span class="num">02</span><h3>Votre fiche Google</h3><p>Une fiche créée ou reprise, soignée et reliée à votre site, pour que les clients du coin vous appellent.</p><a class="lire" href="/referencement-google-artisan/">En savoir plus</a><a class="fleche" href="/referencement-google-artisan/" aria-label="En savoir plus">→</a></div>
       <div class="presta carte-lien apparait"><span class="num">03</span><h3>Votre site internet</h3><p>Un site au nom de votre entreprise, facile à lire sur téléphone, avec votre travail et une demande de devis ou de rendez-vous. Bien référencé sur Google.</p><a class="lire" href="/creation-site-internet-artisan/">En savoir plus</a><a class="fleche" href="/creation-site-internet-artisan/" aria-label="En savoir plus">→</a></div>
-      <div class="presta carte-lien apparait"><span class="num">04</span><h3>L'application web sur mesure de votre site</h3><p>Une appli à votre nom pour vos demandes, vos devis, vos factures et vos rendez-vous, du premier appel jusqu'au paiement.</p><a class="lire" href="/appli-devis-artisan/">En savoir plus</a><a class="fleche" href="/appli-devis-artisan/" aria-label="En savoir plus">→</a></div>
+      <div class="presta carte-lien apparait"><span class="num">04</span><h3>L'application web sur mesure de votre site</h3><p>Une appli pour vos demandes, vos devis, vos factures et vos rendez-vous, du premier appel jusqu'au paiement.</p><a class="lire" href="/appli-devis-artisan/">En savoir plus</a><a class="fleche" href="/appli-devis-artisan/" aria-label="En savoir plus">→</a></div>
       <div class="presta carte-lien apparait"><span class="num">05</span><h3>Web marketing : vidéos, réseaux et annuaires <small style="font-size:14px;color:var(--gris)">· en option</small></h3><p>Un suivi chaque mois : les photos de votre travail deviennent des publications et des vidéos, et votre site reçoit de nouveaux articles. 25 € par mois.</p><a class="lire" href="/community-manager-artisan/">En savoir plus</a><a class="fleche" href="/community-manager-artisan/" aria-label="En savoir plus">→</a></div>
       <div class="presta apparait"><span class="num">06</span><h3>Votre boutique en ligne <small style="font-size:14px;color:var(--gris)">· en option</small></h3><p>Vos produits sur votre site, avec leurs photos et leurs prix : vos clients commandent et paient en ligne, et la commande arrive dans votre appli. Gâteaux, bouquets, bijoux, bons cadeaux, séances…</p></div>
     </div>
@@ -692,7 +705,7 @@
     <div class="tarifs">
       <div class="tarif apparait"><span class="promo">Promo · durée limitée</span><div class="chiffre"><s>200 €</s> 190 €</div><h3>La création</h3><p class="gris">Une seule fois.</p>
         <ul><li>Votre site internet, avec vos réalisations</li><li>Un site bien référencé sur Google</li><li>Votre fiche Google</li><li>Vos cartes de visite recto verso, prêtes à imprimer</li><li>Votre logo et la retouche de vos photos, si besoin</li><li>L'application web sur mesure de votre site, au nom de votre entreprise</li></ul></div>
-      <div class="tarif apparait"><div class="chiffre">10 € <small>/ mois</small></div><h3>L'abonnement</h3><p class="gris">Votre site et son application web sur mesure, en ligne.</p>
+      <div class="tarif apparait tarif-plus"><span class="plus-tarif" aria-hidden="true">+</span><div class="chiffre">10 € <small>/ mois</small></div><h3>L'abonnement</h3><p class="gris">Votre site et son application web sur mesure, en ligne.</p>
         <ul><li>Site hébergé et à jour</li><li>Votre nom de domaine en .fr</li><li>L'application web sur mesure complète</li><li>Les nouveautés de l'application</li></ul>
         <p class="options-abo">En .com : + 0,60 € par mois<br>Adresse e-mail professionnelle : + 1,50 € par mois</p></div>
       <div class="tarif apparait"><div class="chiffre">100 €</div><h3>L'application web sur mesure seule</h3><p class="gris">Puis 30 € par an.</p>
@@ -722,7 +735,7 @@
       <details><summary>Je ne suis pas à l'aise avec l'informatique.</summary><p>L'appli se prend en main en quelques minutes, avec un tuto vidéo. Pour le site et la fiche Google, nous nous occupons de tout.</p></details>
       <details><summary>Ça marche pour mon métier ?</summary><p>Artisans du bâtiment et autres artisans, entreprises de nettoyage, freelances, coachs, photographes, consultants, blogueurs, journalistes… : le site et l'appli s'adaptent à votre métier.</p></details>
       <details><summary>Mon site sera visible sur Google ?</summary><p>Oui. Chaque site est bien référencé sur Google : nous nous en occupons, pour que les clients qui cherchent votre métier près de chez eux vous trouvent.</p></details>
-      <details><summary>Et le nom de domaine ?</summary><p>Il est compris dans l'abonnement en .fr ; en .com, c'est 0,60 € de plus par mois. Vous ne savez pas encore lequel choisir ? Cochez la case dans le questionnaire, nous vous aidons à le trouver. Vous voulez une adresse e-mail à votre nom, comme contact@votre-entreprise.fr ? C'est 1,50 € de plus par mois.</p></details>
+      <details><summary>Et le nom de domaine ?</summary><p>Il est compris dans l'abonnement en .fr ; en .com, c'est 0,60 € de plus par mois. Vous ne savez pas encore lequel choisir ? Cochez la case dans le questionnaire, nous vous aidons à le trouver. Vous voulez une adresse e-mail, comme contact@votre-entreprise.fr ? C'est 1,50 € de plus par mois.</p></details>
       <details><summary>Que faut-il pour créer mon site ?</summary><p>Vous remplissez le questionnaire et vous nous envoyez vos réalisations : photos et vidéos de votre travail. Nous nous occupons du reste.</p></details>
       <details><summary>Vous débutez et vous n'avez pas encore de photos ?</summary><p>Pas de souci, on se débrouille. Votre site démarre avec des visuels qui présentent vos prestations, et vos réalisations s'ajoutent au fur et à mesure : vous prenez les photos avec votre appli, elles arrivent sur votre site.</p></details>
       <details><summary>Qui voit mes clients et mes devis ?</summary><p>Vous seul. Vos clients, vos devis et vos factures restent à vous, dans votre application. Nous ne recevons que les photos et vidéos que vous choisissez de nous envoyer pour vos vidéos.</p></details>
