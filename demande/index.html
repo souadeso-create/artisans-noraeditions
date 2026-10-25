@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Votre demande · Nora Éditions</title>
-<meta name="description" content="Votre site internet et votre application web sur mesure : laissez votre nom et votre numéro, nous vous rappelons.">
+<meta name="description" content="Votre site internet et votre application web sur mesure : laissez votre nom, votre e-mail et votre téléphone, nous vous envoyons le questionnaire.">
 <link rel="canonical" href="https://creation-site-internet.noraeditions.fr/demande/">
 <meta name="theme-color" content="#f7f4ef">
 <link rel="icon" type="image/png" sizes="32x32" href="/medias/favicon-site-32.png">
@@ -465,15 +465,15 @@
 <main class="q"><div class="bloc">
   <span class="label">Votre demande</span>
   <h1>Parlons de<br><i>votre site.</i></h1>
-  <p class="intro">Une minute suffit. Laissez-nous votre nom et votre numéro : nous vous rappelons, puis nous vous envoyons le questionnaire pour tout préparer avec vous.</p>
+  <p class="intro">Une minute suffit. Laissez-nous votre nom, votre e-mail et votre téléphone : nous vous envoyons le questionnaire pour tout préparer avec vous.</p>
 
   <form id="q" novalidate>
     <fieldset>
       <legend>Vous</legend>
       <div class="deux">
         <label class="champ">Nom et prénom *<input type="text" name="Nom et prénom" required autocomplete="name"></label>
+        <label class="champ">E-mail *<input type="email" name="email" required autocomplete="email"></label>
         <label class="champ">Téléphone *<input type="tel" name="Téléphone" required autocomplete="tel"></label>
-        <label class="champ">E-mail <small>(facultatif)</small><input type="email" name="email" autocomplete="email"></label>
         <label class="champ">Votre métier *<input type="text" name="Métier" required placeholder="ex. plombier, coiffeuse à domicile, photographe…"></label>
         <label class="champ">Ville<input type="text" name="Ville" autocomplete="address-level2"></label>
         <label class="champ" id="champDomaine" hidden>Le nom de domaine qui vous plaît<input type="text" name="Nom de domaine" id="domaine" readonly></label>
@@ -485,12 +485,6 @@
         <label class="case"><input type="checkbox" name="Je veux" value="Je ne sais pas encore"><span>Je ne sais pas encore</span></label>
       </div></div>
       <label class="champ">Un mot sur votre projet <small>(facultatif)</small><textarea name="Message" placeholder="ex. je démarre, je veux être trouvé sur Google, je veux faire mes devis sur mon téléphone…"></textarea></label>
-      <div class="champ">Le meilleur moment pour vous appeler<div class="cases">
-        <label class="case"><input type="radio" name="Rappel" value="Le matin"><span>Le matin</span></label>
-        <label class="case"><input type="radio" name="Rappel" value="Le midi"><span>Le midi</span></label>
-        <label class="case"><input type="radio" name="Rappel" value="L'après-midi"><span>L'après-midi</span></label>
-        <label class="case"><input type="radio" name="Rappel" value="Le soir"><span>Le soir</span></label>
-      </div></div>
       <p class="aide" style="margin-top:16px">Vos coordonnées servent seulement à vous recontacter au sujet de votre site.</p>
     </fieldset>
 
@@ -507,7 +501,7 @@
   </div>
 </footer>
 <script>
-  // La demande courte (25/10/2026) : nom, téléphone, métier. Elle arrive dans l'appli, avec les demandes du questionnaire ;
+  // La demande courte (25/10/2026) : nom, e-mail, métier (elle n'appelle pas : le questionnaire part par e-mail ou par message). Elle arrive dans l'appli, avec les demandes du questionnaire ;
   // le questionnaire complet est ensuite envoyé au client depuis l'appli.
   const form = document.getElementById("q"), retour = document.getElementById("retour"), bouton = document.getElementById("envoyer");
   const dire = (c, t) => { retour.className = "retour " + c; retour.textContent = t; retour.scrollIntoView({ block: "nearest", behavior: "smooth" }); };
@@ -519,7 +513,8 @@
   form.addEventListener("submit", async e => {
     e.preventDefault();
     const nom = form["Nom et prénom"].value.trim(), tel = form["Téléphone"].value.trim(), mail = form.email.value.trim(), metier = form["Métier"].value.trim();
-    if (!nom || !tel || !metier) { dire("erreur", "Merci d'indiquer votre nom, votre téléphone et votre métier."); return; }
+    if (!nom || !mail || !tel || !metier) { dire("erreur", "Merci d'indiquer votre nom, votre e-mail, votre téléphone et votre métier."); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) { dire("erreur", "Votre adresse e-mail semble incomplète : vérifiez-la, s'il vous plaît."); return; }
     bouton.disabled = true; bouton.textContent = "Envoi…";
     try {
       const reponses = [], fd = new FormData();
@@ -528,20 +523,19 @@
       if (nomU) { ajoute("Nom de domaine", document.getElementById("domaine").value); ajoute("Extension", extU); }
       ajoute("Je veux", [...form.querySelectorAll('[name="Je veux"]:checked')].map(x => x.value).join(", "));
       ajoute("Remarques", form["Message"].value.trim());
-      ajoute("Meilleur moment pour appeler", form.querySelector('[name="Rappel"]:checked')?.value || "");
       const piege = form._honey.value; let enBase = false;
       if (SB && !piege) {
-        const { error } = await SB.from("demandes").insert({ id: crypto.randomUUID(), nom, tel, email: mail || null, metier, reponses, fichiers: [] });
+        const { error } = await SB.from("demandes").insert({ id: crypto.randomUUID(), nom, tel, email: mail, metier, reponses, fichiers: [] });
         enBase = !error;
       }
-      fd.append("Nom", nom); fd.append("Téléphone", tel); fd.append("E-mail", mail || "—"); fd.append("Métier", metier);
+      fd.append("Nom", nom); fd.append("E-mail", mail); fd.append("Téléphone", tel); fd.append("Métier", metier);
       if (piege) fd.append("_honey", piege);
       fd.append("_subject", `Demande — ${nom}`); fd.append("_template", "table"); fd.append("_captcha", "false");
       const r = await fetch("https://formsubmit.co/ajax/contact@noraeditions.com", { method: "POST", headers: { Accept: "application/json" }, body: fd }).catch(() => null);
       if (!enBase && !(r && r.ok)) throw new Error("envoi");
       form.reset(); document.getElementById("champDomaine").hidden = true;
       if (window.noraCompter) noraCompter("demande envoyée");
-      dire("ok", "Merci, votre demande est bien arrivée. Nous vous rappelons très vite, puis nous vous envoyons le questionnaire pour préparer votre site.");
+      dire("ok", "Merci, votre demande est bien arrivée. Nous vous envoyons très vite le questionnaire, pour préparer votre site.");
     } catch (err) { dire("erreur", "L'envoi n'a pas abouti. Réessayez, ou écrivez-nous à contact@noraeditions.com."); }
     bouton.disabled = false; bouton.textContent = "Envoyer ma demande";
   });

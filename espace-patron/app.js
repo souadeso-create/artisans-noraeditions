@@ -2,7 +2,7 @@
 // abonnements, agenda, carnet de projet, notifications.
 import * as db from "./store.js";
 // version des fichiers chargés à la demande : à changer à chaque mise en ligne, pour que le téléphone ne garde pas l'ancienne
-const V = "20261025a";
+const V = "20261025b";
 import { UNITES } from "./donnees.js";
 import { telechargerPDF, totaux, eur, poserTVA, avecTVA, TAUX_TVA, tauxTxt, avenantDe } from "./pdf.js";
 import { CATEGORIES, etatPaiements } from "./carnet.js";
@@ -138,8 +138,8 @@ function messagesClient(c, { demande = null, abonnementDu = 0 } = {}) {
   const p = prenomDe(c), sig = P.entreprise, l = [];
   if (demande && estCourte(demande)) {
     l.push(["Envoyer le questionnaire", "Votre questionnaire", messageQuestionnaire(demande, p, sig)]);
-    l.push(["Bien reçu", "Votre demande", `Bonjour ${p}, c'est ${sig}. Votre demande est bien arrivée, merci ! Je vous appelle très vite pour en parler.`]);
-  } else if (demande) l.push(["Bien reçu", "Votre demande", `Bonjour ${p}, c'est ${sig}. Votre questionnaire est bien arrivé, merci ! Je vous appelle très vite pour en parler.`]);
+    l.push(["Bien reçu", "Votre demande", `Bonjour ${p}, c'est ${sig}. Votre demande est bien arrivée, merci ! Je vous envoie très vite le questionnaire pour préparer votre site.`]);
+  } else if (demande) l.push(["Bien reçu", "Votre demande", `Bonjour ${p}, c'est ${sig}. Votre questionnaire est bien arrivé, merci ! Je reviens vers vous très vite pour la suite.`]);
   if (ribTexte()) l.push(["Envoyer mon RIB", "Nos coordonnées bancaires", `Bonjour ${p}, voici nos coordonnées bancaires pour le virement :\n${ribTexte()}\nMerci !\n${sig}`]);
   l.push(["Site en ligne", "Votre site est en ligne", `Bonjour ${p}, bonne nouvelle : votre site est en ligne ! Regardez-le et dites-moi ce que vous en pensez.\n${sig}`]);
   if (abonnementDu) l.push(["Rappel d'abonnement", `Abonnement ${per}`, `Bonjour ${p}, c'est ${sig}. Petit rappel : l'abonnement ${c.abonnement_debut ? per : deMois()} (${eur(abonnementDu)} €) reste à régler par virement.${ribTexte() ? "\n" + ribTexte() : ""}\nMerci !`]);
