@@ -587,7 +587,7 @@
     const nom = document.getElementById("vdNom"), lien = document.getElementById("vdLien"); if (!nom || !window.NoraDomaine) return;
     NoraDomaine.brancher({ champ: nom, extensions: [...document.querySelectorAll('[name="vdExt"]')], bouton: document.getElementById("vdBouton"), reponse: document.getElementById("vdRes"),
       apres: r => { lien.hidden = r.etat !== "libre"; const ext = r.domaine.slice(r.domaine.lastIndexOf("."));
-        lien.href = "/questionnaire.html?domaine=" + encodeURIComponent(NoraDomaine.nettoyer(nom.value)) + "&ext=" + encodeURIComponent(ext); } });
+        lien.href = "/demande/?domaine=" + encodeURIComponent(NoraDomaine.nettoyer(nom.value)) + "&ext=" + encodeURIComponent(ext); } });
     nom.addEventListener("input", () => { lien.hidden = true; });
   });
 </script>
@@ -604,8 +604,8 @@
       <a href="#tarifs">Tarifs</a>
       <a href="#contact">Contact</a>
     </nav>
-    <details class="menu-tel"><summary aria-label="Ouvrir le menu"><span></span><span></span><span></span></summary><nav onclick="this.parentNode.open=false"><a href="/appli-devis-artisan/">Votre application</a><a href="/#offre">L'offre</a><a href="/#tarifs">Tarifs</a><a href="/#contact">Contact</a><a href="/questionnaire.html">Questionnaire</a></nav></details>
-    <a class="tel-haut" href="questionnaire.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg><span>Questionnaire</span></a>
+    <details class="menu-tel"><summary aria-label="Ouvrir le menu"><span></span><span></span><span></span></summary><nav onclick="this.parentNode.open=false"><a href="/appli-devis-artisan/">Votre application</a><a href="/#offre">L'offre</a><a href="/#tarifs">Tarifs</a><a href="/#contact">Contact</a><a href="/demande/">Ma demande</a></nav></details>
+    <a class="tel-haut" href="/demande/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg><span>Ma demande</span></a>
   </div>
 </header>
 
@@ -627,7 +627,7 @@
         <li>Simulation 3D</li>
         <li>Site web responsive : téléphone, tablette et ordinateur</li>
       </ul>
-      <a class="btn-banniere" href="questionnaire.html">Je veux mon site</a>
+      <a class="btn-banniere" href="/demande/">Je veux mon site</a>
     </div>
   </div>
 </section>
@@ -638,14 +638,14 @@
     <span class="label">Création de site internet</span>
     <h1 class="titre-banniere titre-clair"><span class="t1">Votre entreprise,</span><span class="t2"><span class="minus">de</span> A <span class="minus">à</span> Z.</span></h1>
     <div class="actions">
-      <a class="btn btn-sombre" href="questionnaire.html">Remplir le questionnaire</a>
+      <a class="btn btn-sombre" href="/demande/">Faire ma demande</a>
     </div>
    </div>
     <div class="video-appli">
       <div class="cadre-video">
       <video src="medias/video-site-et-application.mp4" poster="medias/video-site-et-application.jpg" playsinline muted autoplay loop controls preload="metadata" aria-label="Vidéo : le site et l'application web sur mesure, en action"></video>
       <button type="button" class="son-video" hidden>Activer le son</button>
-      <a class="lien-video" href="questionnaire.html" aria-label="Je veux mon site et mon appli : remplir le questionnaire"></a>
+      <a class="lien-video" href="/demande/" aria-label="Je veux mon site et mon appli : faire ma demande"></a>
       </div>
       <p class="titre-banniere titre-clair titre-video"><span class="qui">Artisans · freelances · indépendants</span><span class="t1">Marre de donner</span><span class="t2">un pourcentage</span><span class="t1">de votre chiffre d'affaires</span><span class="t1">aux plateformes</span><span class="t1">de mise en relation ?</span></p>
     </div>
@@ -704,7 +704,7 @@
       <div class="dom-ligne"><input type="text" id="vdNom" placeholder="ex. dupont-plomberie" aria-label="Le nom de votre site" autocomplete="off" autocapitalize="off" spellcheck="false"><button type="button" id="vdBouton">Vérifier</button></div>
       <div class="dom-ext"><label><input type="radio" name="vdExt" value=".fr" checked> .fr</label><label><input type="radio" name="vdExt" value=".com"> .com</label></div>
       <p class="dom-res" id="vdRes" role="status"></p>
-      <a class="btn btn-sombre" id="vdLien" href="/questionnaire.html" hidden>Je le réserve →</a>
+      <a class="btn btn-sombre" id="vdLien" href="/demande/" hidden>Je le réserve →</a>
     </div>
   </div>
 </section>
@@ -740,10 +740,10 @@
       <div class="actions"><a class="btn btn-trait" href="mailto:contact@noraeditions.com?subject=Mon%20entreprise%20d%27artisan">contact@noraeditions.com</a></div>
     </div>
     <div class="demande apparait" id="demande">
-      <span class="label">Le questionnaire</span>
-      <h3>Dites-nous tout,<br><i>en un petit quart d'heure.</i></h3>
-      <p class="intro">Votre entreprise, ce que vous voulez, votre style, et vos réalisations. Nous préparons tout à partir de vos réponses, puis on en parle ensemble.</p>
-      <a class="btn btn-clair" href="questionnaire.html" style="margin-top:22px">Remplir le questionnaire</a>
+      <span class="label">Votre demande</span>
+      <h3>Parlons de votre site,<br><i>en une minute.</i></h3>
+      <p class="intro">Laissez votre nom et votre numéro : nous vous rappelons, puis nous vous envoyons le questionnaire pour préparer votre site avec vous.</p>
+      <a class="btn btn-clair" href="/demande/" style="margin-top:22px">Faire ma demande</a>
     </div>
   </div>
 </section>
@@ -759,7 +759,7 @@
 </footer>
 
 <div class="barre">
-  <a class="btn btn-sombre" href="questionnaire.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg>Remplir le questionnaire</a>
+  <a class="btn btn-sombre" href="/demande/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg>Faire ma demande</a>
 </div>
 
 <script>

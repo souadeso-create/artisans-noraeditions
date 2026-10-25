@@ -2,7 +2,7 @@
 // abonnements, agenda, carnet de projet, notifications.
 import * as db from "./store.js";
 // version des fichiers chargés à la demande : à changer à chaque mise en ligne, pour que le téléphone ne garde pas l'ancienne
-const V = "20261024p";
+const V = "20261025a";
 import { UNITES } from "./donnees.js";
 import { telechargerPDF, totaux, eur, poserTVA, avecTVA, TAUX_TVA, tauxTxt, avenantDe } from "./pdf.js";
 import { CATEGORIES, etatPaiements } from "./carnet.js";
@@ -136,7 +136,10 @@ const ribTexte = () => P.iban ? `IBAN : ${P.iban}${P.bic ? `\nBIC : ${P.bic}` : 
 function messagesClient(c, { demande = null, abonnementDu = 0 } = {}) {
   const per = periodeTxt(periodeAbo(c));
   const p = prenomDe(c), sig = P.entreprise, l = [];
-  if (demande) l.push(["Bien reçu", "Votre demande", `Bonjour ${p}, c'est ${sig}. Votre questionnaire est bien arrivé, merci ! Je vous appelle très vite pour en parler.`]);
+  if (demande && estCourte(demande)) {
+    l.push(["Envoyer le questionnaire", "Votre questionnaire", messageQuestionnaire(demande, p, sig)]);
+    l.push(["Bien reçu", "Votre demande", `Bonjour ${p}, c'est ${sig}. Votre demande est bien arrivée, merci ! Je vous appelle très vite pour en parler.`]);
+  } else if (demande) l.push(["Bien reçu", "Votre demande", `Bonjour ${p}, c'est ${sig}. Votre questionnaire est bien arrivé, merci ! Je vous appelle très vite pour en parler.`]);
   if (ribTexte()) l.push(["Envoyer mon RIB", "Nos coordonnées bancaires", `Bonjour ${p}, voici nos coordonnées bancaires pour le virement :\n${ribTexte()}\nMerci !\n${sig}`]);
   l.push(["Site en ligne", "Votre site est en ligne", `Bonjour ${p}, bonne nouvelle : votre site est en ligne ! Regardez-le et dites-moi ce que vous en pensez.\n${sig}`]);
   if (abonnementDu) l.push(["Rappel d'abonnement", `Abonnement ${per}`, `Bonjour ${p}, c'est ${sig}. Petit rappel : l'abonnement ${c.abonnement_debut ? per : deMois()} (${eur(abonnementDu)} €) reste à régler par virement.${ribTexte() ? "\n" + ribTexte() : ""}\nMerci !`]);
@@ -767,14 +770,23 @@ async function choisirPrestation(rappel) {
 const STATUTS_DEM = [["nouvelle", "Nouvelles"], ["en cours", "En cours"], ["faite", "Faites"], ["archivee", "Archivées"]];
 const NOM_DEM = { nouvelle: "Nouvelle", "en cours": "En cours", faite: "Faite", archivee: "Archivée" };
 const repDe = (x, q) => ((x.reponses || []).find(r => r.q === q) || {}).v || "";
+// la demande courte du site (25/10/2026) : le questionnaire complet part ensuite depuis l'appli, avec un lien qui le relie à elle
+const estCourte = x => (x.reponses || []).some(r => r.s === "Demande courte");
+const lienQuestionnaire = x => `https://creation-site-internet.noraeditions.fr/questionnaire.html?d=${x.id}`;
+function messageQuestionnaire(x, p = prenomDe(x), sig = P.entreprise) {
+  return `Bonjour ${p}, c'est ${sig}. Merci pour votre demande ! Pour préparer votre site, voici notre questionnaire. Il prend un petit quart d'heure, et vous pouvez y joindre vos photos et votre logo :\n${lienQuestionnaire(x)}\nÀ très vite !`;
+}
 const aRappelerDem = x => x.rappel && x.rappel <= aujourdhui() && !["faite", "archivee"].includes(x.statut);
 const dansJours = n => { const d = new Date(); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
 let filtreDem = "nouvelle";
 async function vueDemandes() {
   const demandes = await listerDemandes();
   if (!demandes) { vue.innerHTML = `<div class="entete"><h1>Demandes</h1></div><p class="vide">Les demandes du questionnaire arriveront ici.</p>`; return; }
+  // demande courte : a-t-on reçu son questionnaire, ou envoyé le lien ?
+  const suite = x => demandes.find(y => repDe(y, "Demande d'origine") === x.id);
+  const etatCourte = x => !estCourte(x) ? "" : suite(x) ? '<span class="badge signe">Questionnaire reçu</span> ' : x.etapes?.questionnaire ? '<span class="badge envoye">Questionnaire envoyé</span> ' : '<span class="badge">Demande courte</span> ';
   const ligne = x => `<a class="ligne-liste" href="#/demande/${x.id}"><div><b>${esc(x.nom)}</b><small>${esc([x.metier, repDe(x, "Entreprise"), repDe(x, "Ville")].filter(Boolean).join(" · "))}</small>${repDe(x, "Je veux") ? `<small style="display:block">${esc(repDe(x, "Je veux"))}</small>` : ""}</div>
-    <div class="droite"><small class="gris">${new Date(x.created_at).toLocaleDateString("fr-FR")}</small><br>${aRappelerDem(x) ? '<span class="badge refuse">À rappeler</span> ' : ""}${x.fichiers?.length ? `<span class="badge">${x.fichiers.length} fichier${x.fichiers.length > 1 ? "s" : ""}</span>` : ""}</div></a>`;
+    <div class="droite"><small class="gris">${new Date(x.created_at).toLocaleDateString("fr-FR")}</small><br>${aRappelerDem(x) ? '<span class="badge refuse">À rappeler</span> ' : ""}${etatCourte(x)}${x.fichiers?.length ? `<span class="badge">${x.fichiers.length} fichier${x.fichiers.length > 1 ? "s" : ""}</span>` : ""}</div></a>`;
   vue.innerHTML = `
     <div class="entete"><h1>Demandes</h1><button class="btn" id="nvDem">${ICO.plus}Ajouter</button></div>
     <div class="onglets defile">${(demandes.some(aRappelerDem) ? [["rappeler", "À rappeler"]] : []).concat(STATUTS_DEM).map(([k, n]) => `<a href="" data-f="${k}" class="${filtreDem === k ? "actif" : ""}">${n}${k === "nouvelle" ? ` (${demandes.filter(x => x.statut === "nouvelle").length})` : ""}</a>`).join("")}</div>
@@ -805,7 +817,16 @@ async function vueDemande(id) {
   if (!x) { vue.innerHTML = '<p class="vide">Demande introuvable.</p>'; return; }
   const tel = String(x.tel || "").replace(/\s/g, "");
   const contact = { nom: x.nom, tel: x.tel, email: x.email, societe: repDe(x, "Entreprise"), ville: repDe(x, "Ville") };
-  const sections = []; (x.reponses || []).forEach(r => { let g = sections.find(z => z.s === r.s); if (!g) sections.push(g = { s: r.s, l: [] }); g.l.push(r); });
+  const sections = []; (x.reponses || []).filter(r => r.s !== "Lien").forEach(r => { let g = sections.find(z => z.s === r.s); if (!g) sections.push(g = { s: r.s, l: [] }); g.l.push(r); });
+  // demande courte → le questionnaire à envoyer ; questionnaire venu d'une demande courte → le lien vers elle
+  const courte = estCourte(x), origine = repDe(x, "Demande d'origine");
+  const suiteQ = courte ? ((await listerDemandes()) || []).find(y => repDe(y, "Demande d'origine") === x.id) : null;
+  const envoyeLe = x.etapes?.questionnaire ? new Date(x.etapes.questionnaire + "T12:00").toLocaleDateString("fr-FR", { day: "numeric", month: "long" }) : "";
+  const carteQ = courte ? `<div class="carte" style="margin-bottom:12px"><label>Le questionnaire</label>
+      ${suiteQ ? `<p style="margin:4px 0 12px">Rempli le ${new Date(suiteQ.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })} ✓</p><a class="btn" href="#/demande/${suiteQ.id}">Voir ses réponses</a>`
+        : `<p class="gris" style="margin:4px 0 12px">${envoyeLe ? `Lien envoyé le ${esc(envoyeLe)}. Ses réponses arriveront dans les demandes.` : "Une demande courte : envoyez-lui le questionnaire pour préparer son site."}</p>
+           <div class="actions-doc" style="margin:0"><button class="btn" id="envoyerQ">${envoyeLe ? "Renvoyer le questionnaire" : "Envoyer le questionnaire"}</button><button class="btn clair" id="copierQ">Copier le lien</button></div>`}</div>`
+    : origine ? `<div class="carte" style="margin-bottom:12px"><label>Le questionnaire</label><p style="margin:4px 0 12px">Rempli à la suite de sa demande courte.</p><a class="btn clair" href="#/demande/${esc(origine)}">Voir la demande courte</a></div>` : "";
   // le nom de domaine et l'abonnement prévu : site 10 €, .com + 0,60 €, e-mail pro + 1,50 €, web marketing 25 €
   const veut = repDe(x, "Je veux"), nomDom = repDe(x, "Nom de domaine"), ext = repDe(x, "Extension") || ".fr", mailPro = repDe(x, "Adresse e-mail professionnelle").startsWith("Oui");
   const domaine = [nomDom ? (/\.(fr|com)$/i.test(nomDom) ? nomDom : nomDom + ext) : "", repDe(x, "Nom de domaine : disponibilité").replace(/^.*? : /, ""), repDe(x, "Nom de domaine déjà à moi") ? "déjà à lui" : "", repDe(x, "Aide pour le nom de domaine") ? "veut de l'aide pour le choisir" : ""].filter(Boolean).join(" · ");
@@ -823,6 +844,7 @@ async function vueDemande(id) {
           ${x.client_id ? `<a class="btn clair" href="#/client/${x.client_id}">${ICO.client}Fiche client</a><a class="btn clair" href="#/document/nouveau/devis?client=${x.client_id}">${ICO.plus}Devis</a>`
             : `<button class="btn clair" id="versClient">${ICO.client}Créer la fiche client</button>`}
         </div>
+        ${carteQ}
         <div class="carte" style="margin-bottom:12px">
           <label>Où en est-elle</label>
           <div class="palette" style="margin-bottom:14px">${STATUTS_DEM.slice(0, 3).map(([k]) => `<button class="btn ${x.statut === k ? "" : "discret"} petit-btn" data-statut="${k}">${NOM_DEM[k]}</button>`).join("")}</div>
@@ -845,6 +867,13 @@ async function vueDemande(id) {
       if (/\.(jpe?g|png|webp|gif|heic|heif)$/i.test(x.fichiers[i].nom)) a.innerHTML = `<img src="${esc(urls[i])}" alt="${esc(x.fichiers[i].nom)}" loading="lazy"><small>${esc(x.fichiers[i].type || "")}</small>`; });
   }).catch(e => console.error(e));
   document.getElementById("ecrire").onclick = () => choisirMessage(contact, { demande: x });
+  const eq = document.getElementById("envoyerQ");
+  if (eq) eq.onclick = async () => {
+    envoyerMessage({ client: contact }, messageQuestionnaire(x, prenomDe(contact)), "Votre questionnaire");
+    if (!x.etapes?.questionnaire) await majDem({ etapes: { ...(x.etapes || {}), questionnaire: aujourdhui() }, statut: x.statut === "nouvelle" ? "en cours" : x.statut });
+  };
+  const cq = document.getElementById("copierQ");
+  if (cq) cq.onclick = () => navigator.clipboard.writeText(lienQuestionnaire(x)).then(() => toast("Lien copié ✓"), () => toast(lienQuestionnaire(x)));
   vue.querySelectorAll("[data-statut]").forEach(b => b.onclick = async () => { await majDem({ statut: b.dataset.statut }, `Passée en « ${NOM_DEM[b.dataset.statut]} » ✓`); vueDemande(id); });
   vue.querySelectorAll("[data-rappel]").forEach(b => b.onclick = async () => { const n = +b.dataset.rappel; await majDem({ rappel: n ? dansJours(n) : null }, n ? "Rappel noté ✓" : "Rappel effacé"); vueDemande(id); });
   document.getElementById("dRappel").onchange = async e => { await majDem({ rappel: e.target.value || null }, e.target.value ? "Rappel noté ✓" : "Rappel effacé"); vueDemande(id); };

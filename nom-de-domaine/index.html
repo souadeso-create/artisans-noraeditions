@@ -606,8 +606,8 @@
       <a href="/#tarifs">Tarifs</a>
       <a href="/#contact">Contact</a>
     </nav>
-    <details class="menu-tel"><summary aria-label="Ouvrir le menu"><span></span><span></span><span></span></summary><nav onclick="this.parentNode.open=false"><a href="/appli-devis-artisan/">Votre application</a><a href="/#offre">L'offre</a><a href="/#tarifs">Tarifs</a><a href="/#contact">Contact</a><a href="/questionnaire.html">Questionnaire</a></nav></details>
-    <a class="tel-haut" href="/questionnaire.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg><span>Questionnaire</span></a>
+    <details class="menu-tel"><summary aria-label="Ouvrir le menu"><span></span><span></span><span></span></summary><nav onclick="this.parentNode.open=false"><a href="/appli-devis-artisan/">Votre application</a><a href="/#offre">L'offre</a><a href="/#tarifs">Tarifs</a><a href="/#contact">Contact</a><a href="/demande/">Ma demande</a></nav></details>
+    <a class="tel-haut" href="/demande/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg><span>Ma demande</span></a>
   </div>
 </header>
 
@@ -618,7 +618,7 @@
     <h1>Votre nom de domaine<br><i>est-il libre ?</i></h1>
     <p>Tapez le nom de votre entreprise : vous voyez tout de suite s&#x27;il est libre en .fr ou en .com. Avec votre site, nous le réservons pour vous, à votre nom.</p>
     <div class="actions">
-      <a class="btn btn-sombre" href="/questionnaire.html">Remplir le questionnaire</a>
+      <a class="btn btn-sombre" href="/demande/">Faire ma demande</a>
     </div>
     
   </div>
@@ -631,7 +631,7 @@
       <div class="dom-ligne"><input type="text" id="vdNom" placeholder="ex. dupont-plomberie" aria-label="Le nom de votre site" autocomplete="off" autocapitalize="off" spellcheck="false"><button type="button" id="vdBouton">Vérifier</button></div>
       <div class="dom-ext"><label><input type="radio" name="vdExt" value=".fr" checked> .fr</label><label><input type="radio" name="vdExt" value=".com"> .com</label></div>
       <p class="dom-res" id="vdRes" role="status"></p>
-      <a class="btn btn-sombre" id="vdLien" href="/questionnaire.html" hidden>Je le réserve →</a>
+      <a class="btn btn-sombre" id="vdLien" href="/demande/" hidden>Je le réserve →</a>
     </div>
   </div>
 </section>
@@ -653,7 +653,7 @@
     const nom = document.getElementById("vdNom"), lien = document.getElementById("vdLien"); if (!nom || !window.NoraDomaine) return;
     NoraDomaine.brancher({ champ: nom, extensions: [...document.querySelectorAll('[name="vdExt"]')], bouton: document.getElementById("vdBouton"), reponse: document.getElementById("vdRes"),
       apres: r => { lien.hidden = r.etat !== "libre"; const ext = r.domaine.slice(r.domaine.lastIndexOf("."));
-        lien.href = "/questionnaire.html?domaine=" + encodeURIComponent(NoraDomaine.nettoyer(nom.value)) + "&ext=" + encodeURIComponent(ext); } });
+        lien.href = "/demande/?domaine=" + encodeURIComponent(NoraDomaine.nettoyer(nom.value)) + "&ext=" + encodeURIComponent(ext); } });
     nom.addEventListener("input", () => { lien.hidden = true; });
   });
 </script>
@@ -707,7 +707,7 @@
     <div class="article apparait">
       <span class="label">Au quotidien</span>
       <h2>Du nom<br><i>au site en ligne.</i></h2>
-      <div class="journee"><p>Vous vérifiez votre nom ici, puis vous remplissez le questionnaire.</p><p>Nous réservons le nom de domaine pour vous, à votre nom.</p><p>Votre site y est mis en ligne, avec votre adresse e-mail professionnelle si vous la voulez.</p></div>
+      <div class="journee"><p>Vous vérifiez votre nom ici, puis vous faites votre demande.</p><p>Nous réservons le nom de domaine pour vous, à votre nom.</p><p>Votre site y est mis en ligne, avec votre adresse e-mail professionnelle si vous la voulez.</p></div>
     </div>
   </div>
 </section>
@@ -727,10 +727,10 @@
 <section id="contact" class="contact">
   <div class="bloc">
     <div class="demande apparait">
-      <span class="label">Le questionnaire</span>
-      <h3>Dites-nous tout,<br><i>en un petit quart d'heure.</i></h3>
-      <p class="intro">Votre entreprise, ce que vous voulez, votre style, et vos réalisations. Nous préparons tout à partir de vos réponses, puis on en parle ensemble.</p>
-      <a class="btn btn-clair" href="/questionnaire.html" style="margin-top:22px">Remplir le questionnaire</a>
+      <span class="label">Votre demande</span>
+      <h3>Parlons de votre site,<br><i>en une minute.</i></h3>
+      <p class="intro">Laissez votre nom et votre numéro : nous vous rappelons, puis nous vous envoyons le questionnaire pour préparer votre site avec vous.</p>
+      <a class="btn btn-clair" href="/demande/" style="margin-top:22px">Faire ma demande</a>
     </div>
   </div>
 </section>
@@ -745,7 +745,7 @@
 </footer>
 
 <div class="barre">
-  <a class="btn btn-sombre" href="/questionnaire.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg>Remplir le questionnaire</a>
+  <a class="btn btn-sombre" href="/demande/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg>Faire ma demande</a>
 </div>
 
 <script>

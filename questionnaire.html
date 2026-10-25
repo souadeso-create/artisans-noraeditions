@@ -800,6 +800,9 @@
       }
       const accord = document.getElementById("accord").checked ? "Oui" : "Non coché";
       fd.append("Accord tarifs", accord); reponses.push({ s: "12. Pour finir", q: "Accord tarifs", v: accord });
+      // envoyé depuis l'appli après une demande courte : ?d=<la demande>, pour relier les deux dans l'appli
+      const origine = new URLSearchParams(location.search).get("d") || "";
+      if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(origine)) reponses.push({ s: "Lien", q: "Demande d'origine", v: origine });
       // les fichiers : photos réduites, logo, anciens devis
       const aEnvoyer = [];
       for (const [i, f] of photos.entries()) aEnvoyer.push({ type: "Réalisation", nom: `realisation-${i + 1}.jpg`, f: await reduire(f), mime: "image/jpeg" });
