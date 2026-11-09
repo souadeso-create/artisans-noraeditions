@@ -631,6 +631,23 @@
   #tarifs .tarif-espace ul { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px 24px; }
   @media (min-width: 760px) { #tarifs .plus-tarif { left: -46px; top: 50%; margin: -38px 0 0 0; } #tarifs .tarifs { column-gap: 34px; } }
 </style>
+<style>/* sans tiret */ .label::before { display: none !important; }</style>
+<style>
+  /* le « + » entre la création et l'abonnement : au-dessus sur téléphone, à gauche quand les tarifs sont côte à côte */
+  #tarifs .tarif-plus { position: relative; overflow: visible; }
+  #tarifs .plus-tarif { position: absolute; z-index: 3; left: 50%; top: -50px; width: 76px; height: 76px; margin-left: -38px;
+    border-radius: 50%; background: #ffd426; border: 4px solid #fff; font-size: 0; color: transparent !important;
+    box-shadow: 0 6px 0 #a65f00, 0 14px 26px rgba(0,0,0,.3); pointer-events: none; }
+  /* le « + » dessiné : deux barres épaisses */
+  #tarifs .plus-tarif::before, #tarifs .plus-tarif::after { content: ""; position: absolute; left: 50%; top: 50%; background: #0f1240; border-radius: 6px; }
+  #tarifs .plus-tarif::before { width: 38px; height: 11px; margin: -5.5px 0 0 -19px; }
+  #tarifs .plus-tarif::after { width: 11px; height: 38px; margin: -19px 0 0 -5.5px; }
+  #tarifs .tarifs { row-gap: 40px; }
+  /* l'espace client en option : sur toute la largeur, sous les quatre encadrés */
+  #tarifs .tarif-espace { grid-column: 1 / -1; }
+  #tarifs .tarif-espace ul { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px 24px; }
+  @media (min-width: 760px) { #tarifs .plus-tarif { left: -46px; top: 50%; margin: -38px 0 0 0; } #tarifs .tarifs { column-gap: 34px; } }
+</style>
 </head>
 <body>
 
@@ -656,6 +673,7 @@
       <div class="badges-tech" aria-hidden="true"><span class="logo-t"><i style="--ic:url(https://cdn.jsdelivr.net/npm/simple-icons@13.21.0/icons/html5.svg);background:#e34f26"></i></span><span class="logo-t"><i style="--ic:url(https://cdn.jsdelivr.net/npm/simple-icons@13.21.0/icons/css3.svg);background:#1572b6"></i></span><span class="logo-t"><i style="--ic:url(https://cdn.jsdelivr.net/npm/simple-icons@13.21.0/icons/javascript.svg);background:#e8c300"></i></span><span class="logo-t"><i style="--ic:url(https://cdn.jsdelivr.net/npm/simple-icons@13.21.0/icons/threedotjs.svg);background:#111111"></i></span><span class="logo-t"><i style="--ic:url(https://cdn.jsdelivr.net/npm/simple-icons@13.21.0/icons/python.svg);background:#3776ab"></i></span><span class="logo-t"><i style="--ic:url(https://cdn.jsdelivr.net/npm/simple-icons@13.21.0/icons/supabase.svg);background:#3ecf8e"></i></span><span class="logo-t"><i style="--ic:url(https://cdn.jsdelivr.net/npm/simple-icons@13.21.0/icons/postgresql.svg);background:#4169e1"></i></span><span class="logo-t"><i style="--ic:url(https://cdn.jsdelivr.net/npm/simple-icons@13.21.0/icons/pwa.svg);background:#5a0fc8"></i></span><span class="logo-t"><i style="--ic:url(https://cdn.jsdelivr.net/npm/simple-icons@13.21.0/icons/git.svg);background:#f05032"></i></span><span class="logo-t"><i style="--ic:url(https://cdn.jsdelivr.net/npm/simple-icons@13.21.0/icons/json.svg);background:#111111"></i></span><span class="logo-t"><i style="--ic:url(https://cdn.jsdelivr.net/npm/simple-icons@13.21.0/icons/ffmpeg.svg);background:#007808"></i></span></div>
       <h1 class="titre-banniere"><span class="t1">Création de site</span><span class="t2">Internet</span><span class="t3">Web designer</span></h1>
       <ul class="liste-banniere">
+        <li>Design sur mesure, à votre image : on peut tout faire</li>
         <li>Site au nom de votre entreprise, sur mesure</li>
         <li>Référencement local : Google (SEO) et fiche Google</li>
         <li>Rédaction d'articles SEO pour votre site</li>
@@ -729,18 +747,18 @@
       <h2>Simple,<br><i>et sans surprise.</i></h2>
       <p class="intro">Tout compris.</p>
     </div>
+    <div class="design-offert apparait"><b>Sur mesure, à votre image.</b> Votre site est dessiné pour vous : couleurs, style, mise en page. Dites-nous ce que vous voulez, on peut tout faire. Avec la formule Pro, le design de vos cartes de visite recto verso est offert.</div>
     <div class="tarifs tarifs-formules">
       <div class="tarif apparait"><span class="promo">Pour démarrer</span><div class="chiffre">190 €</div><p class="puis">puis <b>25 €</b> / an</p><h3>Essentiel</h3><p class="gris">Être trouvé sur Google.</p>
-        <ul><li>Votre site internet, avec vos réalisations</li><li>Un site bien référencé sur Google</li><li>Votre fiche Google</li><li>Le formulaire de demande de devis</li><li>Hébergement, maintenance et nom de domaine en .fr</li></ul></div>
+        <ul><li>Le design de votre site, sur mesure</li><li>Votre site internet, avec vos réalisations</li><li>Un site bien référencé sur Google</li><li>Votre fiche Google</li><li>Le formulaire de demande de devis</li><li>Hébergement, maintenance et nom de domaine en .fr</li></ul></div>
       <div class="tarif apparait tarif-reco"><span class="promo">Recommandé</span><div class="chiffre">490 €</div><p class="puis">puis <b>29 €</b> / mois</p><h3>Pro</h3><p class="gris">Gérer toute votre activité.</p>
-        <ul><li>Tout l'Essentiel</li><li>Votre logo et la retouche de vos photos</li><li>100 cartes de visite recto verso offertes, dessinées pour vous</li><li>Votre tableau de bord : l'application web sur mesure, au nom de votre entreprise, avec devis, factures, relances et signature en ligne</li><li>Agenda, rappels et prise de rendez-vous en ligne</li><li>Le paiement en ligne, avec acompte</li><li>Les nouveautés de l'application</li></ul></div>
+        <ul><li>Tout l'Essentiel</li><li>Votre logo et la retouche de vos photos</li><li>100 cartes de visite recto verso offertes, design offert</li><li>Votre tableau de bord : l'application web sur mesure, au nom de votre entreprise, avec devis, factures, relances et signature en ligne</li><li>Agenda, rappels et prise de rendez-vous en ligne</li><li>Le paiement en ligne, avec acompte</li><li>Les nouveautés de l'application</li></ul></div>
       <div class="tarif apparait"><span class="promo">Nouveau</span><div class="chiffre">990 €</div><p class="puis">puis <b>49 €</b> / mois</p><h3>Pro + IA</h3><p class="gris">Gagner du temps chaque semaine.</p>
         <ul><li>Tout le Pro</li><li>Un assistant sur votre site qui répond aux questions de vos clients et prend leurs demandes</li><li>Deux articles par mois écrits pour Google</li><li>Les réponses à vos avis Google, préparées pour vous</li><li>Vos devis préparés à partir de la demande de votre client, quel que soit votre métier</li></ul></div>
       <div class="tarif apparait"><span class="promo">En option</span><h3 style="margin-top:18px">Pour aller plus loin</h3><p class="gris">Avec toutes les formules.</p>
         <ul><li>Boutique en ligne : sur devis</li><li>Nom de domaine en .com : + 0,60 € par mois</li><li>Adresse e-mail professionnelle : + 1,50 € par mois</li></ul></div>
     </div>
     <div class="tableau-bord apparait"><h3>Votre tableau de bord <small>· formules Pro et Pro + IA</small></h3>
-      <p>L'application web sur mesure, c'est votre tableau de bord : installée sur votre téléphone comme une appli, avec votre logo, elle réunit toute votre activité. Selon votre métier, elle peut contenir :</p>
       <ul><li>L'accueil du jour : ce que vous avez encaissé, les devis en attente, les rendez-vous et ce qui reste à faire</li><li>Les demandes de vos clients, arrivées depuis votre site, avec leurs photos</li><li>Vos clients : coordonnées, historique, documents et notes</li><li>Vos prestations et vos prix, prêts à mettre dans un devis</li><li>Les devis, envoyés par message ou par e-mail et signés en ligne</li><li>Les avenants, quand le projet change en cours de route</li><li>Les factures d'acompte et de solde, et les relances prêtes à envoyer</li><li>Les paiements reçus et ce qui reste dû</li><li>L'agenda, les rendez-vous et les rappels prêts à envoyer</li><li>La prise de rendez-vous en ligne sur votre site</li><li>Le paiement en ligne : vos clients règlent un acompte ou la totalité depuis votre site ou depuis leur devis</li><li>Les dépenses, ticket en photo, et ce que vous gagnez vraiment</li><li>Le carnet de suivi : photos avant et après, notes, heures passées</li><li>Les documents de votre métier : procès-verbal de réception, attestations, programmes, notes d'honoraires…</li><li>La demande d'avis Google, prête à envoyer</li><li>Une notification sur votre téléphone à chaque nouvelle demande</li><li>Ce que vous avez encaissé dans le mois, pour votre déclaration</li></ul></div>
     <p class="note-tarifs apparait"><b>Offre de lancement : −30 % sur la création pour nos 5 premiers clients.</b><br>Nous vous montrons les rendus : la création se paie après votre validation finale, en 3 fois sans frais si vous le souhaitez. Abonnement sans engagement.</p>
     <div class="verif-dom apparait">
