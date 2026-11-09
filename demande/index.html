@@ -448,6 +448,7 @@
 <script src="/medias/domaine.js"></script>
 <script src="/medias/compteur.js" defer></script>
 <script src="/medias/metiers.js" defer></script>
+<script src="/medias/villes.js" defer></script>
 <style>/* sans tiret */ .label::before { display: none !important; }</style>
 </head>
 <body>
@@ -478,7 +479,11 @@
         <label class="champ">Téléphone *<input type="tel" name="Téléphone" required autocomplete="tel"></label>
         <label class="champ">Votre métier *<input type="text" name="Métier" required placeholder="Tapez les premières lettres : plombier, coiffeuse…"></label>
         <label class="champ">Ville<input type="text" name="Ville" autocomplete="address-level2"></label>
-        <label class="champ" id="champDomaine" hidden>Le nom de domaine qui vous plaît<input type="text" name="Nom de domaine" id="domaine" readonly></label>
+      </div>
+      <div class="champ dom">Le nom de domaine qui vous plaît <small>(l'adresse de votre site, facultatif)</small>
+        <div class="dom-ligne"><input type="text" name="Nom de domaine" id="domNom" placeholder="ex. dupont-plomberie" autocomplete="off" autocapitalize="off" spellcheck="false"><button type="button" class="btn btn-trait" id="domVerif">Vérifier</button></div>
+        <div class="cases"><label class="case"><input type="radio" name="Extension" value=".fr" checked><span>.fr <small>compris</small></span></label><label class="case"><input type="radio" name="Extension" value=".com"><span>.com <small>+0,60 € par mois</small></span></label></div>
+        <p class="dom-res" id="domRes" role="status"></p>
       </div>
       <div class="champ">La formule qui vous intéresse<div class="cases">
         <label class="case"><input type="radio" name="Formule" value="Essentiel (190 € puis 25 € par an)"><span>Essentiel <small>190 €, puis 25 €/an</small></span></label>
@@ -508,8 +513,14 @@
   const dire = (c, t) => { retour.className = "retour " + c; retour.textContent = t; retour.scrollIntoView({ block: "nearest", behavior: "smooth" }); };
   // venu du vérificateur de nom de domaine : ?domaine=dupont-plomberie&ext=.com
   const u = new URLSearchParams(location.search), nomU = (u.get("domaine") || "").slice(0, 80), extU = u.get("ext") === ".com" ? ".com" : ".fr";
-  if (nomU) { document.getElementById("domaine").value = nomU.replace(/\.(fr|com)$/i, "") + extU; document.getElementById("champDomaine").hidden = false;
-    }
+  // le nom de domaine : vérifié ici aussi, auprès des registres officiels (medias/domaine.js)
+  const domNom = document.getElementById("domNom"), domRes = document.getElementById("domRes"), extensions = [...form.querySelectorAll('[name="Extension"]')];
+  let dispo = "";
+  const verifDomaine = NoraDomaine.brancher({ champ: domNom, extensions, bouton: document.getElementById("domVerif"), reponse: domRes,
+    apres: r => { dispo = r.etat === "libre" ? `${r.domaine} : libre` : r.etat === "pris" ? `${r.domaine} : déjà pris` : ""; } });
+  domNom.addEventListener("change", verifDomaine);
+  domNom.addEventListener("input", () => { dispo = ""; });
+  if (nomU) { domNom.value = NoraDomaine.nettoyer(nomU); const x = extensions.find(e => e.value === extU); if (x) x.checked = true; verifDomaine(); }
   const SB = window.NORA_SB && NORA_SB.url && window.supabase ? supabase.createClient(NORA_SB.url, NORA_SB.cle, { auth: { persistSession: false } }) : null;
   form.addEventListener("submit", async e => {
     e.preventDefault();
@@ -521,7 +532,8 @@
       const reponses = [], fd = new FormData();
       const ajoute = (q, v) => { if (!v) return; reponses.push({ s: "Demande courte", q, v }); fd.append(q, v); };
       ajoute("Ville", form["Ville"].value.trim());
-      if (nomU) { ajoute("Nom de domaine", document.getElementById("domaine").value); ajoute("Extension", extU); }
+      const ext = (extensions.find(e => e.checked) || extensions[0]).value;
+      if (NoraDomaine.nettoyer(domNom.value)) { ajoute("Nom de domaine", NoraDomaine.nettoyer(domNom.value) + ext); ajoute("Extension", ext); ajoute("Nom de domaine : disponibilité", dispo); }
       ajoute("Formule", form.querySelector('[name="Formule"]:checked')?.value || "");
       ajoute("Remarques", form["Message"].value.trim());
       const piege = form._honey.value; let enBase = false;
@@ -534,7 +546,7 @@
       fd.append("_subject", `Demande — ${nom}`); fd.append("_template", "table"); fd.append("_captcha", "false");
       const r = await fetch("https://formsubmit.co/ajax/contact@noraeditions.com", { method: "POST", headers: { Accept: "application/json" }, body: fd }).catch(() => null);
       if (!enBase && !(r && r.ok)) throw new Error("envoi");
-      form.reset(); document.getElementById("champDomaine").hidden = true;
+      form.reset(); domRes.textContent = ""; domRes.className = "dom-res"; dispo = "";
       if (window.noraCompter) noraCompter("demande envoyée");
       dire("ok", "Merci, votre demande est bien arrivée. Nous vous envoyons très vite le questionnaire, pour préparer votre site.");
     } catch (err) { dire("erreur", "L'envoi n'a pas abouti. Réessayez, ou écrivez-nous à contact@noraeditions.com."); }
