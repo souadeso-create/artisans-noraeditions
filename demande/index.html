@@ -346,7 +346,7 @@
   .q .dom-res { font-size: 14px; font-weight: 600; margin: 8px 0 0; min-height: 0; }
   .q .dom-res:empty { display: none; }
   .q .dom-res.libre { color: #0b6b3c; } .q .dom-res.pris { color: #a3261f; } .q .dom-res.attente { color: var(--gris); font-weight: 500; }
-  .q [data-dom][hidden], .q [data-sauf][hidden], .q [data-quand][hidden], .q #choixMetier[hidden] { display: none !important; }
+  /* par métier */ .q [data-dom][hidden], .q [data-sauf][hidden], .q [data-quand][hidden], .q #choixMetier[hidden], .q #metierLibre[hidden], .q [data-si][hidden] { display: none !important; }
   @media (min-width: 700px) { .q .deux { grid-template-columns: 1fr 1fr; } }
   /* Style « affiche » : titres en capitales épaisses, boutons et cartes à contour noir et ombre décalée */
   :root { --display: "Bricolage Grotesque", "Inter", Arial, sans-serif; --trait: #1b1a18; }

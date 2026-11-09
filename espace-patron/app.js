@@ -2,7 +2,7 @@
 // abonnements, agenda, carnet de projet, notifications.
 import * as db from "./store.js";
 // version des fichiers chargés à la demande : à changer à chaque mise en ligne, pour que le téléphone ne garde pas l'ancienne
-const V = "20261109b";
+const V = "20261110a";
 import { UNITES } from "./donnees.js";
 import { telechargerPDF, totaux, eur, poserTVA, avecTVA, TAUX_TVA, tauxTxt, avenantDe } from "./pdf.js";
 import { CATEGORIES, etatPaiements } from "./carnet.js";
@@ -772,7 +772,8 @@ const NOM_DEM = { nouvelle: "Nouvelle", "en cours": "En cours", faite: "Faite", 
 const repDe = (x, q) => ((x.reponses || []).find(r => r.q === q) || {}).v || "";
 // la demande courte du site (25/10/2026) : le questionnaire complet part ensuite depuis l'appli, avec un lien qui le relie à elle
 const estCourte = x => (x.reponses || []).some(r => r.s === "Demande courte");
-const lienQuestionnaire = x => `https://creation-site-internet.noraeditions.fr/questionnaire.html?d=${x.id}`;
+// le métier de la demande suit le lien (10/11/2026) : le questionnaire ne pose que les questions de ce métier
+const lienQuestionnaire = x => `https://creation-site-internet.noraeditions.fr/questionnaire.html?d=${x.id}` + (x.metier ? `&m=${encodeURIComponent(x.metier)}` : "");
 function messageQuestionnaire(x, p = prenomDe(x), sig = P.entreprise) {
   return `Bonjour ${p}, c'est ${sig}. Merci pour votre demande ! Pour préparer votre site, voici notre questionnaire. Il prend un petit quart d'heure, et vous pouvez y joindre vos photos et votre logo :\n${lienQuestionnaire(x)}\nÀ très vite !`;
 }
