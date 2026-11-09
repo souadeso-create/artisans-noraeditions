@@ -2,7 +2,7 @@
 // abonnements, agenda, carnet de projet, notifications.
 import * as db from "./store.js";
 // version des fichiers chargés à la demande : à changer à chaque mise en ligne, pour que le téléphone ne garde pas l'ancienne
-const V = "20261025b";
+const V = "20261109b";
 import { UNITES } from "./donnees.js";
 import { telechargerPDF, totaux, eur, poserTVA, avecTVA, TAUX_TVA, tauxTxt, avenantDe } from "./pdf.js";
 import { CATEGORIES, etatPaiements } from "./carnet.js";
@@ -827,11 +827,14 @@ async function vueDemande(id) {
         : `<p class="gris" style="margin:4px 0 12px">${envoyeLe ? `Lien envoyé le ${esc(envoyeLe)}. Ses réponses arriveront dans les demandes.` : "Une demande courte : envoyez-lui le questionnaire pour préparer son site."}</p>
            <div class="actions-doc" style="margin:0"><button class="btn" id="envoyerQ">${envoyeLe ? "Renvoyer le questionnaire" : "Envoyer le questionnaire"}</button><button class="btn clair" id="copierQ">Copier le lien</button></div>`}</div>`
     : origine ? `<div class="carte" style="margin-bottom:12px"><label>Le questionnaire</label><p style="margin:4px 0 12px">Rempli à la suite de sa demande courte.</p><a class="btn clair" href="#/demande/${esc(origine)}">Voir la demande courte</a></div>` : "";
-  // le nom de domaine et l'abonnement prévu : site 10 €, .com + 0,60 €, e-mail pro + 1,50 €, web marketing 25 €
+  // le nom de domaine et l'abonnement prévu : selon la formule, .com + 0,60 €, e-mail pro + 1,50 € par mois
   const veut = repDe(x, "Je veux"), nomDom = repDe(x, "Nom de domaine"), ext = repDe(x, "Extension") || ".fr", mailPro = repDe(x, "Adresse e-mail professionnelle").startsWith("Oui");
   const domaine = [nomDom ? (/\.(fr|com)$/i.test(nomDom) ? nomDom : nomDom + ext) : "", repDe(x, "Nom de domaine : disponibilité").replace(/^.*? : /, ""), repDe(x, "Nom de domaine déjà à moi") ? "déjà à lui" : "", repDe(x, "Aide pour le nom de domaine") ? "veut de l'aide pour le choisir" : ""].filter(Boolean).join(" · ");
-  const parMois = (/Un site internet|dans mon site/.test(veut) || nomDom ? 10 + (ext === ".com" ? 0.6 : 0) + (mailPro ? 1.5 : 0) : 0) + (/Web marketing/.test(veut) || repDe(x, "Vidéos") === "Oui" ? 25 : 0);
-  const essentiel = [["Activité", x.activite], ["Métier", x.metier], ["Veut", veut], ["Nom de domaine", domaine], ["E-mail pro", mailPro ? "Oui · + 1,50 € par mois" : ""], ["Abonnement prévu", parMois ? eur(parMois) + " € par mois" : ""], ["Dans l'appli", repDe(x, "Appli")], ["Ses clients", repDe(x, "Mode")], ["Reçoit ses patients", repDe(x, "Lieu des soins")], ["Rendez-vous aujourd'hui", repDe(x, "Rendez-vous aujourd'hui")], ["Liste d'attente", repDe(x, "Liste d'attente")], ["Pour quand", repDe(x, "Délai")], ["Questions", repDe(x, "Remarques")]].filter(r => r[1]);
+  // les formules (09/11/2026) : Essentiel 25 € par an ; Pro 29 €, Pro + IA 49 € par mois ; sans formule choisie, l'Essentiel
+  const formule = repDe(x, "Formule"), veutSite = !!(formule || /Un site internet|dans mon site/.test(veut) || nomDom);
+  const base = /Pro \+ IA/.test(formule) ? 49 : /^Pro/.test(formule) ? 29 : 0, parAn = veutSite && !base ? 25 : 0;
+  const parMois = veutSite && (base || ext === ".com" || mailPro) ? base + (ext === ".com" ? 0.6 : 0) + (mailPro ? 1.5 : 0) : 0;
+  const essentiel = [["Activité", x.activite], ["Métier", x.metier], ["Formule", formule], ["Veut", veut], ["Nom de domaine", domaine], ["E-mail pro", mailPro ? "Oui · + 1,50 € par mois" : ""], ["Abonnement prévu", [parAn ? parAn + " € par an" : "", parMois ? eur(parMois) + " € par mois" : ""].filter(Boolean).join(" + ")], ["Dans l'appli", repDe(x, "Appli")], ["Ses clients", repDe(x, "Mode")], ["Reçoit ses patients", repDe(x, "Lieu des soins")], ["Rendez-vous aujourd'hui", repDe(x, "Rendez-vous aujourd'hui")], ["Liste d'attente", repDe(x, "Liste d'attente")], ["Pour quand", repDe(x, "Délai")], ["Questions", repDe(x, "Remarques")]].filter(r => r[1]);
   const majDem = async (champs, msg) => { Object.assign(x, champs); try { await db.enregistrer("demandes", { ...x }); if (msg) toast(msg); } catch (e) { erreur(e); } };
   vue.innerHTML = `
     <div class="entete"><div><div class="petit">Demande du ${new Date(x.created_at).toLocaleDateString("fr-FR", { dateStyle: "long" })}</div><h1>${esc(x.nom)}</h1>
