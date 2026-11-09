@@ -603,6 +603,9 @@
   #tarifs .plus-tarif::before { width: 38px; height: 11px; margin: -5.5px 0 0 -19px; }
   #tarifs .plus-tarif::after { width: 11px; height: 38px; margin: -19px 0 0 -5.5px; }
   #tarifs .tarifs { row-gap: 40px; }
+  /* l'espace client en option : sur toute la largeur, sous les quatre encadrés */
+  #tarifs .tarif-espace { grid-column: 1 / -1; }
+  #tarifs .tarif-espace ul { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px 24px; }
   @media (min-width: 760px) { #tarifs .plus-tarif { left: -46px; top: 50%; margin: -38px 0 0 0; } #tarifs .tarifs { column-gap: 34px; } }
 </style>
 </head>
@@ -712,6 +715,7 @@
         <ul><li>L'application complète, au nom de votre entreprise et avec votre logo</li><li>Devis, factures, relances, signature en ligne</li><li>Agenda, rappels, dépenses et paiements</li></ul></div>
       <div class="tarif option apparait"><span class="promo">En option</span><div class="chiffre">25 € <small>/ mois</small></div><h3>Web marketing</h3><p class="gris">Vidéos, réseaux, articles et annuaires.</p>
         <ul><li>Vous envoyez photos et vidéos depuis votre application</li><li>Nous créons vos réseaux et nous les faisons vivre : nous postons régulièrement</li><li>Nous montons vos vidéos, au bon format pour chaque réseau</li><li>Nous écrivons des articles pour votre site, pour qu'il soit bien vu par Google</li><li>Nous vous inscrivons sur tous les annuaires pro</li></ul></div>
+      <div class="tarif option apparait tarif-espace"><span class="promo">En option</span><h3>L'espace client</h3><p class="gris">Vos clients se connectent et retrouvent ce que vous préparez pour eux.</p><ul><li><b>Coachs</b> : programmes, séances, mesures, carnet. 60 € à la mise en place, puis 5 € par mois.</li><li><b>Formateurs</b>, vidéos sur YouTube : modules, quiz, progression, attestations. 120 € à la mise en place, puis 10 € par mois.</li><li><b>Formateurs</b>, vidéos privées que seuls vos inscrits voient : 150 € à la mise en place, puis 29 € par mois.</li></ul></div>
     </div>
     <div class="verif-dom apparait">
       <h3>Votre nom de domaine est-il libre ?</h3>
