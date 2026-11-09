@@ -447,6 +447,7 @@
 <script src="/medias/supabase-config.js"></script>
 <script src="/medias/domaine.js"></script>
 <script src="/medias/compteur.js" defer></script>
+<script src="/medias/metiers.js" defer></script>
 <style>/* sans tiret */ .label::before { display: none !important; }</style>
 </head>
 <body>
@@ -475,17 +476,17 @@
         <label class="champ">Nom et prénom *<input type="text" name="Nom et prénom" required autocomplete="name"></label>
         <label class="champ">E-mail *<input type="email" name="email" required autocomplete="email"></label>
         <label class="champ">Téléphone *<input type="tel" name="Téléphone" required autocomplete="tel"></label>
-        <label class="champ">Votre métier *<input type="text" name="Métier" required placeholder="ex. plombier, coiffeuse à domicile, photographe…"></label>
+        <label class="champ">Votre métier *<input type="text" name="Métier" required placeholder="Tapez les premières lettres : plombier, coiffeuse…"></label>
         <label class="champ">Ville<input type="text" name="Ville" autocomplete="address-level2"></label>
         <label class="champ" id="champDomaine" hidden>Le nom de domaine qui vous plaît<input type="text" name="Nom de domaine" id="domaine" readonly></label>
       </div>
-      <div class="champ">Vous voulez<div class="cases">
-        <label class="case"><input type="checkbox" name="Je veux" value="Un site internet"><span>Un site internet</span></label>
-        <label class="case"><input type="checkbox" name="Je veux" value="L'application web sur mesure dans mon site"><span>L'application web sur mesure</span></label>
-        <label class="case"><input type="checkbox" name="Je veux" value="Je ne sais pas encore"><span>Je ne sais pas encore</span></label>
+      <div class="champ">La formule qui vous intéresse<div class="cases">
+        <label class="case"><input type="radio" name="Formule" value="Essentiel (190 € puis 25 € par an)"><span>Essentiel <small>190 €, puis 25 €/an</small></span></label>
+        <label class="case"><input type="radio" name="Formule" value="Pro (490 € puis 29 € par mois)"><span>Pro <small>490 €, puis 29 €/mois</small></span></label>
+        <label class="case"><input type="radio" name="Formule" value="Pro + IA (990 € puis 49 € par mois)"><span>Pro + IA <small>990 €, puis 49 €/mois</small></span></label>
+        <label class="case"><input type="radio" name="Formule" value="Je ne sais pas encore"><span>Je ne sais pas encore</span></label>
       </div></div>
       <label class="champ">Un mot sur votre projet <small>(facultatif)</small><textarea name="Message" placeholder="ex. je démarre, je veux être trouvé sur Google, je veux faire mes devis sur mon téléphone…"></textarea></label>
-      <p class="aide" style="margin-top:16px">Vos coordonnées servent seulement à vous recontacter au sujet de votre site.</p>
     </fieldset>
 
     <input class="piege" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none">
@@ -508,7 +509,7 @@
   // venu du vérificateur de nom de domaine : ?domaine=dupont-plomberie&ext=.com
   const u = new URLSearchParams(location.search), nomU = (u.get("domaine") || "").slice(0, 80), extU = u.get("ext") === ".com" ? ".com" : ".fr";
   if (nomU) { document.getElementById("domaine").value = nomU.replace(/\.(fr|com)$/i, "") + extU; document.getElementById("champDomaine").hidden = false;
-    const s = form.querySelector('[name="Je veux"][value="Un site internet"]'); if (s) s.checked = true; }
+    }
   const SB = window.NORA_SB && NORA_SB.url && window.supabase ? supabase.createClient(NORA_SB.url, NORA_SB.cle, { auth: { persistSession: false } }) : null;
   form.addEventListener("submit", async e => {
     e.preventDefault();
@@ -521,7 +522,7 @@
       const ajoute = (q, v) => { if (!v) return; reponses.push({ s: "Demande courte", q, v }); fd.append(q, v); };
       ajoute("Ville", form["Ville"].value.trim());
       if (nomU) { ajoute("Nom de domaine", document.getElementById("domaine").value); ajoute("Extension", extU); }
-      ajoute("Je veux", [...form.querySelectorAll('[name="Je veux"]:checked')].map(x => x.value).join(", "));
+      ajoute("Formule", form.querySelector('[name="Formule"]:checked')?.value || "");
       ajoute("Remarques", form["Message"].value.trim());
       const piege = form._honey.value; let enBase = false;
       if (SB && !piege) {
