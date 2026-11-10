@@ -2,7 +2,7 @@
 // abonnements, agenda, carnet de projet, notifications.
 import * as db from "./store.js";
 // version des fichiers chargés à la demande : à changer à chaque mise en ligne, pour que le téléphone ne garde pas l'ancienne
-const V = "20261110a";
+const V = "20261110b";
 import { UNITES } from "./donnees.js";
 import { telechargerPDF, totaux, eur, poserTVA, avecTVA, TAUX_TVA, tauxTxt, avenantDe } from "./pdf.js";
 import { CATEGORIES, etatPaiements } from "./carnet.js";
@@ -84,18 +84,18 @@ const aRelancer = d => d.type === "devis" && d.statut === "envoye" && !d.signe_l
 async function listerDemandes() { try { return await db.lister("demandes"); } catch { return null; } }
 
 /* Envoie un message déjà rédigé : on le relit, puis WhatsApp, SMS, e-mail ou une autre application. */
-async function envoyerMessage(d, texte, sujet = "") {
+async function envoyerMessage(d, texte, sujet = "") {   // le texte se relit et se corrige dans la fenêtre, avant de partir
   const tel = numeroWa(d.client?.tel), brut = String(d.client?.tel || "").replace(/\s/g, ""), mail = d.client?.email || "";
   const autre = async () => {
     if (navigator.share) { try { await navigator.share({ text: texte }); return; } catch (e) { if (e.name === "AbortError") return; } }
     await navigator.clipboard.writeText(texte); toast("Message copié ✓");
   };
-  const f = fenetre("Envoyer par", `<div class="apercu-message">${esc(texte)}</div><div class="actions-doc" style="margin:0">
+  const f = fenetre("Envoyer par", `<textarea class="apercu-message" id="msgTexte" rows="9" style="width:100%;font:inherit;resize:vertical">${esc(texte)}</textarea><div class="actions-doc" style="margin:0">
     ${tel.length >= 10 ? '<button class="btn" data-par="wa">WhatsApp</button><button class="btn clair" data-par="sms">SMS</button>' : ""}
     ${mail ? '<button class="btn clair" data-par="mail">E-mail</button>' : ""}
     <button class="btn discret" data-par="autre">${tel.length >= 10 || mail ? "Autre" : "Copier ou partager"}</button></div>`);
   f.el.addEventListener("click", e => {
-    const b = e.target.closest("[data-par]"); if (!b) return; f.fermer();
+    const b = e.target.closest("[data-par]"); if (!b) return; texte = f.el.querySelector("#msgTexte")?.value || texte; f.fermer();
     if (b.dataset.par === "wa") window.open(`https://wa.me/${tel}?text=${encodeURIComponent(texte)}`, "_blank");
     else if (b.dataset.par === "sms") location.href = `sms:${brut}?&body=${encodeURIComponent(texte)}`;
     else if (b.dataset.par === "mail") location.href = `mailto:${mail}?subject=${encodeURIComponent(sujet || P.entreprise)}&body=${encodeURIComponent(texte)}`;
@@ -139,7 +139,7 @@ function messagesClient(c, { demande = null, abonnementDu = 0 } = {}) {
   if (demande && estCourte(demande)) {
     l.push(["Envoyer le questionnaire", "Votre questionnaire", messageQuestionnaire(demande, p, sig)]);
     l.push(["Bien reçu", "Votre demande", `Bonjour ${p}, c'est ${sig}. Votre demande est bien arrivée, merci ! Je vous envoie très vite le questionnaire pour préparer votre site.`]);
-  } else if (demande) l.push(["Bien reçu", "Votre demande", `Bonjour ${p}, c'est ${sig}. Votre questionnaire est bien arrivé, merci ! Je reviens vers vous très vite pour la suite.`]);
+  } else if (demande) l.push(["Bien reçu", "Votre demande", SUIVI[0][2](p, sig)]);
   if (ribTexte()) l.push(["Envoyer mon RIB", "Nos coordonnées bancaires", `Bonjour ${p}, voici nos coordonnées bancaires pour le virement :\n${ribTexte()}\nMerci !\n${sig}`]);
   l.push(["Site en ligne", "Votre site est en ligne", `Bonjour ${p}, bonne nouvelle : votre site est en ligne ! Regardez-le et dites-moi ce que vous en pensez.\n${sig}`]);
   if (abonnementDu) l.push(["Rappel d'abonnement", `Abonnement ${per}`, `Bonjour ${p}, c'est ${sig}. Petit rappel : l'abonnement ${c.abonnement_debut ? per : deMois()} (${eur(abonnementDu)} €) reste à régler par virement.${ribTexte() ? "\n" + ribTexte() : ""}\nMerci !`]);
@@ -217,6 +217,7 @@ async function vueAccueil() {
     </div>
     ${finalesAEnvoyer.map(f => `<a class="alerte" href="#/document/${f.id}">${ICO.liste}<span><b>Facture finale à envoyer</b><small>${esc(nomClient(f.client))} · reste dû ${eur(totaux(f).reste)} € · devis ${esc(f.devis_numero || "")}</small></span><span>›</span></a>`).join("")}
     ${acomptesAEnvoyer.map(f => `<a class="alerte" href="#/document/${f.id}">${ICO.liste}<span><b>Facture d'acompte à envoyer</b><small>${esc(nomClient(f.client))} · ${eur(totaux(f).ttc)} € · devis ${esc(f.devis_numero || "")}</small></span><span>›</span></a>`).join("")}
+    ${(demandes || []).filter(aAvancer).map(x => `<a class="alerte" href="#/demande/${x.id}">${ICO.liste}<span><b>À faire avancer : ${esc(x.nom)}</b><small>Prochaine étape : ${esc(prochaine(x)[1].toLowerCase())} · sans nouvelles depuis ${joursDepuis(dernierPas(x))} jours</small></span><span>›</span></a>`).join("")}
     ${blocRdv(montants, clients)}
     ${blocChantiers(docs, clients, depenses, montants)}
     ${blocDepenses(depenses, clients, mois)}
@@ -775,8 +776,28 @@ const estCourte = x => (x.reponses || []).some(r => r.s === "Demande courte");
 // le métier de la demande suit le lien (10/11/2026) : le questionnaire ne pose que les questions de ce métier
 const lienQuestionnaire = x => `https://creation-site-internet.noraeditions.fr/questionnaire.html?d=${x.id}` + (x.metier ? `&m=${encodeURIComponent(x.metier)}` : "");
 function messageQuestionnaire(x, p = prenomDe(x), sig = P.entreprise) {
-  return `Bonjour ${p}, c'est ${sig}. Merci pour votre demande ! Pour préparer votre site, voici notre questionnaire. Il prend un petit quart d'heure, et vous pouvez y joindre vos photos et votre logo :\n${lienQuestionnaire(x)}\nÀ très vite !`;
+  return `Bonjour ${p}, c'est ${sig}. Merci pour votre demande ! Pour préparer votre site, voici notre questionnaire. Il prend un petit quart d'heure, et vous pouvez y joindre vos photos et votre logo :\n${lienQuestionnaire(x)}\n\n${suiteTxt()}\n\nÀ très vite !`;
 }
+// La suite annoncée au client (10/11/2026, « garder le client tant qu'il est chaud ») : la même que sur le site, à la fin du questionnaire.
+const pctAcompte = () => Number(P?.acompte_pct) || 10;
+const suiteTxt = () => `La suite, pour que tout soit clair :\n• Vous remplissez le questionnaire.\n• Nous vous écrivons pour tout confirmer, avec votre devis : un acompte de ${pctAcompte()} % lance le travail.\n• Nous créons votre site, et nous vous montrons le résultat.\n• Vous demandez vos ajustements : nous les faisons.\n• Vous validez. Le solde se règle à ce moment-là, en une fois ou en 3 fois sans frais.\n• Votre site est mis en ligne, et l'abonnement démarre, sans engagement.`;
+// Le suivi d'une demande : chaque étape, et le message prêt pour le client à ce moment-là (p : son prénom, g : la signature).
+const SUIVI = [
+  ["recu", "Questionnaire reçu", (p, g) => `Bonjour ${p}, c'est ${g}. Votre questionnaire est bien arrivé, merci ! Je prépare votre devis : vous le signez en ligne, et un acompte de ${pctAcompte()} % lance le travail.`],
+  ["devis", "Devis signé", (p, g) => `Bonjour ${p}, merci pour votre signature ! Pour lancer le travail, il reste l'acompte de ${pctAcompte()} %, par virement.${ribTexte() ? "\n" + ribTexte() : ""}\nDès qu'il arrive, nous commençons votre site.\n${g}`],
+  ["acompte", "Acompte reçu, travail commencé", (p, g) => `Bonjour ${p}, votre acompte est bien arrivé, merci ! Nous commençons votre site aujourd'hui, et nous vous écrivons dès que le résultat est prêt à voir.\n${g}`],
+  ["rendu", "Résultat montré", (p, g) => `Bonjour ${p}, votre site est prêt à voir :\n\nRegardez-le tranquillement, sur votre téléphone aussi, et dites-nous tout ce que vous voulez changer : nous ajustons.\n${g}`],
+  ["ajustements", "Ajustements faits", (p, g) => `Bonjour ${p}, vos ajustements sont faits. Regardez de nouveau :\n\nSi tout vous convient, répondez « je valide » : nous préparons la mise en ligne.\n${g}`],
+  ["validation", "Validé par le client", (p, g) => `Bonjour ${p}, merci pour votre validation ! Je vous envoie la facture du solde : il se règle par virement, en une fois ou en 3 fois sans frais.${ribTexte() ? "\n" + ribTexte() : ""}\n${g}`],
+  ["solde", "Solde payé", (p, g) => `Bonjour ${p}, votre règlement est bien arrivé, merci ! Nous mettons votre site en ligne.\n${g}`],
+  ["enligne", "Site en ligne, abonnement lancé", (p, g) => `Bonjour ${p}, bonne nouvelle : votre site est en ligne ! Votre abonnement démarre aujourd'hui, sans engagement. Regardez-le et dites-nous ce que vous en pensez.\n${g}`],
+];
+const faitLe = (x, k) => k === "recu" ? String(x.created_at || "").slice(0, 10) : x.etapes?.[k];
+const prochaine = x => SUIVI.find(([k]) => !faitLe(x, k));
+const dernierPas = x => SUIVI.map(([k]) => faitLe(x, k)).filter(Boolean).sort().pop();
+const joursDepuis = j => Math.floor((Date.now() - new Date(j + "T12:00")) / 864e5);
+// à faire avancer : une demande en cours, sans nouvelle étape depuis 3 jours
+const aAvancer = x => !estCourte(x) && x.statut === "en cours" && prochaine(x) && joursDepuis(dernierPas(x)) >= 3;
 const aRappelerDem = x => x.rappel && x.rappel <= aujourdhui() && !["faite", "archivee"].includes(x.statut);
 const dansJours = n => { const d = new Date(); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
 let filtreDem = "nouvelle";
@@ -787,7 +808,7 @@ async function vueDemandes() {
   const suite = x => demandes.find(y => repDe(y, "Demande d'origine") === x.id);
   const etatCourte = x => !estCourte(x) ? "" : suite(x) ? '<span class="badge signe">Questionnaire reçu</span> ' : x.etapes?.questionnaire ? '<span class="badge envoye">Questionnaire envoyé</span> ' : '<span class="badge">Demande courte</span> ';
   const ligne = x => `<a class="ligne-liste" href="#/demande/${x.id}"><div><b>${esc(x.nom)}</b><small>${esc([x.metier, repDe(x, "Entreprise"), repDe(x, "Ville")].filter(Boolean).join(" · "))}</small>${repDe(x, "Je veux") ? `<small style="display:block">${esc(repDe(x, "Je veux"))}</small>` : ""}</div>
-    <div class="droite"><small class="gris">${new Date(x.created_at).toLocaleDateString("fr-FR")}</small><br>${aRappelerDem(x) ? '<span class="badge refuse">À rappeler</span> ' : ""}${etatCourte(x)}${x.fichiers?.length ? `<span class="badge">${x.fichiers.length} fichier${x.fichiers.length > 1 ? "s" : ""}</span>` : ""}</div></a>`;
+    <div class="droite"><small class="gris">${new Date(x.created_at).toLocaleDateString("fr-FR")}</small><br>${aRappelerDem(x) ? '<span class="badge refuse">À rappeler</span> ' : ""}${etatCourte(x)}${!estCourte(x) && x.statut === "en cours" && prochaine(x) ? `<span class="badge envoye">À venir : ${esc(prochaine(x)[1].toLowerCase())}</span> ` : ""}${x.fichiers?.length ? `<span class="badge">${x.fichiers.length} fichier${x.fichiers.length > 1 ? "s" : ""}</span>` : ""}</div></a>`;
   vue.innerHTML = `
     <div class="entete"><h1>Demandes</h1><button class="btn" id="nvDem">${ICO.plus}Ajouter</button></div>
     <div class="onglets defile">${(demandes.some(aRappelerDem) ? [["rappeler", "À rappeler"]] : []).concat(STATUTS_DEM).map(([k, n]) => `<a href="" data-f="${k}" class="${filtreDem === k ? "actif" : ""}">${n}${k === "nouvelle" ? ` (${demandes.filter(x => x.statut === "nouvelle").length})` : ""}</a>`).join("")}</div>
@@ -849,6 +870,11 @@ async function vueDemande(id) {
             : `<button class="btn clair" id="versClient">${ICO.client}Créer la fiche client</button>`}
         </div>
         ${carteQ}
+        ${courte ? "" : `<div class="carte" style="margin-bottom:12px"><label>Le suivi</label>
+          ${SUIVI.map(([k, n], i) => { const d = faitLe(x, k), ici = (prochaine(x) || [])[0] === k, avant = SUIVI[i + 1] && (prochaine(x) || [])[0] === SUIVI[i + 1][0];
+            return `<div class="ligne-bilan" style="align-items:center;gap:8px;flex-wrap:wrap"><span>${d ? "✓" : "○"} ${ici ? `<b>${esc(n)}</b>` : esc(n)}${d ? ` <small class="gris">· ${new Date(d + "T12:00").toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}</small>` : ""}</span>
+              <span style="white-space:nowrap">${ici || avant || (!prochaine(x) && i === SUIVI.length - 1) ? `<button class="btn discret petit-btn" data-msg="${k}">Message</button> ` : ""}${k === "recu" ? "" : d ? (avant || (!prochaine(x) && i === SUIVI.length - 1) ? `<button class="btn discret petit-btn" data-pas="${k}">Annuler</button>` : "") : ici ? `<button class="btn petit-btn" data-pas="${k}">C'est fait</button>` : ""}</span></div>`; }).join("")}
+        </div>`}
         <div class="carte" style="margin-bottom:12px">
           <label>Où en est-elle</label>
           <div class="palette" style="margin-bottom:14px">${STATUTS_DEM.slice(0, 3).map(([k]) => `<button class="btn ${x.statut === k ? "" : "discret"} petit-btn" data-statut="${k}">${NOM_DEM[k]}</button>`).join("")}</div>
@@ -876,6 +902,11 @@ async function vueDemande(id) {
     envoyerMessage({ client: contact }, messageQuestionnaire(x, prenomDe(contact)), "Votre questionnaire");
     if (!x.etapes?.questionnaire) await majDem({ etapes: { ...(x.etapes || {}), questionnaire: aujourdhui() }, statut: x.statut === "nouvelle" ? "en cours" : x.statut });
   };
+  // le suivi : « C'est fait » date l'étape, « Annuler » la retire ; la dernière étape classe la demande dans les faites
+  vue.querySelectorAll("[data-pas]").forEach(b => b.onclick = async () => { const k = b.dataset.pas, e = { ...(x.etapes || {}) }, defaire = !!e[k];
+    if (defaire) delete e[k]; else e[k] = aujourdhui();
+    await majDem({ etapes: e, statut: e.enligne ? "faite" : "en cours" }, defaire ? "Étape retirée" : "Étape notée ✓"); vueDemande(id); });
+  vue.querySelectorAll("[data-msg]").forEach(b => b.onclick = () => envoyerMessage({ client: contact }, SUIVI.find(z => z[0] === b.dataset.msg)[2](prenomDe(contact), P.entreprise), "Votre site"));
   const cq = document.getElementById("copierQ");
   if (cq) cq.onclick = () => navigator.clipboard.writeText(lienQuestionnaire(x)).then(() => toast("Lien copié ✓"), () => toast(lienQuestionnaire(x)));
   vue.querySelectorAll("[data-statut]").forEach(b => b.onclick = async () => { await majDem({ statut: b.dataset.statut }, `Passée en « ${NOM_DEM[b.dataset.statut]} » ✓`); vueDemande(id); });
