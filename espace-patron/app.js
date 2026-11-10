@@ -2,7 +2,7 @@
 // abonnements, agenda, carnet de projet, notifications.
 import * as db from "./store.js";
 // version des fichiers chargés à la demande : à changer à chaque mise en ligne, pour que le téléphone ne garde pas l'ancienne
-const V = "20261110b";
+const V = "20261111a";
 import { UNITES } from "./donnees.js";
 import { telechargerPDF, totaux, eur, poserTVA, avecTVA, TAUX_TVA, tauxTxt, avenantDe } from "./pdf.js";
 import { CATEGORIES, etatPaiements } from "./carnet.js";
@@ -111,8 +111,22 @@ const deMois = (m = moisLong()) => (/^[aeiou]/i.test(m) ? "d'" : "de ") + m;
 // Sans date de mise en ligne, l'abonnement n'a pas commencé : rien à facturer. cle = le mois où la période commence (rangé dans la facture).
 const finDuMois = (a, m) => new Date(Date.UTC(a, m + 1, 0)).getUTCDate();
 const dateIso = (a, m, j) => `${a}-${String(m + 1).padStart(2, "0")}-${String(j).padStart(2, "0")}`;
+// Le prix peut être par mois (abonnement_mensuel) ou par an (abonnement_annuel, formule Essentiel) ; le mensuel l'emporte s'il y en a un.
+const aboAnnuel = c => !(Number(c?.abonnement_mensuel) > 0) && Number(c?.abonnement_annuel) > 0;
+// Le libellé sur la facture : celui de la fiche, sinon « Hébergement et maintenance du site » pour l'abonnement annuel (l'Essentiel n'a pas le tableau de bord), sinon celui des réglages.
+const libelleAbo = c => c?.abonnement_libelle || (aboAnnuel(c) ? "Hébergement et maintenance du site" : P.abonnement_libelle || "Abonnement du site");
+const aboMontant = c => Number(c?.abonnement_mensuel) > 0 ? Number(c.abonnement_mensuel) : Number(c?.abonnement_annuel) > 0 ? Number(c.abonnement_annuel) : 0;
+// La période annuelle en cours : de l'anniversaire de la mise en ligne à la veille du suivant. cle = le mois où elle commence (une seule par an).
+function periodeAnnee(debut, jour) {
+  if (jour < debut) return null;   // le site n'est pas encore en ligne
+  const mm = Number(debut.slice(5, 7)) - 1, jj = Number(debut.slice(8, 10)), le = an => dateIso(an, mm, Math.min(jj, finDuMois(an, mm)));
+  let a = Number(jour.slice(0, 4)), d = le(a); if (d > jour) { a -= 1; d = le(a); }
+  const fin = new Date(le(a + 1) + "T12:00:00"); fin.setDate(fin.getDate() - 1);
+  return { cle: d.slice(0, 7), debut: d, fin: dateIso(fin.getFullYear(), fin.getMonth(), fin.getDate()), jour: jj, dateMiseEnLigne: debut, annuel: true };
+}
 function periodeAbo(c, jour = aujourdhui()) {
   const debut = c?.abonnement_debut || null; if (!debut) return null; // pas encore en ligne
+  if (aboAnnuel(c)) return periodeAnnee(debut, jour);
   const jj = Number(debut.slice(8, 10));
   let [a, m] = jour.split("-").map(Number); m -= 1;
   const le = (a, m) => dateIso(a, m, Math.min(jj, finDuMois(a, m)));
@@ -292,9 +306,9 @@ function blocChantiers(docs, clients, depenses, montants) {
 // Abonnements dont la période en cours n'est pas payée : une alerte sur l'accueil
 function aboAlerte(clients, docs) {
   // le premier mois porté par la facture finale du site se suit avec cette facture, pas ici
-  const reste = clients.filter(c => { if (c.archive || !(Number(c.abonnement_mensuel) > 0)) return false; const p = periodeAbo(c), fa = p && factureAbo(docs, c, p); return p && fa?.statut !== "paye" && !fa?.devis_id; });
+  const reste = clients.filter(c => { if (c.archive || !(aboMontant(c) > 0)) return false; const p = periodeAbo(c), fa = p && factureAbo(docs, c, p); return p && fa?.statut !== "paye" && !fa?.devis_id; });
   if (!reste.length) return "";
-  const total = reste.reduce((a, c) => a + Number(c.abonnement_mensuel), 0);
+  const total = reste.reduce((a, c) => a + aboMontant(c), 0);
   return `<a class="alerte" href="#/abonnements">${ICO.liste}<span><b>Abonnements : ${reste.length} à encaisser</b><small>${eur(total)} € · ${esc(reste.slice(0, 3).map(c => c.nom).join(", "))}</small></span><span>›</span></a>`;
 }
 
@@ -669,17 +683,18 @@ async function creerFactureFinale(d) {
   // le premier mois d'abonnement : celui du devis s'il y est, sinon ajouté (pas pour l'application seule, à l'année)
   const c = d.client_id ? (await db.lister("clients")).find(x => x.id === d.client_id) : null;
   const lignes = f.sections.flatMap(x => x.lignes || []), aAbo = lignes.some(l => /^abonnement/i.test(l.designation || "")), alAnnee = lignes.some(l => l.unite === "an");
-  if (c && !alAnnee) {
+  const annuel = !!c && aboAnnuel(c);   // abonnement par an : la première année est portée par la facture finale
+  if (c && (!alAnnee || annuel)) {
     const ps = await db.lister("prestations").catch(() => []);
-    const prixAbo = Number(c.abonnement_mensuel) > 0 ? Number(c.abonnement_mensuel) : Number(ps.find(p => /^Abonnement du site/i.test(p.designation || ""))?.prix_ht) || 10;
+    const prixAbo = annuel ? Number(c.abonnement_annuel) : Number(c.abonnement_mensuel) > 0 ? Number(c.abonnement_mensuel) : Number(ps.find(p => /^Abonnement du site/i.test(p.designation || ""))?.prix_ht) || 10;
     const maj = {};
     if (!c.abonnement_debut) maj.abonnement_debut = aujourdhui();
-    if (!(Number(c.abonnement_mensuel) > 0)) maj.abonnement_mensuel = prixAbo;
+    if (!annuel && !(Number(c.abonnement_mensuel) > 0)) maj.abonnement_mensuel = prixAbo;
     if (Object.keys(maj).length) { Object.assign(c, maj); await db.enregistrer("clients", { ...c }); }
     const per = periodeAbo(c) || periodeAbo({ abonnement_debut: aujourdhui() });
-    lignes.filter(l => l.unite === "mois" && !l.designation.includes(" · du ") && !/\d{4}$/.test(l.designation)).forEach(l => { l.designation += ` · ${periodeTxt(per)}`; });
-    if (!aAbo) {
-      const taux = lignes.find(l => l.tva != null && l.tva !== "")?.tva, ligne = { designation: `${c.abonnement_libelle || P.abonnement_libelle || "Abonnement du site"} · premier mois, ${periodeTxt(per)}`, qte: 1, unite: "mois", pu: prixAbo };
+    lignes.filter(l => l.unite === (annuel ? "an" : "mois") && !l.designation.includes(" · du ") && !/\d{4}$/.test(l.designation)).forEach(l => { l.designation += ` · ${periodeTxt(per)}`; });
+    if (!aAbo && !(annuel && alAnnee)) {
+      const taux = lignes.find(l => l.tva != null && l.tva !== "")?.tva, ligne = { designation: `${libelleAbo(c)} · ${annuel ? "première année" : "premier mois"}, ${periodeTxt(per)}`, qte: 1, unite: annuel ? "an" : "mois", pu: prixAbo };
       if (taux != null) ligne.tva = Number(taux);
       f.sections.push({ titre: "Abonnement", lignes: [ligne] });
     }
@@ -918,8 +933,14 @@ async function vueDemande(id) {
   const vc = document.getElementById("versClient");
   if (vc) vc.onclick = async () => {
     try {
-      const c = await db.enregistrer("clients", { nom: x.nom, tel: x.tel, email: x.email, societe: contact.societe || null, ville: contact.ville || null, adresse: repDe(x, "Adresse") || null,
-        notes: [x.metier, repDe(x, "Je veux")].filter(Boolean).join(" · ") || null, archive: false });
+      const fiche = { nom: x.nom, tel: x.tel, email: x.email, societe: contact.societe || null, ville: contact.ville || null, adresse: repDe(x, "Adresse") || null,
+        notes: [x.metier, repDe(x, "Je veux")].filter(Boolean).join(" · ") || null, archive: false };
+      // l'abonnement de la formule : Essentiel par an (options en plus, ramenées à l'année) ; Pro et Pro + IA par mois
+      const arrondi = n => Math.round(n * 100) / 100;
+      const aboPrevu = base ? { abonnement_mensuel: arrondi(parMois) } : parAn ? { abonnement_annuel: arrondi(parAn + 12 * parMois) } : parMois ? { abonnement_mensuel: arrondi(parMois) } : {};
+      let c;
+      try { c = await db.enregistrer("clients", { ...fiche, ...aboPrevu }); }
+      catch (er) { if (!/abonnement_annuel/.test(String(er?.message || er))) throw er; c = await db.enregistrer("clients", fiche); toast("Fiche créée, sans l'abonnement annuel : la colonne manque dans la base (nora-schema-5-abo-annuel.sql)"); }
       await majDem({ client_id: c.id, statut: x.statut === "nouvelle" ? "en cours" : x.statut });
       toast("Fiche client créée ✓"); vueDemande(id);
     } catch (e) { erreur(e); }
@@ -986,11 +1007,12 @@ async function vueClient(id, params) {
       <div>
         ${c.id ? `
         <div class="actions-doc">${c.tel ? `<a class="btn" href="tel:${esc(c.tel.replace(/\s/g, ""))}">Appeler</a>` : ""}<button class="btn clair" id="ecrireClient">Écrire un message</button></div>
-        <details class="section-fiche" ${Number(c.abonnement_mensuel) ? "open" : ""}><summary>Abonnement<span>${Number(c.abonnement_mensuel) ? eur(c.abonnement_mensuel) + " € / mois" : "aucun"}</span></summary>
-        <form id="fAbo" class="carte" style="margin-top:6px"><div class="deux"><div class="champ"><label>Par mois €</label><input type="number" step="0.01" min="0" inputmode="decimal" name="abonnement_mensuel" value="${esc(c.abonnement_mensuel ?? "")}" placeholder="10"></div>
+        <details class="section-fiche" ${aboMontant(c) ? "open" : ""}><summary>Abonnement<span>${Number(c.abonnement_mensuel) ? eur(c.abonnement_mensuel) + " € / mois" : Number(c.abonnement_annuel) > 0 ? eur(c.abonnement_annuel) + " € / an" : "aucun"}</span></summary>
+        <form id="fAbo" class="carte" style="margin-top:6px"><div class="deux"><div class="champ"><label>Par mois €</label><input type="number" step="0.01" min="0" inputmode="decimal" name="abonnement_mensuel" value="${esc(c.abonnement_mensuel ?? "")}" placeholder="29"></div>
+          <div class="champ"><label>Par an €</label><input type="number" step="0.01" min="0" inputmode="decimal" name="abonnement_annuel" value="${esc(c.abonnement_annuel ?? "")}" placeholder="25"></div>
           <div class="champ"><label>Mise en ligne du site</label><input type="date" name="abonnement_debut" value="${esc(c.abonnement_debut || "")}"></div></div>
-          <p class="gris" style="font-size:13px;margin:-4px 0 10px">L'abonnement court à partir de cette date, et revient le même jour chaque mois. <a href="#/abonnements">Tous les abonnements ›</a></p>
-          <div class="champ"><label>Libellé sur la facture</label><input type="text" name="abonnement_libelle" value="${esc(c.abonnement_libelle || "")}" placeholder="${esc(P.abonnement_libelle || "Abonnement du site")}"><small class="gris" id="aboApercu">Sur la facture : ${esc(c.abonnement_libelle || P.abonnement_libelle || "Abonnement du site")} · ${esc(periodeTxt(periodeAbo(c) || periodeAbo({ abonnement_debut: c.abonnement_debut || aujourdhui() }, c.abonnement_debut || aujourdhui())))}</small></div>
+          <p class="gris" style="font-size:13px;margin:-4px 0 10px">L'abonnement court à partir de cette date, et revient le même jour chaque mois, ou chaque année si le prix est par an. <a href="#/abonnements">Tous les abonnements ›</a></p>
+          <div class="champ"><label>Libellé sur la facture</label><input type="text" name="abonnement_libelle" value="${esc(c.abonnement_libelle || "")}" placeholder="${esc(libelleAbo({ ...c, abonnement_libelle: null }))}"><small class="gris" id="aboApercu">Sur la facture : ${esc(libelleAbo(c))} · ${esc(periodeTxt(periodeAbo(c) || periodeAbo({ abonnement_debut: c.abonnement_debut || aujourdhui() }, c.abonnement_debut || aujourdhui())))}</small></div>
           <button class="btn petit-btn">Enregistrer l'abonnement</button></form></details>
         <details class="section-fiche" ${params?.get("essai") ? "open" : ""}><summary>Essais du site<span id="nbEssais"></span></summary>
         <div id="essais" style="margin-top:6px"><p class="gris">Chargement…</p></div></details>
@@ -1004,12 +1026,12 @@ async function vueClient(id, params) {
     </div>`;
   const ec = document.getElementById("ecrireClient");
   if (ec) { const pa = periodeAbo(c), docsAbo = pa ? docs.filter(d => d.abo === pa.cle && d.statut === "paye") : [{}];
-    ec.onclick = () => choisirMessage(c, { abonnementDu: Number(c.abonnement_mensuel) && !docsAbo.length ? Number(c.abonnement_mensuel) : 0 }); }
+    ec.onclick = () => choisirMessage(c, { abonnementDu: aboMontant(c) && !docsAbo.length ? aboMontant(c) : 0 }); }
   const fa = document.getElementById("fAbo");
   if (fa) fa.abonnement_libelle.oninput = fa.abonnement_debut.onchange = () => { const deb = fa.abonnement_debut.value || null, p = periodeAbo({ abonnement_debut: deb }) || periodeAbo({ abonnement_debut: deb }, deb || aujourdhui());
-    document.getElementById("aboApercu").textContent = `Sur la facture : ${fa.abonnement_libelle.value.trim() || P.abonnement_libelle || "Abonnement du site"} · ${periodeTxt(p)}`; };
+    document.getElementById("aboApercu").textContent = `Sur la facture : ${fa.abonnement_libelle.value.trim() || libelleAbo({ ...c, abonnement_libelle: null })} · ${periodeTxt(p)}`; };
   if (fa) fa.onsubmit = async e => { e.preventDefault(); const o = lireForm(e.target, {});
-    try { await db.enregistrer("clients", { ...c, abonnement_mensuel: o.abonnement_mensuel === "" ? null : Number(o.abonnement_mensuel), abonnement_libelle: o.abonnement_libelle || null, abonnement_debut: o.abonnement_debut || null }); toast("Abonnement enregistré ✓"); vueClient(c.id, params); } catch (er) { erreur(er); } };
+    try { await db.enregistrer("clients", { ...c, abonnement_mensuel: o.abonnement_mensuel === "" ? null : Number(o.abonnement_mensuel), ...(o.abonnement_annuel !== "" || c.abonnement_annuel != null ? { abonnement_annuel: o.abonnement_annuel === "" ? null : Number(o.abonnement_annuel) } : {}), abonnement_libelle: o.abonnement_libelle || null, abonnement_debut: o.abonnement_debut || null }); toast("Abonnement enregistré ✓"); vueClient(c.id, params); } catch (er) { erreur(er); } };
   if (c.id) monterEssais(c);
   if (c.id) import("./carnet.js").then(async m => {
     await m.monterCarnet(document.getElementById("carnet"), { db, client: c, P, toast, esc, erreur, envoyerMessage });
@@ -1074,18 +1096,18 @@ function formulairePrestation(p, cats) {
 /* =================== Abonnements du mois =================== */
 async function vueAbonnements() {
   const [clients, docs] = await Promise.all([db.lister("clients", { ordre: "nom", desc: false }), db.lister("documents")]);
-  const abonnes = clients.filter(c => !c.archive && Number(c.abonnement_mensuel) > 0);
+  const abonnes = clients.filter(c => !c.archive && aboMontant(c) > 0);
   const factureDe = c => factureAbo(docs, c, periodeAbo(c));
   const aFaire = abonnes.filter(c => periodeAbo(c) && !factureDe(c));
-  const total = abonnes.reduce((a, c) => a + Number(c.abonnement_mensuel), 0), encaisse = abonnes.filter(c => factureDe(c)?.statut === "paye").reduce((a, c) => a + Number(c.abonnement_mensuel), 0);
+  const mensuels = abonnes.filter(c => !aboAnnuel(c)), annuels = abonnes.filter(aboAnnuel), total = mensuels.reduce((a, c) => a + aboMontant(c), 0), totalAn = annuels.reduce((a, c) => a + aboMontant(c), 0), encaisse = abonnes.filter(c => factureDe(c)?.statut === "paye").reduce((a, c) => a + aboMontant(c), 0);
   vue.innerHTML = `
     <div class="entete"><div><div class="petit">Abonnements</div><h1>À ce jour</h1></div></div>
     <p class="gris" style="font-size:14px;margin:-6px 0 14px">Chaque abonnement court à partir de la mise en ligne du site : la date se met dans la fiche du client.</p>
-    <div class="stats"><div class="stat"><span class="petit">Chaque mois</span><b>${eur(total)} €</b><small class="gris">${abonnes.length} abonné${abonnes.length > 1 ? "s" : ""}</small></div>
-      <div class="stat"><span class="petit">Périodes en cours payées</span><b>${eur(encaisse)} €</b><small class="gris">reste ${eur(total - encaisse)} €</small></div></div>
+    <div class="stats"><div class="stat"><span class="petit">Chaque mois</span><b>${eur(total)} €</b><small class="gris">${mensuels.length} abonné${mensuels.length > 1 ? "s" : ""}</small></div>${annuels.length ? `<div class="stat"><span class="petit">Chaque année</span><b>${eur(totalAn)} €</b><small class="gris">${annuels.length} abonné${annuels.length > 1 ? "s" : ""}</small></div>` : ""}
+      <div class="stat"><span class="petit">Périodes en cours payées</span><b>${eur(encaisse)} €</b><small class="gris">reste ${eur(total + totalAn - encaisse)} €</small></div></div>
     ${aFaire.length ? `<button class="btn" id="facturesMois" style="width:100%;margin-bottom:16px">Faire les factures dues (${aFaire.length})</button>` : abonnes.length ? `<p class="gris" style="margin-bottom:14px">✓ Les factures dues sont faites.</p>` : ""}
     <div class="liste">${abonnes.map(c => { const d = factureDe(c);
-      return `<div class="ligne-liste" style="flex-wrap:wrap;gap:8px"><a href="#/client/${c.id}" style="text-decoration:none;flex:1 1 100%"><b>${esc(nomClient(c))}</b><small style="display:block">${eur(c.abonnement_mensuel)} € par mois · ${c.abonnement_debut ? `le ${periodeAbo(c)?.jour || Number(c.abonnement_debut.slice(8, 10))} de chaque mois` : "date de mise en ligne à mettre"}</small><small style="display:block">${periodeAbo(c) ? esc(periodeTxt(periodeAbo(c))) : "pas encore en ligne"}${d ? " · facture " + esc(d.numero) : ""}</small></a>
+      return `<div class="ligne-liste" style="flex-wrap:wrap;gap:8px"><a href="#/client/${c.id}" style="text-decoration:none;flex:1 1 100%"><b>${esc(nomClient(c))}</b><small style="display:block">${eur(aboMontant(c))} € par ${aboAnnuel(c) ? "an" : "mois"} · ${c.abonnement_debut ? (aboAnnuel(c) ? "chaque année, à la date de mise en ligne" : `le ${periodeAbo(c)?.jour || Number(c.abonnement_debut.slice(8, 10))} de chaque mois`) : "date de mise en ligne à mettre"}</small><small style="display:block">${periodeAbo(c) ? esc(periodeTxt(periodeAbo(c))) : "pas encore en ligne"}${d ? " · facture " + esc(d.numero) : ""}</small></a>
         <div class="droite" style="flex:1 1 100%;text-align:left">${d ? `<span class="badge ${esc(d.statut)}">${esc(libelleStatut("facture", d.statut))}</span><div class="actions-doc" style="margin:6px 0 0;justify-content:flex-start">
           <a class="btn discret petit-btn" href="#/document/${d.id}">Ouvrir</a>${d.statut !== "paye" ? `<button class="btn discret petit-btn" data-envoyer="${d.id}">Envoyer</button><button class="btn clair petit-btn" data-paye="${d.id}">Payé</button><button class="btn discret petit-btn" data-rappel-abo="${c.id}">Rappel</button>` : ""}</div>` : periodeAbo(c) ? '<small class="gris">pas encore de facture</small>' : ""}</div></div>`; }).join("")
       || '<p class="vide">Aucun abonné pour l\'instant. L\'abonnement se règle dans la fiche du client.</p>'}</div>`;
@@ -1096,7 +1118,7 @@ async function vueAbonnements() {
       for (const c of aFaire) {
         const p = periodeAbo(c), per = periodeTxt(p);
         const f = { type: "facture", numero: numeroSuivant("facture"), date: aujourdhui(), statut: "brouillon", client_id: c.id, client: instantane(c), objet: `Abonnement ${per}`,
-          sections: [{ titre: "Abonnement", lignes: [{ designation: `${c.abonnement_libelle || P.abonnement_libelle || "Abonnement du site"} · ${per}`, qte: 1, unite: "mois", pu: Number(c.abonnement_mensuel) }] }],
+          sections: [{ titre: "Abonnement", lignes: [{ designation: `${libelleAbo(c)} · ${per}`, qte: 1, unite: aboAnnuel(c) ? "an" : "mois", pu: aboMontant(c) }] }],
           acompte_pct: 0, deja_regle: 0, abo: p.cle, notes: "" };
         await enregistrerNouveau(f); n++;
       }
@@ -1106,7 +1128,7 @@ async function vueAbonnements() {
   };
   vue.onclick = async e => {
     const b = e.target.closest("[data-paye],[data-envoyer],[data-rappel-abo]"); if (!b) return;
-    if (b.dataset.rappelAbo) { const c = abonnes.find(x => x.id === b.dataset.rappelAbo); const m = messagesClient(c, { abonnementDu: Number(c.abonnement_mensuel) }).find(x => x[0] === "Rappel d'abonnement"); return envoyerMessage({ client: c }, m[2], m[1]); }
+    if (b.dataset.rappelAbo) { const c = abonnes.find(x => x.id === b.dataset.rappelAbo); const m = messagesClient(c, { abonnementDu: aboMontant(c) }).find(x => x[0] === "Rappel d'abonnement"); return envoyerMessage({ client: c }, m[2], m[1]); }
     const d = docs.find(x => x.id === (b.dataset.paye || b.dataset.envoyer));
     try {
       if (b.dataset.envoyer) { envoyerPDF(d, async () => { if (d.statut === "brouillon") { d.statut = "envoye"; await db.enregistrer("documents", d); } vueAbonnements(); }); return; }
