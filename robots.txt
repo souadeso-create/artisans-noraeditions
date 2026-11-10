@@ -4,4 +4,19 @@ Disallow: /questionnaire.html
 Disallow: /espace-patron/
 Disallow: /devis/
 Disallow: /essai/
+
+# Les robots de recherche des moteurs IA : ils peuvent lire le site pour le citer dans leurs réponses.
+# (GPTBot, qui sert à entraîner les modèles, n'est pas nommé ici : il suit la règle générale ci-dessus.)
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+Allow: /
+Disallow: /questionnaire.html
+Disallow: /espace-patron/
+Disallow: /devis/
+Disallow: /essai/
+
 Sitemap: https://creation-site-internet.noraeditions.fr/sitemap.xml
