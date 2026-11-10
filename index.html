@@ -20,6 +20,27 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>/* portfolio (10/11/2026 g) */
+  #portfolio { padding: 70px 0; }
+  #portfolio .pieces { display: grid; grid-auto-flow: column; grid-auto-columns: min(78%, 300px); gap: 16px; margin: 30px -20px 0; padding: 4px 20px 18px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+  #portfolio .piece { margin: 0; scroll-snap-align: center; background: #fff; border: 2px solid #1b1f8a; border-radius: 22px; box-shadow: 0 6px 0 #1b1f8a; overflow: hidden; display: flex; flex-direction: column; opacity: 1 !important; transform: none !important; }
+  #portfolio .ecran { background: var(--nuit, #0f1240); padding: 14px 14px 0; }
+  #portfolio .ecran img { display: block; width: 100%; height: auto; aspect-ratio: 390 / 520; object-fit: cover; object-position: top; border-radius: 16px 16px 0 0; }
+  #portfolio figcaption { padding: 16px 18px 20px; }
+  #portfolio .sous { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--violetT, #5b21b6); }
+  #portfolio .piece h3 { font-size: 24px; margin: 4px 0 8px; }
+  #portfolio .piece p { font-size: 15px; line-height: 1.55; margin: 0 0 12px; color: #3a3d5c; }
+  #portfolio .piece ul { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  #portfolio .piece li { font-size: 12px; font-weight: 700; padding: 5px 10px; border-radius: 99px; background: var(--jauneT, #ffd426); color: var(--nuit, #0f1240); }
+  #portfolio .pieces-cartes { margin-top: 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: center; }
+  #portfolio .pieces-cartes img { width: 100%; height: auto; border-radius: 10px; box-shadow: 0 8px 22px rgba(15,18,64,.18); }
+  #portfolio .pieces-cartes p { grid-column: 1 / -1; margin: 4px 0 0; font-size: 15px; }
+  @media (min-width: 900px) {
+    #portfolio .pieces { grid-auto-flow: row; grid-template-columns: repeat(3, 1fr); grid-auto-columns: auto; margin: 34px 0 0; padding: 0 0 8px; overflow: visible; }
+    #portfolio .pieces-cartes { grid-template-columns: 240px 240px 1fr; gap: 18px; }
+    #portfolio .pieces-cartes p { grid-column: auto; }
+  }
+</style>
 <style>/* portfolio (10/11/2026 c) */
   #portfolio { padding: 70px 0; }
   #portfolio .pieces { display: grid; grid-auto-flow: column; grid-auto-columns: min(78%, 300px); gap: 16px; margin: 30px -20px 0; padding: 4px 20px 18px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
@@ -774,7 +795,6 @@
       <figure class="piece apparait"><div class="ecran"><img src="/medias/portfolio/ka.jpg" alt="Le site de KA Rénovation sur un téléphone : salles de bain en Île-de-France" width="390" height="650" loading="lazy"></div><figcaption><span class="sous">Artisan · salles de bain</span><h3>KA Rénovation</h3><p>Le logo, le site et les cartes de visite, dans un style sobre et haut de gamme. Les demandes de devis arrivent avec les photos du client, et l'artisan fait ses devis et ses factures depuis son téléphone.</p><ul><li>Identité visuelle</li><li>Site internet</li><li>Tableau de bord</li></ul></figcaption></figure>
       <figure class="piece apparait"><div class="ecran"><img src="/medias/portfolio/mag.jpg" alt="Le Mag, le magazine de Nora Éditions, sur un téléphone" width="390" height="650" loading="lazy"></div><figcaption><span class="sous">Magazine en ligne</span><h3>Le Mag</h3><p>Un magazine entier, avec ses rubriques et sa mise en page de presse. Les articles s'écrivent et se publient depuis l'administration, qui prépare aussi la revue de presse.</p><ul><li>Design éditorial</li><li>Publication d'articles</li><li>Revue de presse</li></ul></figcaption></figure>
       <figure class="piece apparait"><div class="ecran"><img src="/medias/portfolio/renalys.jpg" alt="Renalys, le site sur la santé rénale, sur un téléphone" width="390" height="650" loading="lazy"></div><figcaption><span class="sous">Santé rénale · site d'information</span><h3>Renalys</h3><p>Un site entier pour mieux vivre avec l'insuffisance rénale : guides, nutrition, calculateurs, recettes, forum et actualités, dans un style calme et lisible.</p><ul><li>Site internet</li><li>Calculateurs</li><li>Forum</li></ul></figcaption></figure>
-      <figure class="piece apparait"><div class="ecran"><img src="/medias/portfolio/outil.jpg" alt="Le tableau de bord sur un téléphone : le suivi d'une demande, étape par étape" width="390" height="650" loading="lazy"></div><figcaption><span class="sous">L'outil de travail</span><h3>Le tableau de bord</h3><p>Les demandes, les devis signés en ligne, les factures, les paiements et l'agenda, réunis sur le téléphone. Ici, le suivi d'un client, étape par étape, avec le message prêt à chaque étape.</p><ul><li>Demandes</li><li>Devis et factures</li><li>Suivi client</li></ul></figcaption></figure>
     </div>
     <div class="pieces-cartes apparait">
       <img src="/medias/carte-visite-exemple-recto.jpg" alt="Carte de visite, recto" width="1000" height="647" loading="lazy">
