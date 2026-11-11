@@ -306,6 +306,10 @@ export async function vueProspects(c) {
     <div class="onglets defile"><a href="" data-f="tous" class="${filtre === "tous" ? "actif" : ""}">En cours</a>${ETAPES.map(([k, n]) => `<a href="" data-f="${k}" class="${filtre === k ? "actif" : ""}">${n}${compte(k) ? " · " + compte(k) : ""}</a>`).join("")}</div>
     <div class="liste">${liste.map(ligne).join("") || `<p class="vide">${prospects.length ? "Aucun prospect à cette étape." : "Aucun prospect pour l'instant. Commencez par « Trouver des entreprises » : un métier, une ville, et vous choisissez qui contacter."}</p>`}</div>
     ${partie(4, "Les actions")}
+    ${pr ? "" : `<div class="carte" style="margin-bottom:16px"><label>Relances automatiques</label>
+      <p class="gris" style="font-size:14px;margin:6px 0 10px">Chaque matin, l'appli envoie elle-même la relance due aux prospects qui ont un e-mail : ${DELAIS[0]} jours après le premier message, puis ${DELAIS[1]}, puis ${DELAIS[2]}, et pas plus de trois. Elles partent de contact@noraeditions.com, signées du prospecteur, et se notent dans l'historique. Un prospect qui a refusé d'être contacté n'en reçoit jamais.</p>
+      <p style="margin:0 0 10px"><b>${c.P.relances_auto ? "Elles sont allumées." : "Elles sont éteintes : c'est vous qui envoyez chaque relance."}</b></p>
+      <button class="btn ${c.P.relances_auto ? "discret" : "clair"} petit-btn" id="pAuto">${c.P.relances_auto ? "Éteindre les relances automatiques" : "Allumer les relances automatiques"}</button></div>`}
     <div class="carte" style="margin-bottom:16px"><label>Que dois-je faire aujourd'hui pour trouver un client ?</label>
       ${actions.map((a, i) => `<${a.id ? `a href="#/prospect/${a.id}"` : `button type="button" data-gen="${a.lien || ""}"`} class="choix" style="margin-top:8px;text-decoration:none;color:inherit"><span><b>${i + 1}. ${esc(a.texte)}</b><small class="gris" style="display:block">${esc(a.pourquoi)}</small></span><span>›</span></${a.id ? "a" : "button"}>`).join("")}</div>
     <div class="actions-doc" style="margin-top:0"><button class="btn clair" id="recu">Répondre à un message reçu</button></div>
@@ -318,6 +322,10 @@ export async function vueProspects(c) {
   document.getElementById("pMoi").onchange = e => { jeSuis(e.target.value); filtreP = e.target.value; toast(e.target.value ? `Les nouveaux prospects seront au nom de ${e.target.value}` : "Les nouveaux prospects n'auront pas de prospecteur"); vueProspects(c); };
   vue.querySelectorAll("[data-qui]").forEach(a => a.onclick = e => { e.preventDefault(); filtreP = a.dataset.qui; vueProspects(c); });
   document.getElementById("pEquipe").onclick = () => gererEquipe(c, () => vueProspects(c));
+  if (document.getElementById("pAuto")) document.getElementById("pAuto").onclick = async () => { const allumer = !c.P.relances_auto;
+    if (allumer && !await c.confirmer("Allumer les relances automatiques ? Dès demain matin, les relances dues partiront sans que vous ayez à appuyer.", "Allumer")) return;
+    c.P.relances_auto = allumer; try { await db.enregistrerParametres(c.P); toast(allumer ? "Relances automatiques allumées ✓" : "Relances automatiques éteintes"); } catch (e) { c.P.relances_auto = !allumer; erreur(e); }
+    vueProspects(c); };
   if (pr) {
     document.getElementById("pVisuels2").onclick = () => document.getElementById("pVisuels").click();
     document.getElementById("pSortir").onclick = () => c.role.sortir && c.role.sortir();
@@ -394,6 +402,7 @@ export async function vueProspect(c, id) {
         ${p.opposition ? `<button class="btn discret petit-btn" id="annOpp">Annuler : il accepte de nouveau les messages</button>` : `<div class="actions-doc" style="margin:0">
           <button class="btn" id="msg">Préparer un message</button><button class="btn clair" id="recu">Il m'a répondu</button><button class="btn clair" id="propo">Proposition en PDF</button>
           ${p.client_id ? `<a class="btn clair" href="#/client/${p.client_id}">Sa fiche client</a><a class="btn clair" href="#/document/nouveau/devis?client=${p.client_id}&formule=${encodeURIComponent(offreConseillee(p))}">Préparer son devis</a>` : (c.role?.prospecteur ? "" : `<button class="btn clair" id="versClient">Passer en client et faire son devis</button>`)}</div>`}</div>
+      ${c.role?.prospecteur ? "" : `<div class="carte" style="margin-bottom:12px"><label style="display:flex;gap:10px;align-items:center;margin:0;text-transform:none;letter-spacing:0;font-weight:400;font-size:15px;color:inherit"><input type="checkbox" data-constat="sans_auto" ${p.constats.includes("sans_auto") ? "checked" : ""} style="width:20px;height:20px">Pas de relance automatique pour lui</label></div>`}
       <div class="carte" style="margin-bottom:12px"><label>Ce que vous notez pour la suite</label>
         <div class="champ"><input type="text" id="pAction" value="${esc(p.prochaine_action || "")}" placeholder="ex. envoyer la vidéo de démonstration"></div>
         <div class="champ" style="margin-bottom:0"><label>Pour le</label><input type="date" id="pDate" value="${esc(p.prochaine_date || "")}"></div></div>
