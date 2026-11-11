@@ -260,6 +260,6 @@ export async function assistant(corps) {
 export async function courrier(corps) {
   if (MODE_ESSAI) return window.NORA_COURRIER_ESSAI ? window.NORA_COURRIER_ESSAI(corps) : { pret: false };
   const { data, error } = await sb.functions.invoke("courrier", { body: corps });
-  if (error) { let m = ""; try { m = (await error.context.json()).erreur; } catch { /* pas de détail */ } throw new Error(m || "Le message n'est pas parti.");  }
+  if (error) { let m = ""; try { m = (await error.context.json()).erreur; } catch { /* pas de détail */ } throw new Error(m || `le serveur a refusé la demande (${error.context?.status || "pas de réponse"})`);  }
   return data;
 }

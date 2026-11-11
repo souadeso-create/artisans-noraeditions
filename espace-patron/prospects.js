@@ -104,8 +104,15 @@ const donneesIA = (p, P) => { const o = offreConseillee(p); return { formules: O
   demonstration_en_video: demoPour(p, o), signature: signature(P), phrase_pour_ne_plus_recevoir_de_message: REFUS }; };
 
 /* ---------- L'envoi par e-mail depuis l'appli (facultatif) : absent tant que la fonction « courrier » n'est pas installée ---------- */
-let courrierPret = null;
-async function courrierDispo(db) { if (courrierPret === null) { try { courrierPret = !!(await db.courrier({ action: "etat" })).pret; } catch (e) { courrierPret = false; } } return courrierPret; }
+let courrierPret = false, courrierRaison = "";   // la raison, quand l'envoi direct n'est pas prêt
+async function courrierDispo(db) {
+  if (courrierPret) return true;
+  // un ancien fichier de l'appli encore gardé par le navigateur ne connaît pas l'envoi direct
+  if (!db.courrier) { courrierRaison = "fermez puis rouvrez l'appli pour la mettre à jour"; return false; }
+  try { courrierPret = !!(await db.courrier({ action: "etat" })).pret; courrierRaison = courrierPret ? "" : db.MODE_ESSAI ? "il ne marche pas en mode essai" : "le mot de passe de la boîte n'est pas enregistré dans Supabase"; }
+  catch (e) { courrierRaison = e.message || "le serveur ne répond pas"; }
+  return courrierPret;
+}
 
 /* ---------- Les messages ---------- */
 function signature(P) { return `${P.entreprise || "Nora Éditions"}\n${P.site || "creation-site-internet.noraeditions.fr"}${P.email ? "\n" + P.email : ""}`; }
@@ -216,6 +223,8 @@ function chiffres(prospects, docs, eur) {
 
 /* ---------- La liste ---------- */
 let filtre = "tous", filtreP = "";   // filtreP : "" = tous les prospecteurs, sinon un nom, ou "—" pour les prospects sans prospecteur
+// le titre d'une partie numérotée (page Prospects et fiche)
+const partie = (n, t) => `<p style="margin:22px 0 10px;font-weight:700;font-size:17px"><span style="color:var(--violet)">${n}</span> · ${t}</p>`;
 let filtreChoisi = false;
 export async function vueProspects(c) {
   const { db, vue, esc, eur, toast, erreur, fenetre, ICO } = c;
@@ -236,22 +245,29 @@ export async function vueProspects(c) {
     <div class="droite">${p.opposition ? '<span class="badge refuse">Ne plus contacter</span>' : aRelancer(p) ? '<span class="badge refuse">À relancer</span>' : ""} <span class="badge ${p.etape === "gagne" ? "signe" : p.etape === "perdu" ? "annule" : "envoye"}">${esc(NOM_ETAPE[p.etape] || p.etape)}</span></div></a>`;
   const liste = prospects.filter(p => filtre === "tous" ? !["gagne", "perdu"].includes(p.etape) : p.etape === filtre);
   vue.innerHTML = `
-    <div class="entete"><h1>Prospects</h1><div class="actions-doc" style="margin:0"><a class="btn" href="#/prospects/trouver">Trouver des entreprises</a><button class="btn clair" id="nvP">${ICO.plus}Ajouter</button></div></div>
-    ${connus.length ? `<div class="onglets defile" style="margin-bottom:12px"><a href="" data-qui="" class="${filtreP ? "" : "actif"}">Tous</a>${connus.map(n => `<a href="" data-qui="${esc(n)}" class="${filtreP === n ? "actif" : ""}">${esc(n)}</a>`).join("")}${sans ? `<a href="" data-qui="—" class="${filtreP === "—" ? "actif" : ""}">Sans prospecteur</a>` : ""}</div>` : ""}
-    ${filtreP ? `<div class="carte" style="margin-bottom:16px"><label>${filtreP === "—" ? "Les prospects sans prospecteur" : "Où en est " + esc(filtreP)}</label>
-      ${prospects.length ? `<div class="ligne-bilan"><span><b>Prospects</b></span><span><b>${prospects.length}</b></span></div>${ETAPES.filter(([k]) => compte(k)).map(([k, n]) => `<div class="ligne-bilan"><span>${n}</span><span>${compte(k)}</span></div>`).join("")}
-      <div class="ligne-bilan"><span>À relancer aujourd'hui</span><span>${prospects.filter(aRelancer).length}</span></div>` : '<p class="gris" style="font-size:14px;margin:0">Aucun prospect pour l\'instant.</p>'}</div>` : ""}
-    <div class="carte" style="margin-bottom:16px"><label>Que dois-je faire aujourd'hui pour trouver un client ?</label>
-      ${actions.map((a, i) => `<${a.id ? `a href="#/prospect/${a.id}"` : `button type="button" data-gen="${a.lien || ""}"`} class="choix" style="margin-top:8px;text-decoration:none;color:inherit"><span><b>${i + 1}. ${esc(a.texte)}</b><small class="gris" style="display:block">${esc(a.pourquoi)}</small></span><span>›</span></${a.id ? "a" : "button"}>`).join("")}</div>
-    <div class="actions-doc" style="margin-top:0"><button class="btn clair" id="recu">Répondre à un message reçu</button></div>
+    <div class="entete"><h1>Prospects</h1></div>
+    ${partie(1, "Qui prospecte")}
     ${encadreColonne(esc)}
     <div class="carte" style="margin-bottom:16px"><label>Les prospecteurs</label>
       <div><div class="champ"><label>Sur ce téléphone, je suis</label><select id="pMoi"><option value="">Personne en particulier</option>${connus.map(n => `<option ${moi() === n ? "selected" : ""}>${esc(n)}</option>`).join("")}</select></div></div>
       ${parTete.length ? `<div class="ligne-bilan"><span class="gris">Prospecteur</span><span class="gris">prospects · contactés · gagnés</span></div>${parTete.map(([n, a, b, g]) => `<div class="ligne-bilan"><span>${esc(n)}</span><span>${a} · ${b} · ${g}</span></div>`).join("")}` : '<p class="gris" style="font-size:14px;margin:0 0 10px">Ajoutez le nom de chaque personne qui prospecte : ses prospects seront rangés à son nom.</p>'}
       <button class="btn discret petit-btn" id="pEquipe" style="margin-top:10px">Gérer les prospecteurs</button></div>
-    <div class="stats">${chiffres(prospects, docs, eur).map(([n, v, s]) => `<div class="stat"><span class="petit">${n}</span><b>${v}</b><small class="gris">${s}</small></div>`).join("")}</div>
+    ${connus.length ? `<div class="onglets defile" style="margin-bottom:12px"><a href="" data-qui="" class="${filtreP ? "" : "actif"}">Tous</a>${connus.map(n => `<a href="" data-qui="${esc(n)}" class="${filtreP === n ? "actif" : ""}">${esc(n)}</a>`).join("")}${sans ? `<a href="" data-qui="—" class="${filtreP === "—" ? "actif" : ""}">Sans prospecteur</a>` : ""}</div>` : ""}
+    ${filtreP ? `<div class="carte" style="margin-bottom:16px"><label>${filtreP === "—" ? "Les prospects sans prospecteur" : "Où en est " + esc(filtreP)}</label>
+      ${prospects.length ? `<div class="ligne-bilan"><span><b>Prospects</b></span><span><b>${prospects.length}</b></span></div>${ETAPES.filter(([k]) => compte(k)).map(([k, n]) => `<div class="ligne-bilan"><span>${n}</span><span>${compte(k)}</span></div>`).join("")}
+      <div class="ligne-bilan"><span>À relancer aujourd'hui</span><span>${prospects.filter(aRelancer).length}</span></div>` : '<p class="gris" style="font-size:14px;margin:0">Aucun prospect pour l\'instant.</p>'}</div>` : ""}
+    ${partie(2, "Chercher des entreprises")}
+    <div class="carte" style="margin-bottom:4px"><p class="gris" style="font-size:14px;margin:0 0 10px">Un métier, une ville : l'annuaire officiel donne la liste, et vous choisissez qui garder. Ou ajoutez une entreprise que vous connaissez.</p>
+      <div class="actions-doc" style="margin:0"><a class="btn" href="#/prospects/trouver">Trouver des entreprises</a><button class="btn clair" id="nvP">${ICO.plus}Ajouter</button></div></div>
+    ${partie(3, "Les fiches à remplir")}
+    <p class="gris" style="font-size:14px;margin:-4px 0 10px">Ouvrez une fiche pour noter ses coordonnées, ce qu'il a déjà et ce que vous avez vu de sa présence en ligne.</p>
     <div class="onglets defile"><a href="" data-f="tous" class="${filtre === "tous" ? "actif" : ""}">En cours</a>${ETAPES.map(([k, n]) => `<a href="" data-f="${k}" class="${filtre === k ? "actif" : ""}">${n}${compte(k) ? " · " + compte(k) : ""}</a>`).join("")}</div>
-    <div class="liste">${liste.map(ligne).join("") || `<p class="vide">${prospects.length ? "Aucun prospect à cette étape." : "Aucun prospect pour l'instant. Commencez par « Trouver des entreprises » : un métier, une ville, et vous choisissez qui contacter."}</p>`}</div>`;
+    <div class="liste">${liste.map(ligne).join("") || `<p class="vide">${prospects.length ? "Aucun prospect à cette étape." : "Aucun prospect pour l'instant. Commencez par « Trouver des entreprises » : un métier, une ville, et vous choisissez qui contacter."}</p>`}</div>
+    ${partie(4, "Les actions")}
+    <div class="carte" style="margin-bottom:16px"><label>Que dois-je faire aujourd'hui pour trouver un client ?</label>
+      ${actions.map((a, i) => `<${a.id ? `a href="#/prospect/${a.id}"` : `button type="button" data-gen="${a.lien || ""}"`} class="choix" style="margin-top:8px;text-decoration:none;color:inherit"><span><b>${i + 1}. ${esc(a.texte)}</b><small class="gris" style="display:block">${esc(a.pourquoi)}</small></span><span>›</span></${a.id ? "a" : "button"}>`).join("")}</div>
+    <div class="actions-doc" style="margin-top:0"><button class="btn clair" id="recu">Répondre à un message reçu</button></div>
+    <div class="stats">${chiffres(prospects, docs, eur).map(([n, v, s]) => `<div class="stat"><span class="petit">${n}</span><b>${v}</b><small class="gris">${s}</small></div>`).join("")}</div>`;
   vue.querySelectorAll("[data-f]").forEach(a => a.onclick = e => { e.preventDefault(); filtre = a.dataset.f; vueProspects(c); });
   const ajouter = () => formulaire(c, {}, p => { location.hash = "#/prospect/" + p.id; });
   document.getElementById("nvP").onclick = ajouter;
@@ -301,15 +317,12 @@ export async function vueProspect(c, id) {
     <div class="entete"><div><div class="petit">Prospect${p.source ? " · " + esc(p.source) : ""}</div><h1>${esc(p.entreprise || p.nom || "Sans nom")}</h1>
       <p class="gris">${esc([p.entreprise ? p.nom : "", p.metier, p.ville].filter(Boolean).join(" · "))}</p></div><span class="badge ${p.etape === "gagne" ? "signe" : p.etape === "perdu" ? "annule" : "envoye"}">${esc(NOM_ETAPE[p.etape] || p.etape)}</span></div>
     <div class="deux-col"><div>
-      <div class="carte" style="margin-bottom:12px;border-left:3px solid var(--violet)"><label>Prochaine action</label><p style="margin:4px 0 12px"><b>${esc(conseil)}</b></p>
-        ${p.opposition ? `<button class="btn discret petit-btn" id="annOpp">Annuler : il accepte de nouveau les messages</button>` : `<div class="actions-doc" style="margin:0">
-          <button class="btn" id="msg">Préparer un message</button><button class="btn clair" id="recu">Il m'a répondu</button><button class="btn clair" id="propo">Proposition en PDF</button>
-          ${p.client_id ? `<a class="btn clair" href="#/client/${p.client_id}">Sa fiche client</a>` : `<button class="btn clair" id="versClient">Passer en client</button>`}</div>`}</div>
-      <div class="carte" style="margin-bottom:12px"><label>Où en est-il</label>
-        <div class="palette">${ETAPES.map(([k, nom]) => `<button class="btn ${p.etape === k ? "" : "discret"} petit-btn" data-etape="${k}">${nom}</button>`).join("")}</div></div>
-      <div class="carte" style="margin-bottom:12px"><label>Ce que vous notez pour la suite</label>
-        <div class="champ"><input type="text" id="pAction" value="${esc(p.prochaine_action || "")}" placeholder="ex. envoyer la vidéo de démonstration"></div>
-        <div class="champ" style="margin-bottom:0"><label>Pour le</label><input type="date" id="pDate" value="${esc(p.prochaine_date || "")}"></div></div>
+      ${partie(1, "Son prospecteur")}
+      ${encadreColonne(esc)}
+      <div class="carte" style="margin-bottom:12px"><label>Son prospecteur</label><select id="pQui"><option value="">Personne en particulier</option>${noms.map(n => `<option ${p.prospecteur === n ? "selected" : ""}>${esc(n)}</option>`).join("")}</select></div>
+      ${partie(2, "Sa fiche")}
+      <div class="carte" style="margin-bottom:12px"><div class="entete" style="margin:0 0 6px"><label style="margin:0">Sa fiche</label><button class="btn discret petit-btn" id="modif">Modifier</button></div>
+        ${[["E-mail", p.email], ["Téléphone", p.tel], ["Site internet", p.site], ["Besoin", p.besoin], ["Offre recommandée", p.offre], ["Dernière relance", p.derniere_relance ? dateCourte(p.derniere_relance) : ""]].filter(x => x[1]).map(([k, v]) => `<div class="ligne-bilan"><span class="gris">${k}</span><span style="text-align:right;white-space:pre-line">${esc(v)}</span></div>`).join("") || '<p class="gris">Aucune coordonnée pour l\'instant.</p>'}</div>
       <div class="carte" style="margin-bottom:12px"><label>Sa présence en ligne (site, fiche Google, réseaux sociaux), d'après ce que vous avez vu</label>
         <div class="actions-doc" style="margin:8px 0 4px"><a class="btn discret petit-btn" target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent([p.metier, p.ville].filter(Boolean).join(" ") || p.entreprise || "")}">Le chercher sur Google</a>
           ${domaine(p) ? `<a class="btn discret petit-btn" target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent("site:" + domaine(p))}">Ses pages connues de Google</a>
@@ -321,10 +334,17 @@ export async function vueProspect(c, id) {
         <p class="gris" style="font-size:13px;margin:10px 0 0">Les messages lui proposeront : <b>${esc(enListe(manque(p).map(k => COURT[k])))}</b>.</p>
         <p class="gris" style="font-size:13px;margin:10px 0 0">Offre conseillée : <b>${esc(offreConseillee(p))}</b>${p.offre ? "" : " (d'après son besoin ; se règle dans la fiche)"}</p></div>
     </div><div>
-      ${encadreColonne(esc)}
-      <div class="carte" style="margin-bottom:12px"><label>Son prospecteur</label><select id="pQui"><option value="">Personne en particulier</option>${noms.map(n => `<option ${p.prospecteur === n ? "selected" : ""}>${esc(n)}</option>`).join("")}</select></div>
-      <div class="carte" style="margin-bottom:12px"><div class="entete" style="margin:0 0 6px"><label style="margin:0">Sa fiche</label><button class="btn discret petit-btn" id="modif">Modifier</button></div>
-        ${[["E-mail", p.email], ["Téléphone", p.tel], ["Site internet", p.site], ["Besoin", p.besoin], ["Offre recommandée", p.offre], ["Dernière relance", p.derniere_relance ? dateCourte(p.derniere_relance) : ""]].filter(x => x[1]).map(([k, v]) => `<div class="ligne-bilan"><span class="gris">${k}</span><span style="text-align:right;white-space:pre-line">${esc(v)}</span></div>`).join("") || '<p class="gris">Aucune coordonnée pour l\'instant.</p>'}</div>
+      ${partie(3, "Où en est-il")}
+      <div class="carte" style="margin-bottom:12px"><label>Où en est-il</label>
+        <div class="palette">${ETAPES.map(([k, nom]) => `<button class="btn ${p.etape === k ? "" : "discret"} petit-btn" data-etape="${k}">${nom}</button>`).join("")}</div></div>
+      ${partie(4, "Les actions")}
+      <div class="carte" style="margin-bottom:12px;border-left:3px solid var(--violet)"><label>Prochaine action</label><p style="margin:4px 0 12px"><b>${esc(conseil)}</b></p>
+        ${p.opposition ? `<button class="btn discret petit-btn" id="annOpp">Annuler : il accepte de nouveau les messages</button>` : `<div class="actions-doc" style="margin:0">
+          <button class="btn" id="msg">Préparer un message</button><button class="btn clair" id="recu">Il m'a répondu</button><button class="btn clair" id="propo">Proposition en PDF</button>
+          ${p.client_id ? `<a class="btn clair" href="#/client/${p.client_id}">Sa fiche client</a>` : `<button class="btn clair" id="versClient">Passer en client</button>`}</div>`}</div>
+      <div class="carte" style="margin-bottom:12px"><label>Ce que vous notez pour la suite</label>
+        <div class="champ"><input type="text" id="pAction" value="${esc(p.prochaine_action || "")}" placeholder="ex. envoyer la vidéo de démonstration"></div>
+        <div class="champ" style="margin-bottom:0"><label>Pour le</label><input type="date" id="pDate" value="${esc(p.prochaine_date || "")}"></div></div>
       <div class="carte" style="margin-bottom:12px"><div class="entete" style="margin:0 0 6px"><label style="margin:0">Historique des échanges</label><button class="btn discret petit-btn" id="note">Ajouter une note</button></div>
         ${histo.map(h => `<div class="ligne-bilan"><span><small class="gris">${dateCourte(h.d)} · ${h.t === "envoi" ? "envoyé" : h.t === "recu" ? "reçu" : "note"}${h.par ? " · " + esc(h.par) : ""}</small><span style="display:block;white-space:pre-line">${esc(h.texte)}</span></span></div>`).join("") || '<p class="gris">Rien pour l\'instant.</p>'}</div>
       <div class="actions-doc">${p.opposition ? "" : `<button class="btn discret" id="opp">Il ne veut plus être contacté</button>`}<button class="btn danger" id="suppr">${ICO.poubelle}Supprimer</button></div>
@@ -381,10 +401,11 @@ function montrer(c, p, [cle, nom, sujet, texte], apres) {
   const parWa = /^wa_|_wa$|^whatsapp$/.test(cle), waPossible = tel.length >= 10 && !p.opposition;
   const f = c.fenetre(nom, `${sujet ? `<p class="gris" style="font-size:13px;margin:0 0 6px">Objet : <b id="suj">${esc(sujet)}</b></p>` : ""}
     <textarea id="txt" rows="12" readonly style="width:100%;font:inherit;background:var(--pierre)">${esc(texte)}</textarea>
-    <div class="actions-doc" style="margin:12px 0 0">${parWa && waPossible ? '<button class="btn" id="wa">Ouvrir WhatsApp</button>' : ""}${p.id && p.email && !p.opposition && !parWa ? '<button class="btn" id="partir" hidden>Envoyer par e-mail</button>' : ""}<button class="btn${parWa && waPossible ? " clair" : ""}" id="copier">Copier</button><button class="btn clair" id="modifier">Modifier</button>
+    <div class="actions-doc" style="margin:12px 0 0">${parWa && waPossible ? '<button class="btn" id="wa">Ouvrir WhatsApp</button>' : ""}${p.id && !p.opposition && !parWa ? '<button class="btn" id="partir">Envoyer par e-mail</button>' : ""}<button class="btn${(parWa && waPossible) || (p.id && !p.opposition && !parWa) ? " clair" : ""}" id="copier">Copier</button><button class="btn clair" id="modifier">Modifier</button>
       ${p.email ? '<button class="btn clair" id="mail">Ouvrir dans mes e-mails</button>' : ""}${!parWa && waPossible ? '<button class="btn clair" id="wa">Ouvrir WhatsApp</button>' : ""}
       ${cle === "ia" ? "" : '<button class="btn clair" id="ia" hidden>Adapter avec l\'assistant IA</button><button class="btn discret" id="iaRetour" hidden>Revenir au message type</button>'}</div>
     ${p.id ? `<button class="btn discret" id="envoye" style="width:100%;margin-top:10px">Je l'ai envoyé : le noter dans l'historique</button>` : ""}
+    ${p.id && !p.opposition && !parWa ? '<p class="gris" id="etatMail" style="font-size:13px;margin:10px 0 0">Envoi direct depuis contact@noraeditions.com : vérification…</p>' : ""}
     <p class="gris" style="font-size:13px;margin:10px 0 0">Rien ne part tout seul : c'est vous qui envoyez.</p>`);
   const t = f.el.querySelector("#txt"), q = s => f.el.querySelector(s);
   q("#modifier").onclick = () => { t.readOnly = false; t.style.background = "#fff"; t.focus(); };
@@ -407,8 +428,11 @@ function montrer(c, p, [cle, nom, sujet, texte], apres) {
     try { await garder(c, { ...p, etape, historique: [...(p.historique || []), { par: moi(), d: jour(), t: "envoi", texte: nom + comment }], ...(relance ? { derniere_relance: jour() } : {}) }); f.fermer(); toast(dit); apres && apres(); } catch (e) { erreur(e); }
   };
   if (q("#envoye")) q("#envoye").onclick = () => noter("", "Noté dans l'historique ✓");
-  if (q("#partir")) { courrierDispo(db).then(ok => { if (ok && q("#partir")) { q("#partir").hidden = false; q("#copier").classList.add("clair"); } });
+  if (q("#partir")) { const etat = m => { if (q("#etatMail")) q("#etatMail").textContent = "Envoi direct depuis contact@noraeditions.com : " + m; };
+    const manque = ok => !p.email ? "il manque l'e-mail du prospect (bouton Modifier de sa fiche)" : ok ? "" : "pas encore possible, " + courrierRaison;
+    courrierDispo(db).then(ok => etat(manque(ok) || "prêt."));
     q("#partir").onclick = async e => { const b = e.currentTarget, objet = sujet || "Votre site internet";
+      const pb = manque(await courrierDispo(db)); if (pb) { etat(pb); return toast("Envoi direct : " + pb); }
       if (!t.value.trim()) return toast("Le message est vide.");
       if (!await c.confirmer(`Envoyer ce message à ${p.email}, depuis la boîte de Nora Éditions ?`, "Envoyer")) return;
       b.disabled = true; b.textContent = "Envoi…";
