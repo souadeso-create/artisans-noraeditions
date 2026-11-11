@@ -101,7 +101,7 @@ const INTERETS = { fort: "Fort : il veut avancer", moyen: "Moyen : il se renseig
 const ficheIA = p => ({ entreprise: p.entreprise || "", metier: p.metier || "", ville: p.ville || "", etape: (ETAPES.find(e => e[0] === p.etape) || [])[1] || "", besoin: p.besoin || "", a_deja: aDeja(p).map(d => d[1]), a_proposer: manque(p).map(k => PROPOS[k][1]),
   constats: CONSTATS.filter(c => (p.constats || []).includes(c[0])).map(c => c[1]), derniers_echanges: (p.historique || []).slice(-6).map(h => ({ date: h.d, sens: h.t === "recu" ? "reçu" : h.t === "envoi" ? "envoyé" : h.t, texte: h.texte || "" })) });
 const donneesIA = (p, P) => { const o = offreConseillee(p); return { formules: Object.keys(PRIX).map(k => ({ nom: k, prix: PRIX[k], contenu: CONTENU[k] })), formule_conseillee: o, conditions: CONDITIONS,
-  demonstration_en_video: demoPour(p, o), signature: signature(P), phrase_pour_ne_plus_recevoir_de_message: REFUS }; };
+  demonstration_en_video: demoPour(p, o), signature: signature(P, p), phrase_pour_ne_plus_recevoir_de_message: REFUS }; };
 
 /* ---------- L'envoi par e-mail depuis l'appli (facultatif) : absent tant que la fonction « courrier » n'est pas installée ---------- */
 let courrierPret = false, courrierRaison = "";   // la raison, quand l'envoi direct n'est pas prêt
@@ -115,7 +115,9 @@ async function courrierDispo(db) {
 }
 
 /* ---------- Les messages ---------- */
-function signature(P) { return `${P.entreprise || "Nora Éditions"}\n${P.site || "creation-site-internet.noraeditions.fr"}${P.email ? "\n" + P.email : ""}`; }
+// le prénom du commercial qui signe : le prospecteur de la fiche, sinon celui qui tient le téléphone
+const commercial = p => String((p && p.prospecteur) || moi() || "").trim().split(" ")[0];
+function signature(P, p) { return `${commercial(p) ? commercial(p) + String.fromCharCode(10) : ""}${P.entreprise || "Nora Éditions"}\n${P.site || "creation-site-internet.noraeditions.fr"}${P.email ? "\n" + P.email : ""}`; }
 const REFUS = "Si vous ne souhaitez plus recevoir de message de notre part, dites-le-nous simplement.";
 function constatsTxt(p) {
   const l = CONSTATS.filter(c => (p.constats || []).includes(c[0])).map(c => c[2]);
@@ -125,16 +127,16 @@ function constatsTxt(p) {
 const DEMO = "https://creation-site-internet.noraeditions.fr/demonstrations/";
 const demoPour = (p, o) => /plomb|electric|électric|couvr|peint|maçon|macon|carrel|menuis|renov|rénov|charpent|façad|facad|plaqu/i.test(p.metier || "") ? DEMO + "#artisans" : o === "Essentiel" ? DEMO + "#site" : DEMO + "#tableau-de-bord";
 export function messages(p, P) {
-  const o = offreConseillee(p), ent = p.entreprise ? ` pour ${p.entreprise}` : "", sig = signature(P), m = (p.metier || "votre métier").toLowerCase(), demo = demoPour(p, o), v = vise(p), duSite = v === "site" || v === "refonte";
+  const o = offreConseillee(p), ent = p.entreprise ? ` pour ${p.entreprise}` : "", sig = signature(P, p), de = commercial(p) ? commercial(p) + ", de " : "", m = (p.metier || "votre métier").toLowerCase(), demo = demoPour(p, o), v = vise(p), duSite = v === "site" || v === "refonte";
   const autres = Object.keys(PRIX).filter(k => k !== o).map(k => `• ${k} : ${PRIX[k]}. Elle comprend ${CONTENU[k]}.`).join("\n");
   const paiement = "Un acompte de 10 % lance le travail, et le solde se règle après votre validation finale, en une fois ou en 3 fois sans frais. L'abonnement est sans engagement.";
   return [
     ["premier", "Premier e-mail", v === "site" ? `Un site internet${ent}` : PROPOS[v][2],
       `${bonjour(p)}\n\nNora Éditions crée des sites internet pour les artisans et les indépendants. ${accroche(p.metier)}\n\n${constatsTxt(p)}${proposTxt(p)} Vous voyez le résultat avant de régler le solde, et tout se fait par écrit, à votre rythme.\n\nSouhaitez-vous voir un exemple en vidéo ? Répondez simplement « oui » à ce message.\n\n${REFUS}\n\n${sig}`],
     ["wa_premier", "Premier message WhatsApp", "",
-      `${bonjour(p)} ici Nora Éditions. Nous créons des sites internet pour les artisans et les indépendants. ${proposTxt(p)}\n\nSouhaitez-vous voir un exemple en vidéo ? Un simple « oui » suffit.\n\n${REFUS}`],
+      `${bonjour(p)} ici ${de}Nora Éditions. Nous créons des sites internet pour les artisans et les indépendants. ${proposTxt(p)}\n\nSouhaitez-vous voir un exemple en vidéo ? Un simple « oui » suffit.\n\n${REFUS}`],
     ["relance_wa", "Relance WhatsApp", "",
-      `${bonjour(p)} ici Nora Éditions. Nous revenons vers vous après notre message de l'autre jour, sur ${v === "site" ? `la création d'un site internet${ent}` : PROPOS[v][3]}. Pour vous faire une idée, voici une courte vidéo :\n${demo}\n\n${REFUS}`],
+      `${bonjour(p)} ici ${de}Nora Éditions. Nous revenons vers vous après notre message de l'autre jour, sur ${v === "site" ? `la création d'un site internet${ent}` : PROPOS[v][3]}. Pour vous faire une idée, voici une courte vidéo :\n${demo}\n\n${REFUS}`],
     ["whatsapp", "Réponse WhatsApp (à quelqu'un qui vous a écrit)", "",
       `${bonjour(p)} merci pour votre message ! Nora Éditions crée des sites internet pour les professionnels comme vous (${m}), avec un tableau de bord pour les demandes et les devis. Dites-nous ce dont vous avez besoin, et nous vous répondons par écrit avec un exemple. ${P.entreprise || "Nora Éditions"}`],
     ["demo", "Démonstration en vidéo", `Une démonstration en vidéo${ent}`,
