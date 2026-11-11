@@ -30,6 +30,15 @@ const METIERS = [
 const accroche = m => (METIERS.find(x => x[0].test(m || "")) || [0, "Aujourd'hui, on cherche un professionnel sur son téléphone, et on écrit à celui dont le site inspire confiance."])[1];
 
 const jour = () => new Date().toISOString().slice(0, 10);
+// le prospecteur qui se sert de ce téléphone (retenu ici), et la liste de tous les prospecteurs (dans les réglages de l'appli)
+export const moi = () => { try { return localStorage.getItem("nora_prospecteur") || ""; } catch (e) { return ""; } };
+const jeSuis = n => { try { n ? localStorage.setItem("nora_prospecteur", n) : localStorage.removeItem("nora_prospecteur"); } catch (e) {} };
+const equipe = P => Array.isArray(P.prospecteurs) ? P.prospecteurs : [];
+// la colonne « prospecteur » manque encore dans la base : on enregistre sans elle, et on le dit
+async function garder(c, ligne) {
+  try { return await c.db.enregistrer("prospects", ligne); }
+  catch (e) { if (!/prospecteur/.test(String(e?.message || e))) throw e; const { prospecteur, ...sans } = ligne; c.toast("Enregistré sans le prospecteur : la colonne manque dans la base (nora-schema-7-prospecteurs.sql)"); return await c.db.enregistrer("prospects", sans); }
+}
 const depuis = d => d ? Math.max(0, Math.round((new Date(jour() + "T12:00") - new Date(String(d).slice(0, 10) + "T12:00")) / 864e5)) : 999;   // en jours entiers, de date à date
 const dateCourte = d => new Date(String(d).slice(0, 10) + "T12:00").toLocaleDateString("fr-FR", { day: "numeric", month: "short" });
 const prenom = p => String(p.nom || "").trim().split(" ")[0];
@@ -135,15 +144,20 @@ function chiffres(prospects, docs, eur) {
 }
 
 /* ---------- La liste ---------- */
-let filtre = "tous";
+let filtre = "tous", filtreP = "";   // filtreP : "" = tous les prospecteurs, sinon un nom, ou "—" pour les prospects sans prospecteur
 export async function vueProspects(c) {
   const { db, vue, esc, eur, toast, erreur, fenetre, ICO } = c;
   let prospects;
   try { prospects = await db.lister("prospects"); }
   catch (e) { vue.innerHTML = `<div class="entete"><h1>Prospects</h1></div><div class="carte"><b>La table des prospects n'existe pas encore dans votre base.</b><p class="gris" style="margin-top:6px">Passez une fois le fichier nora-schema-6-prospects.sql dans l'éditeur SQL de Supabase, puis revenez ici.</p></div>`; return; }
   const docs = await db.lister("documents").catch(() => []);
+  const tous = prospects, noms = equipe(c.P), sans = tous.some(p => !p.prospecteur);
+  if (filtreP && filtreP !== "—" && !noms.includes(filtreP) && !tous.some(p => p.prospecteur === filtreP)) filtreP = "";
+  if (filtreP) prospects = tous.filter(p => filtreP === "—" ? !p.prospecteur : p.prospecteur === filtreP);
+  const connus = [...new Set(noms.concat(tous.map(p => p.prospecteur).filter(Boolean)))];
+  const parTete = connus.map(n => { const l = tous.filter(p => p.prospecteur === n); return [n, l.length, l.filter(p => p.etape !== "nouveau").length, l.filter(p => p.etape === "gagne").length]; });
   const actions = actionsDuJour(prospects), compte = k => prospects.filter(p => p.etape === k).length;
-  const ligne = p => `<a class="ligne-liste" href="#/prospect/${p.id}"><div><b>${esc(p.entreprise || p.nom || "Sans nom")}</b><small>${esc([p.entreprise ? p.nom : "", p.metier, p.ville].filter(Boolean).join(" · "))}</small></div>
+  const ligne = p => `<a class="ligne-liste" href="#/prospect/${p.id}"><div><b>${esc(p.entreprise || p.nom || "Sans nom")}</b><small>${esc([p.entreprise ? p.nom : "", p.metier, p.ville].filter(Boolean).join(" · "))}</small>${p.prospecteur && !filtreP ? `<small style="display:block">Prospecteur : ${esc(p.prospecteur)}</small>` : ""}</div>
     <div class="droite">${p.opposition ? '<span class="badge refuse">Ne plus contacter</span>' : aRelancer(p) ? '<span class="badge refuse">À relancer</span>' : ""} <span class="badge ${p.etape === "gagne" ? "signe" : p.etape === "perdu" ? "annule" : "envoye"}">${esc(NOM_ETAPE[p.etape] || p.etape)}</span></div></a>`;
   const liste = prospects.filter(p => filtre === "tous" ? !["gagne", "perdu"].includes(p.etape) : p.etape === filtre);
   vue.innerHTML = `
@@ -151,6 +165,11 @@ export async function vueProspects(c) {
     <div class="carte" style="margin-bottom:16px"><label>Que dois-je faire aujourd'hui pour trouver un client ?</label>
       ${actions.map((a, i) => `<${a.id ? `a href="#/prospect/${a.id}"` : `button type="button" data-gen="${a.lien || ""}"`} class="choix" style="margin-top:8px;text-decoration:none;color:inherit"><span><b>${i + 1}. ${esc(a.texte)}</b><small class="gris" style="display:block">${esc(a.pourquoi)}</small></span><span>›</span></${a.id ? "a" : "button"}>`).join("")}</div>
     <div class="actions-doc" style="margin-top:0"><button class="btn clair" id="recu">Répondre à un message reçu</button></div>
+    <div class="carte" style="margin-bottom:16px"><label>Les prospecteurs</label>
+      <div class="deux"><div class="champ"><label>Sur ce téléphone, je suis</label><select id="pMoi"><option value="">Personne en particulier</option>${connus.map(n => `<option ${moi() === n ? "selected" : ""}>${esc(n)}</option>`).join("")}</select></div>
+        <div class="champ"><label>Voir les prospects de</label><select id="pFiltre"><option value="">Tous les prospecteurs</option>${connus.map(n => `<option ${filtreP === n ? "selected" : ""}>${esc(n)}</option>`).join("")}${sans && connus.length ? `<option value="—" ${filtreP === "—" ? "selected" : ""}>Sans prospecteur</option>` : ""}</select></div></div>
+      ${parTete.length ? `<div class="ligne-bilan"><span class="gris">Prospecteur</span><span class="gris">prospects · contactés · gagnés</span></div>${parTete.map(([n, a, b, g]) => `<div class="ligne-bilan"><span>${esc(n)}</span><span>${a} · ${b} · ${g}</span></div>`).join("")}` : '<p class="gris" style="font-size:14px;margin:0 0 10px">Ajoutez le nom de chaque personne qui prospecte : ses prospects seront rangés à son nom.</p>'}
+      <button class="btn discret petit-btn" id="pEquipe" style="margin-top:10px">Gérer les prospecteurs</button></div>
     <div class="stats">${chiffres(prospects, docs, eur).map(([n, v, s]) => `<div class="stat"><span class="petit">${n}</span><b>${v}</b><small class="gris">${s}</small></div>`).join("")}</div>
     <div class="onglets defile"><a href="" data-f="tous" class="${filtre === "tous" ? "actif" : ""}">En cours</a>${ETAPES.map(([k, n]) => `<a href="" data-f="${k}" class="${filtre === k ? "actif" : ""}">${n}${compte(k) ? " · " + compte(k) : ""}</a>`).join("")}</div>
     <div class="liste">${liste.map(ligne).join("") || `<p class="vide">${prospects.length ? "Aucun prospect à cette étape." : "Aucun prospect pour l'instant. Commencez par « Trouver des entreprises » : un métier, une ville, et vous choisissez qui contacter."}</p>`}</div>`;
@@ -159,6 +178,9 @@ export async function vueProspects(c) {
   document.getElementById("nvP").onclick = ajouter;
   vue.querySelectorAll('[data-gen="trouver"]').forEach(b => b.onclick = () => { location.hash = "#/prospects/trouver"; });
   document.getElementById("recu").onclick = () => lireMessage(c, null, prospects);
+  document.getElementById("pMoi").onchange = e => { jeSuis(e.target.value); toast(e.target.value ? `Les nouveaux prospects seront au nom de ${e.target.value}` : "Les nouveaux prospects n'auront pas de prospecteur"); };
+  document.getElementById("pFiltre").onchange = e => { filtreP = e.target.value; vueProspects(c); };
+  document.getElementById("pEquipe").onclick = () => gererEquipe(c, () => vueProspects(c));
 }
 
 /* ---------- Le formulaire d'un prospect ---------- */
@@ -176,7 +198,7 @@ function formulaire(c, p, apres) {
   f.el.querySelector("#fp").onsubmit = async e => {
     e.preventDefault(); const o = {}; e.target.querySelectorAll("[name]").forEach(i => { o[i.name] = i.value.trim() || null; });
     if (!o.entreprise && !o.nom) return toast("Indiquez au moins l'entreprise ou le nom.");
-    try { const n = await db.enregistrer("prospects", { etape: "nouveau", historique: [], constats: [], opposition: false, ...p, ...o }); f.fermer(); toast("Prospect enregistré ✓"); apres(n); } catch (er) { erreur(er); }
+    try { const n = await garder(c, { etape: "nouveau", historique: [], constats: [], opposition: false, ...(p.id || !moi() ? {} : { prospecteur: moi() }), ...p, ...o }); f.fermer(); toast("Prospect enregistré ✓"); apres(n); } catch (er) { erreur(er); }
   };
 }
 
@@ -186,7 +208,8 @@ export async function vueProspect(c, id) {
   const p = await db.lire("prospects", id);
   if (!p) { vue.innerHTML = '<p class="vide">Ce prospect n\'existe plus.</p>'; return; }
   p.historique = p.historique || []; p.constats = p.constats || [];
-  const maj = async (champs, msg) => { Object.assign(p, champs); try { await db.enregistrer("prospects", { ...p }); if (msg) toast(msg); } catch (e) { erreur(e); } vueProspect(c, id); };
+  const maj = async (champs, msg) => { Object.assign(p, champs); try { await garder(c, { ...p }); if (msg) toast(msg); } catch (e) { erreur(e); } vueProspect(c, id); };
+  const noms = [...new Set(equipe(P).concat(p.prospecteur ? [p.prospecteur] : []))];
   const n = nbRelances(p), relance = aRelancer(p);
   const conseil = p.opposition ? "Ne plus le contacter : il l'a demandé." : p.etape === "nouveau" ? "Envoyer le premier e-mail."
     : p.etape === "contacte" ? (relance ? `Envoyer la ${["première", "deuxième", "dernière"][n]} relance.` : n >= 3 ? "Trois relances sans réponse : le classer en « Client perdu »." : (j => `Attendre sa réponse (relance possible ${j <= 1 ? "demain" : "dans " + j + " jours"}).`)(DELAIS[n] - depuis(dernierContact(p) || p.created_at)))
@@ -200,7 +223,7 @@ export async function vueProspect(c, id) {
       <div class="carte" style="margin-bottom:12px;border-left:3px solid var(--violet)"><label>Prochaine action</label><p style="margin:4px 0 12px"><b>${esc(conseil)}</b></p>
         ${p.opposition ? `<button class="btn discret petit-btn" id="annOpp">Annuler : il accepte de nouveau les messages</button>` : `<div class="actions-doc" style="margin:0">
           <button class="btn" id="msg">Préparer un message</button><button class="btn clair" id="recu">Il m'a répondu</button>
-          ${p.etape === "gagne" ? (p.client_id ? `<a class="btn clair" href="#/client/${p.client_id}">Fiche client</a>` : `<button class="btn clair" id="versClient">Créer la fiche client</button>`) : ""}</div>`}</div>
+          ${p.client_id ? `<a class="btn clair" href="#/client/${p.client_id}">Sa fiche client</a>` : `<button class="btn clair" id="versClient">Passer en client</button>`}</div>`}</div>
       <div class="carte" style="margin-bottom:12px"><label>Où en est-il</label>
         <div class="palette">${ETAPES.map(([k, nom]) => `<button class="btn ${p.etape === k ? "" : "discret"} petit-btn" data-etape="${k}">${nom}</button>`).join("")}</div></div>
       <div class="carte" style="margin-bottom:12px"><label>Ce que vous notez pour la suite</label>
@@ -210,10 +233,11 @@ export async function vueProspect(c, id) {
         ${CONSTATS.map(([k, nom]) => `<label style="display:flex;gap:10px;align-items:center;margin:8px 0 0;text-transform:none;letter-spacing:0;font-weight:400;font-size:15px;color:inherit"><input type="checkbox" data-constat="${k}" ${p.constats.includes(k) ? "checked" : ""} style="width:20px;height:20px">${nom}</label>`).join("")}
         <p class="gris" style="font-size:13px;margin:10px 0 0">Offre conseillée : <b>${esc(offreConseillee(p))}</b>${p.offre ? "" : " (d'après son besoin ; se règle dans la fiche)"}</p></div>
     </div><div>
+      <div class="carte" style="margin-bottom:12px"><label>Son prospecteur</label><select id="pQui"><option value="">Personne en particulier</option>${noms.map(n => `<option ${p.prospecteur === n ? "selected" : ""}>${esc(n)}</option>`).join("")}</select></div>
       <div class="carte" style="margin-bottom:12px"><div class="entete" style="margin:0 0 6px"><label style="margin:0">Sa fiche</label><button class="btn discret petit-btn" id="modif">Modifier</button></div>
         ${[["E-mail", p.email], ["Téléphone", p.tel], ["Site internet", p.site], ["Besoin", p.besoin], ["Offre recommandée", p.offre], ["Dernière relance", p.derniere_relance ? dateCourte(p.derniere_relance) : ""]].filter(x => x[1]).map(([k, v]) => `<div class="ligne-bilan"><span class="gris">${k}</span><span style="text-align:right;white-space:pre-line">${esc(v)}</span></div>`).join("") || '<p class="gris">Aucune coordonnée pour l\'instant.</p>'}</div>
       <div class="carte" style="margin-bottom:12px"><div class="entete" style="margin:0 0 6px"><label style="margin:0">Historique des échanges</label><button class="btn discret petit-btn" id="note">Ajouter une note</button></div>
-        ${histo.map(h => `<div class="ligne-bilan"><span><small class="gris">${dateCourte(h.d)} · ${h.t === "envoi" ? "envoyé" : h.t === "recu" ? "reçu" : "note"}</small><span style="display:block;white-space:pre-line">${esc(h.texte)}</span></span></div>`).join("") || '<p class="gris">Rien pour l\'instant.</p>'}</div>
+        ${histo.map(h => `<div class="ligne-bilan"><span><small class="gris">${dateCourte(h.d)} · ${h.t === "envoi" ? "envoyé" : h.t === "recu" ? "reçu" : "note"}${h.par ? " · " + esc(h.par) : ""}</small><span style="display:block;white-space:pre-line">${esc(h.texte)}</span></span></div>`).join("") || '<p class="gris">Rien pour l\'instant.</p>'}</div>
       <div class="actions-doc">${p.opposition ? "" : `<button class="btn discret" id="opp">Il ne veut plus être contacté</button>`}<button class="btn danger" id="suppr">${ICO.poubelle}Supprimer</button></div>
     </div></div>`;
   const el = i => document.getElementById(i);
@@ -223,13 +247,15 @@ export async function vueProspect(c, id) {
   el("pDate").onchange = e => maj({ prochaine_date: e.target.value || null }, "Noté ✓");
   el("modif").onclick = () => formulaire(c, p, () => vueProspect(c, id));
   el("note").onclick = () => { const f = c.fenetre("Ajouter une note", `<textarea id="nt" rows="4" style="width:100%"></textarea><button class="btn" id="ok" style="width:100%;margin-top:12px">Enregistrer</button>`);
-    f.el.querySelector("#ok").onclick = () => { const t = f.el.querySelector("#nt").value.trim(); f.fermer(); if (t) maj({ historique: [...p.historique, { d: jour(), t: "note", texte: t }] }, "Note ajoutée ✓"); }; };
+    f.el.querySelector("#ok").onclick = () => { const t = f.el.querySelector("#nt").value.trim(); f.fermer(); if (t) maj({ historique: [...p.historique, { par: moi(), d: jour(), t: "note", texte: t }] }, "Note ajoutée ✓"); }; };
   if (el("msg")) el("msg").onclick = () => choisir(c, p, () => vueProspect(c, id));
   if (el("recu")) el("recu").onclick = () => lireMessage(c, p, null, () => vueProspect(c, id));
-  if (el("opp")) el("opp").onclick = () => maj({ opposition: true, etape_avant: p.etape, etape: "perdu", historique: [...p.historique, { d: jour(), t: "note", texte: "Ne veut plus être contacté." }] }, "Noté : plus aucun message pour lui");
+  if (el("opp")) el("opp").onclick = () => maj({ opposition: true, etape_avant: p.etape, etape: "perdu", historique: [...p.historique, { par: moi(), d: jour(), t: "note", texte: "Ne veut plus être contacté." }] }, "Noté : plus aucun message pour lui");
   if (el("annOpp")) el("annOpp").onclick = () => maj({ opposition: false, etape: p.etape_avant || "contacte" }, "Annulé");
+  el("pQui").onchange = e => maj({ prospecteur: e.target.value || null }, e.target.value ? `Confié à ${e.target.value} ✓` : "Sans prospecteur");
+  // « Passer en client » : sa fiche client est créée, il est classé en « Client gagné », et les deux fiches sont reliées
   if (el("versClient")) el("versClient").onclick = async () => { try { const cl = await db.enregistrer("clients", { nom: p.nom || p.entreprise, societe: p.entreprise || null, tel: p.tel || null, email: p.email || null, ville: p.ville || null, notes: [p.metier, p.besoin].filter(Boolean).join(" · ") || null, archive: false });
-    maj({ client_id: cl.id }, "Fiche client créée ✓"); } catch (e) { erreur(e); } };
+    await maj({ client_id: cl.id, etape_avant: p.etape === "gagne" ? p.etape_avant : p.etape, etape: "gagne", historique: [...p.historique, { par: moi(), d: jour(), t: "note", texte: "Passé en client." }] }, "Il est maintenant dans vos clients ✓"); } catch (e) { erreur(e); } };
   el("suppr").onclick = async () => { if (!(await c.confirmer(`Supprimer ${p.entreprise || p.nom} ? Son historique sera perdu.`, "Supprimer"))) return;
     try { await db.supprimer("prospects", id); toast("Prospect supprimé"); location.hash = "#/prospects"; } catch (e) { erreur(e); } };
 }
@@ -257,7 +283,7 @@ function montrer(c, p, [cle, nom, sujet, texte], apres) {
   if (q("#wa")) q("#wa").onclick = () => window.open(`https://wa.me/${tel}?text=${encodeURIComponent(t.value)}`, "_blank");
   if (q("#envoye")) q("#envoye").onclick = async () => {
     const relance = /^relance/.test(cle), etape = cle === "premier" && p.etape === "nouveau" ? "contacte" : cle === "proposition" ? "proposition" : p.etape;
-    try { await db.enregistrer("prospects", { ...p, etape, historique: [...(p.historique || []), { d: jour(), t: "envoi", texte: nom }], ...(relance ? { derniere_relance: jour() } : {}) }); f.fermer(); toast("Noté dans l'historique ✓"); apres && apres(); } catch (e) { erreur(e); }
+    try { await garder(c, { ...p, etape, historique: [...(p.historique || []), { par: moi(), d: jour(), t: "envoi", texte: nom }], ...(relance ? { derniere_relance: jour() } : {}) }); f.fermer(); toast("Noté dans l'historique ✓"); apres && apres(); } catch (e) { erreur(e); }
   };
 }
 
@@ -276,11 +302,22 @@ function lireMessage(c, p, prospects, apres) {
       <div class="actions-doc" style="margin:12px 0 0">${a.stop ? (qui ? '<button class="btn" id="bloquer">Noter son refus : plus aucun message</button>' : "") : `<button class="btn" id="rep">${a.cle ? "Préparer la réponse" : "Choisir une réponse"}</button>`}
         ${qui ? '<button class="btn clair" id="garder">Garder ce message dans l\'historique</button>' : ""}</div>
       <p class="gris" style="font-size:13px;margin:10px 0 0">Cette lecture repère des mots, elle peut se tromper : relisez le message, c'est vous qui décidez.</p></div>`;
-    const q = s => f.el.querySelector(s), recu = { d: jour(), t: "recu", texte: texte.slice(0, 2000) };
-    const garde = async plus => { try { await db.enregistrer("prospects", { ...qui, historique: [...(qui.historique || []), recu], etape: ["nouveau", "contacte"].includes(qui.etape) ? "reponse" : qui.etape, ...plus }); return true; } catch (e) { erreur(e); return false; } };
+    const q = s => f.el.querySelector(s), recu = { par: moi(), d: jour(), t: "recu", texte: texte.slice(0, 2000) };
+    const garde = async plus => { try { await garder(c, { ...qui, historique: [...(qui.historique || []), recu], etape: ["nouveau", "contacte"].includes(qui.etape) ? "reponse" : qui.etape, ...plus }); return true; } catch (e) { erreur(e); return false; } };
     if (q("#garder")) q("#garder").onclick = async () => { if (await garde({})) { f.fermer(); toast("Message gardé ✓"); apres && apres(); } };
     if (q("#bloquer")) q("#bloquer").onclick = async () => { if (await garde({ opposition: true, etape_avant: qui.etape, etape: "perdu" })) { f.fermer(); toast("Noté : plus aucun message pour lui"); apres ? apres() : (location.hash = "#/prospect/" + qui.id); } };
     if (q("#rep")) q("#rep").onclick = async () => { const cible = qui || { nom: "", metier: "", historique: [] }; if (qui) await garde({}); f.fermer();
       choisir(c, qui ? { ...qui, historique: [...(qui.historique || []), recu] } : cible, apres, a.cle || undefined); };
   };
+}
+
+/* ---------- Les prospecteurs : leurs noms (retirer un nom ne touche pas à ses prospects) ---------- */
+function gererEquipe(c, apres) {
+  const { esc, toast, erreur, db, P } = c;
+  const f = c.fenetre("Les prospecteurs", '<div id="eq"></div><div class="champ" style="margin-top:12px"><label>Ajouter un prospecteur</label><input type="text" id="eqNom" placeholder="Son prénom, ou son nom"></div><button class="btn" id="eqOk" style="width:100%">Ajouter</button>');
+  const dessiner = () => { f.el.querySelector("#eq").innerHTML = equipe(P).map((n, i) => `<div class="ligne-bilan" style="align-items:center"><span>${esc(n)}</span><button class="btn discret petit-btn" data-retirer="${i}">Retirer</button></div>`).join("") || '<p class="gris">Aucun prospecteur pour l\'instant.</p>'; };
+  const sauver = async l => { P.prospecteurs = l; try { await db.enregistrerParametres(P); } catch (e) { erreur(e); } dessiner(); apres && apres(); };
+  f.el.querySelector("#eqOk").onclick = () => { const z = f.el.querySelector("#eqNom"), n = z.value.trim(); if (!n) return; if (equipe(P).includes(n)) return toast("Ce nom est déjà dans la liste."); z.value = ""; sauver([...equipe(P), n]); };
+  f.el.querySelector("#eq").onclick = e => { const b = e.target.closest("[data-retirer]"); if (!b) return; const l = equipe(P), n = l[+b.dataset.retirer]; if (moi() === n) jeSuis(""); sauver(l.filter((x, i) => i !== +b.dataset.retirer)); };
+  dessiner();
 }

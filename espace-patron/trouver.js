@@ -151,9 +151,10 @@ export async function vueTrouver(c) {
     const b = e.target.closest("[data-ajout]"); if (!b) return; b.disabled = true;
     const x = memoire.resultats.liste[+b.dataset.ajout], s = x.siege, d = (x.dirigeants || []).find(y => y.type_dirigeant === "personne physique" && y.nom);
     try {
-      await db.enregistrer("prospects", { entreprise: enseigne(x), nom: d ? propre((d.prenoms || "").split(" ")[0] + " " + String(d.nom).split(" (")[0]) : null, metier: memoire.metier || null,
+      const qui = (() => { try { return localStorage.getItem("nora_prospecteur") || ""; } catch (e) { return ""; } })(), ligne = { ...(qui ? { prospecteur: qui } : {}), entreprise: enseigne(x), nom: d ? propre((d.prenoms || "").split(" ")[0] + " " + String(d.nom).split(" (")[0]) : null, metier: memoire.metier || null,
         ville: propre((x._ailleurs && (x.matching_etablissements || [])[0]?.libelle_commune) || s.libelle_commune || memoire.ville.nom), source: `Annuaire des entreprises · SIREN ${x.siren}`, etape: "nouveau", constats: [], opposition: false,
-        historique: [{ d: new Date().toISOString().slice(0, 10), t: "note", texte: `Trouvée dans l'annuaire des entreprises. Adresse : ${propre(s.adresse || "")}.${x.date_creation ? " Créée en " + String(x.date_creation).slice(0, 4) + "." : ""} E-mail et téléphone à recopier depuis son site.` }] });
+        historique: [{ par: qui, d: new Date().toISOString().slice(0, 10), t: "note", texte: `Trouvée dans l'annuaire des entreprises. Adresse : ${propre(s.adresse || "")}.${x.date_creation ? " Créée en " + String(x.date_creation).slice(0, 4) + "." : ""} E-mail et téléphone à recopier depuis son site.` }] };
+      try { await db.enregistrer("prospects", ligne); } catch (er) { if (!/prospecteur/.test(String(er?.message || er))) throw er; delete ligne.prospecteur; await db.enregistrer("prospects", ligne); toast("Ajoutée sans le prospecteur : la colonne manque dans la base"); }
       deja.add(x.siren); toast("Ajoutée à vos prospects ✓"); montrer();
     } catch (er) { b.disabled = false; erreur(er); }
   };
