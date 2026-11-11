@@ -79,9 +79,21 @@ const encadreColonne = esc => !sansColonne ? "" : `<div class="carte" style="mar
   <p class="gris" style="font-size:14px;margin:6px 0 10px">La colonne « prospecteur » manque dans votre base, ou la base ne l'a pas encore prise en compte. Passez cette commande dans l'éditeur SQL de Supabase, puis rouvrez cette page :</p>
   <pre style="white-space:pre-wrap;background:var(--pierre);border-radius:10px;padding:10px;font-size:13px;margin:0 0 10px">${esc(SQL_PROSPECTEUR)}</pre><button class="btn petit-btn" data-copier-sql>Copier la commande</button></div>`;
 const brancherColonne = (vue, toast) => vue.querySelectorAll("[data-copier-sql]").forEach(b => b.onclick = () => navigator.clipboard.writeText(SQL_PROSPECTEUR).then(() => toast("Commande copiée ✓"), () => toast("Sélectionnez la commande et copiez-la à la main")));
+// l'identifiant d'une page Instagram ou Facebook, à partir de « @nom » ou de son adresse
+const idReseau = v => { let t = String(v || "").trim(); if (t.startsWith("@")) t = t.slice(1);
+  const i = t.indexOf("://"); if (i > -1) t = t.slice(i + 3);
+  if (t.includes("/")) { t = t.slice(t.indexOf("/") + 1); if (t.startsWith("m/")) t = t.slice(2); }
+  t = t.split("?")[0].split("#")[0].split("/")[0]; return t === "profile.php" ? "" : t; };
+// Une colonne récente (prospecteur, instagram, facebook) peut manquer dans la base : la fiche s'enregistre sans elle, et l'appli le dit.
 async function garder(c, ligne) {
-  try { const r = await c.db.enregistrer("prospects", ligne); if ("prospecteur" in ligne && ligne.prospecteur) sansColonne = false; return r; }
-  catch (e) { if (!/prospecteur/.test(String(e?.message || e))) throw e; sansColonne = true; const { prospecteur, ...sans } = ligne; return await c.db.enregistrer("prospects", sans); }
+  const l = { ...ligne };
+  for (let essai = 0; essai < 4; essai++) {
+    try { const r = await c.db.enregistrer("prospects", l); if ("prospecteur" in l && l.prospecteur) sansColonne = false; return r; }
+    catch (e) { const col = ["prospecteur", "instagram", "facebook"].find(k => k in l && String(e?.message || e).includes(k)); if (!col) throw e;
+      if (col === "prospecteur") sansColonne = true; else c.toast("Instagram et Facebook ne sont pas encore enregistrés : il manque une commande dans la base (nora-schema-8-reseaux.sql).");
+      delete l[col]; }
+  }
+  throw new Error("Le prospect n'a pas pu être enregistré.");
 }
 const depuis = d => d ? Math.max(0, Math.round((new Date(jour() + "T12:00") - new Date(String(d).slice(0, 10) + "T12:00")) / 864e5)) : 999;   // en jours entiers, de date à date
 const dateCourte = d => new Date(String(d).slice(0, 10) + "T12:00").toLocaleDateString("fr-FR", { day: "numeric", month: "short" });
@@ -133,9 +145,9 @@ export function messages(p, P) {
   return [
     ["premier", "Premier e-mail", v === "site" ? `Un site internet${ent}` : PROPOS[v][2],
       `${bonjour(p)}\n\nNora Éditions crée des sites internet pour les artisans et les indépendants. ${accroche(p.metier)}\n\n${constatsTxt(p)}${proposTxt(p)} Vous voyez le résultat avant de régler le solde, et tout se fait par écrit, à votre rythme.\n\nSouhaitez-vous voir un exemple en vidéo ? Répondez simplement « oui » à ce message.\n\n${REFUS}\n\n${sig}`],
-    ["wa_premier", "Premier message WhatsApp", "",
+    ["wa_premier", "Premier message court (WhatsApp, Instagram, Messenger)", "",
       `${bonjour(p)} ici ${de}Nora Éditions. Nous créons des sites internet pour les artisans et les indépendants. ${proposTxt(p)}\n\nSouhaitez-vous voir un exemple en vidéo ? Un simple « oui » suffit.\n\n${REFUS}\n\n${sig}`],
-    ["relance_wa", "Relance WhatsApp", "",
+    ["relance_wa", "Relance courte (WhatsApp, Instagram, Messenger)", "",
       `${bonjour(p)} ici ${de}Nora Éditions. Nous revenons vers vous après notre message de l'autre jour, sur ${v === "site" ? `la création d'un site internet${ent}` : PROPOS[v][3]}. Pour vous faire une idée, voici une courte vidéo :\n${demo}\n\n${REFUS}\n\n${sig}`],
     ["whatsapp", "Réponse WhatsApp (à quelqu'un qui vous a écrit)", "",
       `${bonjour(p)} merci pour votre message ! Nora Éditions crée des sites internet pour les professionnels comme vous (${m}), avec un tableau de bord pour les demandes et les devis. Dites-nous ce dont vous avez besoin, et nous vous répondons par écrit avec un exemple.\n\n${sig}`],
@@ -253,7 +265,7 @@ export async function vueProspects(c) {
     <div class="carte" style="margin-bottom:16px"><label>Les prospecteurs</label>
       <div><div class="champ"><label>Sur ce téléphone, je suis</label><select id="pMoi"><option value="">Personne en particulier</option>${connus.map(n => `<option ${moi() === n ? "selected" : ""}>${esc(n)}</option>`).join("")}</select></div></div>
       ${parTete.length ? `<div class="ligne-bilan"><span class="gris">Prospecteur</span><span class="gris">prospects · contactés · gagnés</span></div>${parTete.map(([n, a, b, g]) => `<div class="ligne-bilan"><span>${esc(n)}</span><span>${a} · ${b} · ${g}</span></div>`).join("")}` : '<p class="gris" style="font-size:14px;margin:0 0 10px">Ajoutez le nom de chaque personne qui prospecte : ses prospects seront rangés à son nom.</p>'}
-      <button class="btn discret petit-btn" id="pEquipe" style="margin-top:10px">Gérer les prospecteurs</button></div>
+      <div class="actions-doc" style="margin:10px 0 0"><button class="btn clair petit-btn" id="pVisuels">Mes visuels pour les réseaux</button><button class="btn discret petit-btn" id="pEquipe">Gérer les prospecteurs</button></div></div>
     ${connus.length ? `<div class="onglets defile" style="margin-bottom:12px"><a href="" data-qui="" class="${filtreP ? "" : "actif"}">Tous</a>${connus.map(n => `<a href="" data-qui="${esc(n)}" class="${filtreP === n ? "actif" : ""}">${esc(n)}</a>`).join("")}${sans ? `<a href="" data-qui="—" class="${filtreP === "—" ? "actif" : ""}">Sans prospecteur</a>` : ""}</div>` : ""}
     ${filtreP ? `<div class="carte" style="margin-bottom:16px"><label>${filtreP === "—" ? "Les prospects sans prospecteur" : "Où en est " + esc(filtreP)}</label>
       ${prospects.length ? `<div class="ligne-bilan"><span><b>Prospects</b></span><span><b>${prospects.length}</b></span></div>${ETAPES.filter(([k]) => compte(k)).map(([k, n]) => `<div class="ligne-bilan"><span>${n}</span><span>${compte(k)}</span></div>`).join("")}
@@ -278,6 +290,7 @@ export async function vueProspects(c) {
   document.getElementById("pMoi").onchange = e => { jeSuis(e.target.value); filtreP = e.target.value; toast(e.target.value ? `Les nouveaux prospects seront au nom de ${e.target.value}` : "Les nouveaux prospects n'auront pas de prospecteur"); vueProspects(c); };
   vue.querySelectorAll("[data-qui]").forEach(a => a.onclick = e => { e.preventDefault(); filtreP = a.dataset.qui; vueProspects(c); });
   document.getElementById("pEquipe").onclick = () => gererEquipe(c, () => vueProspects(c));
+  document.getElementById("pVisuels").onclick = async () => { try { (await import(`./visuels.js?v=${c.V || ""}`)).vueVisuels(c, moi()); } catch (e) { erreur(e); } };
   brancherColonne(vue, toast);
 }
 
@@ -287,7 +300,7 @@ function formulaire(c, p, apres) {
   const champ = (n, l, t = "text", attr = "") => `<div class="champ"><label>${l}</label><input type="${t}" name="${n}" value="${esc(p[n] || "")}" ${attr}></div>`;
   const f = fenetre(p.id ? "Modifier le prospect" : "Nouveau prospect", `<form id="fp">
     ${champ("entreprise", "Entreprise")}${champ("nom", "Nom de la personne")}${champ("metier", "Métier", "text", 'placeholder="ex. plombier, peintre, nettoyage"')}
-    ${champ("email", "E-mail", "email")}${champ("tel", "Téléphone (facultatif)", "tel")}${champ("site", "Site internet", "text", 'placeholder="s\'il en a un"')}${champ("ville", "Ville")}
+    ${champ("email", "E-mail", "email")}${champ("tel", "Téléphone (facultatif)", "tel")}${champ("site", "Site internet", "text", 'placeholder="s\'il en a un"')}${champ("instagram", "Instagram", "text", 'placeholder="@nom, ou l\'adresse de sa page"')}${champ("facebook", "Facebook", "text", 'placeholder="l\'adresse de sa page"')}${champ("ville", "Ville")}
     ${champ("source", "D'où vient ce prospect ?", "text", 'placeholder="ex. recherche Google, bouche-à-oreille, Instagram"')}
     <div class="champ"><label>Besoin identifié</label><textarea name="besoin" rows="2">${esc(p.besoin || "")}</textarea></div>
     <div class="champ"><label>Offre recommandée</label><select name="offre"><option value="">À voir</option>${OFFRES.map(o => `<option ${p.offre === o ? "selected" : ""}>${o}</option>`).join("")}</select></div>
@@ -295,6 +308,7 @@ function formulaire(c, p, apres) {
     <button class="btn" style="width:100%">Enregistrer</button></form>`);
   f.el.querySelector("#fp").onsubmit = async e => {
     e.preventDefault(); const o = {}; e.target.querySelectorAll("[name]").forEach(i => { o[i.name] = i.value.trim() || null; });
+    ["instagram", "facebook"].forEach(k => { if (!o[k] && !p[k]) delete o[k]; });   // rien à enregistrer : on ne touche pas à ces colonnes
     if (!o.entreprise && !o.nom) return toast("Indiquez au moins l'entreprise ou le nom.");
     try { const n = await garder(c, { etape: "nouveau", historique: [], constats: [], opposition: false, ...(p.id || !moi() ? {} : { prospecteur: moi() }), ...p, ...o }); f.fermer(); toast("Prospect enregistré ✓"); apres(n); } catch (er) { erreur(er); }
   };
@@ -324,7 +338,7 @@ export async function vueProspect(c, id) {
       <div class="carte" style="margin-bottom:12px"><label>Son prospecteur</label><select id="pQui"><option value="">Personne en particulier</option>${noms.map(n => `<option ${p.prospecteur === n ? "selected" : ""}>${esc(n)}</option>`).join("")}</select></div>
       ${partie(2, "Sa fiche")}
       <div class="carte" style="margin-bottom:12px"><div class="entete" style="margin:0 0 6px"><label style="margin:0">Sa fiche</label><button class="btn discret petit-btn" id="modif">Modifier</button></div>
-        ${[["E-mail", p.email], ["Téléphone", p.tel], ["Site internet", p.site], ["Besoin", p.besoin], ["Offre recommandée", p.offre], ["Dernière relance", p.derniere_relance ? dateCourte(p.derniere_relance) : ""]].filter(x => x[1]).map(([k, v]) => `<div class="ligne-bilan"><span class="gris">${k}</span><span style="text-align:right;white-space:pre-line">${esc(v)}</span></div>`).join("") || '<p class="gris">Aucune coordonnée pour l\'instant.</p>'}</div>
+        ${[["E-mail", p.email], ["Téléphone", p.tel], ["Site internet", p.site], ["Instagram", p.instagram], ["Facebook", p.facebook], ["Besoin", p.besoin], ["Offre recommandée", p.offre], ["Dernière relance", p.derniere_relance ? dateCourte(p.derniere_relance) : ""]].filter(x => x[1]).map(([k, v]) => `<div class="ligne-bilan"><span class="gris">${k}</span><span style="text-align:right;white-space:pre-line">${esc(v)}</span></div>`).join("") || '<p class="gris">Aucune coordonnée pour l\'instant.</p>'}</div>
       <div class="carte" style="margin-bottom:12px"><label>Sa présence en ligne (site, fiche Google, réseaux sociaux), d'après ce que vous avez vu</label>
         <div class="actions-doc" style="margin:8px 0 4px"><a class="btn discret petit-btn" target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent([p.entreprise || p.nom, p.ville].filter(Boolean).join(" "))}">Rechercher ce professionnel</a>
           <button class="btn discret petit-btn" id="visib">Trafic et visibilité</button></div>
@@ -398,7 +412,7 @@ export async function vueProspect(c, id) {
 function choisir(c, p, apres, cle) {
   const l = messages(p, c.P);
   if (cle) return montrer(c, p, l.find(m => m[0] === cle) || l[0], apres);
-  const surWa = !p.email && String(p.tel || "").replace(/\D/g, "").length >= 10;
+  const surWa = !p.email && (idReseau(p.instagram) || idReseau(p.facebook)) ? true : !p.email && String(p.tel || "").replace(/\D/g, "").length >= 10;
   const suggere = p.etape === "nouveau" ? (surWa ? "wa_premier" : "premier") : aRelancer(p) ? (surWa ? "relance_wa" : ["relance1", "relance2", "relance3"][nbRelances(p)]) : p.etape === "besoin" ? "proposition" : null;
   const f = c.fenetre("Quel message ?", l.map(m => `<button class="choix" data-m="${m[0]}"><span><b>${c.esc(m[1])}</b>${m[0] === suggere ? '<small class="gris" style="display:block">conseillé maintenant</small>' : ""}</span><span>›</span></button>`).join(""));
   f.el.onclick = e => { const b = e.target.closest("[data-m]"); if (!b) return; f.fermer(); montrer(c, p, l.find(m => m[0] === b.dataset.m), apres); };
@@ -407,10 +421,11 @@ function montrer(c, p, [cle, nom, sujet, texte], apres) {
   const { esc, toast, db, erreur } = c, tel = String(p.tel || "").replace(/\D/g, "").replace(/^0/, "33");
   // parWa : un message fait pour WhatsApp ; waPossible : la fiche a un numéro, et il n'a pas refusé d'être contacté
   const parWa = /^wa_|_wa$|^whatsapp$/.test(cle), waPossible = tel.length >= 10 && !p.opposition;
+  const insta = p.opposition ? "" : idReseau(p.instagram), fb = p.opposition ? "" : idReseau(p.facebook);
   const f = c.fenetre(nom, `${sujet ? `<p class="gris" style="font-size:13px;margin:0 0 6px">Objet : <b id="suj">${esc(sujet)}</b></p>` : ""}
     <textarea id="txt" rows="12" readonly style="width:100%;font:inherit;background:var(--pierre)">${esc(texte)}</textarea>
     <div class="actions-doc" style="margin:12px 0 0">${parWa && waPossible ? '<button class="btn" id="wa">Ouvrir WhatsApp</button>' : ""}${p.id && !p.opposition && !parWa ? '<button class="btn" id="partir">Envoyer par e-mail</button>' : ""}<button class="btn${(parWa && waPossible) || (p.id && !p.opposition && !parWa) ? " clair" : ""}" id="copier">Copier</button><button class="btn clair" id="modifier">Modifier</button>
-      ${p.email ? '<button class="btn clair" id="mail">Ouvrir dans mes e-mails</button>' : ""}${!parWa && waPossible ? '<button class="btn clair" id="wa">Ouvrir WhatsApp</button>' : ""}
+      ${p.email ? '<button class="btn clair" id="mail">Ouvrir dans mes e-mails</button>' : ""}${!parWa && waPossible ? '<button class="btn clair" id="wa">Ouvrir WhatsApp</button>' : ""}${insta ? '<button class="btn clair" id="insta">Ouvrir Instagram</button>' : ""}${fb ? '<button class="btn clair" id="fb">Ouvrir Messenger</button>' : ""}
       ${cle === "ia" ? "" : '<button class="btn clair" id="ia" hidden>Adapter avec l\'assistant IA</button><button class="btn discret" id="iaRetour" hidden>Revenir au message type</button>'}</div>
     ${p.id ? `<button class="btn discret" id="envoye" style="width:100%;margin-top:10px">Je l'ai envoyé : le noter dans l'historique</button>` : ""}
     ${p.id && !p.opposition && !parWa ? '<p class="gris" id="etatMail" style="font-size:13px;margin:10px 0 0">Envoi direct depuis contact@noraeditions.com : vérification…</p>' : ""}
@@ -419,6 +434,12 @@ function montrer(c, p, [cle, nom, sujet, texte], apres) {
   q("#modifier").onclick = () => { t.readOnly = false; t.style.background = "#fff"; t.focus(); };
   q("#copier").onclick = () => navigator.clipboard.writeText(t.value).then(() => toast("Message copié ✓"), () => { t.readOnly = false; t.select(); toast("Sélectionné : copiez-le à la main"); });
   if (q("#mail")) q("#mail").onclick = () => { location.href = `mailto:${p.email}?subject=${encodeURIComponent(sujet || "")}&body=${encodeURIComponent(t.value)}`; };
+  // Instagram et Messenger : le message est copié, la conversation s'ouvre, vous collez et vous envoyez ; au retour, l'appli propose de le noter
+  const parReseau = (bouton, lien, nomR) => { if (q(bouton)) q(bouton).onclick = async () => {
+    try { await navigator.clipboard.writeText(t.value); toast("Message copié : collez-le dans " + nomR); } catch (e) { toast("Copiez d'abord le message, puis collez-le dans " + nomR); }
+    window.open(lien, "_blank");
+    if (p.id && await c.confirmer(`Le message est-il parti sur ${nomR} ?`, "Oui, le noter")) noter(` (par ${nomR})`, "Noté dans l'historique ✓"); }; };
+  parReseau("#insta", "https://ig.me/m/" + encodeURIComponent(insta), "Instagram"); parReseau("#fb", "https://m.me/" + encodeURIComponent(fb), "Messenger");
   // WhatsApp s'ouvre avec le texte prêt : c'est vous qui appuyez sur envoyer ; au retour, l'appli propose de le noter
   if (q("#wa")) q("#wa").onclick = async () => { window.open(`https://wa.me/${tel}?text=${encodeURIComponent(t.value)}`, "_blank");
     if (p.id && await c.confirmer("Le message est-il parti sur WhatsApp ?", "Oui, le noter")) noter(" (par WhatsApp)", "Noté dans l'historique ✓"); };
