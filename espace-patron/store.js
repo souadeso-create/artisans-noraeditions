@@ -240,6 +240,7 @@ export async function ajouterNouvellesPrestations() {
 /* ---------- Sauvegarde complète (fichier) ---------- */
 export async function exporterTout() {
   const tables = ["clients", "prestations", "documents"];
+  try { out.prospects = await lister("prospects"); } catch (e) { /* table absente */ }
   const out = { exporte_le: new Date().toISOString(), parametres: await parametres() };
   for (const t of tables) out[t] = await lister(t);
   try { out.demandes = await lister("demandes"); } catch { /* table pas encore créée */ }

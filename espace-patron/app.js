@@ -2,7 +2,7 @@
 // abonnements, agenda, carnet de projet, notifications.
 import * as db from "./store.js";
 // version des fichiers chargés à la demande : à changer à chaque mise en ligne, pour que le téléphone ne garde pas l'ancienne
-const V = "20261111b";
+const V = "20261111d";
 import { UNITES } from "./donnees.js";
 import { telechargerPDF, totaux, eur, poserTVA, avecTVA, TAUX_TVA, tauxTxt, avenantDe } from "./pdf.js";
 import { CATEGORIES, etatPaiements } from "./carnet.js";
@@ -192,6 +192,13 @@ function confirmer(message, oui = "Confirmer") {
 }
 
 /* =================== Accueil =================== */
+// les prospects qui attendent une réponse, un premier message ou une relance : une ligne sur l'accueil
+async function alerteProspects() {
+  try { const m = await import(`./prospects.js?v=${V}`), l = await db.lister("prospects");
+    const n = l.filter(p => !p.opposition && (["nouveau", "reponse", "besoin"].includes(p.etape) || m.aRelancer(p))).length, z = document.getElementById("alerteProspects");
+    if (z && n) z.innerHTML = `<a class="alerte" href="#/prospects">${ICO.liste}<span><b>Prospects : ${n} à faire avancer</b><small>Premier message, réponse ou relance</small></span><span>›</span></a>`;
+  } catch (e) { /* la table n'existe pas encore : rien à montrer */ }
+}
 async function vueAccueil() {
   const [docs, clients, demandes, depenses] = await Promise.all([db.lister("documents"), db.lister("clients"), listerDemandes(), db.listerDepenses(["depense", "paiement", "avancement", "rdv"]).catch(() => [])]);
   const montants = depenses.splice(0); depenses.push(...montants.filter(x => (x.type || "depense") === "depense"));
@@ -232,6 +239,7 @@ async function vueAccueil() {
     ${finalesAEnvoyer.map(f => `<a class="alerte" href="#/document/${f.id}">${ICO.liste}<span><b>Facture finale à envoyer</b><small>${esc(nomClient(f.client))} · reste dû ${eur(totaux(f).reste)} € · devis ${esc(f.devis_numero || "")}</small></span><span>›</span></a>`).join("")}
     ${acomptesAEnvoyer.map(f => `<a class="alerte" href="#/document/${f.id}">${ICO.liste}<span><b>Facture d'acompte à envoyer</b><small>${esc(nomClient(f.client))} · ${eur(totaux(f).ttc)} € · devis ${esc(f.devis_numero || "")}</small></span><span>›</span></a>`).join("")}
     ${(demandes || []).filter(aAvancer).map(x => `<a class="alerte" href="#/demande/${x.id}">${ICO.liste}<span><b>À faire avancer : ${esc(x.nom)}</b><small>Prochaine étape : ${esc(prochaine(x)[1].toLowerCase())} · sans nouvelles depuis ${joursDepuis(dernierPas(x))} jours</small></span><span>›</span></a>`).join("")}
+    <div id="alerteProspects"></div>
     ${blocRdv(montants, clients)}
     ${blocChantiers(docs, clients, depenses, montants)}
     ${blocDepenses(depenses, clients, mois)}
@@ -252,6 +260,7 @@ async function vueAccueil() {
     </div>
     <h2 style="margin-bottom:12px">Derniers documents</h2>
     <div class="liste">${docs.slice(0, 6).map(ligneDoc).join("") || '<p class="vide">Aucun document pour l\'instant.</p>'}</div>`;
+  alerteProspects();
   const r = document.getElementById("relances");
   if (r) r.onclick = async e => {
     const b = e.target.closest("[data-relance]"); if (!b) return;
@@ -1279,6 +1288,7 @@ async function vuePlus() {
   vue.innerHTML = `
     <div class="entete"><h1>Plus</h1></div>
     <div class="liste">
+      <a class="ligne-liste" href="#/prospects"><div><b>Prospects</b><small>Trouver des clients : qui contacter, quoi écrire, qui relancer</small></div><span class="gris">›</span></a>
       <a class="ligne-liste" href="#/abonnements"><div><b>Abonnements</b><small>Chaque abonnement à sa date, ses factures et les rappels</small></div><span class="gris">›</span></a>
       <a class="ligne-liste" href="#/visites"><div><b>Visites du site</b><small>Visiteurs, pages vues, d'où ils viennent, questionnaires envoyés</small></div><span class="gris">›</span></a>
       <a class="ligne-liste" href="#/prestations"><div><b>Mes prestations et tarifs</b><small>Votre catalogue, utilisé dans chaque devis</small></div><span class="gris">›</span></a>
@@ -1376,7 +1386,7 @@ async function routeur() {
   const [chemin, requete] = (location.hash.slice(2) || "accueil").split("?");
   const params = new URLSearchParams(requete || "");
   const [r, a, b] = chemin.split("/");
-  nav.querySelectorAll("a").forEach(x => x.classList.toggle("actif", x.dataset.r === r || (r === "document" && x.dataset.r === "documents") || (r === "client" && x.dataset.r === "clients") || (r === "demande" && x.dataset.r === "demandes") || (["reglages", "abonnements", "prestations", "visites"].includes(r) && x.dataset.r === "plus")));
+  nav.querySelectorAll("a").forEach(x => x.classList.toggle("actif", x.dataset.r === r || (r === "document" && x.dataset.r === "documents") || (r === "client" && x.dataset.r === "clients") || (r === "demande" && x.dataset.r === "demandes") || (["reglages", "abonnements", "prestations", "visites", "prospects", "prospect"].includes(r) && x.dataset.r === "plus")));
   window.scrollTo(0, 0);
   try {
     if (r === "accueil") await vueAccueil();
@@ -1392,6 +1402,8 @@ async function routeur() {
     else if (r === "abonnements") await vueAbonnements();
     else if (r === "agenda") await vueAgenda();
     else if (r === "visites") await vueVisites();
+    else if (r === "prospects" || r === "prospect") { const m = await import(`./prospects.js?v=${V}`), c = { db, vue, esc, eur, toast, erreur, fenetre, confirmer, ICO, P };
+      if (r === "prospect") await m.vueProspect(c, a); else if (a === "trouver") await (await import(`./trouver.js?v=${V}`)).vueTrouver(c); else await m.vueProspects(c); }
     else await vueAccueil();
   } catch (e) { erreur(e); }
 }
