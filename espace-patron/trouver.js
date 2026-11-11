@@ -62,10 +62,14 @@ let memoire = { metier: "", code: "", ville: null, texteVille: "", resultats: nu
 
 const DEPS = "https://geo.api.gouv.fr/departements";
 // trois pages de l'annuaire (75 entreprises) à partir d'une page donnée ; le lieu est une commune ou un département
+// Paris, Lyon et Marseille : l'annuaire range leurs entreprises par arrondissement, pas sous le code de la ville
+const suite = (de, n) => Array.from({ length: n }, (x, i) => String(de + i));
+const ARRONDISSEMENTS = { "75056": suite(75101, 20), "69123": suite(69381, 9), "13055": suite(13201, 16) };
+const communesDe = lieu => ARRONDISSEMENTS[lieu.code] || [lieu.code];
 async function chercher(codes, lieu, page = 1, mot = "") {
   let tout = [], total = 0, pages = 1, derniere = page;
-  for (let p = page; p < page + 3; p++) {
-    const r = await fetch(`${API}?${codes ? "activite_principale=" + encodeURIComponent(codes) : "q=" + encodeURIComponent(mot)}&${lieu.type === "dep" ? "departement" : "code_commune"}=${lieu.code}&etat_administratif=A&per_page=25&page=${p}`);
+  for (let p = page; p < page + 4; p++) {
+    const r = await fetch(`${API}?${codes ? "activite_principale=" + encodeURIComponent(codes) : "q=" + encodeURIComponent(mot)}&${lieu.type === "dep" ? "departement=" + lieu.code : "code_commune=" + communesDe(lieu).join(",")}&etat_administratif=A&per_page=25&page=${p}`);
     if (!r.ok) throw new Error(r.status === 429 ? "L'annuaire reçoit trop de demandes : réessayez dans un instant." : "L'annuaire ne répond pas (" + r.status + ").");
     const d = await r.json(); tout = tout.concat(d.results || []); total = d.total_results || tout.length; pages = d.total_pages || 1; derniere = p;
     if (p >= pages) break;
@@ -76,10 +80,12 @@ async function chercher(codes, lieu, page = 1, mot = "") {
 // puis celles qui refusent la prospection commerciale, montrées sans bouton d'ajout (la loi interdit de les démarcher à partir de l'annuaire)
 function ranger(tout, lieu) {
   const vus = new Set(), garde = tout.filter(e => e.siege && e.statut_diffusion === "O" && !vus.has(e.siren) && vus.add(e.siren));
-  garde.forEach(e => { e._refus = !!e.opposition_diffusion_commerciale; e._ailleurs = lieu.type === "dep" ? e.siege.departement !== lieu.code : e.siege.commune !== lieu.code; });
+  garde.forEach(e => { e._refus = !!e.opposition_diffusion_commerciale; e._ailleurs = lieu.type === "dep" ? e.siege.departement !== lieu.code : !communesDe(lieu).includes(e.siege.commune); });
   const rang = e => e._refus ? 2 : e._ailleurs ? 1 : 0;
   garde.sort((a, b) => rang(a) - rang(b) || String(b.date_creation || "").localeCompare(String(a.date_creation || "")));   // à rang égal, les plus récentes d'abord
-  return { liste: garde, ailleurs: garde.filter(e => e._ailleurs && !e._refus).length, refus: garde.filter(e => e._refus).length };
+  // celles qui ont demandé que leurs coordonnées ne soient pas diffusées : l'annuaire ne donne pas leur nom, elles ne sont pas montrées
+  const cachees = new Set(tout.filter(e => e.statut_diffusion !== "O").map(e => e.siren)).size;
+  return { liste: garde, ailleurs: garde.filter(e => e._ailleurs && !e._refus).length, refus: garde.filter(e => e._refus).length, cachees };
 }
 
 export async function vueTrouver(c) {
@@ -130,9 +136,9 @@ export async function vueTrouver(c) {
           <a class="btn discret petit-btn" target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent(enseigne(e) + " " + (s.libelle_commune || ""))}">Chercher son site</a>
           <a class="btn discret petit-btn" target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent(enseigne(e) + " " + (s.libelle_commune || "") + " facebook instagram")}">Chercher ses réseaux</a></div></div>`; };
     const dep = memoire.ville.type === "dep", ou = dep ? `dans le département ${esc(memoire.ville.nom)} (${esc(memoire.ville.code)})` : `à ${esc(memoire.ville.nom)}`, reste = memoire.derniere < memoire.pages;
-    el("tRes").innerHTML = `<p class="gris" style="margin:0 0 10px">${r.liste.length ? `${r.liste.length} entreprise${r.liste.length > 1 ? "s" : ""} ${ou}${reste ? `, sur ${memoire.total} dans l'annuaire` : ""} : celles ${dep ? "du département" : "de la ville"} d'abord, les plus récentes en tête.` : `Aucune entreprise trouvée ${ou} pour ce métier. Essayez ${memoire.mot ? "un mot plus courant, ou le code d'activité" : dep ? "un autre code d'activité" : "une ville voisine, ou le département"}.`}
-      ${memoire.mot ? ` Recherche faite sur le nom des entreprises (« ${esc(memoire.mot)} ») : celles dont le nom ne dit pas le métier n'y sont pas.` : ""}${r.ailleurs ? ` ${r.ailleurs} ont leur siège ${dep ? "dans un autre département" : "dans une autre ville"}.` : ""}${r.refus ? ` ${r.refus} refusent la prospection commerciale : elles sont montrées en bas, sans bouton d'ajout.` : ""}</p><div class="liste">${r.liste.map(carte).join("")}</div>
-      ${reste ? `<button type="button" class="btn clair" id="tSuite" style="width:100%;margin-top:12px">Voir les suivantes</button>` : ""}`;
+    el("tRes").innerHTML = `<p class="gris" style="margin:0 0 10px">${r.liste.length ? `${r.liste.length} entreprise${r.liste.length > 1 ? "s" : ""} ${ou}${reste ? `, sur ${memoire.total} dans l'annuaire (les autres arrivent avec le bouton du bas)` : ""} : celles ${dep ? "du département" : "de la ville"} d'abord, les plus récentes en tête.` : `Aucune entreprise trouvée ${ou} pour ce métier. Essayez ${memoire.mot ? "un mot plus courant, ou le code d'activité" : dep ? "un autre code d'activité" : "une ville voisine, ou le département"}.`}
+      ${memoire.mot ? ` Recherche faite sur le nom des entreprises (« ${esc(memoire.mot)} ») : celles dont le nom ne dit pas le métier n'y sont pas.` : ""}${r.ailleurs ? ` ${r.ailleurs} ont leur siège ${dep ? "dans un autre département" : "dans une autre ville"}.` : ""}${r.cachees ? ` ${r.cachees} ne sont pas montrées : elles ont demandé que leurs coordonnées ne soient pas diffusées.` : ""}${r.refus ? ` ${r.refus} refusent la prospection commerciale : elles sont montrées en bas, sans bouton d'ajout.` : ""}</p><div class="liste">${r.liste.map(carte).join("")}</div>
+      ${reste ? `<button type="button" class="btn clair" id="tSuite" style="width:100%;margin-top:12px">Voir les suivantes (encore ${Math.max(0, memoire.total - memoire.derniere * 25)} dans l'annuaire)</button>` : ""}`;
   };
   el("fr").onsubmit = async e => {
     e.preventDefault();
