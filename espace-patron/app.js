@@ -2,7 +2,7 @@
 // abonnements, agenda, carnet de projet, notifications.
 import * as db from "./store.js";
 // version des fichiers chargés à la demande : à changer à chaque mise en ligne, pour que le téléphone ne garde pas l'ancienne
-const V = "20261111a";
+const V = "20261111b";
 import { UNITES } from "./donnees.js";
 import { telechargerPDF, totaux, eur, poserTVA, avecTVA, TAUX_TVA, tauxTxt, avenantDe } from "./pdf.js";
 import { CATEGORIES, etatPaiements } from "./carnet.js";
@@ -686,7 +686,7 @@ async function creerFactureFinale(d) {
   const annuel = !!c && aboAnnuel(c);   // abonnement par an : la première année est portée par la facture finale
   if (c && (!alAnnee || annuel)) {
     const ps = await db.lister("prestations").catch(() => []);
-    const prixAbo = annuel ? Number(c.abonnement_annuel) : Number(c.abonnement_mensuel) > 0 ? Number(c.abonnement_mensuel) : Number(ps.find(p => /^Abonnement du site/i.test(p.designation || ""))?.prix_ht) || 10;
+    const prixAbo = annuel ? Number(c.abonnement_annuel) : Number(c.abonnement_mensuel) > 0 ? Number(c.abonnement_mensuel) : Number(ps.find(p => !p.archive && /^Abonnement du site/i.test(p.designation || ""))?.prix_ht) || 10;
     const maj = {};
     if (!c.abonnement_debut) maj.abonnement_debut = aujourdhui();
     if (!annuel && !(Number(c.abonnement_mensuel) > 0)) maj.abonnement_mensuel = prixAbo;

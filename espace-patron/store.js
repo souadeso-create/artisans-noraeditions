@@ -1,5 +1,5 @@
 // Accès aux données : Supabase quand il est configuré, sinon le navigateur (mode essai).
-import { PARAMETRES_DEFAUT, PRESTATIONS_DEFAUT, AJOUTS_PRESTATIONS, CORRECTIONS_PRESTATIONS } from "./donnees.js";
+import { PARAMETRES_DEFAUT, PRESTATIONS_DEFAUT, AJOUTS_PRESTATIONS, CORRECTIONS_PRESTATIONS, REPRISE_REGLAGES } from "./donnees.js";
 
 const cfg = window.NORA_SB && window.NORA_SB.url ? { supabaseUrl: window.NORA_SB.url, supabaseKey: window.NORA_SB.cle } : {};
 export const MODE_ESSAI = !(cfg.supabaseUrl && cfg.supabaseKey);
@@ -212,6 +212,13 @@ export async function ajouterNouvellesPrestations() {
     faits.push("acompte-10-2026-10");
     if (!reste.length && !corr.length) { await enregistrerParametres({ ...brut, ajouts_prestations: faits }); return; }
   }
+  // les conditions et le libellé d'abonnement : repris une fois, seulement s'ils sont encore ceux de départ
+  if (!faits.includes(REPRISE_REGLAGES.cle)) {
+    if (brut.conditions && brut.conditions.includes(REPRISE_REGLAGES.conditions.marqueur)) brut.conditions = REPRISE_REGLAGES.conditions.nouveau;
+    if (brut.abonnement_libelle === REPRISE_REGLAGES.libelle.ancien) brut.abonnement_libelle = REPRISE_REGLAGES.libelle.nouveau;
+    faits.push(REPRISE_REGLAGES.cle);
+    if (!reste.length && !corr.length) { await enregistrerParametres({ ...brut, ajouts_prestations: faits }); return; }
+  }
   if (!reste.length && !corr.length) return;
   const toutes = await lister("prestations");
   for (const c of corr) {
@@ -220,6 +227,7 @@ export async function ajouterNouvellesPrestations() {
       let d = x.designation;
       for (const [ancien, nouveau] of c.remplacer) d = d.replace(ancien, nouveau);
       if (d !== x.designation) { x.designation = d; await enregistrer("prestations", { id: x.id, designation: d }); }
+      if ((c.archiver || []).some(m => m.test(x.designation)) && !x.archive) { x.archive = true; await enregistrer("prestations", { id: x.id, archive: true }); }
     }
   }
   const deja = new Set(toutes.map(x => x.designation));
