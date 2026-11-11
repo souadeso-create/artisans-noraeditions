@@ -19,8 +19,10 @@ async function logo() {
   return logoCache = await new Promise(ok => { const f = new FileReader(); f.onload = () => ok(f.result); f.readAsDataURL(b); });
 }
 
+// offre : une formule, ou la liste des formules à présenter (dans l'ordre des prix)
 export async function creerProposition(p, P, offre, constats = "") {
-  const { jsPDF } = window.jspdf, pdf = new jsPDF({ unit: "mm", format: "a4" }), W = 210, M = 18, L = W - 2 * M, f = FORMULES[offre] || FORMULES.Essentiel;
+  const { jsPDF } = window.jspdf, pdf = new jsPDF({ unit: "mm", format: "a4" }), W = 210, M = 18, L = W - 2 * M;
+  const offres = Object.keys(FORMULES).filter(k => [].concat(offre).includes(k)); if (!offres.length) offres.push("Essentiel");
   pdf.setLineHeightFactor(1.3);
   let y = 0;
   const place = h => { if (y + h > 272) { pdf.addPage(); y = 22; } };
@@ -49,17 +51,32 @@ export async function creerProposition(p, P, offre, constats = "") {
   texte(p.besoin || "Un site internet qui vous fasse trouver par vos clients, et qui leur donne envie de vous écrire.");
   if (constats) texte(constats.trim());
   titre("Ce que nous vous proposons");
-  texte(`La formule ${offre}.`, { gras: true });
-  f.points.forEach(puce);
-
-  // ── le prix, dans un encadré
-  place(34); y += 3;
-  pdf.setFillColor(...NUIT).roundedRect(M, y, L, 26, 3, 3, "F");
-  pdf.setFont("helvetica", "normal").setFontSize(9).setTextColor(255, 255, 255).text(`FORMULE ${propre(offre).toUpperCase()}`, M + 7, y + 8, { charSpace: .5 });
-  pdf.setFont("helvetica", "bold").setFontSize(24).setTextColor(...JAUNE).text(propre(f.prix), M + 7, y + 19);
-  const largeurPrix = pdf.getTextWidth(propre(f.prix));
-  pdf.setFont("helvetica", "normal").setFontSize(11).setTextColor(255, 255, 255).text(propre(f.puis), M + 7 + largeurPrix + 4, y + 19);
-  y += 26 + 6;
+  if (offres.length > 1) texte(`${offres.length === 2 ? "Deux" : "Trois"} formules, au choix. Chacune reprend la précédente et y ajoute des services.`);
+  offres.forEach((nom, i) => {
+    const f = FORMULES[nom];
+    if (offres.length > 1) {
+      // plusieurs formules : un bandeau par formule, son nom à gauche et son prix à droite, puis ce qu'elle comprend
+      place(40); y += i ? 4 : 1;
+      pdf.setFillColor(...NUIT).roundedRect(M, y, L, 13, 2.5, 2.5, "F");
+      pdf.setFont("helvetica", "bold").setFontSize(11).setTextColor(255, 255, 255).text(`FORMULE ${propre(nom).toUpperCase()}`, M + 6, y + 8.3, { charSpace: .4 });
+      pdf.setFont("helvetica", "normal").setFontSize(9.5).setTextColor(255, 255, 255).text(propre(f.puis), W - M - 6, y + 8.3, { align: "right" });
+      const largeurPuis = pdf.getTextWidth(propre(f.puis));
+      pdf.setFont("helvetica", "bold").setFontSize(15).setTextColor(...JAUNE).text(propre(f.prix), W - M - 6 - largeurPuis - 3, y + 8.8, { align: "right" });
+      y += 13 + 7;
+      f.points.forEach(puce); y += 2;
+      return;
+    }
+    texte(`La formule ${nom}.`, { gras: true });
+    f.points.forEach(puce);
+    // ── son prix, dans un encadré
+    place(28); y += 2;
+    pdf.setFillColor(...NUIT).roundedRect(M, y, L, 22, 3, 3, "F");
+    pdf.setFont("helvetica", "normal").setFontSize(9).setTextColor(255, 255, 255).text(`FORMULE ${propre(nom).toUpperCase()}`, M + 7, y + 7, { charSpace: .5 });
+    pdf.setFont("helvetica", "bold").setFontSize(21).setTextColor(...JAUNE).text(propre(f.prix), M + 7, y + 17);
+    const largeurPrix = pdf.getTextWidth(propre(f.prix));
+    pdf.setFont("helvetica", "normal").setFontSize(11).setTextColor(255, 255, 255).text(propre(f.puis), M + 7 + largeurPrix + 4, y + 17);
+    y += 22 + 6;
+  });
   texte("En option : le nom de domaine en .com (0,60 € de plus par mois), une adresse e-mail professionnelle (1,50 € de plus par mois), une boutique en ligne (sur devis).", { taille: 9.5, couleur: GRIS });
 
   titre("Les conditions", 40);
@@ -68,7 +85,7 @@ export async function creerProposition(p, P, offre, constats = "") {
   titre("Le délai", 26);
   texte("Votre site est mis en ligne environ une semaine après réception de vos textes et de vos photos. Ce délai est indicatif.");
   titre("La suite", 52);
-  ["Vous répondez « d'accord » à ce message.", "Nous vous envoyons un court questionnaire, pour préparer votre site.", "Vous recevez votre devis, à signer en ligne.",
+  [offres.length > 1 ? "Vous nous répondez en nous disant la formule que vous choisissez." : "Vous répondez « d'accord » à ce message.", "Nous vous envoyons un court questionnaire, pour préparer votre site.", "Vous recevez votre devis, à signer en ligne.",
     "L'acompte lance le travail.", "Nous vous montrons le résultat, et nous faisons vos ajustements.", "Vous validez : votre site est mis en ligne."].forEach((t, i) => {
     pdf.setFont("helvetica", "normal").setFontSize(10.5); const l = pdf.splitTextToSize(propre(t), L - 9), h = l.length * 10.5 * .46; place(h);
     pdf.setFont("helvetica", "bold").setTextColor(...VIOLET).text(String(i + 1), M + 1, y); pdf.setFont("helvetica", "normal").setTextColor(...ENCRE).text(l, M + 9, y); y += h + 1.6; });

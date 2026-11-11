@@ -327,11 +327,20 @@ export async function vueProspect(c, id) {
     f.el.querySelector("#ok").onclick = () => { const t = f.el.querySelector("#nt").value.trim(); f.fermer(); if (t) maj({ historique: [...p.historique, { par: moi(), d: jour(), t: "note", texte: t }] }, "Note ajoutée ✓"); }; };
   if (el("msg")) el("msg").onclick = () => choisir(c, p, () => vueProspect(c, id));
   if (el("recu")) el("recu").onclick = () => lireMessage(c, p, null, () => vueProspect(c, id));
-  // la proposition en PDF : la formule conseillée (ou celle de la fiche), son besoin, et ce qui a été constaté de sa présence en ligne
-  if (el("propo")) el("propo").onclick = async () => { el("propo").disabled = true;
-    try { const m = await import(`./proposition.js?v=${c.V || ""}`), r = await m.telechargerProposition(p.besoin || !aDeja(p).length ? p : { ...p, besoin: besoinTxt(p).replace(/^./, x => x.toUpperCase()) + "." }, P, offreConseillee(p), constatsTxt(p));
-      if (r !== "annulee") toast(r === "partagee" ? "Proposition partagée ✓" : "Proposition téléchargée ✓"); } catch (e) { erreur(e); }
-    el("propo").disabled = false; };
+  // la proposition en PDF : les formules cochées par le prospecteur, son besoin, et ce qui a été constaté de sa présence en ligne
+  if (el("propo")) el("propo").onclick = () => {
+    // les formules cochées d'avance : celle de la fiche ; Essentiel seule pour un site vitrine ; sinon Essentiel et Pro
+    const o = offreConseillee(p), davance = p.offre ? [p.offre] : o === "Essentiel" ? ["Essentiel"] : o === "Pro + IA" ? ["Pro", "Pro + IA"] : ["Essentiel", "Pro"];
+    const f = c.fenetre("Proposition en PDF", `<label>Les formules à présenter</label>
+      ${Object.keys(PRIX).map(k => `<label style="display:flex;gap:10px;align-items:flex-start;margin:10px 0 0;text-transform:none;letter-spacing:0;font-weight:400;font-size:15px;color:inherit"><input type="checkbox" data-formule="${k}" ${davance.includes(k) ? "checked" : ""} style="width:20px;height:20px;flex:none;margin-top:2px"><span><b>${k}</b><small class="gris" style="display:block">${esc(PRIX[k])}</small></span></label>`).join("")}
+      <button class="btn" id="creerPdf" style="width:100%;margin-top:16px">Créer le PDF</button>`);
+    f.el.querySelector("#creerPdf").onclick = async e => {
+      const choix = [...f.el.querySelectorAll("[data-formule]:checked")].map(x => x.dataset.formule); if (!choix.length) return toast("Cochez au moins une formule.");
+      e.currentTarget.disabled = true;
+      try { const m = await import(`./proposition.js?v=${c.V || ""}`), r = await m.telechargerProposition(p.besoin || !aDeja(p).length ? p : { ...p, besoin: besoinTxt(p).replace(/^./, x => x.toUpperCase()) + "." }, P, choix, constatsTxt(p));
+        f.fermer(); if (r !== "annulee") toast(r === "partagee" ? "Proposition partagée ✓" : "Proposition téléchargée ✓"); } catch (er) { erreur(er); f.fermer(); }
+    };
+  };
   if (el("opp")) el("opp").onclick = () => maj({ opposition: true, etape_avant: p.etape, etape: "perdu", historique: [...p.historique, { par: moi(), d: jour(), t: "note", texte: "Ne veut plus être contacté." }] }, "Noté : plus aucun message pour lui");
   if (el("annOpp")) el("annOpp").onclick = () => maj({ opposition: false, etape: p.etape_avant || "contacte" }, "Annulé");
   el("pQui").onchange = async e => { const n = e.target.value || null; Object.assign(p, { prospecteur: n });
