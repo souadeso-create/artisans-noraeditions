@@ -247,3 +247,19 @@ export async function exporterTout() {
   try { out.carnet = await lister("carnet"); } catch { /* table pas encore créée */ }
   return out;
 }
+
+/* ---------- L'assistant IA : une fonction du serveur (la clé n'est jamais dans le site) ---------- */
+export async function assistant(corps) {
+  if (MODE_ESSAI) return window.NORA_IA_ESSAI ? window.NORA_IA_ESSAI(corps) : { pret: false };
+  const { data, error } = await sb.functions.invoke("assistant", { body: corps });
+  if (error) { let m = ""; try { m = (await error.context.json()).erreur; } catch { /* pas de détail */ } throw new Error(m || "L'assistant IA ne répond pas."); }
+  return data;
+}
+
+/* ---------- L'envoi d'e-mails depuis la boîte de la maison : une fonction du serveur (le mot de passe n'est jamais dans le site) ---------- */
+export async function courrier(corps) {
+  if (MODE_ESSAI) return window.NORA_COURRIER_ESSAI ? window.NORA_COURRIER_ESSAI(corps) : { pret: false };
+  const { data, error } = await sb.functions.invoke("courrier", { body: corps });
+  if (error) { let m = ""; try { m = (await error.context.json()).erreur; } catch { /* pas de détail */ } throw new Error(m || "Le message n'est pas parti.");  }
+  return data;
+}

@@ -2,7 +2,7 @@
 // abonnements, agenda, carnet de projet, notifications.
 import * as db from "./store.js";
 // version des fichiers chargés à la demande : à changer à chaque mise en ligne, pour que le téléphone ne garde pas l'ancienne
-const V = "20261111e";
+const V = "20261111i";
 import { UNITES } from "./donnees.js";
 import { telechargerPDF, totaux, eur, poserTVA, avecTVA, TAUX_TVA, tauxTxt, avenantDe } from "./pdf.js";
 import { CATEGORIES, etatPaiements } from "./carnet.js";
@@ -807,12 +807,12 @@ const pctAcompte = () => Number(P?.acompte_pct) || 10;
 const suiteTxt = () => `La suite, pour que tout soit clair :\n• Vous remplissez le questionnaire.\n• Nous vous écrivons pour tout confirmer, avec votre devis : un acompte de ${pctAcompte()} % lance le travail.\n• Nous créons votre site, et nous vous montrons le résultat.\n• Vous demandez vos ajustements : nous les faisons.\n• Vous validez. Le solde se règle à ce moment-là, en une fois ou en 3 fois sans frais.\n• Votre site est mis en ligne, et l'abonnement démarre, sans engagement.`;
 // Le suivi d'une demande : chaque étape, et le message prêt pour le client à ce moment-là (p : son prénom, g : la signature).
 const SUIVI = [
-  ["recu", "Questionnaire reçu", (p, g) => `Bonjour ${p}, c'est ${g}. Votre questionnaire est bien arrivé, merci ! Je prépare votre devis : vous le signez en ligne, et un acompte de ${pctAcompte()} % lance le travail.`],
+  ["recu", "Questionnaire reçu", (p, g) => `Bonjour ${p}, c'est ${g}. Votre questionnaire est bien arrivé, merci ! Nous préparons votre devis : vous le signez en ligne, et un acompte de ${pctAcompte()} % lance le travail.`],
   ["devis", "Devis signé", (p, g) => `Bonjour ${p}, merci pour votre signature ! Pour lancer le travail, il reste l'acompte de ${pctAcompte()} %, par virement.${ribTexte() ? "\n" + ribTexte() : ""}\nDès qu'il arrive, nous commençons votre site.\n${g}`],
   ["acompte", "Acompte reçu, travail commencé", (p, g) => `Bonjour ${p}, votre acompte est bien arrivé, merci ! Nous commençons votre site aujourd'hui, et nous vous écrivons dès que le résultat est prêt à voir.\n${g}`],
   ["rendu", "Résultat montré", (p, g) => `Bonjour ${p}, votre site est prêt à voir :\n\nRegardez-le tranquillement, sur votre téléphone aussi, et dites-nous tout ce que vous voulez changer : nous ajustons.\n${g}`],
   ["ajustements", "Ajustements faits", (p, g) => `Bonjour ${p}, vos ajustements sont faits. Regardez de nouveau :\n\nSi tout vous convient, répondez « je valide » : nous préparons la mise en ligne.\n${g}`],
-  ["validation", "Validé par le client", (p, g) => `Bonjour ${p}, merci pour votre validation ! Je vous envoie la facture du solde : il se règle par virement, en une fois ou en 3 fois sans frais.${ribTexte() ? "\n" + ribTexte() : ""}\n${g}`],
+  ["validation", "Validé par le client", (p, g) => `Bonjour ${p}, merci pour votre validation ! Nous vous envoyons la facture du solde : il se règle par virement, en une fois ou en 3 fois sans frais.${ribTexte() ? "\n" + ribTexte() : ""}\n${g}`],
   ["solde", "Solde payé", (p, g) => `Bonjour ${p}, votre règlement est bien arrivé, merci ! Nous mettons votre site en ligne.\n${g}`],
   ["enligne", "Site en ligne, abonnement lancé", (p, g) => `Bonjour ${p}, bonne nouvelle : votre site est en ligne ! Votre abonnement démarre aujourd'hui, sans engagement. Regardez-le et dites-nous ce que vous en pensez.\n${g}`],
 ];
@@ -1402,7 +1402,7 @@ async function routeur() {
     else if (r === "abonnements") await vueAbonnements();
     else if (r === "agenda") await vueAgenda();
     else if (r === "visites") await vueVisites();
-    else if (r === "prospects" || r === "prospect") { const m = await import(`./prospects.js?v=${V}`), c = { db, vue, esc, eur, toast, erreur, fenetre, confirmer, ICO, P };
+    else if (r === "prospects" || r === "prospect") { const m = await import(`./prospects.js?v=${V}`), c = { db, vue, esc, eur, toast, erreur, fenetre, confirmer, ICO, P, V };
       if (r === "prospect") await m.vueProspect(c, a); else if (a === "trouver") await (await import(`./trouver.js?v=${V}`)).vueTrouver(c); else await m.vueProspects(c); }
     else await vueAccueil();
   } catch (e) { erreur(e); }
