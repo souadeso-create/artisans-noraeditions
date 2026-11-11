@@ -326,10 +326,9 @@ export async function vueProspect(c, id) {
       <div class="carte" style="margin-bottom:12px"><div class="entete" style="margin:0 0 6px"><label style="margin:0">Sa fiche</label><button class="btn discret petit-btn" id="modif">Modifier</button></div>
         ${[["E-mail", p.email], ["Téléphone", p.tel], ["Site internet", p.site], ["Besoin", p.besoin], ["Offre recommandée", p.offre], ["Dernière relance", p.derniere_relance ? dateCourte(p.derniere_relance) : ""]].filter(x => x[1]).map(([k, v]) => `<div class="ligne-bilan"><span class="gris">${k}</span><span style="text-align:right;white-space:pre-line">${esc(v)}</span></div>`).join("") || '<p class="gris">Aucune coordonnée pour l\'instant.</p>'}</div>
       <div class="carte" style="margin-bottom:12px"><label>Sa présence en ligne (site, fiche Google, réseaux sociaux), d'après ce que vous avez vu</label>
-        <div class="actions-doc" style="margin:8px 0 4px"><a class="btn discret petit-btn" target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent([p.metier, p.ville].filter(Boolean).join(" ") || p.entreprise || "")}">Le chercher sur Google</a>
-          ${domaine(p) ? `<a class="btn discret petit-btn" target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent("site:" + domaine(p))}">Ses pages connues de Google</a>
-          <a class="btn discret petit-btn" target="_blank" rel="noopener" href="https://www.similarweb.com/website/${encodeURIComponent(domaine(p))}/">Estimer son trafic</a>` : ""}</div>
-        <p class="gris" style="font-size:13px;margin:0 0 4px">${domaine(p) ? "Si l'estimation n'a pas de chiffres pour son site, c'est qu'il est peu visité. " : "Ajoutez son site à la fiche pour vérifier ses pages et son trafic. "}Cochez ensuite ce que vous avez vu.</p>
+        <div class="actions-doc" style="margin:8px 0 4px"><a class="btn discret petit-btn" target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent([p.entreprise || p.nom, p.ville].filter(Boolean).join(" "))}">Rechercher ce professionnel</a>
+          <button class="btn discret petit-btn" id="visib">Trafic et visibilité</button></div>
+        <p class="gris" style="font-size:13px;margin:0 0 4px">Cochez ensuite ce que vous avez vu.</p>
         ${CONSTATS.map(([k, nom]) => `<label style="display:flex;gap:10px;align-items:center;margin:8px 0 0;text-transform:none;letter-spacing:0;font-weight:400;font-size:15px;color:inherit"><input type="checkbox" data-constat="${k}" ${p.constats.includes(k) ? "checked" : ""} style="width:20px;height:20px">${nom}</label>`).join("")}
         <label style="margin-top:16px">Ce qu'il a déjà</label>
         ${DEJA.map(([k, nom]) => `<label style="display:flex;gap:10px;align-items:center;margin:8px 0 0;text-transform:none;letter-spacing:0;font-weight:400;font-size:15px;color:inherit"><input type="checkbox" data-constat="${k}" ${p.constats.includes(k) ? "checked" : ""} style="width:20px;height:20px">${nom}</label>`).join("")}
@@ -352,6 +351,13 @@ export async function vueProspect(c, id) {
       <div class="actions-doc">${p.opposition ? "" : `<button class="btn discret" id="opp">Il ne veut plus être contacté</button>`}<button class="btn danger" id="suppr">${ICO.poubelle}Supprimer</button></div>
     </div></div>`;
   const el = i => document.getElementById(i);
+  // trafic et visibilité : les trois vérifications, et comment les lire
+  if (el("visib")) el("visib").onclick = () => { const g = q => "https://www.google.com/search?q=" + encodeURIComponent(q), d = domaine(p), mv = [p.metier, p.ville].filter(Boolean).join(" ");
+    const ligne = (titre, aide, lien) => `<a class="choix" target="_blank" rel="noopener" href="${esc(lien)}" style="margin-top:8px;text-decoration:none;color:inherit"><span><b>${esc(titre)}</b><small class="gris" style="display:block">${esc(aide)}</small></span><span>›</span></a>`;
+    c.fenetre("Trafic et visibilité", `${mv ? ligne(`Sort-il quand on cherche « ${mv} » ?`, "Ce que tape un client. S'il n'est pas dans les premiers résultats, cochez « Introuvable sur Google ».", g(mv)) : '<p class="gris" style="font-size:14px">Notez son métier et sa ville sur sa fiche pour vérifier s\'il sort sur Google.</p>'}
+      ${d ? ligne("Les pages de son site que Google connaît", "Peu de pages, ou aucune : son site est mal référencé.", g("site:" + d)) + ligne("L'estimation de son trafic", "Pas de chiffres pour son site : il est peu visité. Cochez alors « Site peu visité ».", "https://www.similarweb.com/website/" + encodeURIComponent(d) + "/")
+        : '<p class="gris" style="font-size:14px;margin-top:12px">Ajoutez l\'adresse de son site à sa fiche (bouton Modifier) pour vérifier ses pages et son trafic.</p>'}
+      <p class="gris" style="font-size:13px;margin:12px 0 0">Le trafic exact d'un site n'est connu que de son propriétaire : ce sont des estimations.</p>`); };
   vue.querySelectorAll("[data-etape]").forEach(b => b.onclick = () => maj({ etape: b.dataset.etape }, `Passé en « ${NOM_ETAPE[b.dataset.etape]} » ✓`));
   vue.querySelectorAll("[data-constat]").forEach(b => b.onchange = () => maj({ constats: [...vue.querySelectorAll("[data-constat]:checked")].map(x => x.dataset.constat) }));
   el("pAction").onchange = e => maj({ prochaine_action: e.target.value.trim() || null }, "Noté ✓");
