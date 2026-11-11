@@ -18,6 +18,8 @@ const CONSTATS = [["pas_de_site", "Pas de site internet", "nous n'avons pas trou
   ["pas_fiche", "Pas de fiche Google", "nous n'avons pas trouvé de fiche Google à jour pour votre entreprise"],
   ["pas_devis", "Pas de demande de devis en ligne", "vos clients ne peuvent pas vous envoyer une demande de devis depuis votre site"],
   ["site_ancien", "Site ancien", "votre site semble dater un peu"],
+  ["pas_google", "Introuvable sur Google (son métier + sa ville)", "en cherchant votre métier dans votre ville sur Google, nous ne vous avons pas trouvé dans les premiers résultats"],
+  ["peu_trafic", "Site peu visité", "d'après les estimations publiques, votre site reçoit encore peu de visites"],
   ["pas_reseaux", "Pas de page sur les réseaux sociaux", "nous n'avons pas trouvé de page de votre entreprise sur les réseaux sociaux"],
   ["reseaux_endormis", "Réseaux sociaux peu actifs", "vos pages sur les réseaux sociaux n'ont pas été mises à jour depuis un moment"],
   ["reseaux_seuls", "Présent seulement sur les réseaux sociaux", "votre entreprise est sur les réseaux sociaux, mais sans site internet qui lui appartienne"]];
@@ -33,12 +35,14 @@ const PROPOS = {
   outil: ["vous installer un tableau de bord pour recevoir vos demandes et faire vos devis depuis votre téléphone", "un tableau de bord pour vos demandes, vos devis et vos factures", "Vos devis depuis votre téléphone", "un tableau de bord pour vos devis et vos factures"],
   assistant: ["ajouter à votre site un assistant qui répond aux visiteurs et prend leurs demandes", "un assistant sur votre site, qui répond aux visiteurs et prend leurs demandes", "Un assistant sur votre site", "l'ajout d'un assistant à votre site"] };
 const COURT = { site: "un site internet", refonte: "la refonte de son site", identite: "une identité visuelle", fiche: "une fiche Google", outil: "un tableau de bord pour ses devis et ses factures", assistant: "un assistant sur son site" };
+// le nom de domaine de son site, sans « https:// », « www. » ni chemin
+const domaine = p => String(p.site || "").trim().toLowerCase().replace(/^https?:\/\//, "").replace(/^www\./, "").split(/[\/?#\s]/)[0];
 const coche = (p, k) => (p.constats || []).includes(k);
 // « pas de site » l'emporte sur « a déjà un site » si les deux sont cochés
 const aDeja = p => DEJA.filter(d => coche(p, d[0]) && !(d[0] === "a_site" && coche(p, "pas_de_site")));
 function manque(p) {
   const a = k => aDeja(p).some(d => d[0] === k), l = [];
-  if (!a("a_site")) l.push("site"); else if (coche(p, "site_ancien") || coche(p, "pas_mobile")) l.push("refonte");
+  if (!a("a_site")) l.push("site"); else if (["site_ancien", "pas_mobile", "pas_google", "peu_trafic"].some(k => coche(p, k))) l.push("refonte");
   if (!a("a_identite")) l.push("identite");
   if (!a("a_fiche")) l.push("fiche");
   if (!a("a_outil")) l.push("outil");
@@ -120,7 +124,11 @@ export function messages(p, P) {
   return [
     ["premier", "Premier e-mail", v === "site" ? `Un site internet${ent}` : PROPOS[v][2],
       `${bonjour(p)}\n\nNora Éditions crée des sites internet pour les artisans et les indépendants. ${accroche(p.metier)}\n\n${constatsTxt(p)}${proposTxt(p)} Vous voyez le résultat avant de régler le solde, et tout se fait par écrit, à votre rythme.\n\nSouhaitez-vous voir un exemple en vidéo ? Répondez simplement « oui » à ce message.\n\n${REFUS}\n\n${sig}`],
-    ["whatsapp", "Message WhatsApp (en réponse à quelqu'un qui vous a écrit)", "",
+    ["wa_premier", "Premier message WhatsApp", "",
+      `${bonjour(p)} ici Nora Éditions. Nous créons des sites internet pour les artisans et les indépendants. ${proposTxt(p)}\n\nSouhaitez-vous voir un exemple en vidéo ? Un simple « oui » suffit.\n\n${REFUS}`],
+    ["relance_wa", "Relance WhatsApp", "",
+      `${bonjour(p)} ici Nora Éditions. Nous revenons vers vous après notre message de l'autre jour, sur ${v === "site" ? `la création d'un site internet${ent}` : PROPOS[v][3]}. Pour vous faire une idée, voici une courte vidéo :\n${demo}\n\n${REFUS}`],
+    ["whatsapp", "Réponse WhatsApp (à quelqu'un qui vous a écrit)", "",
       `${bonjour(p)} merci pour votre message ! Nora Éditions crée des sites internet pour les professionnels comme vous (${m}), avec un tableau de bord pour les demandes et les devis. Dites-nous ce dont vous avez besoin, et nous vous répondons par écrit avec un exemple. ${P.entreprise || "Nora Éditions"}`],
     ["demo", "Démonstration en vidéo", `Une démonstration en vidéo${ent}`,
       `${bonjour(p)}\n\nComme convenu, voici une courte vidéo qui montre ce que nous faisons :\n${demo}\n\nElle se lit sur téléphone, sans rien installer. Les autres démonstrations sont sur la même page.\n\nDites-nous ce que vous en pensez, et ce que vous aimeriez pour votre activité : nous vous préparons une proposition écrite.\n\n${sig}`],
@@ -303,6 +311,10 @@ export async function vueProspect(c, id) {
         <div class="champ"><input type="text" id="pAction" value="${esc(p.prochaine_action || "")}" placeholder="ex. envoyer la vidéo de démonstration"></div>
         <div class="champ" style="margin-bottom:0"><label>Pour le</label><input type="date" id="pDate" value="${esc(p.prochaine_date || "")}"></div></div>
       <div class="carte" style="margin-bottom:12px"><label>Sa présence en ligne (site, fiche Google, réseaux sociaux), d'après ce que vous avez vu</label>
+        <div class="actions-doc" style="margin:8px 0 4px"><a class="btn discret petit-btn" target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent([p.metier, p.ville].filter(Boolean).join(" ") || p.entreprise || "")}">Le chercher sur Google</a>
+          ${domaine(p) ? `<a class="btn discret petit-btn" target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent("site:" + domaine(p))}">Ses pages connues de Google</a>
+          <a class="btn discret petit-btn" target="_blank" rel="noopener" href="https://www.similarweb.com/website/${encodeURIComponent(domaine(p))}/">Estimer son trafic</a>` : ""}</div>
+        <p class="gris" style="font-size:13px;margin:0 0 4px">${domaine(p) ? "Si l'estimation n'a pas de chiffres pour son site, c'est qu'il est peu visité. " : "Ajoutez son site à la fiche pour vérifier ses pages et son trafic. "}Cochez ensuite ce que vous avez vu.</p>
         ${CONSTATS.map(([k, nom]) => `<label style="display:flex;gap:10px;align-items:center;margin:8px 0 0;text-transform:none;letter-spacing:0;font-weight:400;font-size:15px;color:inherit"><input type="checkbox" data-constat="${k}" ${p.constats.includes(k) ? "checked" : ""} style="width:20px;height:20px">${nom}</label>`).join("")}
         <label style="margin-top:16px">Ce qu'il a déjà</label>
         ${DEJA.map(([k, nom]) => `<label style="display:flex;gap:10px;align-items:center;margin:8px 0 0;text-transform:none;letter-spacing:0;font-weight:400;font-size:15px;color:inherit"><input type="checkbox" data-constat="${k}" ${p.constats.includes(k) ? "checked" : ""} style="width:20px;height:20px">${nom}</label>`).join("")}
@@ -358,16 +370,19 @@ export async function vueProspect(c, id) {
 function choisir(c, p, apres, cle) {
   const l = messages(p, c.P);
   if (cle) return montrer(c, p, l.find(m => m[0] === cle) || l[0], apres);
-  const suggere = p.etape === "nouveau" ? "premier" : aRelancer(p) ? ["relance1", "relance2", "relance3"][nbRelances(p)] : p.etape === "besoin" ? "proposition" : null;
+  const surWa = !p.email && String(p.tel || "").replace(/\D/g, "").length >= 10;
+  const suggere = p.etape === "nouveau" ? (surWa ? "wa_premier" : "premier") : aRelancer(p) ? (surWa ? "relance_wa" : ["relance1", "relance2", "relance3"][nbRelances(p)]) : p.etape === "besoin" ? "proposition" : null;
   const f = c.fenetre("Quel message ?", l.map(m => `<button class="choix" data-m="${m[0]}"><span><b>${c.esc(m[1])}</b>${m[0] === suggere ? '<small class="gris" style="display:block">conseillé maintenant</small>' : ""}</span><span>›</span></button>`).join(""));
   f.el.onclick = e => { const b = e.target.closest("[data-m]"); if (!b) return; f.fermer(); montrer(c, p, l.find(m => m[0] === b.dataset.m), apres); };
 }
 function montrer(c, p, [cle, nom, sujet, texte], apres) {
   const { esc, toast, db, erreur } = c, tel = String(p.tel || "").replace(/\D/g, "").replace(/^0/, "33");
+  // parWa : un message fait pour WhatsApp ; waPossible : la fiche a un numéro, et il n'a pas refusé d'être contacté
+  const parWa = /^wa_|_wa$|^whatsapp$/.test(cle), waPossible = tel.length >= 10 && !p.opposition;
   const f = c.fenetre(nom, `${sujet ? `<p class="gris" style="font-size:13px;margin:0 0 6px">Objet : <b id="suj">${esc(sujet)}</b></p>` : ""}
     <textarea id="txt" rows="12" readonly style="width:100%;font:inherit;background:var(--pierre)">${esc(texte)}</textarea>
-    <div class="actions-doc" style="margin:12px 0 0">${p.id && p.email && !p.opposition && cle !== "whatsapp" ? '<button class="btn" id="partir" hidden>Envoyer par e-mail</button>' : ""}<button class="btn" id="copier">Copier</button><button class="btn clair" id="modifier">Modifier</button>
-      ${p.email ? '<button class="btn clair" id="mail">Ouvrir dans mes e-mails</button>' : ""}${cle === "whatsapp" && tel.length >= 10 ? '<button class="btn clair" id="wa">Ouvrir WhatsApp</button>' : ""}
+    <div class="actions-doc" style="margin:12px 0 0">${parWa && waPossible ? '<button class="btn" id="wa">Ouvrir WhatsApp</button>' : ""}${p.id && p.email && !p.opposition && !parWa ? '<button class="btn" id="partir" hidden>Envoyer par e-mail</button>' : ""}<button class="btn${parWa && waPossible ? " clair" : ""}" id="copier">Copier</button><button class="btn clair" id="modifier">Modifier</button>
+      ${p.email ? '<button class="btn clair" id="mail">Ouvrir dans mes e-mails</button>' : ""}${!parWa && waPossible ? '<button class="btn clair" id="wa">Ouvrir WhatsApp</button>' : ""}
       ${cle === "ia" ? "" : '<button class="btn clair" id="ia" hidden>Adapter avec l\'assistant IA</button><button class="btn discret" id="iaRetour" hidden>Revenir au message type</button>'}</div>
     ${p.id ? `<button class="btn discret" id="envoye" style="width:100%;margin-top:10px">Je l'ai envoyé : le noter dans l'historique</button>` : ""}
     <p class="gris" style="font-size:13px;margin:10px 0 0">Rien ne part tout seul : c'est vous qui envoyez.</p>`);
@@ -375,7 +390,9 @@ function montrer(c, p, [cle, nom, sujet, texte], apres) {
   q("#modifier").onclick = () => { t.readOnly = false; t.style.background = "#fff"; t.focus(); };
   q("#copier").onclick = () => navigator.clipboard.writeText(t.value).then(() => toast("Message copié ✓"), () => { t.readOnly = false; t.select(); toast("Sélectionné : copiez-le à la main"); });
   if (q("#mail")) q("#mail").onclick = () => { location.href = `mailto:${p.email}?subject=${encodeURIComponent(sujet || "")}&body=${encodeURIComponent(t.value)}`; };
-  if (q("#wa")) q("#wa").onclick = () => window.open(`https://wa.me/${tel}?text=${encodeURIComponent(t.value)}`, "_blank");
+  // WhatsApp s'ouvre avec le texte prêt : c'est vous qui appuyez sur envoyer ; au retour, l'appli propose de le noter
+  if (q("#wa")) q("#wa").onclick = async () => { window.open(`https://wa.me/${tel}?text=${encodeURIComponent(t.value)}`, "_blank");
+    if (p.id && await c.confirmer("Le message est-il parti sur WhatsApp ?", "Oui, le noter")) noter(" (par WhatsApp)", "Noté dans l'historique ✓"); };
   if (q("#ia")) { const type = { sujet, texte }, objet = v => { sujet = v; if (q("#suj")) q("#suj").textContent = v; };
     iaDispo(db).then(ok => { if (ok && q("#ia")) q("#ia").hidden = false; });
     q("#ia").onclick = async e => { const b = e.currentTarget; b.disabled = true; b.textContent = "L'assistant écrit…";
@@ -386,7 +403,7 @@ function montrer(c, p, [cle, nom, sujet, texte], apres) {
     q("#iaRetour").onclick = () => { t.value = type.texte; objet(type.sujet); q("#iaRetour").hidden = true; toast("Message type remis"); }; }
   // noter l'envoi dans l'historique, et faire avancer l'étape
   const noter = async (comment, dit) => {
-    const relance = /^relance/.test(cle), etape = cle === "premier" && p.etape === "nouveau" ? "contacte" : cle === "proposition" ? "proposition" : p.etape;
+    const relance = /^relance/.test(cle), etape = ["premier", "wa_premier"].includes(cle) && p.etape === "nouveau" ? "contacte" : cle === "proposition" ? "proposition" : p.etape;
     try { await garder(c, { ...p, etape, historique: [...(p.historique || []), { par: moi(), d: jour(), t: "envoi", texte: nom + comment }], ...(relance ? { derniere_relance: jour() } : {}) }); f.fermer(); toast(dit); apres && apres(); } catch (e) { erreur(e); }
   };
   if (q("#envoye")) q("#envoye").onclick = () => noter("", "Noté dans l'historique ✓");
