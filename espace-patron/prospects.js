@@ -413,11 +413,17 @@ export async function vueProspect(c, id) {
   const el = i => document.getElementById(i);
   // trafic et visibilité : les trois vérifications, et comment les lire
   if (el("visib")) el("visib").onclick = () => { const g = q => "https://www.google.com/search?q=" + encodeURIComponent(q), d = domaine(p), mv = [p.metier, p.ville].filter(Boolean).join(" ");
-    const ligne = (titre, aide, lien) => `<a class="choix" target="_blank" rel="noopener" href="${esc(lien)}" style="margin-top:8px;text-decoration:none;color:inherit"><span><b>${esc(titre)}</b><small class="gris" style="display:block">${esc(aide)}</small></span><span>›</span></a>`;
-    c.fenetre("Trafic et visibilité", `${mv ? ligne(`Sort-il quand on cherche « ${mv} » ?`, "Ce que tape un client. S'il n'est pas dans les premiers résultats, cochez « Introuvable sur Google ».", g(mv)) : '<p class="gris" style="font-size:14px">Notez son métier et sa ville sur sa fiche pour vérifier s\'il sort sur Google.</p>'}
-      ${d ? ligne("Les pages de son site que Google connaît", "Peu de pages, ou aucune : son site est mal référencé.", g("site:" + d)) + ligne("L'estimation de son trafic", "Pas de chiffres pour son site : il est peu visité. Cochez alors « Site peu visité ».", "https://www.similarweb.com/website/" + encodeURIComponent(d) + "/")
+    const ligne = (titre, aide, lien, copie = "") => `<a class="choix" target="_blank" rel="noopener" href="${esc(lien)}" ${copie ? `data-copie="${esc(copie)}"` : ""} style="margin-top:8px;text-decoration:none;color:inherit"><span><b>${esc(titre)}</b><small class="gris" style="display:block">${esc(aide)}</small></span><span>›</span></a>`;
+    const fv = c.fenetre("Trafic et visibilité", `${mv ? ligne(`Sort-il quand on cherche « ${mv} » ?`, "Ce que tape un client. S'il n'est pas dans les premiers résultats, cochez « Introuvable sur Google ».", g(mv)) : '<p class="gris" style="font-size:14px">Notez son métier et sa ville sur sa fiche pour vérifier s\'il sort sur Google.</p>'}
+      ${d ? ligne("Les pages de son site que Google connaît", "Peu de pages, ou aucune : son site est mal référencé.", g("site:" + d)) + '<label style="margin-top:16px">Son trafic, selon quatre outils</label>'
+          + ligne("Similarweb", "Ses visites, d'où elles viennent, son classement.", "https://www.similarweb.com/fr/website/" + encodeURIComponent(d) + "/")
+          + ligne("Semrush", "Son trafic venu de Google, ses mots-clés, ses pages les plus vues, ses concurrents.", "https://fr.semrush.com/website/" + encodeURIComponent(d) + "/overview/")
+          + ligne("Ahrefs", "Son trafic de recherche, gratuit et payant.", "https://ahrefs.com/fr/traffic-checker/?input=" + encodeURIComponent(d) + "&mode=subdomains")
+          + ligne("Neil Patel", "Sa visibilité sur Google. L'adresse de son site est copiée : collez-la dans l'outil.", "https://neilpatel.com/fr/website-traffic-checker/", d)
+          + '<p class="gris" style="font-size:13px;margin:10px 0 0">Un outil qui n\'a pas de chiffres pour son site : il est peu visité. Cochez alors « Site peu visité ».</p>'
         : '<p class="gris" style="font-size:14px;margin-top:12px">Ajoutez l\'adresse de son site à sa fiche (bouton Modifier) pour vérifier ses pages et son trafic.</p>'}
-      <p class="gris" style="font-size:13px;margin:12px 0 0">Le trafic exact d'un site n'est connu que de son propriétaire : ce sont des estimations.</p>`); };
+      <p class="gris" style="font-size:13px;margin:12px 0 0">Le trafic exact d'un site n'est connu que de son propriétaire : ce sont des estimations.</p>`);
+    fv.el.addEventListener("click", e => { const l = e.target.closest("[data-copie]"); if (l) navigator.clipboard.writeText(l.dataset.copie).then(() => toast("Adresse du site copiée ✓"), () => {}); }); };
   vue.querySelectorAll("[data-etape]").forEach(b => b.onclick = () => maj({ etape: b.dataset.etape }, `Passé en « ${NOM_ETAPE[b.dataset.etape]} » ✓`));
   vue.querySelectorAll("[data-constat]").forEach(b => b.onchange = () => maj({ constats: [...vue.querySelectorAll("[data-constat]:checked")].map(x => x.dataset.constat) }));
   el("pAction").onchange = e => maj({ prochaine_action: e.target.value.trim() || null }, "Noté ✓");
