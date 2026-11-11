@@ -21,6 +21,37 @@ const CONSTATS = [["pas_de_site", "Pas de site internet", "nous n'avons pas trou
   ["pas_reseaux", "Pas de page sur les réseaux sociaux", "nous n'avons pas trouvé de page de votre entreprise sur les réseaux sociaux"],
   ["reseaux_endormis", "Réseaux sociaux peu actifs", "vos pages sur les réseaux sociaux n'ont pas été mises à jour depuis un moment"],
   ["reseaux_seuls", "Présent seulement sur les réseaux sociaux", "votre entreprise est sur les réseaux sociaux, mais sans site internet qui lui appartienne"]];
+// ce qu'il a déjà (coché sur la fiche, rangé avec les constats) : les messages ne proposent que ce qui lui manque
+const DEJA = [["a_site", "Un site internet", "un site internet"], ["a_identite", "Une identité visuelle (logo, couleurs, typographies)", "une identité visuelle"],
+  ["a_fiche", "Une fiche Google à jour", "une fiche Google"], ["a_outil", "Un outil pour ses devis et ses factures", "un outil pour vos devis et vos factures"]];
+// ce qu'on peut lui proposer : « nous pouvons… », le besoin, l'objet du premier e-mail, « au sujet de… »
+const PROPOS = {
+  site: ["vous préparer un site sur mesure et bien placé sur Google", "un site internet qui vous fasse trouver par vos clients", "Un site internet", "la création d'un site internet"],
+  refonte: ["refaire votre site pour qu'il se lise bien sur téléphone et qu'il soit mieux placé sur Google", "un site refait, agréable à lire sur téléphone et mieux placé sur Google", "Votre site internet", "la refonte de votre site internet"],
+  identite: ["dessiner votre identité visuelle (logo, couleurs, typographies)", "une identité visuelle (logo, couleurs, typographies)", "Votre identité visuelle", "votre identité visuelle"],
+  fiche: ["créer ou reprendre votre fiche Google", "une fiche Google à jour", "Votre fiche Google", "votre fiche Google"],
+  outil: ["vous installer un tableau de bord pour recevoir vos demandes et faire vos devis depuis votre téléphone", "un tableau de bord pour vos demandes, vos devis et vos factures", "Vos devis depuis votre téléphone", "un tableau de bord pour vos devis et vos factures"],
+  assistant: ["ajouter à votre site un assistant qui répond aux visiteurs et prend leurs demandes", "un assistant sur votre site, qui répond aux visiteurs et prend leurs demandes", "Un assistant sur votre site", "l'ajout d'un assistant à votre site"] };
+const COURT = { site: "un site internet", refonte: "la refonte de son site", identite: "une identité visuelle", fiche: "une fiche Google", outil: "un tableau de bord pour ses devis et ses factures", assistant: "un assistant sur son site" };
+const coche = (p, k) => (p.constats || []).includes(k);
+// « pas de site » l'emporte sur « a déjà un site » si les deux sont cochés
+const aDeja = p => DEJA.filter(d => coche(p, d[0]) && !(d[0] === "a_site" && coche(p, "pas_de_site")));
+function manque(p) {
+  const a = k => aDeja(p).some(d => d[0] === k), l = [];
+  if (!a("a_site")) l.push("site"); else if (coche(p, "site_ancien") || coche(p, "pas_mobile")) l.push("refonte");
+  if (!a("a_identite")) l.push("identite");
+  if (!a("a_fiche")) l.push("fiche");
+  if (!a("a_outil")) l.push("outil");
+  return l.length ? l : ["assistant"];
+}
+const enListe = l => l.length < 2 ? l.join("") : l.slice(0, -1).join(", ") + " et " + l[l.length - 1];
+// la phrase du premier e-mail : rien de coché, celle de toujours ; sinon ce qu'il a déjà, puis ce qui lui manque (un site à refaire ne se dit pas « déjà »)
+const proposTxt = p => !aDeja(p).length ? "Nous pouvons vous préparer un site sur mesure, bien placé sur Google, avec un tableau de bord pour recevoir vos demandes et faire vos devis depuis votre téléphone."
+  : (d => `${d.length ? `Vous avez déjà ${enListe(d)}. Pour compléter, nous` : "Nous"} pouvons ${enListe(manque(p).map(k => PROPOS[k][0]))}.`)(aDeja(p).filter(d => !(d[0] === "a_site" && manque(p)[0] === "refonte")).map(d => d[2]));
+// ce qu'on vise en premier chez lui, et son besoin quand la fiche ne le dit pas
+const vise = p => aDeja(p).length ? manque(p)[0] : "site";
+const besoinTxt = p => p.besoin || (aDeja(p).length ? enListe(manque(p).map(k => PROPOS[k][1])) : "un site internet qui vous fasse trouver par vos clients");
+
 // l'accroche propre au métier (les métiers prioritaires, puis une phrase qui vaut pour tous)
 const METIERS = [
   [/plomb|chauffag/i, "Quand on a une fuite ou une chaudière en panne, on cherche un plombier sur son téléphone, et on écrit à celui qui inspire confiance."],
@@ -53,7 +84,7 @@ const dateCourte = d => new Date(String(d).slice(0, 10) + "T12:00").toLocaleDate
 const prenom = p => String(p.nom || "").trim().split(" ")[0];
 const bonjour = p => p.nom ? `Bonjour ${prenom(p)},` : "Bonjour,";
 // la formule conseillée : celle de la fiche ; sinon le Pro, que le site recommande ; l'Essentiel seulement pour qui veut un simple site vitrine
-const offreConseillee = p => p.offre || (/assistant|\bia\b|intelligence/i.test(p.besoin || "") ? "Pro + IA" : /vitrine|simple site|juste un site|seulement un site|petit site|petit budget/i.test(p.besoin || "") ? "Essentiel" : "Pro");
+const offreConseillee = p => p.offre || (/assistant|\bia\b|intelligence/i.test(p.besoin || "") || (aDeja(p).length && manque(p)[0] === "assistant") ? "Pro + IA" : /vitrine|simple site|juste un site|seulement un site|petit site|petit budget/i.test(p.besoin || "") ? "Essentiel" : "Pro");
 const dernierContact = p => (p.historique || []).filter(h => h.t === "envoi").map(h => h.d).sort().pop() || null;
 const nbRelances = p => (p.historique || []).filter(h => h.t === "envoi" && /relance/i.test(h.texte || "")).length;
 
@@ -63,7 +94,7 @@ async function iaDispo(db) { if (iaPrete === null) { try { iaPrete = !!(await db
 const CONDITIONS = "Un acompte de 10 % lance le travail. Le solde se règle après la validation finale, en une fois ou en 3 fois sans frais. L'abonnement est sans engagement. Délai : environ une semaine après réception des textes et des photos.";
 const INTERETS = { fort: "Fort : il veut avancer", moyen: "Moyen : il se renseigne", faible: "Faible ou incertain", aucun: "Aucun : il refuse d'être contacté" };
 // ni nom de personne, ni e-mail, ni téléphone : seulement ce qui sert à écrire
-const ficheIA = p => ({ entreprise: p.entreprise || "", metier: p.metier || "", ville: p.ville || "", etape: (ETAPES.find(e => e[0] === p.etape) || [])[1] || "", besoin: p.besoin || "",
+const ficheIA = p => ({ entreprise: p.entreprise || "", metier: p.metier || "", ville: p.ville || "", etape: (ETAPES.find(e => e[0] === p.etape) || [])[1] || "", besoin: p.besoin || "", a_deja: aDeja(p).map(d => d[1]), a_proposer: manque(p).map(k => PROPOS[k][1]),
   constats: CONSTATS.filter(c => (p.constats || []).includes(c[0])).map(c => c[1]), derniers_echanges: (p.historique || []).slice(-6).map(h => ({ date: h.d, sens: h.t === "recu" ? "reçu" : h.t === "envoi" ? "envoyé" : h.t, texte: h.texte || "" })) });
 const donneesIA = (p, P) => { const o = offreConseillee(p); return { formules: Object.keys(PRIX).map(k => ({ nom: k, prix: PRIX[k], contenu: CONTENU[k] })), formule_conseillee: o, conditions: CONDITIONS,
   demonstration_en_video: demoPour(p, o), signature: signature(P), phrase_pour_ne_plus_recevoir_de_message: REFUS }; };
@@ -83,20 +114,20 @@ function constatsTxt(p) {
 const DEMO = "https://creation-site-internet.noraeditions.fr/demonstrations/";
 const demoPour = (p, o) => /plomb|electric|électric|couvr|peint|maçon|macon|carrel|menuis|renov|rénov|charpent|façad|facad|plaqu/i.test(p.metier || "") ? DEMO + "#artisans" : o === "Essentiel" ? DEMO + "#site" : DEMO + "#tableau-de-bord";
 export function messages(p, P) {
-  const o = offreConseillee(p), ent = p.entreprise ? ` pour ${p.entreprise}` : "", sig = signature(P), m = (p.metier || "votre métier").toLowerCase(), demo = demoPour(p, o);
+  const o = offreConseillee(p), ent = p.entreprise ? ` pour ${p.entreprise}` : "", sig = signature(P), m = (p.metier || "votre métier").toLowerCase(), demo = demoPour(p, o), v = vise(p), duSite = v === "site" || v === "refonte";
   const autres = Object.keys(PRIX).filter(k => k !== o).map(k => `• ${k} : ${PRIX[k]}. Elle comprend ${CONTENU[k]}.`).join("\n");
   const paiement = "Un acompte de 10 % lance le travail, et le solde se règle après votre validation finale, en une fois ou en 3 fois sans frais. L'abonnement est sans engagement.";
   return [
-    ["premier", "Premier e-mail", `Un site internet${ent}`,
-      `${bonjour(p)}\n\nNora Éditions crée des sites internet pour les artisans et les indépendants. ${accroche(p.metier)}\n\n${constatsTxt(p)}Nous pouvons vous préparer un site sur mesure, bien placé sur Google, avec un tableau de bord pour recevoir vos demandes et faire vos devis depuis votre téléphone. Vous voyez le résultat avant de régler le solde, et tout se fait par écrit, à votre rythme.\n\nSouhaitez-vous voir un exemple en vidéo ? Répondez simplement « oui » à ce message.\n\n${REFUS}\n\n${sig}`],
+    ["premier", "Premier e-mail", v === "site" ? `Un site internet${ent}` : PROPOS[v][2],
+      `${bonjour(p)}\n\nNora Éditions crée des sites internet pour les artisans et les indépendants. ${accroche(p.metier)}\n\n${constatsTxt(p)}${proposTxt(p)} Vous voyez le résultat avant de régler le solde, et tout se fait par écrit, à votre rythme.\n\nSouhaitez-vous voir un exemple en vidéo ? Répondez simplement « oui » à ce message.\n\n${REFUS}\n\n${sig}`],
     ["whatsapp", "Message WhatsApp (en réponse à quelqu'un qui vous a écrit)", "",
       `${bonjour(p)} merci pour votre message ! Nora Éditions crée des sites internet pour les professionnels comme vous (${m}), avec un tableau de bord pour les demandes et les devis. Dites-nous ce dont vous avez besoin, et nous vous répondons par écrit avec un exemple. ${P.entreprise || "Nora Éditions"}`],
     ["demo", "Démonstration en vidéo", `Une démonstration en vidéo${ent}`,
       `${bonjour(p)}\n\nComme convenu, voici une courte vidéo qui montre ce que nous faisons :\n${demo}\n\nElle se lit sur téléphone, sans rien installer. Les autres démonstrations sont sur la même page.\n\nDites-nous ce que vous en pensez, et ce que vous aimeriez pour votre activité : nous vous préparons une proposition écrite.\n\n${sig}`],
-    ["relance1", "Première relance", `Votre site internet${ent}`,
-      `${bonjour(p)}\n\nNous nous permettons de revenir vers vous au sujet de notre message de l'autre jour, sur la création d'un site internet${ent}. Peut-être n'était-ce pas le bon moment.\n\nPour vous faire une idée sans y passer de temps, voici une courte vidéo :\n${demo}\n\n${REFUS}\n\n${sig}`],
-    ["relance2", "Deuxième relance", `Un exemple de site${ent}`,
-      `${bonjour(p)}\n\nUn dernier mot avant de vous laisser tranquille : nous pouvons vous montrer un exemple de site pour ${m}, sans engagement. Il n'y a rien à préparer de votre côté.\n\nUn simple « oui » en réponse suffit.\n\n${REFUS}\n\n${sig}`],
+    ["relance1", "Première relance", duSite ? `Votre site internet${ent}` : "Notre message de l'autre jour",
+      `${bonjour(p)}\n\nNous nous permettons de revenir vers vous au sujet de notre message de l'autre jour, sur ${v === "site" ? `la création d'un site internet${ent}` : PROPOS[v][3]}. Peut-être n'était-ce pas le bon moment.\n\nPour vous faire une idée sans y passer de temps, voici une courte vidéo :\n${demo}\n\n${REFUS}\n\n${sig}`],
+    ["relance2", "Deuxième relance", duSite ? `Un exemple de site${ent}` : "Un exemple de notre travail",
+      `${bonjour(p)}\n\nUn dernier mot avant de vous laisser tranquille : nous pouvons vous montrer un exemple de ${duSite ? "site" : "notre travail"} pour ${m}, sans engagement. Il n'y a rien à préparer de votre côté.\n\nUn simple « oui » en réponse suffit.\n\n${REFUS}\n\n${sig}`],
     ["relance3", "Dernière relance, courtoise", `Nous ne vous dérangeons plus`,
       `${bonjour(p)}\n\nSans réponse de votre part, nous ne vous écrirons plus. Si un jour vous avez besoin d'un site internet, vous savez où nous trouver : ${P.site || "creation-site-internet.noraeditions.fr"}.\n\nNous vous souhaitons une belle continuation.\n\n${sig}`],
     ["prix", "Réponse : il demande le prix", "Nos tarifs",
@@ -112,7 +143,7 @@ export function messages(p, P) {
     ["appli", "Réponse : il veut une application métier", "Votre tableau de bord",
       `${bonjour(p)}\n\nC'est la formule Pro : ${CONTENU.Pro}, pour ${PRIX.Pro}. Vos devis et vos factures se génèrent automatiquement en PDF, et vos clients signent en ligne.\n\nVoici une courte vidéo qui montre le tableau de bord sur un téléphone :\n${DEMO}#tableau-de-bord\n\nDites-nous ce que vous aimeriez y trouver pour votre activité.\n\n${sig}`],
     ["proposition", "Proposition commerciale (texte)", `Votre proposition${ent}`,
-      `${bonjour(p)}\n\nSuite à nos échanges, voici notre proposition${ent}.\n\nVotre besoin : ${p.besoin || "un site internet qui vous fasse trouver par vos clients"}.\n\nCe que nous vous proposons : la formule ${o}, soit ${CONTENU[o]}.\n\nLe prix : ${PRIX[o]}.\n\nLa suite : vous remplissez un court questionnaire, nous vous envoyons le devis à signer en ligne, un acompte de 10 % lance le travail, nous vous montrons le résultat, vous demandez vos ajustements, puis vous validez. Le solde se règle à ce moment-là, en une fois ou en 3 fois sans frais. L'abonnement est sans engagement.\n\nLe délai : environ une semaine après réception de vos textes et de vos photos.\n\nSi cette proposition vous convient, répondez-nous simplement « d'accord » et nous vous envoyons le questionnaire.\n\n${sig}`],
+      `${bonjour(p)}\n\nSuite à nos échanges, voici notre proposition${ent}.\n\nVotre besoin : ${besoinTxt(p)}.\n\nCe que nous vous proposons : la formule ${o}, soit ${CONTENU[o]}.\n\nLe prix : ${PRIX[o]}.\n\nLa suite : vous remplissez un court questionnaire, nous vous envoyons le devis à signer en ligne, un acompte de 10 % lance le travail, nous vous montrons le résultat, vous demandez vos ajustements, puis vous validez. Le solde se règle à ce moment-là, en une fois ou en 3 fois sans frais. L'abonnement est sans engagement.\n\nLe délai : environ une semaine après réception de vos textes et de vos photos.\n\nSi cette proposition vous convient, répondez-nous simplement « d'accord » et nous vous envoyons le questionnaire.\n\n${sig}`],
   ];
 }
 
@@ -273,6 +304,9 @@ export async function vueProspect(c, id) {
         <div class="champ" style="margin-bottom:0"><label>Pour le</label><input type="date" id="pDate" value="${esc(p.prochaine_date || "")}"></div></div>
       <div class="carte" style="margin-bottom:12px"><label>Sa présence en ligne (site, fiche Google, réseaux sociaux), d'après ce que vous avez vu</label>
         ${CONSTATS.map(([k, nom]) => `<label style="display:flex;gap:10px;align-items:center;margin:8px 0 0;text-transform:none;letter-spacing:0;font-weight:400;font-size:15px;color:inherit"><input type="checkbox" data-constat="${k}" ${p.constats.includes(k) ? "checked" : ""} style="width:20px;height:20px">${nom}</label>`).join("")}
+        <label style="margin-top:16px">Ce qu'il a déjà</label>
+        ${DEJA.map(([k, nom]) => `<label style="display:flex;gap:10px;align-items:center;margin:8px 0 0;text-transform:none;letter-spacing:0;font-weight:400;font-size:15px;color:inherit"><input type="checkbox" data-constat="${k}" ${p.constats.includes(k) ? "checked" : ""} style="width:20px;height:20px">${nom}</label>`).join("")}
+        <p class="gris" style="font-size:13px;margin:10px 0 0">Les messages lui proposeront : <b>${esc(enListe(manque(p).map(k => COURT[k])))}</b>.</p>
         <p class="gris" style="font-size:13px;margin:10px 0 0">Offre conseillée : <b>${esc(offreConseillee(p))}</b>${p.offre ? "" : " (d'après son besoin ; se règle dans la fiche)"}</p></div>
     </div><div>
       ${encadreColonne(esc)}
@@ -295,7 +329,7 @@ export async function vueProspect(c, id) {
   if (el("recu")) el("recu").onclick = () => lireMessage(c, p, null, () => vueProspect(c, id));
   // la proposition en PDF : la formule conseillée (ou celle de la fiche), son besoin, et ce qui a été constaté de sa présence en ligne
   if (el("propo")) el("propo").onclick = async () => { el("propo").disabled = true;
-    try { const m = await import(`./proposition.js?v=${c.V || ""}`), r = await m.telechargerProposition(p, P, offreConseillee(p), constatsTxt(p));
+    try { const m = await import(`./proposition.js?v=${c.V || ""}`), r = await m.telechargerProposition(p.besoin || !aDeja(p).length ? p : { ...p, besoin: besoinTxt(p).replace(/^./, x => x.toUpperCase()) + "." }, P, offreConseillee(p), constatsTxt(p));
       if (r !== "annulee") toast(r === "partagee" ? "Proposition partagée ✓" : "Proposition téléchargée ✓"); } catch (e) { erreur(e); }
     el("propo").disabled = false; };
   if (el("opp")) el("opp").onclick = () => maj({ opposition: true, etape_avant: p.etape, etape: "perdu", historique: [...p.historique, { par: moi(), d: jour(), t: "note", texte: "Ne veut plus être contacté." }] }, "Noté : plus aucun message pour lui");
