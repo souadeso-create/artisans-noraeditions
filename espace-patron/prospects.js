@@ -117,7 +117,7 @@ async function courrierDispo(db) {
 /* ---------- Les messages ---------- */
 // le prénom du commercial qui signe : le prospecteur de la fiche, sinon celui qui tient le téléphone
 const commercial = p => String((p && p.prospecteur) || moi() || "").trim().split(" ")[0];
-function signature(P, p) { return `${commercial(p) ? commercial(p) + String.fromCharCode(10) : ""}${P.entreprise || "Nora Éditions"}\n${P.site || "creation-site-internet.noraeditions.fr"}${P.email ? "\n" + P.email : ""}`; }
+function signature(P, p) { return `${commercial(p) ? commercial(p) + String.fromCharCode(10) : ""}${P.entreprise || "Nora Éditions"}\n${P.site || "creation-site-internet.noraeditions.fr"}\n${P.email || "contact@noraeditions.com"}`; }
 const REFUS = "Si vous ne souhaitez plus recevoir de message de notre part, dites-le-nous simplement.";
 function constatsTxt(p) {
   const l = CONSTATS.filter(c => (p.constats || []).includes(c[0])).map(c => c[2]);
@@ -134,11 +134,11 @@ export function messages(p, P) {
     ["premier", "Premier e-mail", v === "site" ? `Un site internet${ent}` : PROPOS[v][2],
       `${bonjour(p)}\n\nNora Éditions crée des sites internet pour les artisans et les indépendants. ${accroche(p.metier)}\n\n${constatsTxt(p)}${proposTxt(p)} Vous voyez le résultat avant de régler le solde, et tout se fait par écrit, à votre rythme.\n\nSouhaitez-vous voir un exemple en vidéo ? Répondez simplement « oui » à ce message.\n\n${REFUS}\n\n${sig}`],
     ["wa_premier", "Premier message WhatsApp", "",
-      `${bonjour(p)} ici ${de}Nora Éditions. Nous créons des sites internet pour les artisans et les indépendants. ${proposTxt(p)}\n\nSouhaitez-vous voir un exemple en vidéo ? Un simple « oui » suffit.\n\n${REFUS}`],
+      `${bonjour(p)} ici ${de}Nora Éditions. Nous créons des sites internet pour les artisans et les indépendants. ${proposTxt(p)}\n\nSouhaitez-vous voir un exemple en vidéo ? Un simple « oui » suffit.\n\n${REFUS}\n\n${sig}`],
     ["relance_wa", "Relance WhatsApp", "",
-      `${bonjour(p)} ici ${de}Nora Éditions. Nous revenons vers vous après notre message de l'autre jour, sur ${v === "site" ? `la création d'un site internet${ent}` : PROPOS[v][3]}. Pour vous faire une idée, voici une courte vidéo :\n${demo}\n\n${REFUS}`],
+      `${bonjour(p)} ici ${de}Nora Éditions. Nous revenons vers vous après notre message de l'autre jour, sur ${v === "site" ? `la création d'un site internet${ent}` : PROPOS[v][3]}. Pour vous faire une idée, voici une courte vidéo :\n${demo}\n\n${REFUS}\n\n${sig}`],
     ["whatsapp", "Réponse WhatsApp (à quelqu'un qui vous a écrit)", "",
-      `${bonjour(p)} merci pour votre message ! Nora Éditions crée des sites internet pour les professionnels comme vous (${m}), avec un tableau de bord pour les demandes et les devis. Dites-nous ce dont vous avez besoin, et nous vous répondons par écrit avec un exemple. ${P.entreprise || "Nora Éditions"}`],
+      `${bonjour(p)} merci pour votre message ! Nora Éditions crée des sites internet pour les professionnels comme vous (${m}), avec un tableau de bord pour les demandes et les devis. Dites-nous ce dont vous avez besoin, et nous vous répondons par écrit avec un exemple.\n\n${sig}`],
     ["demo", "Démonstration en vidéo", `Une démonstration en vidéo${ent}`,
       `${bonjour(p)}\n\nComme convenu, voici une courte vidéo qui montre ce que nous faisons :\n${demo}\n\nElle se lit sur téléphone, sans rien installer. Les autres démonstrations sont sur la même page.\n\nDites-nous ce que vous en pensez, et ce que vous aimeriez pour votre activité : nous vous préparons une proposition écrite.\n\n${sig}`],
     ["relance1", "Première relance", duSite ? `Votre site internet${ent}` : "Notre message de l'autre jour",
