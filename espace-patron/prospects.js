@@ -172,7 +172,7 @@ export function messages(p, P) {
     ["appli", "Réponse : il veut une application métier", "Votre tableau de bord",
       `${bonjour(p)}\n\nC'est la formule Pro : ${CONTENU.Pro}, pour ${PRIX.Pro}. Vos devis et vos factures se génèrent automatiquement en PDF, et vos clients signent en ligne.\n\nVoici une courte vidéo qui montre le tableau de bord sur un téléphone :\n${DEMO}#tableau-de-bord\n\nDites-nous ce que vous aimeriez y trouver pour votre activité.\n\n${sig}`],
     ["proposition", "Proposition commerciale (texte)", `Votre proposition${ent}`,
-      `${bonjour(p)}\n\nSuite à nos échanges, voici notre proposition${ent}.\n\nVotre besoin : ${besoinTxt(p)}.\n\nCe que nous vous proposons : la formule ${o}, soit ${CONTENU[o]}.\n\nLe prix : ${PRIX[o]}.\n\nLa suite : vous remplissez un court questionnaire, nous vous envoyons le devis à signer en ligne, un acompte de 10 % lance le travail, nous vous montrons le résultat, vous demandez vos ajustements, puis vous validez. Le solde se règle à ce moment-là, en une fois ou en 3 fois sans frais. L'abonnement est sans engagement, et son premier mois est offert.\n\nLe délai : environ une semaine après réception de vos textes et de vos photos.\n\nSi cette proposition vous convient, répondez-nous simplement « d'accord » et nous vous envoyons le questionnaire.\n\n${sig}`],
+      `${bonjour(p)}\n\nSuite à nos échanges, voici notre proposition${ent}.\n\nVotre besoin : ${besoinTxt(p)}.\n\nCe que nous vous proposons : la formule ${o}, soit ${CONTENU[o]}.\n\nLe prix : ${PRIX[o]}.\n\nLa suite : vous remplissez un court questionnaire, nous vous envoyons le devis à signer en ligne, un acompte de 10 % lance le travail, nous vous montrons le résultat, vous demandez vos ajustements, puis vous validez. Le solde se règle à ce moment-là, en une fois ou en 3 fois sans frais. L'abonnement est sans engagement, et son premier mois est offert.\n\nLe délai : environ une semaine après réception de vos textes et de vos photos.\n\nSi cette proposition vous convient, votre questionnaire est prêt : il est déjà rempli avec ce que nous savons de votre entreprise, il vous reste à le compléter.\n${lienQuestionnaire(p, o)}\n\n${sig}`],
   ];
 }
 
@@ -250,6 +250,12 @@ const mission = (ouverte, eur) => `<details class="carte" style="margin-bottom:1
      ["Quand il répond", "« Il m'a répondu » pour lire son message et préparer la réponse, puis « Proposition en PDF »."],
      ["S'il refuse", "« Il ne veut plus être contacté » : on ne lui écrit plus jamais."]].map(([t, d], i) => `<div class="ligne-bilan" style="align-items:flex-start;gap:10px;justify-content:flex-start"><b style="color:var(--violet);flex:none">${i + 1}</b><span><b>${t}</b><small class="gris" style="display:block">${d}</small></span></div>`).join("")}
   <p style="margin:12px 0 0"><b>Votre commission : ${COMMISSION} % du prix de la création</b> de chaque site vendu (${Object.entries(CREATION).map(([k, v]) => `${k} ${eur(v * COMMISSION / 100)} €`).join(", ")}). Rien sur l'abonnement.</p></details>`;
+// la barre du haut de la partie Prospects : on passe de la liste à la recherche, ou d'une fiche à la suivante, sans revenir en arrière
+const barre = (actif, plus = "") => `<div class="onglets defile" style="margin-bottom:14px"><a href="#/prospects" class="${actif === "liste" ? "actif" : ""}">Mes prospects</a><a href="#/prospects/trouver" class="${actif === "trouver" ? "actif" : ""}">Trouver des entreprises</a>${plus}</div>`;
+let ordre = [];   // les fiches de la liste affichée, dans l'ordre : pour « Précédent » et « Suivant »
+// le questionnaire du site, prérempli avec ce qu'on sait du prospect ; ce qui suit le # reste dans son navigateur, rien ne passe par le serveur
+const lienQuestionnaire = (p, formule) => { const d = { e: p.entreprise || "", m: p.metier || "", v: p.ville || "", c: p.email || "", f: formule || "" }; Object.keys(d).forEach(k => d[k] || delete d[k]);
+  return "https://creation-site-internet.noraeditions.fr/questionnaire.html#pre=" + encodeURIComponent(JSON.stringify(d)); };
 // le titre d'une partie numérotée (page Prospects et fiche)
 const partie = (n, t) => `<p style="margin:22px 0 10px;font-weight:700;font-size:17px"><span style="color:var(--violet)">${n}</span> · ${t}</p>`;
 let filtreChoisi = false;
@@ -272,8 +278,10 @@ export async function vueProspects(c) {
   const ligne = p => `<a class="ligne-liste" href="#/prospect/${p.id}"><div><b>${esc(p.entreprise || p.nom || "Sans nom")}</b><small>${esc([p.entreprise ? p.nom : "", p.metier, p.ville].filter(Boolean).join(" · "))}</small>${p.prospecteur && !filtreP ? `<small style="display:block">Prospecteur : ${esc(p.prospecteur)}</small>` : ""}</div>
     <div class="droite">${p.opposition ? '<span class="badge refuse">Ne plus contacter</span>' : aRelancer(p) ? '<span class="badge refuse">À relancer</span>' : ""} <span class="badge ${p.etape === "gagne" ? "signe" : p.etape === "perdu" ? "annule" : "envoye"}">${esc(NOM_ETAPE[p.etape] || p.etape)}</span></div></a>`;
   const liste = prospects.filter(p => filtre === "tous" ? !["gagne", "perdu"].includes(p.etape) : p.etape === filtre);
+  ordre = liste.map(p => p.id);
   vue.innerHTML = `
     <div class="entete"><h1>Prospects</h1></div>
+    ${barre("liste")}
     ${mission(!!pr, eur)}
     ${pr ? `<div class="carte" style="margin-bottom:16px"><label>Bonjour ${esc(pr.split(" ")[0])}</label>
       <div class="actions-doc" style="margin:8px 0 0"><button class="btn clair petit-btn" id="pVisuels2">Mes visuels pour les réseaux</button><button class="btn discret petit-btn" id="pPasse">Changer mon mot de passe</button><button class="btn discret petit-btn" id="pSortir">Me déconnecter</button></div></div>` : ""}
@@ -356,7 +364,9 @@ export async function vueProspect(c, id) {
     : p.etape === "reponse" ? "Lire sa réponse et comprendre son besoin." : p.etape === "besoin" ? "Envoyer la proposition commerciale."
     : p.etape === "proposition" || p.etape === "decision" ? (relance ? "Le relancer avec courtoisie." : "Attendre sa décision.") : p.etape === "gagne" ? "Créer sa fiche client et préparer son devis." : "Rien : ce prospect est classé.";
   const histo = [...p.historique].reverse();
+  const rang = ordre.indexOf(id), avant = rang > 0 ? ordre[rang - 1] : null, ensuite = rang > -1 && rang < ordre.length - 1 ? ordre[rang + 1] : null;
   vue.innerHTML = `
+    ${barre("", `${avant ? `<a href="#/prospect/${avant}">‹ Précédent</a>` : ""}${ensuite ? `<a href="#/prospect/${ensuite}">Suivant ›</a>` : ""}`)}
     <div class="entete"><div><div class="petit">Prospect${p.source ? " · " + esc(p.source) : ""}</div><h1>${esc(p.entreprise || p.nom || "Sans nom")}</h1>
       <p class="gris">${esc([p.entreprise ? p.nom : "", p.metier, p.ville].filter(Boolean).join(" · "))}</p></div><span class="badge ${p.etape === "gagne" ? "signe" : p.etape === "perdu" ? "annule" : "envoye"}">${esc(NOM_ETAPE[p.etape] || p.etape)}</span></div>
     <div class="deux-col"><div>
@@ -383,7 +393,7 @@ export async function vueProspect(c, id) {
       <div class="carte" style="margin-bottom:12px;border-left:3px solid var(--violet)"><label>Prochaine action</label><p style="margin:4px 0 12px"><b>${esc(conseil)}</b></p>
         ${p.opposition ? `<button class="btn discret petit-btn" id="annOpp">Annuler : il accepte de nouveau les messages</button>` : `<div class="actions-doc" style="margin:0">
           <button class="btn" id="msg">Préparer un message</button><button class="btn clair" id="recu">Il m'a répondu</button><button class="btn clair" id="propo">Proposition en PDF</button>
-          ${p.client_id ? `<a class="btn clair" href="#/client/${p.client_id}">Sa fiche client</a>` : (c.role?.prospecteur ? "" : `<button class="btn clair" id="versClient">Passer en client</button>`)}</div>`}</div>
+          ${p.client_id ? `<a class="btn clair" href="#/client/${p.client_id}">Sa fiche client</a><a class="btn clair" href="#/document/nouveau/devis?client=${p.client_id}&formule=${encodeURIComponent(offreConseillee(p))}">Préparer son devis</a>` : (c.role?.prospecteur ? "" : `<button class="btn clair" id="versClient">Passer en client et faire son devis</button>`)}</div>`}</div>
       <div class="carte" style="margin-bottom:12px"><label>Ce que vous notez pour la suite</label>
         <div class="champ"><input type="text" id="pAction" value="${esc(p.prochaine_action || "")}" placeholder="ex. envoyer la vidéo de démonstration"></div>
         <div class="champ" style="margin-bottom:0"><label>Pour le</label><input type="date" id="pDate" value="${esc(p.prochaine_date || "")}"></div></div>
@@ -414,11 +424,15 @@ export async function vueProspect(c, id) {
     const o = offreConseillee(p), davance = p.offre ? [p.offre] : o === "Essentiel" ? ["Essentiel"] : o === "Pro + IA" ? ["Pro", "Pro + IA"] : ["Essentiel", "Pro"];
     const f = c.fenetre("Proposition en PDF", `<label>Les formules à présenter</label>
       ${Object.keys(PRIX).map(k => `<label style="display:flex;gap:10px;align-items:flex-start;margin:10px 0 0;text-transform:none;letter-spacing:0;font-weight:400;font-size:15px;color:inherit"><input type="checkbox" data-formule="${k}" ${davance.includes(k) ? "checked" : ""} style="width:20px;height:20px;flex:none;margin-top:2px"><span><b>${k}</b><small class="gris" style="display:block">${esc(PRIX[k])}</small></span></label>`).join("")}
-      <button class="btn" id="creerPdf" style="width:100%;margin-top:16px">Créer le PDF</button>`);
+      <button class="btn" id="creerPdf" style="width:100%;margin-top:16px">Créer le PDF</button>
+      <button class="btn clair" id="copQ" style="width:100%;margin-top:8px">Copier le lien du questionnaire prérempli</button>
+      <p class="gris" style="font-size:13px;margin:8px 0 0">Le questionnaire est rempli d'avance avec son entreprise, son métier, sa ville et sa formule. Le lien est aussi dans le PDF.</p>`);
+    const formuleSeule = () => { const l = [...f.el.querySelectorAll("[data-formule]:checked")].map(x => x.dataset.formule); return l.length === 1 ? l[0] : ""; };
+    f.el.querySelector("#copQ").onclick = () => navigator.clipboard.writeText(lienQuestionnaire(p, formuleSeule())).then(() => toast("Lien copié ✓"), () => toast("Le lien n'a pas pu être copié."));
     f.el.querySelector("#creerPdf").onclick = async e => {
       const choix = [...f.el.querySelectorAll("[data-formule]:checked")].map(x => x.dataset.formule); if (!choix.length) return toast("Cochez au moins une formule.");
       e.currentTarget.disabled = true;
-      try { const m = await import(`./proposition.js?v=${c.V || ""}`), r = await m.telechargerProposition(p.besoin || !aDeja(p).length ? p : { ...p, besoin: besoinTxt(p).replace(/^./, x => x.toUpperCase()) + "." }, P, choix, constatsTxt(p));
+      try { const m = await import(`./proposition.js?v=${c.V || ""}`), r = await m.telechargerProposition(p.besoin || !aDeja(p).length ? p : { ...p, besoin: besoinTxt(p).replace(/^./, x => x.toUpperCase()) + "." }, P, choix, constatsTxt(p), lienQuestionnaire(p, choix.length === 1 ? choix[0] : ""));
         f.fermer(); if (r !== "annulee") toast(r === "partagee" ? "Proposition partagée ✓" : "Proposition téléchargée ✓"); } catch (er) { erreur(er); f.fermer(); }
     };
   };
@@ -430,7 +444,8 @@ export async function vueProspect(c, id) {
   brancherColonne(vue, toast);
   // « Passer en client » : sa fiche client est créée, il est classé en « Client gagné », et les deux fiches sont reliées
   if (el("versClient")) el("versClient").onclick = async () => { try { const cl = await db.enregistrer("clients", { nom: p.nom || p.entreprise, societe: p.entreprise || null, tel: p.tel || null, email: p.email || null, ville: p.ville || null, notes: [p.metier, p.besoin].filter(Boolean).join(" · ") || null, archive: false });
-    await maj({ client_id: cl.id, etape_avant: p.etape === "gagne" ? p.etape_avant : p.etape, etape: "gagne", historique: [...p.historique, { par: moi(), d: jour(), t: "note", texte: "Passé en client." }] }, "Il est maintenant dans vos clients ✓"); } catch (e) { erreur(e); } };
+    await maj({ client_id: cl.id, etape_avant: p.etape === "gagne" ? p.etape_avant : p.etape, etape: "gagne", historique: [...p.historique, { par: moi(), d: jour(), t: "note", texte: "Passé en client." }] }, "Il est maintenant dans vos clients ✓");
+    location.hash = `#/document/nouveau/devis?client=${cl.id}&formule=${encodeURIComponent(offreConseillee(p))}`; } catch (e) { erreur(e); } };
   el("suppr").onclick = async () => { if (!(await c.confirmer(`Supprimer ${p.entreprise || p.nom} ? Son historique sera perdu.`, "Supprimer"))) return;
     try { await db.supprimer("prospects", id); toast("Prospect supprimé"); location.hash = "#/prospects"; } catch (e) { erreur(e); } };
 }

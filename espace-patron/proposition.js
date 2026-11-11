@@ -20,7 +20,8 @@ async function logo() {
 }
 
 // offre : une formule, ou la liste des formules à présenter (dans l'ordre des prix)
-export async function creerProposition(p, P, offre, constats = "") {
+// lien : le questionnaire prérempli du prospect (facultatif)
+export async function creerProposition(p, P, offre, constats = "", lien = "") {
   const { jsPDF } = window.jspdf, pdf = new jsPDF({ unit: "mm", format: "a4" }), W = 210, M = 18, L = W - 2 * M;
   const offres = Object.keys(FORMULES).filter(k => [].concat(offre).includes(k)); if (!offres.length) offres.push("Essentiel");
   pdf.setLineHeightFactor(1.3);
@@ -85,10 +86,14 @@ export async function creerProposition(p, P, offre, constats = "") {
   titre("Le délai", 26);
   texte("Votre site est mis en ligne environ une semaine après réception de vos textes et de vos photos. Ce délai est indicatif.");
   titre("La suite", 52);
-  [offres.length > 1 ? "Vous nous répondez en nous disant la formule que vous choisissez." : "Vous répondez « d'accord » à ce message.", "Nous vous envoyons un court questionnaire, pour préparer votre site.", "Vous recevez votre devis, à signer en ligne.",
+  [offres.length > 1 ? "Vous nous répondez en nous disant la formule que vous choisissez." : "Vous répondez « d'accord » à ce message.", lien ? "Vous complétez votre questionnaire : il est déjà rempli avec ce que nous savons de votre entreprise." : "Nous vous envoyons un court questionnaire, pour préparer votre site.", "Vous recevez votre devis, à signer en ligne.",
     "L'acompte lance le travail.", "Nous vous montrons le résultat, et nous faisons vos ajustements.", "Vous validez : votre site est mis en ligne."].forEach((t, i) => {
     pdf.setFont("helvetica", "normal").setFontSize(10.5); const l = pdf.splitTextToSize(propre(t), L - 9), h = l.length * 10.5 * .46; place(h);
     pdf.setFont("helvetica", "bold").setTextColor(...VIOLET).text(String(i + 1), M + 1, y); pdf.setFont("helvetica", "normal").setTextColor(...ENCRE).text(l, M + 9, y); y += h + 1.6; });
+
+  if (lien) { const tq = "Ouvrir mon questionnaire, déjà rempli"; place(14); y += 4;
+    pdf.setFont("helvetica", "bold").setFontSize(11).setTextColor(...VIOLET); pdf.textWithLink(propre(tq), M + 9, y, { url: lien });
+    pdf.setDrawColor(...VIOLET).setLineWidth(.3).line(M + 9, y + 1.2, M + 9 + pdf.getTextWidth(propre(tq)), y + 1.2); y += 8; }
 
   // ── le pied de chaque page : comment nous écrire
   const n = pdf.getNumberOfPages();
@@ -99,8 +104,8 @@ export async function creerProposition(p, P, offre, constats = "") {
 }
 
 // Télécharge la proposition ; sur téléphone, propose de la partager (e-mail, WhatsApp…)
-export async function telechargerProposition(p, P, offre, constats) {
-  const pdf = await creerProposition(p, P, offre, constats);
+export async function telechargerProposition(p, P, offre, constats, lien) {
+  const pdf = await creerProposition(p, P, offre, constats, lien);
   const nom = "Proposition_" + String(p.entreprise || p.nom || "prospect").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^\w-]+/g, "_") + ".pdf";
   const fichier = new File([pdf.output("blob")], nom, { type: "application/pdf" });
   if (navigator.canShare && navigator.canShare({ files: [fichier] })) { try { await navigator.share({ files: [fichier], title: nom }); return "partagee"; } catch (e) { if (e.name === "AbortError") return "annulee"; } }

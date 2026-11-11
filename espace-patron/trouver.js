@@ -93,8 +93,10 @@ export async function vueTrouver(c) {
   let prospects = [];
   try { prospects = await db.lister("prospects"); } catch (e) { vue.innerHTML = `<div class="entete"><h1>Trouver des entreprises</h1></div><div class="carte"><b>La table des prospects n'existe pas encore dans votre base.</b><p class="gris" style="margin-top:6px">Passez une fois le fichier nora-schema-6-prospects.sql dans l'éditeur SQL de Supabase.</p></div>`; return; }
   const deja = new Set(prospects.map(p => (String(p.source || "").match(/SIREN (\d{9})/) || [])[1]).filter(Boolean));
+  const fiches = {}; prospects.forEach(p => { const n = (String(p.source || "").match(/SIREN (\d{9})/) || [])[1]; if (n) fiches[n] = p.id; });
   vue.innerHTML = `
-    <div class="entete"><div><div class="petit"><a href="#/prospects" style="color:inherit">‹ Prospects</a></div><h1>Trouver des entreprises</h1></div></div>
+    <div class="entete"><h1>Trouver des entreprises</h1></div>
+    <div class="onglets defile" style="margin-bottom:14px"><a href="#/prospects">Mes prospects</a><a href="#/prospects/trouver" class="actif">Trouver des entreprises</a></div>
     <form class="carte" id="fr" style="margin-bottom:16px">
       <div class="champ"><label>Quel métier ?</label><input type="text" id="tMetier" value="${esc(memoire.metier)}" placeholder="Tapez les premières lettres : plombier, coiffeuse, traiteur…" autocomplete="off"><div id="tMetiers"></div></div>
       <div class="champ"><label>Code d'activité de ce métier</label><input type="text" id="tCode" value="${esc(memoire.code)}" placeholder="ex. 43.22A"><small class="gris" id="tCodeAide">L'annuaire range les entreprises par code d'activité : il se remplit d'après le métier, et se corrige.</small></div>
@@ -127,18 +129,25 @@ export async function vueTrouver(c) {
   el("tVilles").onclick = e => { const b = e.target.closest("[data-code]"); if (!b) return; memoire.ville = { type: b.dataset.type, code: b.dataset.code, nom: b.dataset.nom };
     el("tVille").value = memoire.texteVille = b.dataset.type === "dep" ? `${b.dataset.nom} (${b.dataset.code})` : b.dataset.nom; el("tVilles").innerHTML = ""; };
 
+  const sansAccent = t => String(t || "").toLowerCase().normalize("NFD").replace(/[^a-z0-9 ]/g, "");
+  // le filtre cache les cartes qui ne contiennent pas ce qu'on a tapé (rien n'est rechargé)
+  const filtrer = () => { const q = sansAccent(memoire.filtre || "").trim(); let n = 0;
+    el("tRes").querySelectorAll("[data-texte]").forEach(d => { const ok = !q || d.dataset.texte.includes(q); d.hidden = !ok; if (ok) n++; });
+    const z = el("tCompte"); if (z) z.textContent = q ? `${n} correspondent à « ${memoire.filtre.trim()} ».` : ""; };
   const montrer = () => {
     const r = memoire.resultats; if (!r) return;
     const carte = (e, i) => { const s = e.siege, ici = (e.matching_etablissements || [])[0], d = (e.dirigeants || []).find(x => x.type_dirigeant === "personne physique" && x.nom), an = String(e.date_creation || "").slice(0, 4), fait = deja.has(e.siren);
-      return `<div class="ligne-liste" style="flex-wrap:wrap;gap:8px"><div style="flex:1 1 100%"><b>${esc(enseigne(e))}</b>
+      return `<div class="ligne-liste" data-texte="${esc(sansAccent([enseigne(e), s.adresse, s.libelle_commune, ici?.adresse].filter(Boolean).join(" ")))}" style="flex-wrap:wrap;gap:8px"><div style="flex:1 1 100%"><b>${esc(enseigne(e))}</b>
         <small style="display:block">${esc(propre((e._ailleurs && ici?.adresse) || s.adresse || ""))}</small>${e._ailleurs ? `<small style="display:block">Siège à ${esc(propre(s.libelle_commune || ""))}</small>` : ""}<small style="display:block">${an ? "Créée en " + an : ""}${d ? " · " + esc(propre((d.prenoms || "").split(" ")[0] + " " + String(d.nom).split(" (")[0])) : ""}</small></div>
-        <div class="actions-doc" style="margin:0">${e._refus ? '<span class="badge refuse">Refuse la prospection : à ne pas démarcher</span>' : fait ? '<span class="badge signe">Déjà dans mes prospects</span>' : `<button class="btn petit-btn" data-ajout="${i}">Ajouter à mes prospects</button>`}
+        <div class="actions-doc" style="margin:0">${e._refus ? '<span class="badge refuse">Refuse la prospection : à ne pas démarcher</span>' : fait ? `<span class="badge signe">Déjà dans mes prospects</span>${fiches[e.siren] ? `<a class="btn petit-btn" href="#/prospect/${fiches[e.siren]}">Ouvrir sa fiche</a>` : ""}` : `<button class="btn petit-btn" data-ajout="${i}">Ajouter à mes prospects</button>`}
           <a class="btn discret petit-btn" target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent(enseigne(e) + " " + (s.libelle_commune || ""))}">Chercher son site</a>
           <a class="btn discret petit-btn" target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent(enseigne(e) + " " + (s.libelle_commune || "") + " facebook instagram")}">Chercher ses réseaux</a></div></div>`; };
     const dep = memoire.ville.type === "dep", ou = dep ? `dans le département ${esc(memoire.ville.nom)} (${esc(memoire.ville.code)})` : `à ${esc(memoire.ville.nom)}`, reste = memoire.derniere < memoire.pages;
     el("tRes").innerHTML = `<p class="gris" style="margin:0 0 10px">${r.liste.length ? `${r.liste.length} entreprise${r.liste.length > 1 ? "s" : ""} ${ou}${reste ? `, sur ${memoire.total} dans l'annuaire (les autres arrivent avec le bouton du bas)` : ""} : celles ${dep ? "du département" : "de la ville"} d'abord, les plus récentes en tête.` : `Aucune entreprise trouvée ${ou} pour ce métier. Essayez ${memoire.mot ? "un mot plus courant, ou le code d'activité" : dep ? "un autre code d'activité" : "une ville voisine, ou le département"}.`}
-      ${memoire.mot ? ` Recherche faite sur le nom des entreprises (« ${esc(memoire.mot)} ») : celles dont le nom ne dit pas le métier n'y sont pas.` : ""}${r.ailleurs ? ` ${r.ailleurs} ont leur siège ${dep ? "dans un autre département" : "dans une autre ville"}.` : ""}${r.cachees ? ` ${r.cachees} ne sont pas montrées : elles ont demandé que leurs coordonnées ne soient pas diffusées.` : ""}${r.refus ? ` ${r.refus} refusent la prospection commerciale : elles sont montrées en bas, sans bouton d'ajout.` : ""}</p><div class="liste">${r.liste.map(carte).join("")}</div>
+      ${memoire.mot ? ` Recherche faite sur le nom des entreprises (« ${esc(memoire.mot)} ») : celles dont le nom ne dit pas le métier n'y sont pas.` : ""}${r.ailleurs ? ` ${r.ailleurs} ont leur siège ${dep ? "dans un autre département" : "dans une autre ville"}.` : ""}${r.cachees ? (r.cachees > 1 ? ` ${r.cachees} ne sont pas montrées : elles ont demandé que leurs coordonnées ne soient pas diffusées.` : " Une n'est pas montrée : elle a demandé que ses coordonnées ne soient pas diffusées.") : ""}${r.refus ? ` ${r.refus} refusent la prospection commerciale : elles sont montrées en bas, sans bouton d'ajout.` : ""}</p>${r.liste.length > 12 ? `<input class="recherche" type="search" id="tFiltre" placeholder="Filtrer : un nom, une ville, une rue" value="${esc(memoire.filtre || "")}" style="margin-bottom:6px"><p class="gris" id="tCompte" style="font-size:13px;margin:0 0 8px"></p>` : ""}<div class="liste">${r.liste.map(carte).join("")}</div>
+      ${reste ? `<button type="button" class="btn" id="tTout" style="width:100%;margin-top:12px">Tout charger (${Math.min(memoire.total, 10000)} entreprises)</button><p class="gris" id="tProgres" style="font-size:13px;margin:6px 0 0">${memoire.total > 10000 ? "L'annuaire ne donne que les 10 000 premières d'une recherche : pour les autres, cherchez ville par ville." : ""}</p>` : ""}
       ${reste ? `<button type="button" class="btn clair" id="tSuite" style="width:100%;margin-top:12px">Voir les suivantes (encore ${Math.max(0, memoire.total - memoire.derniere * 25)} dans l'annuaire)</button>` : ""}`;
+    filtrer();
   };
   el("fr").onsubmit = async e => {
     e.preventDefault();
@@ -148,10 +157,21 @@ export async function vueTrouver(c) {
     if (!codes && memoire.mot.length < 3) return toast("Indiquez un métier.");
     if (codes && !/^\d{2}\.\d{2}[A-Z](,\d{2}\.\d{2}[A-Z])*$/.test(codes)) return toast("Le code d'activité s'écrit comme 43.22A (plusieurs codes : séparés par une virgule).");
     if (!memoire.ville) return toast("Choisissez la ville ou le département dans la liste proposée.");
-    el("tRes").innerHTML = '<p class="gris">Recherche dans l\'annuaire…</p>';
+    memoire.filtre = ""; memoire.jeton = 0; el("tRes").innerHTML = '<p class="gris">Recherche dans l\'annuaire…</p>';
     try { const x = await chercher(codes, memoire.ville, 1, memoire.mot); Object.assign(memoire, { brut: x.tout, total: x.total, pages: x.pages, derniere: x.derniere, codes, resultats: ranger(x.tout, memoire.ville) }); montrer(); } catch (er) { el("tRes").innerHTML = ""; erreur(er); }
   };
+  el("tRes").oninput = e => { if (e.target.id === "tFiltre") { memoire.filtre = e.target.value; filtrer(); } };
   el("tRes").onclick = async e => {
+    if (e.target.closest("#tTout")) { const bouton = e.target.closest("#tTout"), jeton = memoire.jeton = Date.now(); bouton.disabled = true;   // tout le reste, d'un coup
+      try { let essais = 0;
+        while (memoire.derniere < memoire.pages && memoire.derniere * 25 < 10000 && memoire.jeton === jeton) {
+          try { const x = await chercher(memoire.codes, memoire.ville, memoire.derniere + 1, memoire.mot); memoire.brut = memoire.brut.concat(x.tout); memoire.derniere = x.derniere; memoire.pages = x.pages; essais = 0; }
+          catch (er) { if (++essais > 4) throw er; await new Promise(r => setTimeout(r, 2000)); }   // l'annuaire demande de ralentir : on attend, puis on reprend
+          const z = el("tProgres"); if (z) z.textContent = `Chargement : ${Math.min(memoire.derniere * 25, memoire.total)} sur ${memoire.total}…`;
+        }
+        memoire.resultats = ranger(memoire.brut, memoire.ville); montrer(); toast(`${memoire.resultats.liste.length} entreprises chargées ✓`);
+      } catch (er) { memoire.resultats = ranger(memoire.brut, memoire.ville); montrer(); erreur(er); }
+      return; }
     if (e.target.closest("#tSuite")) { e.target.disabled = true;   // la suite : trois pages de plus, rangées avec les précédentes
       try { const x = await chercher(memoire.codes, memoire.ville, memoire.derniere + 1, memoire.mot); memoire.brut = memoire.brut.concat(x.tout); memoire.derniere = x.derniere; memoire.pages = x.pages; memoire.resultats = ranger(memoire.brut, memoire.ville); montrer(); } catch (er) { e.target.disabled = false; erreur(er); }
       return; }
@@ -161,8 +181,9 @@ export async function vueTrouver(c) {
       const qui = (() => { try { return localStorage.getItem("nora_prospecteur") || ""; } catch (e) { return ""; } })(), ligne = { ...(qui ? { prospecteur: qui } : {}), entreprise: enseigne(x), nom: d ? propre((d.prenoms || "").split(" ")[0] + " " + String(d.nom).split(" (")[0]) : null, metier: memoire.metier || null,
         ville: propre((x._ailleurs && (x.matching_etablissements || [])[0]?.libelle_commune) || s.libelle_commune || memoire.ville.nom), source: `Annuaire des entreprises · SIREN ${x.siren}`, etape: "nouveau", constats: [], opposition: false,
         historique: [{ par: qui, d: new Date().toISOString().slice(0, 10), t: "note", texte: `Trouvée dans l'annuaire des entreprises. Adresse : ${propre(s.adresse || "")}.${x.date_creation ? " Créée en " + String(x.date_creation).slice(0, 4) + "." : ""} E-mail et téléphone à recopier depuis son site.` }] };
-      try { await db.enregistrer("prospects", ligne); } catch (er) { if (!/prospecteur/.test(String(er?.message || er))) throw er; delete ligne.prospecteur; await db.enregistrer("prospects", ligne); toast("Ajoutée sans le prospecteur : la colonne manque dans la base"); }
-      deja.add(x.siren); toast("Ajoutée à vos prospects ✓"); montrer();
+      let cree;
+      try { cree = await db.enregistrer("prospects", ligne); } catch (er) { if (!/prospecteur/.test(String(er?.message || er))) throw er; delete ligne.prospecteur; cree = await db.enregistrer("prospects", ligne); toast("Ajoutée sans le prospecteur : la colonne manque dans la base"); }
+      deja.add(x.siren); if (cree?.id) fiches[x.siren] = cree.id; toast("Ajoutée à vos prospects ✓"); montrer();
     } catch (er) { b.disabled = false; erreur(er); }
   };
   montrer();

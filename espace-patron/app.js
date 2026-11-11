@@ -2,7 +2,7 @@
 // abonnements, agenda, carnet de projet, notifications.
 import * as db from "./store.js";
 // version des fichiers chargés à la demande : à changer à chaque mise en ligne, pour que le téléphone ne garde pas l'ancienne
-const V = "20261111w";
+const V = "20261111x";
 import { UNITES, PARAMETRES_DEFAUT } from "./donnees.js";
 import { telechargerPDF, totaux, estAbo, eur, poserTVA, avecTVA, TAUX_TVA, tauxTxt, avenantDe } from "./pdf.js";
 import { CATEGORIES, etatPaiements } from "./carnet.js";
@@ -432,6 +432,12 @@ async function vueDocument(id, type, params) {
       const c = await db.lire("clients", params.get("client"));
       if (c) { d.client_id = c.id; d.client = instantane(c); d.objet = `Site internet - ${[c.civilite, c.nom].filter(Boolean).join(" ")}`; }
     }
+    // la formule donnée d'avance (depuis la fiche d'un prospect) : sa ligne de création et sa ligne d'abonnement
+    const fo = params.get("formule");
+    if (fo) { const ps = (await db.lister("prestations").catch(() => [])).filter(x => !x.archive && x.designation), ligne = x => ({ designation: x.designation, description: x.description || "", qte: 1, unite: x.unite, pu: Number(x.prix_ht) });
+      const cr = ps.find(x => x.designation.startsWith(`Formule ${fo} :`)), ab = ps.find(x => fo === "Essentiel" ? x.designation.startsWith("Hébergement et maintenance") : x.designation.startsWith(`Abonnement du site, formule ${fo} :`));
+      const sections = [cr && { titre: "Création", lignes: [ligne(cr)] }, ab && { titre: "Abonnement", lignes: [ligne(ab)] }].filter(Boolean);
+      if (sections.length) d.sections = sections; }
   } else {
     d = await db.lire("documents", id);
     if (!d) { vue.innerHTML = '<p class="vide">Document introuvable.</p>'; return; }

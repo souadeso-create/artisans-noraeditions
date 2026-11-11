@@ -815,6 +815,14 @@
     for (const g of tousGroupes) for (const o of g.querySelectorAll("option")) if (plat(o.value) === plat(t)) { cocher(g.dataset.groupe); menu.value = o.value; montrer(); return; }
     const g = deviner(t); cocher(g ? g[1] : "autre"); if (g) menu.value = "Autre"; libre.value = t; montrer(); }
   choisirMetier(new URLSearchParams(location.search).get("m") || ""); montrer();
+  // ce qu'on sait déjà de l'entreprise (le lien envoyé avec la proposition : #pre=…). Ce qui suit le # reste dans le navigateur.
+  try { const pre = location.hash.startsWith("#pre=") ? JSON.parse(decodeURIComponent(location.hash.slice(5))) : null;
+    if (pre && typeof pre === "object") {
+      const mettre = (n, v) => { const z = form.querySelector(`[name="${n}"]`); if (z && v && !z.value) z.value = String(v).slice(0, 120); };
+      mettre("Entreprise", pre.e); mettre("Ville", pre.v); mettre("email", pre.c);
+      if (pre.m) choisirMetier(String(pre.m));
+      if (pre.f) { const r = [...form.querySelectorAll('[name="Formule"]')].find(x => x.value.startsWith(String(pre.f) + " (")); if (r) { r.checked = true; r.dispatchEvent(new Event("change", { bubbles: true })); } }
+      montrer(); } } catch (e) { /* lien abîmé : le questionnaire reste vide */ }
   // ce qui a été choisi dans la démonstration de l'accueil
   try { const d = JSON.parse(localStorage.getItem("nora_demo") || "null"); localStorage.removeItem("nora_demo");
     if (d) { const A = { plombier: ["Artisan du bâtiment", "Plomberie, chauffage"], nettoyage: ["Nettoyage, ménage", "Nettoyage de bureaux"], coiffure: ["Beauté, bien-être", "Coiffeur, coiffeuse"],
