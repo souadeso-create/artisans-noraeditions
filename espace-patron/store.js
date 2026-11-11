@@ -269,3 +269,20 @@ export async function courrier(corps) {
   if (error) { let m = ""; try { m = (await error.context.json()).erreur; } catch { /* pas de détail */ } throw new Error(m || `le serveur a refusé la demande (${error.context?.status || "pas de réponse"})`);  }
   return data;
 }
+
+/* ---------- Qui est connecté : la patronne, un prospecteur qui a son compte, ou un compte sans accès ---------- */
+const PATRONNE = "contact@noraeditions.com";
+export async function role() {
+  if (MODE_ESSAI) { let n = ""; try { n = localStorage.getItem("nora_role_essai") || ""; } catch { /* rien */ } return n ? { prospecteur: n } : { patronne: true }; }
+  const { data } = await sb.auth.getSession(), email = (data.session?.user?.email || "").toLowerCase();
+  if (email === PATRONNE) return { patronne: true };
+  const { data: l } = await sb.from("prospecteurs").select("nom, actif").eq("email", email).limit(1);
+  return l?.[0]?.actif ? { prospecteur: l[0].nom } : { aucun: true };
+}
+/* ---------- Les comptes des prospecteurs : une fonction du serveur, pour la patronne seulement ---------- */
+export async function comptes(corps) {
+  if (MODE_ESSAI) return window.NORA_COMPTES_ESSAI ? window.NORA_COMPTES_ESSAI(corps) : { comptes: [] };
+  const { data, error } = await sb.functions.invoke("comptes", { body: corps });
+  if (error) { let m = ""; try { m = (await error.context.json()).erreur; } catch { /* pas de détail */ } throw new Error(m || `les comptes ne sont pas encore installés (${error.context?.status || "pas de réponse"})`); }
+  return data;
+}

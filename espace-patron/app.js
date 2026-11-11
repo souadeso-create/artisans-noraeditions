@@ -2,8 +2,8 @@
 // abonnements, agenda, carnet de projet, notifications.
 import * as db from "./store.js";
 // version des fichiers chargés à la demande : à changer à chaque mise en ligne, pour que le téléphone ne garde pas l'ancienne
-const V = "20261111s";
-import { UNITES } from "./donnees.js";
+const V = "20261111t";
+import { UNITES, PARAMETRES_DEFAUT } from "./donnees.js";
 import { telechargerPDF, totaux, estAbo, eur, poserTVA, avecTVA, TAUX_TVA, tauxTxt, avenantDe } from "./pdf.js";
 import { CATEGORIES, etatPaiements } from "./carnet.js";
 import { carteRdv, lierRdv, reglerSignature, OBJETS_RDV, jourRdv, heureRdv, champVisio, avecLien } from "./agenda.js";
@@ -34,6 +34,7 @@ const STATUTS = {
 const libelleStatut = (type, s) => (STATUTS[type].find(x => x[0] === s) || [s, s])[1];
 
 let P = null; // paramètres de l'entreprise
+let ROLE = { patronne: true }; // qui est connecté : la patronne, ou un prospecteur (il ne voit que la partie Prospects)
 const lienSignature = d => d.jeton ? location.origin + "/devis/?d=" + d.jeton : "";
 const numeroWa = t => { const n = String(t || "").replace(/\D/g, ""); return n.startsWith("0") ? "33" + n.slice(1) : n; };
 const politesse = c => c ? [c.civilite, c.nom].filter(Boolean).join(" ") : "";
@@ -1383,6 +1384,7 @@ async function routeur() {
   const [chemin, requete] = (location.hash.slice(2) || "accueil").split("?");
   const params = new URLSearchParams(requete || "");
   const [r, a, b] = chemin.split("/");
+  if (ROLE.prospecteur && r !== "prospects" && r !== "prospect") { location.hash = "#/prospects"; return; }
   nav.querySelectorAll("a").forEach(x => x.classList.toggle("actif", x.dataset.r === r || (r === "document" && x.dataset.r === "documents") || (r === "client" && x.dataset.r === "clients") || (r === "demande" && x.dataset.r === "demandes") || (["reglages", "abonnements", "prestations", "visites", "prospects", "prospect"].includes(r) && x.dataset.r === "plus")));
   window.scrollTo(0, 0);
   try {
@@ -1399,7 +1401,7 @@ async function routeur() {
     else if (r === "abonnements") await vueAbonnements();
     else if (r === "agenda") await vueAgenda();
     else if (r === "visites") await vueVisites();
-    else if (r === "prospects" || r === "prospect") { const m = await import(`./prospects.js?v=${V}`), c = { db, vue, esc, eur, toast, erreur, fenetre, confirmer, ICO, P, V };
+    else if (r === "prospects" || r === "prospect") { const m = await import(`./prospects.js?v=${V}`), c = { db, vue, esc, eur, toast, erreur, fenetre, confirmer, ICO, P, V, role: ROLE };
       if (r === "prospect") await m.vueProspect(c, a); else if (a === "trouver") await (await import(`./trouver.js?v=${V}`)).vueTrouver(c); else await m.vueProspects(c); }
     else await vueAccueil();
   } catch (e) { erreur(e); }
@@ -1408,6 +1410,20 @@ async function routeur() {
 async function demarrer() {
   const s = await db.session();
   if (!s) return vueConnexion();
+  ROLE = await db.role().catch(() => ({ aucun: true }));
+  const sortir = async () => { await db.deconnexion(); location.reload(); };
+  if (ROLE.aucun) {
+    vue.innerHTML = `<div class="carte"><b>Ce compte n'a pas accès à cet espace.</b><p class="gris" style="margin:6px 0 14px">Demandez à Nora Éditions de vérifier votre compte.</p><button class="btn" id="sortir">Me déconnecter</button></div>`;
+    document.getElementById("sortir").onclick = sortir; return;
+  }
+  if (ROLE.prospecteur) {
+    // un prospecteur : seulement la partie Prospects, à son nom ; il ne lit pas les réglages de la maison (ceux de départ suffisent aux messages)
+    try { localStorage.setItem("nora_prospecteur", ROLE.prospecteur); } catch (e) {}
+    P = { ...PARAMETRES_DEFAUT }; ROLE.sortir = sortir;
+    window.onhashchange = routeur;
+    if (!/^#[/]prospect/.test(location.hash)) location.hash = "#/prospects"; else routeur();
+    return;
+  }
   nav.hidden = false;
   try { localStorage.setItem("nora_moi", "1"); } catch (e) {} // vos visites du site ne comptent pas, sur ce téléphone
   document.getElementById("etat").innerHTML = db.MODE_ESSAI ? '<span class="mode" title="Les données restent dans ce navigateur">Mode essai</span>' : "";

@@ -237,6 +237,19 @@ function chiffres(prospects, docs, eur) {
 
 /* ---------- La liste ---------- */
 let filtre = "tous", filtreP = "";   // filtreP : "" = tous les prospecteurs, sinon un nom, ou "—" pour les prospects sans prospecteur
+// la commission du prospecteur : 20 % du prix de la création du site vendu, rien sur l'abonnement
+const CREATION = { Essentiel: 190, Pro: 490, "Pro + IA": 990 }, COMMISSION = 20;
+const commission = p => p.etape === "gagne" && CREATION[p.offre] ? CREATION[p.offre] * COMMISSION / 100 : 0;
+// ce que le prospecteur lit en arrivant (ouvert pour lui, replié pour la patronne)
+const mission = (ouverte, eur) => `<details class="carte" style="margin-bottom:16px;border-left:3px solid var(--violet)" ${ouverte ? "open" : ""}><summary style="cursor:pointer"><b>${ouverte ? "Votre mission" : "La mission du prospecteur (ce qu'il lit en arrivant)"}</b></summary>
+  <p style="margin:10px 0 8px">Trouver des professionnels qui ont besoin d'un site internet, leur écrire au nom de Nora Éditions, et les accompagner jusqu'à la proposition. Tout se passe par écrit : on n'appelle pas.</p>
+  ${[["Trouver", "« Trouver des entreprises » : un métier, une ville. Gardez celles qui vous semblent avoir besoin d'un site."],
+     ["Remplir la fiche", "Ses coordonnées (seulement celles que l'entreprise a rendues publiques), puis « Rechercher ce professionnel » et « Trafic et visibilité ». Cochez ce que vous avez vu et ce qu'il a déjà : les messages s'accordent tout seuls."],
+     ["Écrire", "« Préparer un message » : par e-mail, WhatsApp, Instagram ou Messenger. Relisez toujours avant d'envoyer."],
+     ["Relancer", "L'appli vous dit quand (« À relancer »). Trois relances au plus, puis on le laisse tranquille."],
+     ["Quand il répond", "« Il m'a répondu » pour lire son message et préparer la réponse, puis « Proposition en PDF »."],
+     ["S'il refuse", "« Il ne veut plus être contacté » : on ne lui écrit plus jamais."]].map(([t, d], i) => `<div class="ligne-bilan" style="align-items:flex-start;gap:10px;justify-content:flex-start"><b style="color:var(--violet);flex:none">${i + 1}</b><span><b>${t}</b><small class="gris" style="display:block">${d}</small></span></div>`).join("")}
+  <p style="margin:12px 0 0"><b>Votre commission : ${COMMISSION} % du prix de la création</b> de chaque site vendu (${Object.entries(CREATION).map(([k, v]) => `${k} ${eur(v * COMMISSION / 100)} €`).join(", ")}). Rien sur l'abonnement.</p></details>`;
 // le titre d'une partie numérotée (page Prospects et fiche)
 const partie = (n, t) => `<p style="margin:22px 0 10px;font-weight:700;font-size:17px"><span style="color:var(--violet)">${n}</span> · ${t}</p>`;
 let filtreChoisi = false;
@@ -247,7 +260,8 @@ export async function vueProspects(c) {
   catch (e) { vue.innerHTML = `<div class="entete"><h1>Prospects</h1></div><div class="carte"><b>La table des prospects n'existe pas encore dans votre base.</b><p class="gris" style="margin-top:6px">Passez une fois le fichier nora-schema-6-prospects.sql dans l'éditeur SQL de Supabase, puis revenez ici.</p></div>`; return; }
   const docs = await db.lister("documents").catch(() => []);
   if (!db.MODE_ESSAI && prospects.length) sansColonne = !("prospecteur" in prospects[0]);
-  const tous = prospects, noms = equipe(c.P), sans = tous.some(p => !p.prospecteur);
+  const tous = prospects, noms = equipe(c.P), sans = tous.some(p => !p.prospecteur), pr = c.role?.prospecteur || "";
+  if (pr) { filtreChoisi = true; filtreP = pr; }   // un prospecteur connecté ne voit que les siens
   // à la première ouverture, la page s'ouvre sur les prospects de celui qui tient le téléphone
   if (!filtreChoisi) { filtreChoisi = true; if (moi()) filtreP = moi(); }
   if (filtreP && filtreP !== "—" && !noms.includes(filtreP) && !tous.some(p => p.prospecteur === filtreP)) filtreP = "";
@@ -260,6 +274,10 @@ export async function vueProspects(c) {
   const liste = prospects.filter(p => filtre === "tous" ? !["gagne", "perdu"].includes(p.etape) : p.etape === filtre);
   vue.innerHTML = `
     <div class="entete"><h1>Prospects</h1></div>
+    ${mission(!!pr, eur)}
+    ${pr ? `<div class="carte" style="margin-bottom:16px"><label>Bonjour ${esc(pr.split(" ")[0])}</label>
+      <div class="actions-doc" style="margin:8px 0 0"><button class="btn clair petit-btn" id="pVisuels2">Mes visuels pour les réseaux</button><button class="btn discret petit-btn" id="pPasse">Changer mon mot de passe</button><button class="btn discret petit-btn" id="pSortir">Me déconnecter</button></div></div>` : ""}
+    <div ${pr ? "hidden" : ""}>
     ${partie(1, "Qui prospecte")}
     ${encadreColonne(esc)}
     <div class="carte" style="margin-bottom:16px"><label>Les prospecteurs</label>
@@ -267,9 +285,11 @@ export async function vueProspects(c) {
       ${parTete.length ? `<div class="ligne-bilan"><span class="gris">Prospecteur</span><span class="gris">prospects · contactés · gagnés</span></div>${parTete.map(([n, a, b, g]) => `<div class="ligne-bilan"><span>${esc(n)}</span><span>${a} · ${b} · ${g}</span></div>`).join("")}` : '<p class="gris" style="font-size:14px;margin:0 0 10px">Ajoutez le nom de chaque personne qui prospecte : ses prospects seront rangés à son nom.</p>'}
       <div class="actions-doc" style="margin:10px 0 0"><button class="btn clair petit-btn" id="pVisuels">Mes visuels pour les réseaux</button><button class="btn discret petit-btn" id="pEquipe">Gérer les prospecteurs</button></div></div>
     ${connus.length ? `<div class="onglets defile" style="margin-bottom:12px"><a href="" data-qui="" class="${filtreP ? "" : "actif"}">Tous</a>${connus.map(n => `<a href="" data-qui="${esc(n)}" class="${filtreP === n ? "actif" : ""}">${esc(n)}</a>`).join("")}${sans ? `<a href="" data-qui="—" class="${filtreP === "—" ? "actif" : ""}">Sans prospecteur</a>` : ""}</div>` : ""}
+    </div>
     ${filtreP ? `<div class="carte" style="margin-bottom:16px"><label>${filtreP === "—" ? "Les prospects sans prospecteur" : "Où en est " + esc(filtreP)}</label>
       ${prospects.length ? `<div class="ligne-bilan"><span><b>Prospects</b></span><span><b>${prospects.length}</b></span></div>${ETAPES.filter(([k]) => compte(k)).map(([k, n]) => `<div class="ligne-bilan"><span>${n}</span><span>${compte(k)}</span></div>`).join("")}
-      <div class="ligne-bilan"><span>À relancer aujourd'hui</span><span>${prospects.filter(aRelancer).length}</span></div>` : '<p class="gris" style="font-size:14px;margin:0">Aucun prospect pour l\'instant.</p>'}</div>` : ""}
+      <div class="ligne-bilan"><span>À relancer aujourd'hui</span><span>${prospects.filter(aRelancer).length}</span></div>
+      <div class="ligne-bilan"><span>Commission sur les clients gagnés (${COMMISSION} % de la création)</span><span>${eur(prospects.reduce((t, p) => t + commission(p), 0))} €</span></div>${prospects.some(p => p.etape === "gagne" && !CREATION[p.offre]) ? '<p class="gris" style="font-size:13px;margin:6px 0 0">Un client gagné n\'a pas sa formule sur sa fiche : sa commission n\'est pas comptée.</p>' : ""}` : '<p class="gris" style="font-size:14px;margin:0">Aucun prospect pour l\'instant.</p>'}</div>` : ""}
     ${partie(2, "Chercher des entreprises")}
     <div class="carte" style="margin-bottom:4px"><p class="gris" style="font-size:14px;margin:0 0 10px">Un métier, une ville : l'annuaire officiel donne la liste, et vous choisissez qui garder. Ou ajoutez une entreprise que vous connaissez.</p>
       <div class="actions-doc" style="margin:0"><a class="btn" href="#/prospects/trouver">Trouver des entreprises</a><button class="btn clair" id="nvP">${ICO.plus}Ajouter</button></div></div>
@@ -290,6 +310,13 @@ export async function vueProspects(c) {
   document.getElementById("pMoi").onchange = e => { jeSuis(e.target.value); filtreP = e.target.value; toast(e.target.value ? `Les nouveaux prospects seront au nom de ${e.target.value}` : "Les nouveaux prospects n'auront pas de prospecteur"); vueProspects(c); };
   vue.querySelectorAll("[data-qui]").forEach(a => a.onclick = e => { e.preventDefault(); filtreP = a.dataset.qui; vueProspects(c); });
   document.getElementById("pEquipe").onclick = () => gererEquipe(c, () => vueProspects(c));
+  if (pr) {
+    document.getElementById("pVisuels2").onclick = () => document.getElementById("pVisuels").click();
+    document.getElementById("pSortir").onclick = () => c.role.sortir && c.role.sortir();
+    document.getElementById("pPasse").onclick = () => { const f = fenetre("Changer mon mot de passe", '<div class="champ"><label>Nouveau mot de passe (10 caractères au moins)</label><input type="password" id="npasse" autocomplete="new-password"></div><button class="btn" id="npOk" style="width:100%">Enregistrer</button>');
+      f.el.querySelector("#npOk").onclick = async () => { const v = f.el.querySelector("#npasse").value; if (v.length < 10) return toast("Dix caractères au moins.");
+        try { await db.changerMotDePasse(v); f.fermer(); toast("Mot de passe changé ✓"); } catch (e) { erreur(e); } }; };
+  }
   document.getElementById("pVisuels").onclick = async () => { try { (await import(`./visuels.js?v=${c.V || ""}`)).vueVisuels(c, moi()); } catch (e) { erreur(e); } };
   brancherColonne(vue, toast);
 }
@@ -335,7 +362,7 @@ export async function vueProspect(c, id) {
     <div class="deux-col"><div>
       ${partie(1, "Son prospecteur")}
       ${encadreColonne(esc)}
-      <div class="carte" style="margin-bottom:12px"><label>Son prospecteur</label><select id="pQui"><option value="">Personne en particulier</option>${noms.map(n => `<option ${p.prospecteur === n ? "selected" : ""}>${esc(n)}</option>`).join("")}</select></div>
+      <div class="carte" style="margin-bottom:12px"><label>Son prospecteur</label><select id="pQui" ${c.role?.prospecteur ? "disabled" : ""}><option value="">Personne en particulier</option>${noms.map(n => `<option ${p.prospecteur === n ? "selected" : ""}>${esc(n)}</option>`).join("")}</select></div>
       ${partie(2, "Sa fiche")}
       <div class="carte" style="margin-bottom:12px"><div class="entete" style="margin:0 0 6px"><label style="margin:0">Sa fiche</label><button class="btn discret petit-btn" id="modif">Modifier</button></div>
         ${[["E-mail", p.email], ["Téléphone", p.tel], ["Site internet", p.site], ["Instagram", p.instagram], ["Facebook", p.facebook], ["Besoin", p.besoin], ["Offre recommandée", p.offre], ["Dernière relance", p.derniere_relance ? dateCourte(p.derniere_relance) : ""]].filter(x => x[1]).map(([k, v]) => `<div class="ligne-bilan"><span class="gris">${k}</span><span style="text-align:right;white-space:pre-line">${esc(v)}</span></div>`).join("") || '<p class="gris">Aucune coordonnée pour l\'instant.</p>'}</div>
@@ -356,7 +383,7 @@ export async function vueProspect(c, id) {
       <div class="carte" style="margin-bottom:12px;border-left:3px solid var(--violet)"><label>Prochaine action</label><p style="margin:4px 0 12px"><b>${esc(conseil)}</b></p>
         ${p.opposition ? `<button class="btn discret petit-btn" id="annOpp">Annuler : il accepte de nouveau les messages</button>` : `<div class="actions-doc" style="margin:0">
           <button class="btn" id="msg">Préparer un message</button><button class="btn clair" id="recu">Il m'a répondu</button><button class="btn clair" id="propo">Proposition en PDF</button>
-          ${p.client_id ? `<a class="btn clair" href="#/client/${p.client_id}">Sa fiche client</a>` : `<button class="btn clair" id="versClient">Passer en client</button>`}</div>`}</div>
+          ${p.client_id ? `<a class="btn clair" href="#/client/${p.client_id}">Sa fiche client</a>` : (c.role?.prospecteur ? "" : `<button class="btn clair" id="versClient">Passer en client</button>`)}</div>`}</div>
       <div class="carte" style="margin-bottom:12px"><label>Ce que vous notez pour la suite</label>
         <div class="champ"><input type="text" id="pAction" value="${esc(p.prochaine_action || "")}" placeholder="ex. envoyer la vidéo de démonstration"></div>
         <div class="champ" style="margin-bottom:0"><label>Pour le</label><input type="date" id="pDate" value="${esc(p.prochaine_date || "")}"></div></div>
@@ -511,4 +538,29 @@ function gererEquipe(c, apres) {
   f.el.querySelector("#eqOk").onclick = () => { const z = f.el.querySelector("#eqNom"), n = z.value.trim(); if (!n) return; if (equipe(P).includes(n)) return toast("Ce nom est déjà dans la liste."); z.value = ""; sauver([...equipe(P), n]); };
   f.el.querySelector("#eq").onclick = e => { const b = e.target.closest("[data-retirer]"); if (!b) return; const l = equipe(P), n = l[+b.dataset.retirer]; if (moi() === n) jeSuis(""); sauver(l.filter((x, i) => i !== +b.dataset.retirer)); };
   dessiner();
+  // les comptes : chaque prospecteur peut avoir le sien, et ne voit alors que ses prospects
+  f.el.insertAdjacentHTML("beforeend", `<div style="margin-top:22px;border-top:1px solid var(--pierre);padding-top:14px"><label>Donner un compte à un prospecteur</label>
+    <p class="gris" style="font-size:13px;margin:4px 0 10px">Avec son compte, il se connecte à l'appli depuis son téléphone et ne voit que ses prospects : ni vos clients, ni vos devis, ni vos factures.</p>
+    <div id="cptListe"></div>
+    <div class="champ"><label>Pour qui ?</label><select id="cptNom"></select></div>
+    <div class="champ"><label>Son adresse e-mail</label><input type="email" id="cptMail" autocomplete="off"></div>
+    <button class="btn clair" id="cptOk" style="width:100%">Créer son compte</button><div id="cptFait" style="margin-top:12px"></div></div>`);
+  const q = x => f.el.querySelector(x), noms = () => { q("#cptNom").innerHTML = equipe(P).map(n => `<option>${esc(n)}</option>`).join("") || '<option value="">Ajoutez d\'abord un prospecteur</option>'; };
+  const lister = async () => { noms(); try { const r = await db.comptes({ action: "liste" });
+      q("#cptListe").innerHTML = (r.comptes || []).map(x => `<div class="ligne-bilan" style="align-items:center"><span>${esc(x.nom)}<small class="gris" style="display:block">${esc(x.email)}${x.actif ? "" : " · accès fermé"}</small></span>${x.actif ? `<button class="btn discret petit-btn" data-fermer-compte="${esc(x.email)}">Fermer son accès</button>` : ""}</div>`).join("");
+    } catch (e) { q("#cptListe").innerHTML = `<p class="gris" style="font-size:13px">Les comptes : ${esc(e.message)}.</p>`; } };
+  q("#cptListe").onclick = async e => { const b = e.target.closest("[data-fermer-compte]"); if (!b) return;
+    if (!await c.confirmer(`Fermer l'accès de ${b.dataset.fermerCompte} ? Ses prospects restent.`, "Fermer son accès")) return;
+    try { await db.comptes({ action: "retirer", email: b.dataset.fermerCompte }); toast("Accès fermé"); lister(); } catch (er) { erreur(er); } };
+  q("#cptOk").onclick = async () => { const nom = q("#cptNom").value, email = q("#cptMail").value.trim(); if (!nom || !email) return toast("Choisissez le prospecteur et notez son adresse.");
+    const lettres = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789", passe = [...crypto.getRandomValues(new Uint8Array(12))].map(x => lettres[x % lettres.length]).join("");
+    q("#cptOk").disabled = true;
+    try { await db.comptes({ action: "creer", nom, email, passe });
+      q("#cptFait").innerHTML = `<div class="carte" style="box-shadow:none;background:var(--pierre)"><b>Compte créé pour ${esc(nom)}.</b><p style="margin:8px 0 4px">Adresse de l'appli : creation-site-internet.noraeditions.fr/espace-patron/</p><p style="margin:0 0 4px">Son adresse : ${esc(email)}</p><p style="margin:0 0 8px">Son mot de passe provisoire : <b style="font-family:monospace;font-size:17px">${passe}</b></p>
+        <p class="gris" style="font-size:13px;margin:0">Notez-le maintenant : il ne s'affichera plus. Il le change ensuite dans l'appli, « Changer mon mot de passe ».</p></div>`;
+      q("#cptMail").value = ""; lister(); } catch (er) { toast(er.message || "Le compte n'a pas pu être créé."); }
+    q("#cptOk").disabled = false; };
+  lister();
+  // un nom ajouté ou retiré plus haut : la liste « Pour qui ? » suit
+  f.el.addEventListener("click", e => { if (e.target.closest("#eqOk, [data-retirer]")) setTimeout(noms, 300); });
 }
