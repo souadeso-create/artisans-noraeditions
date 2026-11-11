@@ -80,8 +80,8 @@ export async function creerProposition(p, P, offre, constats = "") {
   texte("En option : le nom de domaine en .com (0,60 € de plus par mois), une adresse e-mail professionnelle (1,50 € de plus par mois), une boutique en ligne (sur devis).", { taille: 9.5, couleur: GRIS });
 
   titre("Les conditions", 40);
-  [`Un acompte de ${Number(P.acompte_pct) || 10} % lance le travail.`, "Nous vous montrons le résultat avant la mise en ligne, et vous demandez vos ajustements.",
-    "Le solde se règle après votre validation finale, en une fois ou en 3 fois sans frais.", "L'abonnement est sans engagement."].forEach(puce);
+  [`Un acompte de ${Number(P.acompte_pct) || 10} % sur la création lance le travail.`, "Nous vous montrons le résultat avant la mise en ligne, et vous demandez vos ajustements.",
+    "Le solde se règle après votre validation finale, en une fois ou en 3 fois sans frais.", "L'abonnement est sans engagement. Son premier mois est offert : il commence un mois après la mise en ligne."].forEach(puce);
   titre("Le délai", 26);
   texte("Votre site est mis en ligne environ une semaine après réception de vos textes et de vos photos. Ce délai est indicatif.");
   titre("La suite", 52);

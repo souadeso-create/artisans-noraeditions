@@ -1,5 +1,5 @@
 // Accès aux données : Supabase quand il est configuré, sinon le navigateur (mode essai).
-import { PARAMETRES_DEFAUT, PRESTATIONS_DEFAUT, AJOUTS_PRESTATIONS, CORRECTIONS_PRESTATIONS, REPRISE_REGLAGES } from "./donnees.js";
+import { PARAMETRES_DEFAUT, PRESTATIONS_DEFAUT, AJOUTS_PRESTATIONS, CORRECTIONS_PRESTATIONS, REPRISE_REGLAGES, REPRISE_ABO } from "./donnees.js";
 
 const cfg = window.NORA_SB && window.NORA_SB.url ? { supabaseUrl: window.NORA_SB.url, supabaseKey: window.NORA_SB.cle } : {};
 export const MODE_ESSAI = !(cfg.supabaseUrl && cfg.supabaseKey);
@@ -211,6 +211,12 @@ export async function ajouterNouvellesPrestations() {
     if (brut.conditions) brut.conditions = brut.conditions.replace("Paiement : un acompte à la commande", "Paiement : un acompte de 10 % à la commande");
     faits.push("acompte-10-2026-10");
     if (!reste.length && !corr.length) { await enregistrerParametres({ ...brut, ajouts_prestations: faits }); return; }
+  }
+  // l'acompte sur la création seule, le premier mois d'abonnement offert : les deux phrases des conditions, si elles sont encore celles de départ
+  if (!faits.includes(REPRISE_ABO.cle)) {
+    for (const [ancien, nouveau] of REPRISE_ABO.remplacer) if (brut.conditions && brut.conditions.includes(ancien)) brut.conditions = brut.conditions.replace(ancien, nouveau);
+    faits.push(REPRISE_ABO.cle);
+    if (faits.includes(REPRISE_REGLAGES.cle) && !reste.length && !corr.length) { await enregistrerParametres({ ...brut, ajouts_prestations: faits }); return; }
   }
   // les conditions et le libellé d'abonnement : repris une fois, seulement s'ils sont encore ceux de départ
   if (!faits.includes(REPRISE_REGLAGES.cle)) {

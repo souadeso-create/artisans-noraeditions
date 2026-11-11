@@ -95,7 +95,7 @@ const nbRelances = p => (p.historique || []).filter(h => h.t === "envoi" && /rel
 /* ---------- L'assistant IA (facultatif) : absent tant que la fonction « assistant » n'est pas installée ---------- */
 let iaPrete = null;
 async function iaDispo(db) { if (iaPrete === null) { try { iaPrete = !!(await db.assistant({ action: "etat" })).pret; } catch (e) { iaPrete = false; } } return iaPrete; }
-const CONDITIONS = "Un acompte de 10 % lance le travail. Le solde se règle après la validation finale, en une fois ou en 3 fois sans frais. L'abonnement est sans engagement. Délai : environ une semaine après réception des textes et des photos.";
+const CONDITIONS = "Un acompte de 10 % lance le travail. Le solde se règle après la validation finale, en une fois ou en 3 fois sans frais. L'abonnement est sans engagement, et son premier mois est offert. Délai : environ une semaine après réception des textes et des photos.";
 const INTERETS = { fort: "Fort : il veut avancer", moyen: "Moyen : il se renseigne", faible: "Faible ou incertain", aucun: "Aucun : il refuse d'être contacté" };
 // ni nom de personne, ni e-mail, ni téléphone : seulement ce qui sert à écrire
 const ficheIA = p => ({ entreprise: p.entreprise || "", metier: p.metier || "", ville: p.ville || "", etape: (ETAPES.find(e => e[0] === p.etape) || [])[1] || "", besoin: p.besoin || "", a_deja: aDeja(p).map(d => d[1]), a_proposer: manque(p).map(k => PROPOS[k][1]),
@@ -117,7 +117,7 @@ async function courrierDispo(db) {
 /* ---------- Les messages ---------- */
 // le prénom du commercial qui signe : le prospecteur de la fiche, sinon celui qui tient le téléphone
 const commercial = p => String((p && p.prospecteur) || moi() || "").trim().split(" ")[0];
-function signature(P, p) { return `${commercial(p) ? commercial(p) + String.fromCharCode(10) : ""}${P.entreprise || "Nora Éditions"}\n${P.site || "creation-site-internet.noraeditions.fr"}\n${P.email || "contact@noraeditions.com"}`; }
+function signature(P, p) { return `${commercial(p) ? commercial(p) + String.fromCharCode(10) + "Service commercial · " : ""}${P.entreprise || "Nora Éditions"}\n${P.site || "creation-site-internet.noraeditions.fr"}\n${P.email || "contact@noraeditions.com"}`; }
 const REFUS = "Si vous ne souhaitez plus recevoir de message de notre part, dites-le-nous simplement.";
 function constatsTxt(p) {
   const l = CONSTATS.filter(c => (p.constats || []).includes(c[0])).map(c => c[2]);
@@ -127,9 +127,9 @@ function constatsTxt(p) {
 const DEMO = "https://creation-site-internet.noraeditions.fr/demonstrations/";
 const demoPour = (p, o) => /plomb|electric|électric|couvr|peint|maçon|macon|carrel|menuis|renov|rénov|charpent|façad|facad|plaqu/i.test(p.metier || "") ? DEMO + "#artisans" : o === "Essentiel" ? DEMO + "#site" : DEMO + "#tableau-de-bord";
 export function messages(p, P) {
-  const o = offreConseillee(p), ent = p.entreprise ? ` pour ${p.entreprise}` : "", sig = signature(P, p), de = commercial(p) ? commercial(p) + ", de " : "", m = (p.metier || "votre métier").toLowerCase(), demo = demoPour(p, o), v = vise(p), duSite = v === "site" || v === "refonte";
+  const o = offreConseillee(p), ent = p.entreprise ? ` pour ${p.entreprise}` : "", sig = signature(P, p), de = commercial(p) ? commercial(p) + ", du service commercial de " : "", m = (p.metier || "votre métier").toLowerCase(), demo = demoPour(p, o), v = vise(p), duSite = v === "site" || v === "refonte";
   const autres = Object.keys(PRIX).filter(k => k !== o).map(k => `• ${k} : ${PRIX[k]}. Elle comprend ${CONTENU[k]}.`).join("\n");
-  const paiement = "Un acompte de 10 % lance le travail, et le solde se règle après votre validation finale, en une fois ou en 3 fois sans frais. L'abonnement est sans engagement.";
+  const paiement = "Un acompte de 10 % lance le travail, et le solde se règle après votre validation finale, en une fois ou en 3 fois sans frais. L'abonnement est sans engagement, et son premier mois est offert.";
   return [
     ["premier", "Premier e-mail", v === "site" ? `Un site internet${ent}` : PROPOS[v][2],
       `${bonjour(p)}\n\nNora Éditions crée des sites internet pour les artisans et les indépendants. ${accroche(p.metier)}\n\n${constatsTxt(p)}${proposTxt(p)} Vous voyez le résultat avant de régler le solde, et tout se fait par écrit, à votre rythme.\n\nSouhaitez-vous voir un exemple en vidéo ? Répondez simplement « oui » à ce message.\n\n${REFUS}\n\n${sig}`],
@@ -160,7 +160,7 @@ export function messages(p, P) {
     ["appli", "Réponse : il veut une application métier", "Votre tableau de bord",
       `${bonjour(p)}\n\nC'est la formule Pro : ${CONTENU.Pro}, pour ${PRIX.Pro}. Vos devis et vos factures se génèrent automatiquement en PDF, et vos clients signent en ligne.\n\nVoici une courte vidéo qui montre le tableau de bord sur un téléphone :\n${DEMO}#tableau-de-bord\n\nDites-nous ce que vous aimeriez y trouver pour votre activité.\n\n${sig}`],
     ["proposition", "Proposition commerciale (texte)", `Votre proposition${ent}`,
-      `${bonjour(p)}\n\nSuite à nos échanges, voici notre proposition${ent}.\n\nVotre besoin : ${besoinTxt(p)}.\n\nCe que nous vous proposons : la formule ${o}, soit ${CONTENU[o]}.\n\nLe prix : ${PRIX[o]}.\n\nLa suite : vous remplissez un court questionnaire, nous vous envoyons le devis à signer en ligne, un acompte de 10 % lance le travail, nous vous montrons le résultat, vous demandez vos ajustements, puis vous validez. Le solde se règle à ce moment-là, en une fois ou en 3 fois sans frais. L'abonnement est sans engagement.\n\nLe délai : environ une semaine après réception de vos textes et de vos photos.\n\nSi cette proposition vous convient, répondez-nous simplement « d'accord » et nous vous envoyons le questionnaire.\n\n${sig}`],
+      `${bonjour(p)}\n\nSuite à nos échanges, voici notre proposition${ent}.\n\nVotre besoin : ${besoinTxt(p)}.\n\nCe que nous vous proposons : la formule ${o}, soit ${CONTENU[o]}.\n\nLe prix : ${PRIX[o]}.\n\nLa suite : vous remplissez un court questionnaire, nous vous envoyons le devis à signer en ligne, un acompte de 10 % lance le travail, nous vous montrons le résultat, vous demandez vos ajustements, puis vous validez. Le solde se règle à ce moment-là, en une fois ou en 3 fois sans frais. L'abonnement est sans engagement, et son premier mois est offert.\n\nLe délai : environ une semaine après réception de vos textes et de vos photos.\n\nSi cette proposition vous convient, répondez-nous simplement « d'accord » et nous vous envoyons le questionnaire.\n\n${sig}`],
   ];
 }
 

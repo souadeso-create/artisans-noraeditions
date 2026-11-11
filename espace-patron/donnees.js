@@ -30,10 +30,10 @@ export const PARAMETRES_DEFAUT = {
   abonnement_libelle: "Abonnement du site (hébergement, mises à jour, tableau de bord)",
   conditions:
     "Prestations incluses : selon la formule choisie, la création du site sur mesure, le nom de domaine en .fr, le référencement sur Google et la fiche Google ; avec les formules Pro et Pro + IA, l'identité visuelle, les 100 cartes de visite offertes, la retouche des photos et le tableau de bord.\n" +
-    "Abonnement : après la mise en ligne, il couvre l'hébergement et la maintenance (par an pour l'Essentiel, par mois pour le Pro et le Pro + IA) et, pour ces deux dernières formules, le tableau de bord. Il est sans engagement.\n" +
+    "Abonnement : il couvre l'hébergement et la maintenance (par an pour l'Essentiel, par mois pour le Pro et le Pro + IA) et, pour ces deux dernières formules, le tableau de bord. Le premier mois est offert : l'abonnement commence un mois après la mise en ligne. Il est sans engagement.\n" +
     "Rendus : nous vous montrons les rendus avant la mise en ligne, et vous demandez vos ajustements.\n" +
     "Délais : mise en ligne environ une semaine après réception des textes et des photos.\n" +
-    "Paiement : un acompte de 10 % pour lancer le travail, par virement, puis le solde après votre validation finale, en une fois ou en 3 fois sans frais.",
+    "Paiement : un acompte de 10 % sur la création pour lancer le travail, par virement, puis le solde après votre validation finale, en une fois ou en 3 fois sans frais. Il n'y a pas d'acompte sur l'abonnement.",
   penalites:
     "En cas de retard de paiement, des pénalités au taux de trois fois le taux d'intérêt légal sont exigibles, ainsi qu'une indemnité forfaitaire de 40 € pour frais de recouvrement (clients professionnels). Pas d'escompte pour paiement anticipé."
 };
@@ -85,3 +85,7 @@ export const REPRISE_REGLAGES = {
   conditions: { marqueur: "Prestations incluses : la création du site sur mesure", nouveau: PARAMETRES_DEFAUT.conditions },
   libelle: { ancien: "Abonnement du site (hébergement, mises à jour, application)", nouveau: PARAMETRES_DEFAUT.abonnement_libelle }
 };
+// l'acompte sur la création seule et le premier mois d'abonnement offert (11/11/2026) : repris dans les conditions déjà enregistrées, phrase par phrase
+export const REPRISE_ABO = { cle: "reglages-abo-2e-mois-2026-11", remplacer: [
+  ["Abonnement : après la mise en ligne, il couvre l'hébergement et la maintenance (par an pour l'Essentiel, par mois pour le Pro et le Pro + IA) et, pour ces deux dernières formules, le tableau de bord. Il est sans engagement.", "Abonnement : il couvre l'hébergement et la maintenance (par an pour l'Essentiel, par mois pour le Pro et le Pro + IA) et, pour ces deux dernières formules, le tableau de bord. Le premier mois est offert : l'abonnement commence un mois après la mise en ligne. Il est sans engagement."],
+  ["Paiement : un acompte de 10 % pour lancer le travail, par virement, puis le solde après votre validation finale, en une fois ou en 3 fois sans frais.", "Paiement : un acompte de 10 % sur la création pour lancer le travail, par virement, puis le solde après votre validation finale, en une fois ou en 3 fois sans frais. Il n'y a pas d'acompte sur l'abonnement."]] };

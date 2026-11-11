@@ -28,10 +28,15 @@ export function poserTVA(doc, p) {
   for (const s of doc.sections || []) for (const l of s.lignes || []) if (l.tva == null || l.tva === "") l.tva = taux;
   return doc;
 }
+// une ligne d'abonnement : au mois ou à l'an
+export const estAbo = l => l.unite === "mois" || l.unite === "an";
+// Sur un devis, l'abonnement n'entre ni dans le total ni dans l'acompte : il se facture à part, à partir du deuxième mois (abo = ce qu'il coûte, par unité).
 export function totaux(doc) {
-  let ht = 0; const parTaux = {};
+  let ht = 0; const parTaux = {}, abo = {}, devis = doc.type === "devis";
   for (const s of doc.sections || []) for (const l of s.lignes || []) {
-    const m = (Number(l.qte) || 0) * (Number(l.pu) || 0); ht += m;
+    const m = (Number(l.qte) || 0) * (Number(l.pu) || 0);
+    if (devis && estAbo(l)) { abo[l.unite] = (abo[l.unite] || 0) + m * (1 + (l.tva != null && l.tva !== "" ? Number(l.tva) / 100 : 0)); continue; }
+    ht += m;
     if (l.tva != null && l.tva !== "") { const r = Number(l.tva); parTaux[r] = (parTaux[r] || 0) + m * r / 100; }
   }
   ht = arrondi(ht);
@@ -39,7 +44,7 @@ export function totaux(doc) {
   const ttc = arrondi(ht + tva.reduce((a, [, v]) => a + v, 0));
   const acompte = Math.round(ttc * (Number(doc.acompte_pct) || 0)) / 100;
   const regle = Number(doc.deja_regle) || 0;
-  return { ht, tva, ttc, avecTVA: tva.length > 0, acompte, regle, reste: arrondi(ttc - regle) };
+  return { ht, tva, ttc, avecTVA: tva.length > 0, acompte, regle, reste: arrondi(ttc - regle), abo: Object.entries(abo).map(([u, v]) => [u, arrondi(v)]) };
 }
 // La mention à imprimer : franchise pour les anciens documents, attestation du client quand un taux réduit est appliqué.
 export function mentionTVA(doc, p) {
@@ -149,7 +154,8 @@ export async function creerPDF(d, p) {
   // --- Totaux
   const lignesTot = [["Total HT", eur(t.ht) + " €"]];
   if (t.avecTVA) { t.tva.forEach(([r, v]) => lignesTot.push([`TVA ${tauxTxt(r)}`, eur(v) + " €"])); lignesTot.push(["Total TTC", eur(t.ttc) + " €"]); }
-  if (estDevis) { lignesTot.push([t.avecTVA ? "Net à payer TTC" : "Net à payer", eur(t.ttc) + " €", true]); if (Number(d.acompte_pct)) lignesTot.push([`Acompte (${d.acompte_pct} %)`, eur(t.acompte) + " €"]); }
+  if (estDevis) { lignesTot.push([t.avecTVA ? "Net à payer TTC" : "Net à payer", eur(t.ttc) + " €", true]); if (Number(d.acompte_pct)) lignesTot.push([`Acompte (${d.acompte_pct} %)`, eur(t.acompte) + " €"]);
+    t.abo.forEach(([u, v]) => lignesTot.push(["Abonnement, dès le 2e mois", `${eur(v)} € / ${u}`])); }
   else { if (t.regle) lignesTot.push(["Déjà réglé", eur(t.regle) + " €"]); lignesTot.push(["Reste à payer", eur(t.reste) + " €", true]); }
   place(lignesTot.length * 7 + 12);
   const tx = 122;
