@@ -152,11 +152,14 @@ function constatsTxt(p) {
 // la page des démonstrations, et la vidéo qui va avec la formule conseillée
 const DEMO = "https://creation-site-internet.noraeditions.fr/demonstrations/";
 const demoPour = (p, o) => /plomb|electric|électric|couvr|peint|maçon|macon|carrel|menuis|renov|rénov|charpent|façad|facad|plaqu/i.test(p.metier || "") ? DEMO + "#artisans" : o === "Essentiel" ? DEMO + "#site" : DEMO + "#tableau-de-bord";
+// Time Manager : l'offre pour les métiers de la beauté (timemanager.noraeditions.fr)
+const TM = "https://timemanager.noraeditions.fr/";
+const beaute = p => /coiff|barb|esth[ée]t|beaut|ongl|manucur|institut|cils|maquill|massage|[ée]pil|tatou|\bspa\b/i.test((p && p.metier) || "");
 export function messages(p, P) {
   const o = offreConseillee(p), ent = p.entreprise ? ` pour ${p.entreprise}` : "", sig = signature(P, p), de = commercial(p) ? commercial(p) + ", du service commercial de " : "", m = (p.metier || "votre métier").toLowerCase(), demo = demoPour(p, o), v = vise(p), duSite = v === "site" || v === "refonte";
   const autres = Object.keys(PRIX).filter(k => k !== o).map(k => `• ${k} : ${PRIX[k]}. Elle comprend ${CONTENU[k]}.`).join("\n");
   const paiement = "Un acompte de 10 % lance le travail, et le solde se règle après votre validation finale, en une fois ou en 3 fois sans frais. L'abonnement est sans engagement, et son premier mois est offert.";
-  return [
+  const l = [
     ["premier", "Premier e-mail", v === "site" ? `Un site internet${ent}` : PROPOS[v][2],
       `${bonjour(p)}\n\nNora Éditions crée des sites internet pour les artisans et les indépendants. ${accroche(p.metier)}\n\n${constatsTxt(p)}${proposTxt(p)} Vous voyez le résultat avant de régler le solde, et tout se fait par écrit, à votre rythme.\n\nSouhaitez-vous voir un exemple en vidéo ? Répondez simplement « oui » à ce message.\n\n${REFUS}\n\n${sig}`],
     ["wa_premier", "Premier message court (WhatsApp, Instagram, Messenger)", "",
@@ -188,6 +191,23 @@ export function messages(p, P) {
     ["proposition", "Proposition commerciale (texte)", `Votre proposition${ent}`,
       `${bonjour(p)}\n\nSuite à nos échanges, voici notre proposition${ent}.\n\nVotre besoin : ${besoinTxt(p)}.\n\nCe que nous vous proposons : la formule ${o}, soit ${CONTENU[o]}.\n\nLe prix : ${PRIX[o]}.\n\nLa suite : vous remplissez un court questionnaire, nous vous envoyons le devis à signer en ligne, un acompte de 10 % lance le travail, nous vous montrons le résultat, vous demandez vos ajustements, puis vous validez. Le solde se règle à ce moment-là, en une fois ou en 3 fois sans frais. L'abonnement est sans engagement, et son premier mois est offert.\n\nLe délai : environ une semaine après réception de vos textes et de vos photos.\n\nSi cette proposition vous convient, il vous reste à remplir votre questionnaire :\n${lienQuestionnaire(p, o)}\n\n${sig}`],
   ];
+  const ceQueCaFait = "Vos clientes choisissent un créneau libre, selon vos horaires et la durée de chaque prestation, règlent un acompte ou la totalité, comme vous le décidez, et reçoivent un rappel avant le rendez-vous.";
+  const tm = [
+    ["tm_premier", "Time Manager · Premier e-mail", `La prise de rendez-vous en ligne${ent}`,
+      `${bonjour(p)}\n\nNora Éditions crée des sites internet pour les salons et les instituts. Time Manager est notre offre pour les métiers de la beauté : vos clientes réservent sur votre propre site, sans plateforme et sans commission.\n\n${constatsTxt(p)}${ceQueCaFait} Le site est dessiné sur mesure, entièrement à votre image, et référencé sur Google.\n\nPour voir à quoi cela ressemble :\n${TM}\n\nSouhaitez-vous une proposition écrite ? Répondez simplement « oui » à ce message.\n\n${REFUS}\n\n${sig}`],
+    ["tm_wa", "Time Manager · Premier message court (WhatsApp, Instagram, Messenger)", "",
+      `${bonjour(p)} ici ${de}Nora Éditions. Avec Time Manager, vos clientes prennent rendez-vous sur votre propre site, sans plateforme et sans commission.\n\nPour voir à quoi cela ressemble :\n${TM}\n\nSouhaitez-vous une proposition écrite ? Un simple « oui » suffit.\n\n${REFUS}\n\n${sig}`],
+    ["tm_relance", "Time Manager · Relance par e-mail", `Vos rendez-vous en ligne${ent}`,
+      `${bonjour(p)}\n\nNous nous permettons de revenir vers vous au sujet de notre message de l'autre jour, sur la prise de rendez-vous en ligne${ent}. Peut-être n'était-ce pas le bon moment.\n\nTime Manager, c'est votre propre site de réservation. ${ceQueCaFait}\n\nTout est présenté ici, avec une courte vidéo :\n${TM}\n\n${REFUS}\n\n${sig}`],
+    ["tm_relance_wa", "Time Manager · Relance courte (WhatsApp, Instagram, Messenger)", "",
+      `${bonjour(p)} ici ${de}Nora Éditions. Nous revenons vers vous après notre message de l'autre jour, sur la prise de rendez-vous en ligne${ent}. Tout est présenté ici, avec une courte vidéo :\n${TM}\n\n${REFUS}\n\n${sig}`],
+    ["tm_plateforme", "Time Manager · Réponse : elle est déjà sur une plateforme de réservation", "Vos rendez-vous en ligne",
+      `${bonjour(p)}\n\nMerci pour votre message. Vous pouvez tout à fait garder votre plateforme le temps de comparer.\n\nAvec Time Manager, les réservations se prennent chez vous, sur un site à votre image : il n'y a pas de commission sur les rendez-vous, et vos fiches clientes, votre carte de fidélité, vos forfaits et vos cartes cadeaux sont au même endroit. Vous fixez vous-même vos règles d'annulation et de report.\n\nTout est présenté ici :\n${TM}\n\nDites-nous comment vous travaillez aujourd'hui, et nous vous préparons une proposition écrite.\n\n${sig}`],
+    ["tm_prix", "Time Manager · Réponse : elle demande le prix", "Le prix de Time Manager",
+      `${bonjour(p)}\n\nMerci pour votre message. Time Manager, c'est la formule Pro : ${PRIX.Pro}, sans commission sur vos rendez-vous.\n\n${paiement}\n\nLe détail est ici :\n${TM}\n\nSi cela vous convient, nous vous envoyons un court questionnaire pour préparer votre site.\n\n${sig}`],
+  ];
+  // pour un métier de la beauté, les messages Time Manager passent devant
+  return beaute(p) ? [...tm, ...l] : [...l, ...tm];
 }
 
 /* ---------- Lire un message reçu : ce qu'il cherche, son intérêt, ses objections, la réponse, la suite ---------- */
@@ -486,7 +506,8 @@ function choisir(c, p, apres, cle) {
   const l = messages(p, c.P);
   if (cle) return montrer(c, p, l.find(m => m[0] === cle) || l[0], apres);
   const surWa = !p.email && (idReseau(p.instagram) || idReseau(p.facebook)) ? true : !p.email && String(p.tel || "").replace(/\D/g, "").length >= 10;
-  const suggere = p.etape === "nouveau" ? (surWa ? "wa_premier" : "premier") : aRelancer(p) ? (surWa ? "relance_wa" : ["relance1", "relance2", "relance3"][nbRelances(p)]) : p.etape === "besoin" ? "proposition" : null;
+  let suggere = p.etape === "nouveau" ? (surWa ? "wa_premier" : "premier") : aRelancer(p) ? (surWa ? "relance_wa" : ["relance1", "relance2", "relance3"][nbRelances(p)]) : p.etape === "besoin" ? "proposition" : null;
+  if (beaute(p)) suggere = { premier: "tm_premier", wa_premier: "tm_wa", relance_wa: "tm_relance_wa", relance1: "tm_relance" }[suggere] || suggere;
   const f = c.fenetre("Quel message ?", l.map(m => `<button class="choix" data-m="${m[0]}"><span><b>${c.esc(m[1])}</b>${m[0] === suggere ? '<small class="gris" style="display:block">conseillé maintenant</small>' : ""}</span><span>›</span></button>`).join(""));
   f.el.onclick = e => { const b = e.target.closest("[data-m]"); if (!b) return; f.fermer(); montrer(c, p, l.find(m => m[0] === b.dataset.m), apres); };
 }
@@ -526,7 +547,7 @@ function montrer(c, p, [cle, nom, sujet, texte], apres) {
     q("#iaRetour").onclick = () => { t.value = type.texte; objet(type.sujet); q("#iaRetour").hidden = true; toast("Message type remis"); }; }
   // noter l'envoi dans l'historique, et faire avancer l'étape
   const noter = async (comment, dit) => {
-    const relance = /^relance/.test(cle), etape = ["premier", "wa_premier"].includes(cle) && p.etape === "nouveau" ? "contacte" : cle === "proposition" ? "proposition" : p.etape;
+    const relance = /relance/.test(cle), etape = ["premier", "wa_premier", "tm_premier", "tm_wa"].includes(cle) && p.etape === "nouveau" ? "contacte" : cle === "proposition" ? "proposition" : p.etape;
     try { await garder(c, { ...p, etape, historique: [...(p.historique || []), { par: moi(), d: jour(), t: "envoi", texte: nom + comment }], ...(relance ? { derniere_relance: jour() } : {}) }); f.fermer(); toast(dit); apres && apres(); } catch (e) { erreur(e); }
   };
   if (q("#envoye")) q("#envoye").onclick = () => noter("", "Noté dans l'historique ✓");
