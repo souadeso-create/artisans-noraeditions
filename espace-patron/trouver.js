@@ -81,8 +81,9 @@ async function chercher(codes, lieu, page = 1, mot = "") {
 function ranger(tout, lieu) {
   const vus = new Set(), garde = tout.filter(e => e.siege && e.statut_diffusion === "O" && !vus.has(e.siren) && vus.add(e.siren));
   garde.forEach(e => { e._refus = !!e.opposition_diffusion_commerciale; e._ailleurs = lieu.type === "dep" ? e.siege.departement !== lieu.code : !communesDe(lieu).includes(e.siege.commune); });
-  const rang = e => e._refus ? 2 : e._ailleurs ? 1 : 0;
-  garde.sort((a, b) => rang(a) - rang(b) || String(b.date_creation || "").localeCompare(String(a.date_creation || "")));   // à rang égal, les plus récentes d'abord
+  // les plus récentes en premier (12/11/2026), siège sur place ou non ; celles qui refusent la prospection restent en bas
+  const rang = e => e._refus ? 1 : 0;
+  garde.sort((a, b) => rang(a) - rang(b) || String(b.date_creation || "").localeCompare(String(a.date_creation || "")));
   // celles qui ont demandé que leurs coordonnées ne soient pas diffusées : l'annuaire ne donne pas leur nom, elles ne sont pas montrées
   const cachees = new Set(tout.filter(e => e.statut_diffusion !== "O").map(e => e.siren)).size;
   return { liste: garde, ailleurs: garde.filter(e => e._ailleurs && !e._refus).length, refus: garde.filter(e => e._refus).length, cachees };
@@ -143,7 +144,7 @@ export async function vueTrouver(c) {
           <a class="btn discret petit-btn" target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent(enseigne(e) + " " + (s.libelle_commune || ""))}">Chercher son site</a>
           <a class="btn discret petit-btn" target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent(enseigne(e) + " " + (s.libelle_commune || "") + " facebook instagram")}">Chercher ses réseaux</a></div></div>`; };
     const dep = memoire.ville.type === "dep", ou = dep ? `dans le département ${esc(memoire.ville.nom)} (${esc(memoire.ville.code)})` : `à ${esc(memoire.ville.nom)}`, reste = memoire.derniere < memoire.pages;
-    el("tRes").innerHTML = `<p class="gris" style="margin:0 0 10px">${r.liste.length ? `${r.liste.length} entreprise${r.liste.length > 1 ? "s" : ""} ${ou}${reste ? `, sur ${memoire.total} dans l'annuaire (les autres arrivent avec le bouton du bas)` : ""} : celles ${dep ? "du département" : "de la ville"} d'abord, les plus récentes en tête.` : `Aucune entreprise trouvée ${ou} pour ce métier. Essayez ${memoire.mot ? "un mot plus courant, ou le code d'activité" : dep ? "un autre code d'activité" : "une ville voisine, ou le département"}.`}
+    el("tRes").innerHTML = `<p class="gris" style="margin:0 0 10px">${r.liste.length ? `${r.liste.length} entreprise${r.liste.length > 1 ? "s" : ""} ${ou}${reste ? `, sur ${memoire.total} dans l'annuaire (les autres arrivent avec le bouton du bas)` : ""} : les plus récentes en premier${reste ? " parmi celles qui sont chargées (« Tout charger » pour les avoir toutes)" : ""}.` : `Aucune entreprise trouvée ${ou} pour ce métier. Essayez ${memoire.mot ? "un mot plus courant, ou le code d'activité" : dep ? "un autre code d'activité" : "une ville voisine, ou le département"}.`}
       ${memoire.mot ? ` Recherche faite sur le nom des entreprises (« ${esc(memoire.mot)} ») : celles dont le nom ne dit pas le métier n'y sont pas.` : ""}${r.ailleurs ? ` ${r.ailleurs} ont leur siège ${dep ? "dans un autre département" : "dans une autre ville"}.` : ""}${r.cachees ? (r.cachees > 1 ? ` ${r.cachees} ne sont pas montrées : elles ont demandé que leurs coordonnées ne soient pas diffusées.` : " Une n'est pas montrée : elle a demandé que ses coordonnées ne soient pas diffusées.") : ""}${r.refus ? ` ${r.refus} refusent la prospection commerciale : elles sont montrées en bas, sans bouton d'ajout.` : ""}</p>${r.liste.length > 12 ? `<input class="recherche" type="search" id="tFiltre" placeholder="Filtrer : un nom, une ville, une rue" value="${esc(memoire.filtre || "")}" style="margin-bottom:6px"><p class="gris" id="tCompte" style="font-size:13px;margin:0 0 8px"></p>` : ""}<div class="liste">${r.liste.map(carte).join("")}</div>
       ${reste ? `<button type="button" class="btn" id="tTout" style="width:100%;margin-top:12px">Tout charger (${Math.min(memoire.total, 10000)} entreprises)</button><p class="gris" id="tProgres" style="font-size:13px;margin:6px 0 0">${memoire.total > 10000 ? "L'annuaire ne donne que les 10 000 premières d'une recherche : pour les autres, cherchez ville par ville." : ""}</p>` : ""}
       ${reste ? `<button type="button" class="btn clair" id="tSuite" style="width:100%;margin-top:12px">Voir les suivantes (encore ${Math.max(0, memoire.total - memoire.derniere * 25)} dans l'annuaire)</button>` : ""}`;
@@ -158,7 +159,9 @@ export async function vueTrouver(c) {
     if (codes && !/^\d{2}\.\d{2}[A-Z](,\d{2}\.\d{2}[A-Z])*$/.test(codes)) return toast("Le code d'activité s'écrit comme 43.22A (plusieurs codes : séparés par une virgule).");
     if (!memoire.ville) return toast("Choisissez la ville ou le département dans la liste proposée.");
     memoire.filtre = ""; memoire.jeton = 0; el("tRes").innerHTML = '<p class="gris">Recherche dans l\'annuaire…</p>';
-    try { const x = await chercher(codes, memoire.ville, 1, memoire.mot); Object.assign(memoire, { brut: x.tout, total: x.total, pages: x.pages, derniere: x.derniere, codes, resultats: ranger(x.tout, memoire.ville) }); montrer(); } catch (er) { el("tRes").innerHTML = ""; erreur(er); }
+    try { const x = await chercher(codes, memoire.ville, 1, memoire.mot); Object.assign(memoire, { brut: x.tout, total: x.total, pages: x.pages, derniere: x.derniere, codes, resultats: ranger(x.tout, memoire.ville) }); montrer();
+      // l'annuaire ne trie pas par date : une liste de 1 000 entreprises ou moins se charge en entier, pour que les plus récentes soient vraiment en tête
+      if (memoire.total <= 1000 && el("tTout")) el("tTout").click(); } catch (er) { el("tRes").innerHTML = ""; erreur(er); }
   };
   el("tRes").oninput = e => { if (e.target.id === "tFiltre") { memoire.filtre = e.target.value; filtrer(); } };
   el("tRes").onclick = async e => {
