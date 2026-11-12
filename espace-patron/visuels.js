@@ -29,14 +29,14 @@ function coche(x, cx, cy, r, fond, trait) {
 }
 
 // La vignette : 1080 × 1080, tout tient dans le rond que découpent Instagram et Facebook
-async function vignette(prenom) {
+// Sans prénom (12/11/2026, « c'est inutile ») : la même pour tous les prospecteurs.
+async function vignette() {
   const [c, x] = toile(1080, 1080), f = police(), icone = await image("/medias/icone-site-512.png");
   x.fillStyle = NUIT; x.fillRect(0, 0, 1080, 1080);
-  x.drawImage(icone, 370, prenom ? 190 : 250, 340, 340);
-  x.fillStyle = "#fff"; x.textAlign = "center"; x.textBaseline = "alphabetic";
-  if (prenom) { x.font = `800 100px ${f}`; x.fillText(prenom, 540, 680); }
-  x.fillStyle = JAUNE; x.font = `700 50px ${f}`; x.fillText("Nora Éditions", 540, prenom ? 762 : 700);
-  x.fillStyle = "#fff"; x.font = `500 38px ${f}`; x.fillText("Création de site internet", 540, prenom ? 826 : 764);
+  x.drawImage(icone, 350, 230, 380, 380);
+  x.textAlign = "center"; x.textBaseline = "alphabetic";
+  x.fillStyle = JAUNE; x.font = `800 64px ${f}`; x.fillText("Nora Éditions", 540, 712);
+  x.fillStyle = "#fff"; x.font = `500 42px ${f}`; x.fillText("Création de site internet", 540, 780);
   return c;
 }
 // La couverture Facebook : 1640 × 624, l'essentiel au centre (le téléphone rogne les côtés)
@@ -181,7 +181,7 @@ const VIDEOS = [["site", "Le site et le tableau de bord, en action", "video-site
 export async function vueVisuels(c, nom) {
   const { esc, toast, erreur } = c, prenom = String(nom || "").trim().split(" ")[0], pour = prenom ? "-" + prenom.toLowerCase().normalize("NFD").replace(/[^a-z0-9]/g, "") : "";
   const bio = `${prenom ? prenom + " · " : ""}Service commercial de Nora Éditions. Création de sites internet sur mesure pour les artisans et les indépendants. ${SITE}`;
-  const f = c.fenetre("Mes visuels pour les réseaux", `<p class="gris" style="font-size:14px;margin:0 0 12px">${prenom ? `Au prénom de ${esc(prenom)}.` : "Choisissez d'abord votre nom dans « Sur ce téléphone, je suis » pour avoir la vignette et la couverture à votre prénom."} Les images se téléchargent sur cet appareil.</p>
+  const f = c.fenetre("Mes visuels pour les réseaux", `<p class="gris" style="font-size:14px;margin:0 0 12px">${prenom ? `La couverture est au prénom de ${esc(prenom)}.` : "Choisissez d'abord votre nom dans « Sur ce téléphone, je suis » pour avoir la couverture à votre prénom."} Les images se téléchargent sur cet appareil.</p>
     <label>Pour créer le compte</label><div id="vCompte" style="margin-top:8px"><p class="gris">Préparation des images…</p></div>
     <div class="carte" style="box-shadow:none;background:var(--pierre);margin:4px 0 18px"><label>Le texte de présentation du compte</label>
       <p style="margin:6px 0 10px">${esc(bio)}</p><button class="btn clair petit-btn" data-copier="${esc(bio)}">Copier ce texte</button>
@@ -206,7 +206,7 @@ export async function vueVisuels(c, nom) {
   try {
     await document.fonts?.ready;
     const z1 = f.el.querySelector("#vCompte"); z1.innerHTML = "";
-    await bloc(z1, await vignette(prenom), `nora-editions-vignette${pour}.png`, "La vignette", "Votre photo de profil, sur Instagram comme sur Facebook.");
+    await bloc(z1, await vignette(), "nora-editions-vignette.png", "La vignette", "Votre photo de profil, sur Instagram comme sur Facebook.");
     await bloc(z1, await couverture(prenom), `nora-editions-couverture-facebook${pour}.png`, "La couverture Facebook", "L'image du haut de votre page.");
     const z2 = f.el.querySelector("#vPubli"); z2.innerHTML = "";
     for (const p of PUBLICATIONS) await bloc(z2, await publication(p), `nora-editions-publication-${p.cle}.png`, p.titre, `${p.prix}, ${p.puis}`, `${p.legende}\n\n${SITE}`);
