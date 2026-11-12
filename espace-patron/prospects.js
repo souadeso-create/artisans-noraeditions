@@ -22,7 +22,10 @@ const CONSTATS = [["pas_de_site", "Pas de site internet", "nous n'avons pas trou
   ["peu_trafic", "Site peu visité", "d'après les estimations publiques, votre site reçoit encore peu de visites"],
   ["pas_reseaux", "Pas de page sur les réseaux sociaux", "nous n'avons pas trouvé de page de votre entreprise sur les réseaux sociaux"],
   ["reseaux_endormis", "Réseaux sociaux peu actifs", "vos pages sur les réseaux sociaux n'ont pas été mises à jour depuis un moment"],
-  ["reseaux_seuls", "Présent seulement sur les réseaux sociaux", "votre entreprise est sur les réseaux sociaux, mais sans site internet qui lui appartienne"]];
+  ["reseaux_seuls", "Présent seulement sur les réseaux sociaux", "votre entreprise est sur les réseaux sociaux, mais sans site internet qui lui appartienne"],
+  ["pas_rdv", "Pas de prise de rendez-vous en ligne", "vos clients ne peuvent pas prendre rendez-vous en ligne"],
+  ["pas_paiement", "Pas d'acompte ni de paiement en ligne", "vos clients ne peuvent pas régler un acompte ni payer en ligne"],
+  ["plateforme", "Présent sur une plateforme de mise en relation", "vous passez par une plateforme de mise en relation pour trouver vos clients"]];
 // ce qu'il a déjà (coché sur la fiche, rangé avec les constats) : les messages ne proposent que ce qui lui manque
 const DEJA = [["a_site", "Un site internet", "un site internet"], ["a_identite", "Une identité visuelle (logo, couleurs, typographies)", "une identité visuelle"],
   ["a_fiche", "Une fiche Google à jour", "une fiche Google"], ["a_outil", "Un outil pour ses devis et ses factures", "un outil pour vos devis et vos factures"]];
@@ -50,11 +53,17 @@ function manque(p) {
 }
 const enListe = l => l.length < 2 ? l.join("") : l.slice(0, -1).join(", ") + " et " + l[l.length - 1];
 // la phrase du premier e-mail : rien de coché, celle de toujours ; sinon ce qu'il a déjà, puis ce qui lui manque (un site à refaire ne se dit pas « déjà »)
-const proposTxt = p => !aDeja(p).length ? "Nous pouvons vous préparer un site sur mesure, bien placé sur Google, avec un tableau de bord pour recevoir vos demandes et faire vos devis depuis votre téléphone."
+const proposBase = p => !aDeja(p).length ? "Nous pouvons vous préparer un site sur mesure, bien placé sur Google, avec un tableau de bord pour recevoir vos demandes et faire vos devis depuis votre téléphone."
   : (d => `${d.length ? `Vous avez déjà ${enListe(d)}. Pour compléter, nous` : "Nous"} pouvons ${enListe(manque(p).map(k => PROPOS[k][0]))}.`)(aDeja(p).filter(d => !(d[0] === "a_site" && manque(p)[0] === "refonte")).map(d => d[2]));
+// le rendez-vous et le paiement en ligne, quand on a coché qu'il ne les a pas
+const proposTxt = p => proposBase(p) + (coche(p, "pas_rdv") && coche(p, "pas_paiement") ? " Vos clients pourront aussi prendre rendez-vous sur votre site, et régler un acompte ou la totalité en ligne."
+  : coche(p, "pas_rdv") ? " Vos clients pourront aussi prendre rendez-vous sur votre site." : coche(p, "pas_paiement") ? " Vos clients pourront aussi régler un acompte ou la totalité en ligne." : "")
+  + (coche(p, "plateforme") ? " Avec votre propre site, vos clients vous trouvent et vous écrivent directement." : "");
 // ce qu'on vise en premier chez lui, et son besoin quand la fiche ne le dit pas
 const vise = p => aDeja(p).length ? manque(p)[0] : "site";
-const besoinTxt = p => p.besoin || (aDeja(p).length ? enListe(manque(p).map(k => PROPOS[k][1])) : "un site internet qui vous fasse trouver par vos clients");
+// le rendez-vous et le paiement en ligne, quand ils lui manquent : ils s'ajoutent à son besoin
+const enLigne = p => [coche(p, "pas_rdv") && "la prise de rendez-vous en ligne", coche(p, "pas_paiement") && "le paiement en ligne, avec acompte"].filter(Boolean);
+const besoinTxt = p => p.besoin || enListe([...(aDeja(p).length ? manque(p).map(k => PROPOS[k][1]) : ["un site internet qui vous fasse trouver par vos clients"]), ...enLigne(p)]);
 
 // l'accroche propre au métier (les métiers prioritaires, puis une phrase qui vaut pour tous)
 const METIERS = [
@@ -100,7 +109,7 @@ const dateCourte = d => new Date(String(d).slice(0, 10) + "T12:00").toLocaleDate
 const prenom = p => String(p.nom || "").trim().split(" ")[0];
 const bonjour = p => p.nom ? `Bonjour ${prenom(p)},` : "Bonjour,";
 // la formule conseillée : celle de la fiche ; sinon le Pro, que le site recommande ; l'Essentiel seulement pour qui veut un simple site vitrine
-const offreConseillee = p => p.offre || (/assistant|\bia\b|intelligence/i.test(p.besoin || "") || (aDeja(p).length && manque(p)[0] === "assistant") ? "Pro + IA" : /vitrine|simple site|juste un site|seulement un site|petit site|petit budget/i.test(p.besoin || "") ? "Essentiel" : "Pro");
+const offreConseillee = p => p.offre || (/assistant|\bia\b|intelligence/i.test(p.besoin || "") || (aDeja(p).length && manque(p)[0] === "assistant") ? "Pro + IA" : /vitrine|simple site|juste un site|seulement un site|petit site|petit budget/i.test(p.besoin || "") && !coche(p, "pas_rdv") && !coche(p, "pas_paiement") ? "Essentiel" : "Pro");
 const dernierContact = p => (p.historique || []).filter(h => h.t === "envoi").map(h => h.d).sort().pop() || null;
 const nbRelances = p => (p.historique || []).filter(h => h.t === "envoi" && /relance/i.test(h.texte || "")).length;
 
@@ -132,7 +141,9 @@ const commercial = p => String((p && p.prospecteur) || moi() || "").trim().split
 function signature(P, p) { return `${commercial(p) ? commercial(p) + String.fromCharCode(10) + "Service commercial · " : ""}${P.entreprise || "Nora Éditions"}\n${P.site || "creation-site-internet.noraeditions.fr"}\n${P.email || "contact@noraeditions.com"}`; }
 const REFUS = "Si vous ne souhaitez plus recevoir de message de notre part, dites-le-nous simplement.";
 function constatsTxt(p) {
-  const l = CONSTATS.filter(c => (p.constats || []).includes(c[0])).map(c => c[2]);
+  // le rendez-vous et le paiement en ligne, cochés ensemble, se disent en une seule phrase
+  const deux = coche(p, "pas_rdv") && coche(p, "pas_paiement");
+  const l = CONSTATS.filter(c => (p.constats || []).includes(c[0]) && !(deux && c[0] === "pas_paiement")).map(c => deux && c[0] === "pas_rdv" ? "vos clients ne peuvent ni prendre rendez-vous ni régler un acompte en ligne" : c[2]);
   return l.length ? `En regardant votre présence en ligne : ${l.join(" ; ")}. ` : "";
 }
 // la page des démonstrations, et la vidéo qui va avec la formule conseillée
@@ -386,8 +397,10 @@ export async function vueProspect(c, id) {
         ${[["E-mail", p.email], ["Téléphone", p.tel], ["Site internet", p.site], ["Instagram", p.instagram], ["Facebook", p.facebook], ["Besoin", p.besoin], ["Offre recommandée", p.offre], ["Dernière relance", p.derniere_relance ? dateCourte(p.derniere_relance) : ""]].filter(x => x[1]).map(([k, v]) => `<div class="ligne-bilan"><span class="gris">${k}</span><span style="text-align:right;white-space:pre-line">${esc(v)}</span></div>`).join("") || '<p class="gris">Aucune coordonnée pour l\'instant.</p>'}</div>
       <div class="carte" style="margin-bottom:12px"><label>Sa présence en ligne (site, fiche Google, réseaux sociaux), d'après ce que vous avez vu</label>
         <div class="actions-doc" style="margin:8px 0 4px"><a class="btn discret petit-btn" target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent([p.entreprise || p.nom, p.ville].filter(Boolean).join(" "))}">Rechercher ce professionnel</a>
+          <a class="btn discret petit-btn" target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent([p.entreprise || p.nom, p.ville, "facebook instagram"].filter(Boolean).join(" "))}">Rechercher ses réseaux</a>
+          <a class="btn discret petit-btn" target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent([p.entreprise || p.nom, p.ville, "email contact", domaine(p) ? "OR site:" + domaine(p) : ""].filter(Boolean).join(" "))}">Rechercher son e-mail</a>
           <button class="btn discret petit-btn" id="visib">Trafic et visibilité</button></div>
-        <p class="gris" style="font-size:13px;margin:0 0 4px">Cochez ensuite ce que vous avez vu.</p>
+        <p class="gris" style="font-size:13px;margin:0 0 4px">Notez ensuite sur sa fiche (bouton Modifier) son e-mail et ses pages, puis cochez ce que vous avez vu.</p>
         ${CONSTATS.map(([k, nom]) => `<label style="display:flex;gap:10px;align-items:center;margin:8px 0 0;text-transform:none;letter-spacing:0;font-weight:400;font-size:15px;color:inherit"><input type="checkbox" data-constat="${k}" ${p.constats.includes(k) ? "checked" : ""} style="width:20px;height:20px">${nom}</label>`).join("")}
         <label style="margin-top:16px">Ce qu'il a déjà</label>
         ${DEJA.map(([k, nom]) => `<label style="display:flex;gap:10px;align-items:center;margin:8px 0 0;text-transform:none;letter-spacing:0;font-weight:400;font-size:15px;color:inherit"><input type="checkbox" data-constat="${k}" ${p.constats.includes(k) ? "checked" : ""} style="width:20px;height:20px">${nom}</label>`).join("")}
@@ -447,7 +460,7 @@ export async function vueProspect(c, id) {
     f.el.querySelector("#creerPdf").onclick = async e => {
       const choix = [...f.el.querySelectorAll("[data-formule]:checked")].map(x => x.dataset.formule); if (!choix.length) return toast("Cochez au moins une formule.");
       e.currentTarget.disabled = true;
-      try { const m = await import(`./proposition.js?v=${c.V || ""}`), r = await m.telechargerProposition(p.besoin || !aDeja(p).length ? p : { ...p, besoin: besoinTxt(p).replace(/^./, x => x.toUpperCase()) + "." }, P, choix, constatsTxt(p), lienQuestionnaire(p, choix.length === 1 ? choix[0] : ""));
+      try { const m = await import(`./proposition.js?v=${c.V || ""}`), r = await m.telechargerProposition(p.besoin || (!aDeja(p).length && !enLigne(p).length) ? p : { ...p, besoin: besoinTxt(p).replace(/^./, x => x.toUpperCase()) + "." }, P, choix, constatsTxt(p), lienQuestionnaire(p, choix.length === 1 ? choix[0] : ""));
         f.fermer(); if (r !== "annulee") toast(r === "partagee" ? "Proposition partagée ✓" : "Proposition téléchargée ✓"); } catch (er) { erreur(er); f.fermer(); }
     };
   };
