@@ -486,7 +486,8 @@
         <div class="cases"><label class="case"><input type="radio" name="Extension" value=".fr" checked><span>.fr <small>compris</small></span></label><label class="case"><input type="radio" name="Extension" value=".com"><span>.com <small>+0,60 € par mois</small></span></label></div>
         <p class="dom-res" id="domRes" role="status"></p>
       </div>
-      <div class="champ">La formule qui vous intéresse<div class="cases">
+      <p class="aide" id="formuleTM" hidden><b>Time Manager</b> : la formule Pro, 490 €, puis 29 € par mois.</p>
+      <div class="champ" id="choixFormule">La formule qui vous intéresse<div class="cases">
         <label class="case"><input type="radio" name="Formule" value="Essentiel (190 € puis 25 € par an)"><span>Essentiel <small>190 €, puis 25 €/an</small></span></label>
         <label class="case"><input type="radio" name="Formule" value="Pro (490 € puis 29 € par mois)"><span>Pro <small>490 €, puis 29 €/mois</small></span></label>
         <label class="case"><input type="radio" name="Formule" value="Pro + IA (990 € puis 49 € par mois)"><span>Pro + IA <small>990 €, puis 49 €/mois</small></span></label>
@@ -524,6 +525,16 @@
   domNom.addEventListener("change", verifDomaine);
   domNom.addEventListener("input", () => { dispo = ""; });
   if (nomU) { domNom.value = NoraDomaine.nettoyer(nomU); const x = extensions.find(e => e.value === extU); if (x) x.checked = true; verifDomaine(); }
+  // venu du site Time Manager (?offre=time-manager) : une seule formule, la Pro, et les mots de la beauté
+  const TM = u.get("offre") === "time-manager";
+  if (TM) {
+    document.querySelector("main .label").textContent = "Time Manager";
+    document.querySelector("main h1").innerHTML = "Parlons de<br><i>votre salon.</i>";
+    document.getElementById("choixFormule").style.display = "none"; document.getElementById("formuleTM").hidden = false;
+    form.querySelector('[name="Formule"][value^="Pro ("]').checked = true;
+    form["Métier"].placeholder = "Tapez les premières lettres : coiffeuse, esthéticienne, barbier…";
+    form["Message"].placeholder = "ex. j'ouvre mon salon, je veux que mes clientes réservent en ligne, je veux limiter les rendez-vous manqués…";
+  }
   const SB = window.NORA_SB && NORA_SB.url && window.supabase ? supabase.createClient(NORA_SB.url, NORA_SB.cle, { auth: { persistSession: false } }) : null;
   form.addEventListener("submit", async e => {
     e.preventDefault();
@@ -537,6 +548,7 @@
       ajoute("Ville", form["Ville"].value.trim());
       const ext = (extensions.find(e => e.checked) || extensions[0]).value;
       if (NoraDomaine.nettoyer(domNom.value)) { ajoute("Nom de domaine", NoraDomaine.nettoyer(domNom.value) + ext); ajoute("Extension", ext); ajoute("Nom de domaine : disponibilité", dispo); }
+      if (TM) ajoute("Offre", "Time Manager");
       ajoute("Formule", form.querySelector('[name="Formule"]:checked')?.value || "");
       ajoute("Remarques", form["Message"].value.trim());
       const piege = form._honey.value; let enBase = false;
@@ -546,10 +558,10 @@
       }
       fd.append("Nom", nom); fd.append("E-mail", mail); fd.append("Téléphone", tel); fd.append("Métier", metier);
       if (piege) fd.append("_honey", piege);
-      fd.append("_subject", `Demande — ${nom}`); fd.append("_template", "table"); fd.append("_captcha", "false");
+      fd.append("_subject", `Demande${TM ? " Time Manager" : ""} — ${nom}`); fd.append("_template", "table"); fd.append("_captcha", "false");
       const r = await fetch("https://formsubmit.co/ajax/contact@noraeditions.com", { method: "POST", headers: { Accept: "application/json" }, body: fd }).catch(() => null);
       if (!enBase && !(r && r.ok)) throw new Error("envoi");
-      form.reset(); domRes.textContent = ""; domRes.className = "dom-res"; dispo = "";
+      form.reset(); if (TM) form.querySelector('[name="Formule"][value^="Pro ("]').checked = true; domRes.textContent = ""; domRes.className = "dom-res"; dispo = "";
       if (window.noraCompter) noraCompter("demande envoyée");
       dire("ok", "Merci, votre demande est bien arrivée. Nous vous envoyons très vite le questionnaire, pour préparer votre site.");
     } catch (err) { dire("erreur", "L'envoi n'a pas abouti. Réessayez, ou écrivez-nous à contact@noraeditions.com."); }
