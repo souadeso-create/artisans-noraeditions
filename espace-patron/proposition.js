@@ -11,6 +11,10 @@ const FORMULES = {
   "Pro + IA": { prix: "990 €", puis: "puis 49 € par mois", points: ["Tout ce que comprend la formule Pro", "Un assistant sur votre site, qui répond aux visiteurs et prend leurs demandes",
     "Vos devis préparés à partir de la demande du client", "Les réponses à vos avis Google, préparées pour vous", "Deux articles par mois, écrits pour Google"] },
 };
+// Time Manager : ce que le site timemanager.noraeditions.fr annonce, tel quel ; c'est la formule Pro
+const TIME_MANAGER = { adresse: "timemanager.noraeditions.fr", points: ["Vos clientes réservent sur votre propre site", "Les créneaux libres, selon vos horaires et la durée de chaque prestation",
+  "Le paiement en ligne : un acompte ou la totalité, comme vous le décidez", "Le rappel à la cliente avant le rendez-vous", "Vos règles d'annulation et de report",
+  "Fiches clientes, carte de fidélité, forfaits et cartes cadeaux", "Design sur mesure, entièrement à votre image", "Référencement local : Google (SEO) et fiche Google", "Sans plateforme, et sans commission"] };
 const propre = s => String(s ?? "").replace(/[  ]/g, " ").replace(/[’‘]/g, "'").replace(/[“”]/g, '"').replace(/…/g, "...").replace(/[–—]/g, "-");
 let logoCache = null;
 async function logo() {
@@ -21,9 +25,11 @@ async function logo() {
 
 // offre : une formule, ou la liste des formules à présenter (dans l'ordre des prix)
 // lien : le questionnaire prérempli du prospect (facultatif)
-export async function creerProposition(p, P, offre, constats = "", lien = "") {
+// tm : la proposition Time Manager (la formule Pro seule, présentée avec les mots du salon)
+export async function creerProposition(p, P, offre, constats = "", lien = "", tm = false) {
   const { jsPDF } = window.jspdf, pdf = new jsPDF({ unit: "mm", format: "a4" }), W = 210, M = 18, L = W - 2 * M;
   const offres = Object.keys(FORMULES).filter(k => [].concat(offre).includes(k)); if (!offres.length) offres.push("Essentiel");
+  if (tm) offres.splice(0, offres.length, "Pro");
   pdf.setLineHeightFactor(1.3);
   let y = 0;
   const place = h => { if (y + h > 272) { pdf.addPage(); y = 22; } };
@@ -36,9 +42,9 @@ export async function creerProposition(p, P, offre, constats = "", lien = "") {
 
   // ── l'en-tête : le logo, « Proposition », la date, et pour qui
   try { pdf.addImage(await logo(), "PNG", M, 16, 56, 12.76, "logo", "FAST"); } catch (e) { /* sans logo */ }
-  pdf.setFont("helvetica", "bold").setFontSize(20).setTextColor(...NUIT).text("PROPOSITION", W - M, 22, { align: "right" });
+  pdf.setFont("helvetica", "bold").setFontSize(20).setTextColor(...NUIT).text(tm ? "TIME MANAGER" : "PROPOSITION", W - M, 22, { align: "right" });
   const jour = new Date(), fin = new Date(); fin.setDate(fin.getDate() + (Number(P.validite_jours) || 30));
-  pdf.setFont("helvetica", "normal").setFontSize(9.5).setTextColor(...GRIS).text(`Le ${jour.toLocaleDateString("fr-FR")} · valable jusqu'au ${fin.toLocaleDateString("fr-FR")}`, W - M, 28, { align: "right" });
+  pdf.setFont("helvetica", "normal").setFontSize(9.5).setTextColor(...GRIS).text(`${tm ? "Proposition du" : "Le"} ${jour.toLocaleDateString("fr-FR")} · valable jusqu'au ${fin.toLocaleDateString("fr-FR")}`, W - M, 28, { align: "right" });
   y = 40;
   const pour = [p.entreprise, p.nom, [p.metier, p.ville].filter(Boolean).join(" · ")].filter(Boolean).map(propre);
   pdf.setFillColor(...PIERRE).roundedRect(M, y, L, 9 + pour.length * 5.2, 2, 2, "F");
@@ -48,8 +54,9 @@ export async function creerProposition(p, P, offre, constats = "", lien = "") {
 
   titre("Qui sommes-nous");
   texte(`${P.entreprise || "Nora Éditions"} crée des sites internet sur mesure pour les artisans, les indépendants et les petites entreprises, partout en France : conception, design, référencement sur Google, identité visuelle et tableau de bord. Tout se fait par écrit, à votre rythme.`);
+  if (tm) texte("Time Manager est notre offre pour les salons et les instituts : vos clientes prennent rendez-vous sur votre propre site, sans plateforme et sans commission.");
   titre("Votre besoin");
-  texte(p.besoin || "Un site internet qui vous fasse trouver par vos clients, et qui leur donne envie de vous écrire.");
+  texte(p.besoin || tm && "La prise de rendez-vous en ligne sur votre propre site, sans plateforme et sans commission." || "Un site internet qui vous fasse trouver par vos clients, et qui leur donne envie de vous écrire.");
   if (constats) texte(constats.trim());
   titre("Ce que nous vous proposons");
   if (offres.length > 1) texte(`${offres.length === 2 ? "Deux" : "Trois"} formules, au choix. Chacune reprend la précédente et y ajoute des services.`);
@@ -67,16 +74,18 @@ export async function creerProposition(p, P, offre, constats = "", lien = "") {
       f.points.forEach(puce); y += 2;
       return;
     }
-    texte(`La formule ${nom}.`, { gras: true });
-    f.points.forEach(puce);
+    texte(tm ? "Time Manager : la prise de rendez-vous en ligne, dans la formule Pro." : `La formule ${nom}.`, { gras: true });
+    (tm ? TIME_MANAGER.points : f.points).forEach(puce);
     // ── son prix, dans un encadré
     place(28); y += 2;
     pdf.setFillColor(...NUIT).roundedRect(M, y, L, 22, 3, 3, "F");
-    pdf.setFont("helvetica", "normal").setFontSize(9).setTextColor(255, 255, 255).text(`FORMULE ${propre(nom).toUpperCase()}`, M + 7, y + 7, { charSpace: .5 });
+    pdf.setFont("helvetica", "normal").setFontSize(9).setTextColor(255, 255, 255).text(`${tm ? "TIME MANAGER · " : ""}FORMULE ${propre(nom).toUpperCase()}`, M + 7, y + 7, { charSpace: .5 });
     pdf.setFont("helvetica", "bold").setFontSize(21).setTextColor(...JAUNE).text(propre(f.prix), M + 7, y + 17);
     const largeurPrix = pdf.getTextWidth(propre(f.prix));
     pdf.setFont("helvetica", "normal").setFontSize(11).setTextColor(255, 255, 255).text(propre(f.puis), M + 7 + largeurPrix + 4, y + 17);
     y += 22 + 6;
+    if (tm) { const ta = "Tout est présenté sur " + TIME_MANAGER.adresse; place(8);
+      pdf.setFont("helvetica", "bold").setFontSize(10.5).setTextColor(...VIOLET); pdf.textWithLink(propre(ta), M, y, { url: "https://" + TIME_MANAGER.adresse + "/" }); y += 7; }
   });
   texte("En option : le nom de domaine en .com (0,60 € de plus par mois), une adresse e-mail professionnelle (1,50 € de plus par mois), une boutique en ligne (sur devis).", { taille: 9.5, couleur: GRIS });
 
@@ -104,9 +113,9 @@ export async function creerProposition(p, P, offre, constats = "", lien = "") {
 }
 
 // Télécharge la proposition ; sur téléphone, propose de la partager (e-mail, WhatsApp…)
-export async function telechargerProposition(p, P, offre, constats, lien) {
-  const pdf = await creerProposition(p, P, offre, constats, lien);
-  const nom = "Proposition_" + String(p.entreprise || p.nom || "prospect").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^\w-]+/g, "_") + ".pdf";
+export async function telechargerProposition(p, P, offre, constats, lien, tm = false) {
+  const pdf = await creerProposition(p, P, offre, constats, lien, tm);
+  const nom = "Proposition_" + (tm ? "Time_Manager_" : "") + String(p.entreprise || p.nom || "prospect").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^\w-]+/g, "_") + ".pdf";
   const fichier = new File([pdf.output("blob")], nom, { type: "application/pdf" });
   if (navigator.canShare && navigator.canShare({ files: [fichier] })) { try { await navigator.share({ files: [fichier], title: nom }); return "partagee"; } catch (e) { if (e.name === "AbortError") return "annulee"; } }
   pdf.save(nom); return "telechargee";

@@ -473,17 +473,21 @@ export async function vueProspect(c, id) {
   if (el("propo")) el("propo").onclick = () => {
     // les formules cochées d'avance : celle de la fiche ; Essentiel seule pour un site vitrine ; sinon Essentiel et Pro
     const o = offreConseillee(p), davance = p.offre ? [p.offre] : o === "Essentiel" ? ["Essentiel"] : o === "Pro + IA" ? ["Pro", "Pro + IA"] : ["Essentiel", "Pro"];
-    const f = c.fenetre("Proposition en PDF", `<label>Les formules à présenter</label>
-      ${Object.keys(PRIX).map(k => `<label style="display:flex;gap:10px;align-items:flex-start;margin:10px 0 0;text-transform:none;letter-spacing:0;font-weight:400;font-size:15px;color:inherit"><input type="checkbox" data-formule="${k}" ${davance.includes(k) ? "checked" : ""} style="width:20px;height:20px;flex:none;margin-top:2px"><span><b>${k}</b><small class="gris" style="display:block">${esc(PRIX[k])}</small></span></label>`).join("")}
+    const caseTM = `<label style="display:flex;gap:10px;align-items:flex-start;margin:0 0 14px;text-transform:none;letter-spacing:0;font-weight:400;font-size:15px;color:inherit"><input type="checkbox" id="propoTM" ${beaute(p) ? "checked" : ""} style="width:20px;height:20px;flex:none;margin-top:2px"><span><b>Proposition Time Manager</b><small class="gris" style="display:block">La prise de rendez-vous en ligne pour un salon ou un institut : la formule Pro seule, ${esc(PRIX.Pro)}</small></span></label>`;
+    const f = c.fenetre("Proposition en PDF", `${caseTM}<div id="choixFormules"><label>Les formules à présenter</label>
+      ${Object.keys(PRIX).map(k => `<label style="display:flex;gap:10px;align-items:flex-start;margin:10px 0 0;text-transform:none;letter-spacing:0;font-weight:400;font-size:15px;color:inherit"><input type="checkbox" data-formule="${k}" ${davance.includes(k) ? "checked" : ""} style="width:20px;height:20px;flex:none;margin-top:2px"><span><b>${k}</b><small class="gris" style="display:block">${esc(PRIX[k])}</small></span></label>`).join("")}</div>
       <button class="btn" id="creerPdf" style="width:100%;margin-top:16px">Créer le PDF</button>
       <button class="btn clair" id="copQ" style="width:100%;margin-top:8px">Copier le lien du questionnaire prérempli</button>
       <p class="gris" style="font-size:13px;margin:8px 0 0">Le questionnaire est rempli d'avance avec son entreprise, son métier, sa ville et sa formule. Le lien est aussi dans le PDF.</p>`);
-    const formuleSeule = () => { const l = [...f.el.querySelectorAll("[data-formule]:checked")].map(x => x.dataset.formule); return l.length === 1 ? l[0] : ""; };
+    // Time Manager coché : les formules s'effacent, c'est la Pro
+    const tm = () => f.el.querySelector("#propoTM").checked, voir = () => { f.el.querySelector("#choixFormules").style.display = tm() ? "none" : ""; };
+    f.el.querySelector("#propoTM").onchange = voir; voir();
+    const formuleSeule = () => { if (tm()) return "Pro"; const l = [...f.el.querySelectorAll("[data-formule]:checked")].map(x => x.dataset.formule); return l.length === 1 ? l[0] : ""; };
     f.el.querySelector("#copQ").onclick = () => navigator.clipboard.writeText(lienQuestionnaire(p, formuleSeule())).then(() => toast("Lien copié ✓"), () => toast("Le lien n'a pas pu être copié."));
     f.el.querySelector("#creerPdf").onclick = async e => {
-      const choix = [...f.el.querySelectorAll("[data-formule]:checked")].map(x => x.dataset.formule); if (!choix.length) return toast("Cochez au moins une formule.");
+      const choix = tm() ? ["Pro"] : [...f.el.querySelectorAll("[data-formule]:checked")].map(x => x.dataset.formule); if (!choix.length) return toast("Cochez au moins une formule.");
       e.currentTarget.disabled = true;
-      try { const m = await import(`./proposition.js?v=${c.V || ""}`), r = await m.telechargerProposition(p.besoin || (!aDeja(p).length && !enLigne(p).length) ? p : { ...p, besoin: besoinTxt(p).replace(/^./, x => x.toUpperCase()) + "." }, P, choix, constatsTxt(p), lienQuestionnaire(p, choix.length === 1 ? choix[0] : ""));
+      try { const m = await import(`./proposition.js?v=${c.V || ""}`), r = await m.telechargerProposition(p.besoin || (!aDeja(p).length && !enLigne(p).length) ? p : { ...p, besoin: besoinTxt(p).replace(/^./, x => x.toUpperCase()) + "." }, P, choix, constatsTxt(p), lienQuestionnaire(p, choix.length === 1 ? choix[0] : ""), tm());
         f.fermer(); if (r !== "annulee") toast(r === "partagee" ? "Proposition partagée ✓" : "Proposition téléchargée ✓"); } catch (er) { erreur(er); f.fermer(); }
     };
   };
