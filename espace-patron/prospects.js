@@ -26,6 +26,13 @@ const CONSTATS = [["pas_de_site", "Pas de site internet", "nous n'avons pas trou
   ["pas_rdv", "Pas de prise de rendez-vous en ligne", "vos clients ne peuvent pas prendre rendez-vous en ligne"],
   ["pas_paiement", "Pas d'acompte ni de paiement en ligne", "vos clients ne peuvent pas régler un acompte ni payer en ligne"],
   ["plateforme", "Présent sur une plateforme de mise en relation", "vous passez par une plateforme de mise en relation pour trouver vos clients"]];
+// les cases de la fiche, rangées par sujet
+const GROUPES = [["Son site", ["pas_de_site", "a_site", "site_ancien", "pas_mobile", "peu_trafic"]], ["Sur Google", ["pas_google", "pas_fiche", "a_fiche"]],
+  ["Ses réseaux sociaux", ["pas_reseaux", "reseaux_endormis", "reseaux_seuls"]], ["Ses clients en ligne", ["pas_devis", "pas_rdv", "pas_paiement", "plateforme"]], ["Ce qu'il a d'autre", ["a_identite", "a_outil"]]];
+// deux cases qui se contredisent : cocher l'une décoche les autres
+const CONTRAIRES = { pas_de_site: ["a_site", "site_ancien", "pas_mobile", "peu_trafic"], reseaux_seuls: ["a_site", "site_ancien", "pas_mobile", "peu_trafic", "pas_reseaux"],
+  a_site: ["pas_de_site", "reseaux_seuls"], site_ancien: ["pas_de_site", "reseaux_seuls"], pas_mobile: ["pas_de_site", "reseaux_seuls"], peu_trafic: ["pas_de_site", "reseaux_seuls"],
+  pas_fiche: ["a_fiche"], a_fiche: ["pas_fiche"], pas_reseaux: ["reseaux_endormis", "reseaux_seuls"], reseaux_endormis: ["pas_reseaux"] };
 // ce qu'il a déjà (coché sur la fiche, rangé avec les constats) : les messages ne proposent que ce qui lui manque
 const DEJA = [["a_site", "Un site internet", "un site internet"], ["a_identite", "Une identité visuelle (logo, couleurs, typographies)", "une identité visuelle"],
   ["a_fiche", "Une fiche Google à jour", "une fiche Google"], ["a_outil", "Un outil pour ses devis et ses factures", "un outil pour vos devis et vos factures"]];
@@ -59,7 +66,8 @@ const enListe = l => l.length < 2 ? l.join("") : l.slice(0, -1).join(", ") + " e
 const proposBase = p => !aDeja(p).length ? "Nous pouvons vous préparer un site sur mesure, bien placé sur Google, avec un tableau de bord pour recevoir vos demandes et faire vos devis depuis votre téléphone."
   : (d => `${d.length ? `Vous avez déjà ${enListe(d)}. Pour compléter, nous` : "Nous"} pouvons ${enListe(manque(p).map(k => PROPOS[k][0]))}.`)(aDeja(p).filter(d => !(d[0] === "a_site" && manque(p)[0] === "refonte")).map(d => d[2]));
 // le rendez-vous et le paiement en ligne, quand on a coché qu'il ne les a pas
-const proposTxt = p => proposBase(p) + (coche(p, "pas_rdv") && coche(p, "pas_paiement") ? " Vos clients pourront aussi prendre rendez-vous sur votre site, et régler un acompte ou la totalité en ligne."
+const proposTxt = p => feminin(p, proposSansAccord(p));
+const proposSansAccord = p => proposBase(p) + (coche(p, "pas_rdv") && coche(p, "pas_paiement") ? " Vos clients pourront aussi prendre rendez-vous sur votre site, et régler un acompte ou la totalité en ligne."
   : coche(p, "pas_rdv") ? " Vos clients pourront aussi prendre rendez-vous sur votre site." : coche(p, "pas_paiement") ? " Vos clients pourront aussi régler un acompte ou la totalité en ligne." : "")
   + (coche(p, "plateforme") ? " Avec votre propre site, vos clients vous trouvent et vous écrivent directement." : "");
 // ce qu'on vise en premier chez lui, et son besoin quand la fiche ne le dit pas
@@ -143,12 +151,21 @@ async function courrierDispo(db) {
 const commercial = p => String((p && p.prospecteur) || moi() || "").trim().split(" ")[0];
 function signature(P, p) { return `${commercial(p) ? commercial(p) + String.fromCharCode(10) + "Service commercial · " : ""}${P.entreprise || "Nora Éditions"}\n${P.site || "creation-site-internet.noraeditions.fr"}\n${P.email || "contact@noraeditions.com"}`; }
 const REFUS = "Si vous ne souhaitez plus recevoir de message de notre part, dites-le-nous simplement.";
-function constatsTxt(p) {
-  // le rendez-vous et le paiement en ligne, cochés ensemble, se disent en une seule phrase
-  const deux = coche(p, "pas_rdv") && coche(p, "pas_paiement");
-  const l = CONSTATS.filter(c => (p.constats || []).includes(c[0]) && !(deux && c[0] === "pas_paiement")).map(c => deux && c[0] === "pas_rdv" ? "vos clients ne peuvent ni prendre rendez-vous ni régler un acompte en ligne" : c[2]);
-  return l.length ? `En regardant votre présence en ligne : ${l.join(" ; ")}. ` : "";
+// les constats qui comptent le plus d'abord ; un message n'en cite que trois, et jamais deux qui disent la même chose
+const ORDRE_CONSTATS = ["reseaux_seuls", "pas_de_site", "plateforme", "pas_google", "pas_fiche", "pas_mobile", "site_ancien", "pas_rdv", "pas_paiement", "pas_devis", "peu_trafic", "pas_reseaux", "reseaux_endormis"];
+function constatsRetenus(p) {
+  const a = k => coche(p, k), sansSite = a("pas_de_site") || a("reseaux_seuls"), deux = a("pas_rdv") && a("pas_paiement");
+  const cles = ORDRE_CONSTATS.filter(k => a(k)
+    && !(a("reseaux_seuls") && ["pas_de_site", "pas_reseaux"].includes(k))                              // « seulement sur les réseaux » le dit déjà
+    && !(sansSite && ["site_ancien", "pas_mobile", "peu_trafic", "pas_devis"].includes(k))             // sans site, rien à dire de son site
+    && !(deux && k === "pas_paiement"));                                                               // rendez-vous et paiement : une seule phrase
+  return cles.slice(0, 3).map(k => deux && k === "pas_rdv" ? "vos clients ne peuvent ni prendre rendez-vous ni régler un acompte en ligne" : CONSTATS.find(c => c[0] === k)[2]);
 }
+// pour un métier de la beauté, on parle de « clientes »
+function feminin(p, t) { return beaute(p) ? t.replace(/\b(v|V)os clients\b/g, "$1os clientes") : t; }
+function constatsTxt(p) { const l = constatsRetenus(p); return l.length ? feminin(p, `En regardant votre présence en ligne : ${l.join(" ; ")}. `) : ""; }
+// dans une relance : le constat principal, rappelé en une phrase
+const rappelConstat = p => { const l = constatsRetenus(p); return l.length ? feminin(p, `\n\nPour mémoire, en regardant votre présence en ligne : ${l[0]}.`) : ""; };
 // la page des démonstrations, et la vidéo qui va avec la formule conseillée
 const DEMO = "https://creation-site-internet.noraeditions.fr/demonstrations/";
 const demoPour = (p, o) => /plomb|electric|électric|couvr|peint|maçon|macon|carrel|menuis|renov|rénov|charpent|façad|facad|plaqu/i.test(p.metier || "") ? DEMO + "#artisans" : o === "Essentiel" ? DEMO + "#site" : DEMO + "#tableau-de-bord";
@@ -171,7 +188,7 @@ export function messages(p, P) {
     ["demo", "Démonstration en vidéo", `Une démonstration en vidéo${ent}`,
       `${bonjour(p)}\n\nComme convenu, voici une courte vidéo qui montre ce que nous faisons :\n${demo}\n\nElle se lit sur téléphone, sans rien installer. Les autres démonstrations sont sur la même page.\n\nDites-nous ce que vous en pensez, et ce que vous aimeriez pour votre activité : nous vous préparons une proposition écrite.\n\n${sig}`],
     ["relance1", "Première relance", duSite ? `Votre site internet${ent}` : "Notre message de l'autre jour",
-      `${bonjour(p)}\n\nNous nous permettons de revenir vers vous au sujet de notre message de l'autre jour, sur ${v === "site" ? `la création d'un site internet${ent}` : PROPOS[v][3]}. Peut-être n'était-ce pas le bon moment.\n\nPour vous faire une idée sans y passer de temps, voici une courte vidéo :\n${demo}\n\n${REFUS}\n\n${sig}`],
+      `${bonjour(p)}\n\nNous nous permettons de revenir vers vous au sujet de notre message de l'autre jour, sur ${v === "site" ? `la création d'un site internet${ent}` : PROPOS[v][3]}. Peut-être n'était-ce pas le bon moment.${rappelConstat(p)}\n\nPour vous faire une idée sans y passer de temps, voici une courte vidéo :\n${demo}\n\n${REFUS}\n\n${sig}`],
     ["relance2", "Deuxième relance", duSite ? `Un exemple de site${ent}` : "Un exemple de notre travail",
       `${bonjour(p)}\n\nUn dernier mot avant de vous laisser tranquille : nous pouvons vous montrer un exemple de ${duSite ? "site" : "notre travail"} pour ${m}, sans engagement. Il n'y a rien à préparer de votre côté.\n\nUn simple « oui » en réponse suffit.\n\n${REFUS}\n\n${sig}`],
     ["relance3", "Dernière relance, courtoise", `Nous ne vous dérangeons plus`,
@@ -198,7 +215,7 @@ export function messages(p, P) {
     ["tm_wa", "Time Manager · Premier message court (WhatsApp, Instagram, Messenger)", "",
       `${bonjour(p)} ici ${de}Nora Éditions. Avec Time Manager, vos clientes prennent rendez-vous sur votre propre site, sans plateforme et sans commission.\n\nPour voir à quoi cela ressemble :\n${TM}\n\nSouhaitez-vous une proposition écrite ? Un simple « oui » suffit.\n\n${REFUS}\n\n${sig}`],
     ["tm_relance", "Time Manager · Relance par e-mail", `Vos rendez-vous en ligne${ent}`,
-      `${bonjour(p)}\n\nNous nous permettons de revenir vers vous au sujet de notre message de l'autre jour, sur la prise de rendez-vous en ligne${ent}. Peut-être n'était-ce pas le bon moment.\n\nTime Manager, c'est votre propre site de réservation. ${ceQueCaFait}\n\nTout est présenté ici, avec une courte vidéo :\n${TM}\n\n${REFUS}\n\n${sig}`],
+      `${bonjour(p)}\n\nNous nous permettons de revenir vers vous au sujet de notre message de l'autre jour, sur la prise de rendez-vous en ligne${ent}. Peut-être n'était-ce pas le bon moment.${rappelConstat(p)}\n\nTime Manager, c'est votre propre site de réservation. ${ceQueCaFait}\n\nTout est présenté ici, avec une courte vidéo :\n${TM}\n\n${REFUS}\n\n${sig}`],
     ["tm_relance_wa", "Time Manager · Relance courte (WhatsApp, Instagram, Messenger)", "",
       `${bonjour(p)} ici ${de}Nora Éditions. Nous revenons vers vous après notre message de l'autre jour, sur la prise de rendez-vous en ligne${ent}. Tout est présenté ici, avec une courte vidéo :\n${TM}\n\n${REFUS}\n\n${sig}`],
     ["tm_plateforme", "Time Manager · Réponse : elle est déjà sur une plateforme de réservation", "Vos rendez-vous en ligne",
@@ -424,9 +441,11 @@ export async function vueProspect(c, id) {
           <a class="btn discret petit-btn" target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent([quiChercher(p.entreprise, p.nom), p.ville, "email contact", domaine(p) ? "OR site:" + domaine(p) : ""].filter(Boolean).join(" "))}">Rechercher son e-mail</a>
           <button class="btn discret petit-btn" id="visib">Trafic et visibilité</button></div>
         <p class="gris" style="font-size:13px;margin:0 0 4px">Notez ensuite sur sa fiche (bouton Modifier) son e-mail et ses pages, puis cochez ce que vous avez vu.</p>
-        ${CONSTATS.map(([k, nom]) => `<label style="display:flex;gap:10px;align-items:center;margin:8px 0 0;text-transform:none;letter-spacing:0;font-weight:400;font-size:15px;color:inherit"><input type="checkbox" data-constat="${k}" ${p.constats.includes(k) ? "checked" : ""} style="width:20px;height:20px">${nom}</label>`).join("")}
-        <label style="margin-top:16px">Ce qu'il a déjà</label>
-        ${DEJA.map(([k, nom]) => `<label style="display:flex;gap:10px;align-items:center;margin:8px 0 0;text-transform:none;letter-spacing:0;font-weight:400;font-size:15px;color:inherit"><input type="checkbox" data-constat="${k}" ${p.constats.includes(k) ? "checked" : ""} style="width:20px;height:20px">${nom}</label>`).join("")}
+        ${GROUPES.map(([titre, cles]) => `<label style="margin-top:16px">${titre}</label>` + cles.map(k => { const nom = (CONSTATS.find(x => x[0] === k) || DEJA.find(x => x[0] === k))[1];
+          return `<label style="display:flex;gap:10px;align-items:center;margin:8px 0 0;text-transform:none;letter-spacing:0;font-weight:400;font-size:15px;color:inherit"><input type="checkbox" data-constat="${k}" ${p.constats.includes(k) ? "checked" : ""} style="width:20px;height:20px;flex:none">${nom}</label>`; }).join("")).join("")}
+        <div style="margin-top:16px;padding:12px;border-radius:12px;background:var(--pierre)"><label style="margin:0">Ce que le message dira</label>
+          <p style="font-size:14px;margin:6px 0 0">${esc((constatsTxt(p) + proposTxt(p)).trim())}</p>
+          ${(p.constats || []).filter(k => CONSTATS.some(x => x[0] === k)).length > constatsRetenus(p).length + (coche(p, "pas_rdv") && coche(p, "pas_paiement") ? 1 : 0) ? '<p class="gris" style="font-size:13px;margin:6px 0 0">Le message ne cite que les constats les plus importants, pour rester court.</p>' : ""}</div>
         <p class="gris" style="font-size:13px;margin:10px 0 0">Les messages lui proposeront : <b>${esc(enListe(manque(p).map(k => COURT[k])))}</b>.</p>
         <p class="gris" style="font-size:13px;margin:10px 0 0">Offre conseillée : <b>${esc(offreConseillee(p))}</b>${p.offre ? "" : " (d'après son besoin ; se règle dans la fiche)"}</p></div>
     </div><div>
@@ -461,7 +480,8 @@ export async function vueProspect(c, id) {
       <p class="gris" style="font-size:13px;margin:12px 0 0">Le trafic exact d'un site n'est connu que de son propriétaire : ce sont des estimations.</p>`);
     fv.el.addEventListener("click", e => { const l = e.target.closest("[data-copie]"); if (l) navigator.clipboard.writeText(l.dataset.copie).then(() => toast("Adresse du site copiée ✓"), () => {}); }); };
   vue.querySelectorAll("[data-etape]").forEach(b => b.onclick = () => maj({ etape: b.dataset.etape }, `Passé en « ${NOM_ETAPE[b.dataset.etape]} » ✓`));
-  vue.querySelectorAll("[data-constat]").forEach(b => b.onchange = () => maj({ constats: [...vue.querySelectorAll("[data-constat]:checked")].map(x => x.dataset.constat) }));
+  vue.querySelectorAll("[data-constat]").forEach(b => b.onchange = () => { const k = b.dataset.constat, exclues = b.checked ? CONTRAIRES[k] || [] : [];
+    maj({ constats: [...vue.querySelectorAll("[data-constat]:checked")].map(x => x.dataset.constat).filter(x => !exclues.includes(x)) }); });
   el("pAction").onchange = e => maj({ prochaine_action: e.target.value.trim() || null }, "Noté ✓");
   el("pDate").onchange = e => maj({ prochaine_date: e.target.value || null }, "Noté ✓");
   el("modif").onclick = () => formulaire(c, p, () => vueProspect(c, id));
