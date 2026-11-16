@@ -91,6 +91,53 @@ const ECRANS = {
     y = bulle("Une douche à l'italienne, à Lyon.", y, false);
     bulle("C'est noté. Vous recevrez une réponse par écrit.", y, true);
   },
+  // ── Time Manager : la réservation, la recherche, les notifications, la caisse du jour, la fidélité (écrans dessinés, données d'exemple)
+  async creneaux(x, l, h, f) {
+    const ROSE = "#b0306a"; x.fillStyle = "#fbf7f4"; x.fillRect(0, 0, l, h); x.textAlign = "left";
+    x.fillStyle = ROSE; x.font = `700 17px ${f}`; x.fillText("ÉTAPE 2", 22, 50); x.fillStyle = "#2a1b22"; x.font = `800 30px ${f}`; x.fillText("Votre créneau", 22, 88);
+    const lj = (l - 44 - 3 * 10) / 4; [["mar.", "12"], ["mer.", "13"], ["jeu.", "14"], ["ven.", "15"]].forEach(([j, n], i) => { const gx = 22 + i * (lj + 10), choisi = i === 2;
+      boite(x, choisi ? "#fdeef4" : "#fff", gx, 112, lj, 78, 14); x.textAlign = "center"; x.fillStyle = "#7a6470"; x.font = `600 17px ${f}`; x.fillText(j, gx + lj / 2, 140);
+      x.fillStyle = choisi ? ROSE : "#2a1b22"; x.font = `800 25px ${f}`; x.fillText(n, gx + lj / 2, 174); });
+    const lh = (l - 44 - 2 * 10) / 3; [["9 h", 0], ["10 h 30", 1], ["11 h 30", 0], ["14 h", 2], ["15 h 30", 1], ["17 h", 0]].forEach(([t, etat], i) => { const gx = 22 + (i % 3) * (lh + 10), gy = 214 + Math.floor(i / 3) * 72;
+      boite(x, etat === 2 ? ROSE : etat ? "#fff" : "#f1e9ea", gx, gy, lh, 60, 14); x.fillStyle = etat === 2 ? "#fff" : etat ? "#2a1b22" : "#cdbfc5"; x.font = `700 20px ${f}`; x.textAlign = "center"; x.fillText(t, gx + lh / 2, gy + 38); });
+    x.textAlign = "left"; boite(x, "#fff", 22, 376, l - 44, 92, 16); x.fillStyle = "#2a1b22"; x.font = `700 22px ${f}`; x.fillText("Soin du visage", 40, 414); x.fillStyle = "#7a6470"; x.font = `500 18px ${f}`; x.fillText("60 min · jeudi 14 à 14 h", 40, 444);
+    boite(x, ROSE, 22, 492, l - 44, 66, 33); x.fillStyle = "#fff"; x.font = `700 22px ${f}`; x.textAlign = "center"; x.fillText("Réserver", l / 2, 533); x.textAlign = "left";
+  },
+  async rechercheSalon(x, l, h, f) {
+    x.fillStyle = "#fff"; x.fillRect(0, 0, l, h);
+    boite(x, "#eef0f6", 18, 26, l - 36, 54, 27); x.fillStyle = ENCRE; x.font = `500 22px ${f}`; x.textAlign = "left"; x.fillText("institut de beauté", 40, 62);
+    x.strokeStyle = VIOLET; x.lineWidth = 4; rond(x, 14, 108, l - 28, 190, 18); x.stroke();
+    x.fillStyle = "#1a7f37"; x.font = `500 19px ${f}`; x.fillText("votre-salon.fr", 32, 144);
+    x.fillStyle = "#1a3fd4"; x.font = `700 27px ${f}`; lignes(x, "Votre salon · votre ville. Réservez en ligne", 32, 180, l - 64, 32);
+    boite(x, "#d9dcea", 32, 256, l - 100, 12, 6);
+    boite(x, VIOLET, 14, 318, 150, 40, 20); x.fillStyle = "#fff"; x.font = `700 19px ${f}`; x.fillText("Votre site", 38, 345);
+    for (let i = 0; i < 3; i++) { const y = 396 + i * 108; boite(x, "#d9dcea", 32, y, 150, 12, 6); boite(x, "#c3c8de", 32, y + 26, l - 90, 20, 8); boite(x, "#e3e6f1", 32, y + 60, l - 130, 12, 6); }
+  },
+  async rappels(x, l, h, f) {
+    x.fillStyle = PIERRE; x.fillRect(0, 0, l, h); x.fillStyle = NUIT; x.fillRect(0, 0, l, 84);
+    x.fillStyle = "#fff"; x.font = `800 26px ${f}`; x.textAlign = "left"; x.fillText("Tableau de bord", 22, 54);
+    [["Nouveau rendez-vous", "jeudi 14 h · soin du visage", VIOLET], ["Acompte reçu", "20 € · carte", "#19a974"], ["Rappel à la cliente", "prêt pour la veille", JAUNE], ["Règle d'annulation", "lue avant de réserver", "#ff7a59"]].forEach(([t, d, c], i) => {
+      const y = 106 + i * 112; boite(x, "#fff", 16, y, l - 32, 96, 18); boite(x, c, 32, y + 26, 44, 44, 22);
+      x.fillStyle = ENCRE; x.font = `700 23px ${f}`; x.fillText(t, 92, y + 44); x.fillStyle = GRIS; x.font = `500 19px ${f}`; x.fillText(d, 92, y + 72); });
+  },
+  async caisse(x, l, h, f) {
+    x.fillStyle = PIERRE; x.fillRect(0, 0, l, h); x.fillStyle = NUIT; x.fillRect(0, 0, l, 84);
+    x.fillStyle = "#fff"; x.font = `800 26px ${f}`; x.textAlign = "left"; x.fillText("La caisse du jour", 22, 54);
+    boite(x, VIOLET, 16, 106, l - 32, 150, 22); x.fillStyle = "#fff"; x.textAlign = "center"; x.font = `700 18px ${f}`; x.fillText("AUJOURD'HUI", l / 2, 150); x.font = `800 64px ${f}`; x.fillText("355 €", l / 2, 222);
+    [["Espèces", "3 encaissements", "110 €", "#fff", ENCRE], ["Carte", "5 encaissements", "245 €", "#fff", ENCRE], ["Ce mois-ci", "", "4 820 €", NUIT, "#fff"]].forEach(([t, d, m, fond, encre], i) => { const y = 278 + i * 108;
+      boite(x, fond, 16, y, l - 32, 92, 18); x.textAlign = "left"; x.fillStyle = encre; x.font = `700 23px ${f}`; x.fillText(t, 36, d ? y + 42 : y + 55);
+      if (d) { x.fillStyle = GRIS; x.font = `500 18px ${f}`; x.fillText(d, 36, y + 70); }
+      x.textAlign = "right"; x.fillStyle = fond === NUIT ? JAUNE : encre; x.font = `800 26px ${f}`; x.fillText(m, l - 36, y + 56); });
+    x.textAlign = "left";
+  },
+  async fidelite(x, l, h, f) {
+    x.fillStyle = PIERRE; x.fillRect(0, 0, l, h); x.fillStyle = NUIT; x.fillRect(0, 0, l, 84);
+    x.fillStyle = "#fff"; x.font = `800 26px ${f}`; x.textAlign = "left"; x.fillText("Fiche cliente", 22, 54);
+    boite(x, VIOLET, 16, 106, l - 32, 196, 22); x.fillStyle = "#fff"; x.font = `700 22px ${f}`; x.fillText("Carte de fidélité", 36, 148);
+    for (let i = 0; i < 8; i++) { const cx = 60 + (i % 4) * ((l - 120) / 3), cy = 196 + Math.floor(i / 4) * 62; x.beginPath(); x.arc(cx, cy, 22, 0, 7); x.fillStyle = i < 5 ? JAUNE : "rgba(255,255,255,.28)"; x.fill(); }
+    [["Forfait", "5 soins · il en reste 3"], ["Carte cadeau", "valeur 50 € · valable un an"], ["Ses préférences", "notées avant le rendez-vous"]].forEach(([t, d], i) => { const y = 324 + i * 108;
+      boite(x, "#fff", 16, y, l - 32, 92, 18); x.fillStyle = ENCRE; x.font = `700 23px ${f}`; x.fillText(t, 36, y + 42); x.fillStyle = GRIS; x.font = `500 18px ${f}`; x.fillText(d, 36, y + 70); });
+  },
 };
 async function telephone(x, gx, gy, l, h, ecran, f) {
   boite(x, "#07081f", gx, gy, l, h, 52);
@@ -125,6 +172,24 @@ export const PUBLICATIONS = [
     etapes: ["Vous répondez à un court questionnaire, quand vous avez un moment", "Vous signez votre devis en ligne", "Votre site est en ligne environ une semaine après vos textes et vos photos"], prix: "Tout se fait par écrit", puis: "à votre rythme",
     legende: "Pas de rendez-vous à caler entre deux chantiers. Pour créer votre site internet, vous répondez à un court questionnaire quand vous avez un moment, vous signez votre devis en ligne, et votre site est mis en ligne environ une semaine après réception de vos textes et de vos photos." },
 ];
+const SITE_TM = "timemanager.noraeditions.fr", METIER_TM = "Time Manager · Rendez-vous en ligne pour la beauté";
+export const PUBLICATIONS_TM = [
+  { tm: true, cle: "time-manager-reservation", habit: "nuit", titre: "Time Manager : vos clientes réservent sur votre propre site", ecran: "creneaux",
+    points: ["Les créneaux libres, selon vos horaires", "Un acompte ou la totalité", "Le rappel avant le rendez-vous", "Sans plateforme, sans commission"], prix: "Formule Pro : 490 €", puis: "puis 29 € par mois, sans engagement",
+    legende: "Time Manager, c'est la prise de rendez-vous en ligne pour les esthéticiennes, les coiffeuses, les salons et les instituts. Vos clientes réservent sur votre propre site : elles choisissent un créneau libre, selon vos horaires et la durée de chaque prestation, règlent un acompte ou la totalité, comme vous le décidez, et reçoivent un rappel avant le rendez-vous. Sans plateforme, et sans commission. Formule Pro : 490 €, puis 29 € par mois, sans engagement." },
+  { tm: true, cle: "time-manager-google", habit: "clair", titre: "Vos clientes vous cherchent sur Google. Vous trouvent-elles ?", ecran: "rechercheSalon",
+    points: ["Référencement local sur Google", "Votre fiche Google, créée ou reprise", "Un site sur mesure, entièrement à votre image"], prix: "Compris dans Time Manager", puis: "formule Pro : 490 €, puis 29 € par mois",
+    legende: "On réserve un soin le soir, depuis son canapé, en cherchant sur son téléphone. Avec Time Manager, votre site est dessiné sur mesure, entièrement à votre image, référencé sur Google, et votre fiche Google est créée ou reprise. Vos clientes vous trouvent, puis réservent chez vous. Formule Pro : 490 €, puis 29 € par mois, sans engagement." },
+  { tm: true, cle: "time-manager-oublis", habit: "violet", titre: "Les rendez-vous oubliés : ce qui aide", ecran: "rappels",
+    points: ["Le rappel de la veille, prêt à envoyer", "Un acompte pour réserver, si vous le souhaitez", "Une règle d'annulation, lue au moment de réserver"], prix: "Formule Pro : 490 €", puis: "puis 29 € par mois, sans engagement",
+    legende: "Un créneau vide, c'est du chiffre d'affaires perdu. Ce qui aide : le rappel de la veille, prêt à envoyer, un acompte pour réserver si vous le souhaitez, et une règle d'annulation que la cliente lit au moment de réserver. C'est dans Time Manager, la prise de rendez-vous en ligne sur votre propre site. Formule Pro : 490 €, puis 29 € par mois, sans engagement." },
+  { tm: true, cle: "time-manager-caisse", habit: "jaune", titre: "Votre caisse du jour, dans votre tableau de bord", ecran: "caisse",
+    points: ["Espèces et carte séparées", "Le total du jour, puis le total du mois", "Le ticket est prêt pour la cliente"], prix: "Formule Pro : 490 €", puis: "puis 29 € par mois, sans engagement",
+    legende: "La cliente paie sur place, en espèces, par carte ou sans contact. Le ticket est prêt, et votre tableau de bord montre la caisse du jour, espèces et carte séparées, puis le total du mois. C'est dans Time Manager, avec la prise de rendez-vous en ligne sur votre propre site. Formule Pro : 490 €, puis 29 € par mois, sans engagement." },
+  { tm: true, cle: "time-manager-fidelite", habit: "nuit", titre: "Faire revenir vos clientes", ecran: "fidelite",
+    points: ["La fiche de chaque cliente", "La carte de fidélité", "Les forfaits, décomptés à chaque venue", "Les cartes cadeaux"], prix: "Formule Pro : 490 €", puis: "puis 29 € par mois, sans engagement",
+    legende: "Avec Time Manager, chaque cliente a sa fiche : ce qui lui plaisait la fois d'avant s'ouvre avant le rendez-vous. Les passages s'ajoutent à la carte de fidélité, les forfaits se décomptent à chaque venue, et les cartes cadeaux ont chacune leur numéro, leur valeur et leur date de validité. Formule Pro : 490 €, puis 29 € par mois, sans engagement." },
+];
 export async function publication(p) {
   const [c, x] = toile(1080, 1350), f = police(), h = HABITS[p.habit], icone = await image("/medias/icone-site-512.png");
   x.fillStyle = h.fond; x.fillRect(0, 0, 1080, 1350); x.textBaseline = "alphabetic"; x.textAlign = "left";
@@ -132,7 +197,7 @@ export async function publication(p) {
   if (p.habit === "violet") boite(x, "#ffffff", 62, 52, 112, 112, 28);
   x.drawImage(icone, 70, 60, 96, 96);
   x.fillStyle = h.titre; x.font = `800 40px ${f}`; x.fillText("NORA ÉDITIONS", 192, 100);
-  x.fillStyle = h.texte; x.font = `600 28px ${f}`; x.fillText(METIER, 192, 142);
+  x.fillStyle = h.texte; x.font = `600 28px ${f}`; x.fillText(p.tm ? METIER_TM : METIER, 192, 142);
   // le titre
   let taille = 76; x.font = `800 ${taille}px ${f}`;
   while (couper(x, p.titre, 940).length > 3 && taille > 58) { taille -= 4; x.font = `800 ${taille}px ${f}`; }
@@ -169,14 +234,15 @@ export async function publication(p) {
   x.fillStyle = h.bande; x.fillRect(0, 1166, 1080, 184);
   x.fillStyle = h.surBande; x.textAlign = "left"; x.font = `800 50px ${f}`; x.fillText(p.prix, 70, 1238);
   x.font = `500 30px ${f}`; x.fillText(p.puis, 70, 1284);
-  x.font = `700 28px ${f}`; x.fillText("Écrivez-nous : " + SITE, 70, 1328);
+  x.font = `700 28px ${f}`; x.fillText("Écrivez-nous : " + (p.tm ? SITE_TM : SITE), 70, 1328);
   return c;
 }
 
 // Les vidéos de présentation : celles de la page des démonstrations (ancre, titre, fichier, ce qu'elle montre)
 const VIDEOS = [["site", "Le site et le tableau de bord, en action", "video-site-et-application", "Du site que voient les clients jusqu'au tableau de bord où arrivent leurs demandes."],
   ["tableau-de-bord", "Un aperçu du tableau de bord", "appli-flex", "Les demandes, les devis signés en ligne, les factures et les paiements, sur un téléphone."],
-  ["artisans", "Pour les artisans du bâtiment", "pub-nora-artisans", "Ce que Nora Éditions fait pour un artisan du bâtiment."]];
+  ["artisans", "Pour les artisans du bâtiment", "pub-nora-artisans", "Ce que Nora Éditions fait pour un artisan du bâtiment."],
+  ["time-manager", "Time Manager : la prise de rendez-vous en ligne", "time-manager", "La cliente trouve le salon sur Google, réserve, règle son acompte ; puis le rappel et la caisse du jour.", "https://timemanager.noraeditions.fr/"]];
 
 export async function vueVisuels(c, nom) {
   const { esc, toast, erreur } = c, prenom = String(nom || "").trim().split(" ")[0], pour = prenom ? "-" + prenom.toLowerCase().normalize("NFD").replace(/[^a-z0-9]/g, "") : "";
@@ -188,11 +254,13 @@ export async function vueVisuels(c, nom) {
       <p class="gris" style="font-size:13px;margin:10px 0 0">Nom du compte conseillé : ${esc(prenom ? prenom + " · Nora Éditions" : "Nora Éditions")}.</p></div>
     <label>Les publications</label><p class="gris" style="font-size:13px;margin:4px 0 10px">Une image et sa légende à coller dessous. Commencez par la première, qui présente la maison, puis publiez-en une de temps en temps.</p>
     <div id="vPubli"><p class="gris">Préparation des images…</p></div>
+    <label style="margin-top:8px">Les publications Time Manager</label><p class="gris" style="font-size:13px;margin:4px 0 10px">Pour les esthéticiennes, les coiffeuses, les salons et les instituts : la prise de rendez-vous en ligne.</p>
+    <div id="vPubliTM"><p class="gris">Préparation des images…</p></div>
     <label style="margin-top:8px">Les vidéos de présentation</label><p class="gris" style="font-size:13px;margin:4px 0 10px">À publier sur votre page, ou à envoyer à un professionnel : le lien ouvre la vidéo sur le site.</p>
-    ${VIDEOS.map(([ancre, titre, fichier, aide]) => `<div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:16px">
+    ${VIDEOS.map(([ancre, titre, fichier, aide, lien]) => `<div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:16px">
       <img src="/medias/${fichier}.jpg" alt="${esc(titre)}" style="width:96px;height:120px;object-fit:cover;border-radius:12px;background:var(--pierre);flex:none">
       <div><b>${esc(titre)}</b><small class="gris" style="display:block;margin:2px 0 8px">${esc(aide)}</small>
-        <div class="actions-doc" style="margin:0"><a class="btn petit-btn" href="/medias/${fichier}.mp4" download="nora-editions-${ancre}.mp4">Télécharger</a><button class="btn clair petit-btn" data-copier="https://${SITE}/demonstrations/#${ancre}">Copier le lien</button></div></div></div>`).join("")}`);
+        <div class="actions-doc" style="margin:0"><a class="btn petit-btn" href="/medias/${fichier}.mp4" download="nora-editions-${ancre}.mp4">Télécharger</a><button class="btn clair petit-btn" data-copier="${lien || `https://${SITE}/demonstrations/#${ancre}`}">Copier le lien</button></div></div></div>`).join("")}`);
   f.el.addEventListener("click", e => { const b = e.target.closest("[data-copier]"); if (!b) return;
     navigator.clipboard.writeText(b.dataset.copier).then(() => toast("Texte copié ✓"), () => toast("Sélectionnez le texte et copiez-le à la main")); });
   const bloc = async (zone, toileV, fichier, titre, aide, legende) => {
@@ -210,5 +278,7 @@ export async function vueVisuels(c, nom) {
     await bloc(z1, await couverture(prenom), `nora-editions-couverture-facebook${pour}.png`, "La couverture Facebook", "L'image du haut de votre page.");
     const z2 = f.el.querySelector("#vPubli"); z2.innerHTML = "";
     for (const p of PUBLICATIONS) await bloc(z2, await publication(p), `nora-editions-publication-${p.cle}.png`, p.titre, `${p.prix}, ${p.puis}`, `${p.legende}\n\n${SITE}`);
+    const z3 = f.el.querySelector("#vPubliTM"); z3.innerHTML = "";
+    for (const p of PUBLICATIONS_TM) await bloc(z3, await publication(p), `nora-editions-${p.cle}.png`, p.titre, `${p.prix}, ${p.puis}`, `${p.legende}\n\n${SITE_TM}`);
   } catch (e) { erreur(e); }
 }
