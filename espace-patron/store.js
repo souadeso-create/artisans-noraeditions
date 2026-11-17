@@ -1,5 +1,5 @@
 // Accès aux données : Supabase quand il est configuré, sinon le navigateur (mode essai).
-import { PARAMETRES_DEFAUT, PRESTATIONS_DEFAUT, AJOUTS_PRESTATIONS, CORRECTIONS_PRESTATIONS, REPRISE_REGLAGES, REPRISE_ABO } from "./donnees.js";
+import { PARAMETRES_DEFAUT, PRESTATIONS_DEFAUT, AJOUTS_PRESTATIONS, CORRECTIONS_PRESTATIONS, REPRISE_REGLAGES, REPRISE_ABO, REMPLACER_TABLEAU, REPRISE_TABLEAU } from "./donnees.js";
 
 const cfg = window.NORA_SB && window.NORA_SB.url ? { supabaseUrl: window.NORA_SB.url, supabaseKey: window.NORA_SB.cle } : {};
 export const MODE_ESSAI = !(cfg.supabaseUrl && cfg.supabaseKey);
@@ -223,6 +223,12 @@ export async function ajouterNouvellesPrestations() {
     if (brut.conditions && brut.conditions.includes(REPRISE_REGLAGES.conditions.marqueur)) brut.conditions = REPRISE_REGLAGES.conditions.nouveau;
     if (brut.abonnement_libelle === REPRISE_REGLAGES.libelle.ancien) brut.abonnement_libelle = REPRISE_REGLAGES.libelle.nouveau;
     faits.push(REPRISE_REGLAGES.cle);
+    if (!reste.length && !corr.length) { await enregistrerParametres({ ...brut, ajouts_prestations: faits }); return; }
+  }
+  // « tableau de bord » au lieu d'« application » dans le libellé d'abonnement et les conditions enregistrés (17/11/2026), une fois
+  if (!faits.includes(REPRISE_TABLEAU)) {
+    for (const k of ["abonnement_libelle", "conditions"]) if (typeof brut[k] === "string") for (const [a, b] of REMPLACER_TABLEAU) brut[k] = brut[k].replace(a, b);
+    faits.push(REPRISE_TABLEAU);
     if (!reste.length && !corr.length) { await enregistrerParametres({ ...brut, ajouts_prestations: faits }); return; }
   }
   if (!reste.length && !corr.length) return;

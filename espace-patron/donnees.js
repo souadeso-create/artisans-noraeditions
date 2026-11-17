@@ -61,13 +61,22 @@ export const AJOUTS_PRESTATIONS = [
     ["Abonnements", "Adresse e-mail professionnelle", "mois", 1.5]
   ] }
 ];
+// « application » devient « tableau de bord » dans ce qui est enregistré (catalogue, libellé d'abonnement, conditions), 17/11/2026
+export const REMPLACER_TABLEAU = [
+  [/applications web sur mesure/g, "tableaux de bord métier personnalisés"], [/application web sur mesure/g, "tableau de bord métier personnalisé"], [/Application web sur mesure/g, "Tableau de bord métier personnalisé"],
+  // seulement les tournures sûres : « l'application de pénalités », dans des conditions, ne doit pas être touchée
+  [/(votre|son|Votre) application/g, "$1 tableau de bord"], [/mises à jour, application/g, "mises à jour, tableau de bord"], [/Abonnement de l'application seule/g, "Abonnement du tableau de bord seul"]
+];
+export const REPRISE_TABLEAU = "tableau-de-bord-reglages-2026-11-17";
 // le logo et la retouche photo sont compris dans la création, si besoin (24/10/2026)
 export const CORRECTIONS_PRESTATIONS = [
   { cle: "logo-retouche-compris-2026-10", remplacer: [
     [/^Logo$/, "Logo (compris dans la création)"],
     [/^Retouche photo$/, "Retouche photo (comprise dans la création)"],
     ["fiche Google, application", "fiche Google, logo et retouche photo si besoin, application"]
-  ] }
+  ] },
+  // « je ne vends plus d'application, je fais des tableaux de bord métier personnalisés » (17/11/2026) : les lignes du catalogue
+  { cle: "tableau-de-bord-2026-11-17", remplacer: REMPLACER_TABLEAU }
 ];
 
 // les formules du 09/11/2026 (11/11/2026) : les nouvelles lignes s'ajoutent ; les anciennes (application seule, web marketing, abonnement à 10 €…) sont archivées, pas supprimées

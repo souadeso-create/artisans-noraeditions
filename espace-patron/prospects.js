@@ -203,7 +203,7 @@ export function messages(p, P) {
       `${bonjour(p)}\n\nVous avez raison de comparer. Voici ce que nous faisons, pour que vous puissiez juger : un site dessiné sur mesure, son référencement sur Google et la fiche Google dans toutes les formules, les rendus montrés avant la mise en ligne, le solde réglé après votre validation finale, et un abonnement sans engagement.\n\nNous vous envoyons une proposition écrite si vous le souhaitez : vous la comparerez tranquillement.\n\n${sig}`],
     ["vitrine", "Réponse : il veut seulement un site vitrine", "Votre site vitrine",
       `${bonjour(p)}\n\nC'est la formule Essentiel : ${CONTENU.Essentiel}, pour ${PRIX.Essentiel}. Vous pourrez passer à une formule plus complète plus tard, si vous voulez un jour faire vos devis et vos factures depuis votre téléphone.\n\nPour commencer, il nous faut seulement quelques informations sur votre activité. Nous vous envoyons un court questionnaire si vous êtes d'accord.\n\n${sig}`],
-    ["appli", "Réponse : il veut une application métier", "Votre tableau de bord",
+    ["appli", "Réponse : il veut un tableau de bord métier", "Votre tableau de bord",
       `${bonjour(p)}\n\nC'est la formule Pro : ${CONTENU.Pro}, pour ${PRIX.Pro}. Vos devis et vos factures se génèrent automatiquement en PDF, et vos clients signent en ligne.\n\nVoici une courte vidéo qui montre le tableau de bord sur un téléphone :\n${DEMO}#tableau-de-bord\n\nDites-nous ce que vous aimeriez y trouver pour votre activité.\n\n${sig}`],
     ["accord", "Réponse : il est d'accord, on lui envoie le questionnaire", `Votre site internet${ent}`,
       `${bonjour(p)}\n\nMerci pour votre réponse, nous sommes ravis d'avancer avec vous.\n\nPour préparer votre site, il vous reste à remplir votre questionnaire :\n${lienQuestionnaire(p, p.offre || "")}\n\nNous vous envoyons ensuite votre devis, à signer en ligne. Un acompte de 10 % lance le travail, nous vous montrons le résultat, et le solde se règle après votre validation finale.\n\n${sig}`],
@@ -252,7 +252,7 @@ const SITUATIONS = [
   ["delai", /d[ée]lai|combien de temps|en combien de|quand (serait|sera|pourrait)|pour quand|rapidement|urgent/i, "Il demande le délai", "Donner le délai indicatif et les étapes."],
   ["compare", /compar|autre(s)? (devis|prestataire|agence|offre)|concurren|ailleurs|plusieurs devis/i, "Il compare plusieurs prestataires", "Envoyer une proposition écrite qu'il pourra comparer."],
   ["reflechir", /r[ée]fl[ée]ch|voir plus tard|pas tout de suite|plus tard|je vous redis|reviens vers vous|en parler/i, "Il veut réfléchir", "Envoyer la vidéo de démonstration, et noter une relance dans une semaine."],
-  ["appli", /appli|logiciel|devis en ligne|factur|rendez-vous en ligne|agenda|tableau de bord|gestion/i, "Il veut une application métier", "Présenter la formule Pro et la vidéo du tableau de bord."],
+  ["appli", /appli|logiciel|devis en ligne|factur|rendez-vous en ligne|agenda|tableau de bord|gestion/i, "Il veut un tableau de bord métier", "Présenter la formule Pro et la vidéo du tableau de bord."],
   ["vitrine", /vitrine|simple site|juste un site|seulement un site|petit site|une page/i, "Il veut seulement un site vitrine", "Présenter la formule Essentiel et envoyer le questionnaire."],
   ["prix", /prix|tarif|combien|co[ûu]t|devis/i, "Il demande le prix", "Envoyer les trois formules, et lui demander ce qui compte le plus pour lui."],
 ];
