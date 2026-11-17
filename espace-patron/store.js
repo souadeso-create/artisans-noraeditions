@@ -296,7 +296,7 @@ export async function listerDiscussions() {
 }
 export async function listerChat(id, apres = 0) {
   if (MODE_ESSAI) return lireLocal("chat_messages").filter(m => m.discussion_id === id && m.id > apres);
-  const { data, error } = await sb.from("chat_messages").select("id, de, texte, created_at").eq("discussion_id", id).gt("id", apres).order("id");
+  const { data, error } = await sb.from("chat_messages").select("id, de, texte, created_at, auto").eq("discussion_id", id).gt("id", apres).order("id");
   if (error) throw error;
   return data;
 }

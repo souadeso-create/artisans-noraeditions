@@ -82,7 +82,7 @@
   ecrire.onsubmit = function (e) {
     e.preventDefault(); var t = champ.value.trim(), b = ecrire.querySelector("button"); if (!t) return;
     b.disabled = true;
-    appel("chat_envoyer", { p_discussion: garde.id || null, p_texte: t, p_page: location.pathname }).then(function (id) {
+    appel("chat_envoyer", { p_discussion: garde.id || null, p_texte: t, p_page: (location.hostname === "creation-site-internet.noraeditions.fr" ? "" : location.hostname) + location.pathname }).then(function (id) {
       var premier = !garde.id; garde.id = id; retenir(); champ.value = "";
       return lire().then(function () { if (premier || !garde.coord) { if (!garde.note) { ligne("s", "Message bien reçu. Nous vous répondons ici. Pour recevoir la réponse si vous quittez la page, laissez votre e-mail :"); garde.note = 1; retenir(); } coord.hidden = !!garde.coord; } rythme(); });
     }).catch(function (er) { ligne("s", "Le message n'est pas parti : " + (er.message || "réessayez dans un instant") + "."); }).then(function () { b.disabled = false; champ.focus(); });
