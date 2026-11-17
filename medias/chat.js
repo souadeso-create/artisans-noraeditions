@@ -45,7 +45,9 @@
     "@media (max-width:600px){.nchat-p,.nchat-haut .nchat-p{left:0;right:0;top:0;bottom:auto;width:auto;height:100dvh;border-radius:0}.nchat-ouvert .nchat-b{display:none}.nchat-ouvert body{overflow:hidden}}";
   document.head.appendChild(css);
   // sur téléphone, la barre « Je veux mon site » occupe le bas de l'écran : la bulle se place au-dessus
-  var barre = document.querySelector(".barre"); if (barre && getComputedStyle(barre).display !== "none") document.documentElement.classList.add("nchat-haut");
+  var barre = document.querySelector(".barre");
+  function hausser() { document.documentElement.classList.toggle("nchat-haut", !!barre && getComputedStyle(barre).display !== "none"); }
+  hausser(); window.addEventListener("resize", hausser);
 
   var bulle = document.createElement("button"); bulle.type = "button"; bulle.className = "nchat-b"; bulle.setAttribute("aria-label", "Écrire à Nora Éditions");
   bulle.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12.500h5"/></svg><span>Une question ?</span><i></i>';
