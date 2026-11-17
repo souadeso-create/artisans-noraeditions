@@ -22,8 +22,12 @@
   }
 
   var css = document.createElement("style");
-  css.textContent = ".nchat-b{position:fixed;right:16px;bottom:18px;z-index:70;width:58px;height:58px;border-radius:50%;border:0;cursor:pointer;background:#5b4bff;color:#fff;box-shadow:0 10px 24px rgba(15,18,64,.35);display:flex;align-items:center;justify-content:center}" +
-    ".nchat-b svg{width:28px;height:28px}.nchat-b i{position:absolute;top:2px;right:2px;width:16px;height:16px;border-radius:50%;background:#ffd426;border:2px solid #fff;display:none}.nchat-b.neuf i{display:block}" +
+  css.textContent = ".nchat-b{position:fixed;right:14px;bottom:18px;z-index:70;height:58px;padding:0 20px 0 16px;border-radius:999px;border:0;cursor:pointer;background:#ffd426;color:#0f1240;font:700 16px/1 Inter,system-ui,sans-serif;box-shadow:0 5px 0 #b98300,0 16px 30px rgba(15,18,64,.38);display:flex;align-items:center;gap:10px}" +
+    ".nchat-b svg{width:28px;height:28px;flex:none}.nchat-b i{position:absolute;top:-4px;right:-2px;width:18px;height:18px;border-radius:50%;background:#e5263c;border:2px solid #fff;display:none}.nchat-b.neuf i{display:block}" +
+    ".nchat-b::after{content:'';position:absolute;inset:0;border-radius:999px;border:3px solid #ffd426;opacity:0;animation:nchat-onde 3.2s ease-out infinite}@keyframes nchat-onde{0%{transform:scale(1);opacity:.75}45%,100%{transform:scale(1.28,1.6);opacity:0}}" +
+    "@media (prefers-reduced-motion:reduce){.nchat-b::after{animation:none}}.nchat-ouvert .nchat-b::after{animation:none}" +
+    ".nchat-a{position:fixed;right:14px;bottom:92px;z-index:70;max-width:250px;background:#fff;color:#14152e;border-radius:16px 16px 4px 16px;padding:12px 34px 12px 14px;font:500 15px/1.4 Inter,system-ui,sans-serif;box-shadow:0 14px 34px rgba(15,18,64,.3);cursor:pointer}" +
+    ".nchat-a b{display:block;font-weight:700}.nchat-a button{position:absolute;top:4px;right:6px;border:0;background:none;font-size:20px;line-height:1;color:#5f6482;cursor:pointer;padding:4px}.nchat-haut .nchat-a{bottom:calc(158px + env(safe-area-inset-bottom))}" +
     ".nchat-haut .nchat-b{bottom:calc(84px + env(safe-area-inset-bottom))}" +
     ".nchat-p{position:fixed;right:16px;bottom:88px;z-index:71;width:min(370px,calc(100vw - 24px));height:min(540px,calc(100vh - 120px));background:#fff;color:#14152e;border-radius:20px;box-shadow:0 24px 60px rgba(15,18,64,.35);display:none;flex-direction:column;overflow:hidden;font:15px/1.45 Inter,system-ui,sans-serif}" +
     ".nchat-p.ouvert{display:flex}.nchat-haut .nchat-p{bottom:calc(154px + env(safe-area-inset-bottom));height:min(540px,calc(100vh - 190px))}" +
@@ -32,17 +36,19 @@
     ".nchat-m{flex:1;overflow-y:auto;padding:14px;background:#f4f5fc;display:flex;flex-direction:column;gap:8px}" +
     ".nchat-m p{margin:0;max-width:84%;padding:9px 12px;border-radius:16px;white-space:pre-wrap;overflow-wrap:anywhere}.nchat-m .v{align-self:flex-end;background:#5b4bff;color:#fff;border-bottom-right-radius:5px}" +
     ".nchat-m .n{align-self:flex-start;background:#fff;border:1px solid #e2e4f3;border-bottom-left-radius:5px}.nchat-m .s{align-self:center;max-width:100%;background:none;color:#5f6482;font-size:13px;text-align:center;padding:2px 6px}" +
-    ".nchat-c{display:grid;grid-template-columns:1fr 1fr auto;gap:6px;padding:0 14px 10px;background:#f4f5fc}.nchat-c input{min-width:0;border:1px solid #d6d9ee;border-radius:10px;padding:8px 10px;font:inherit;font-size:14px}" +
+    ".nchat-c[hidden]{display:none}.nchat-c{display:grid;grid-template-columns:1fr 1fr auto;gap:6px;padding:0 14px 10px;background:#f4f5fc}.nchat-c input{min-width:0;border:1px solid #d6d9ee;border-radius:10px;padding:8px 10px;font:inherit;font-size:14px}" +
     ".nchat-c button,.nchat-e button{border:0;border-radius:10px;background:#0f1240;color:#fff;font:inherit;font-weight:600;padding:8px 12px;cursor:pointer}" +
     ".nchat-e{display:flex;gap:8px;padding:10px;border-top:1px solid #e2e4f3;background:#fff}.nchat-e textarea{flex:1;min-width:0;resize:none;border:1px solid #d6d9ee;border-radius:12px;padding:9px 11px;font:inherit;height:44px;max-height:110px}" +
     ".nchat-e button{background:#5b4bff;border-radius:12px;padding:0 16px}.nchat-e button:disabled{opacity:.5}" +
-    "@media (max-width:600px){.nchat-p{right:8px;left:8px;width:auto}}";
+    ".nchat-e textarea,.nchat-c input{font-size:16px}" +
+    // sur téléphone, la fenêtre prend tout l'écran visible : sa hauteur suit le clavier (réglée plus bas), le champ reste donc toujours sous les yeux
+    "@media (max-width:600px){.nchat-p,.nchat-haut .nchat-p{left:0;right:0;top:0;bottom:auto;width:auto;height:100dvh;border-radius:0}.nchat-ouvert .nchat-b{display:none}.nchat-ouvert body{overflow:hidden}}";
   document.head.appendChild(css);
   // sur téléphone, la barre « Je veux mon site » occupe le bas de l'écran : la bulle se place au-dessus
   var barre = document.querySelector(".barre"); if (barre && getComputedStyle(barre).display !== "none") document.documentElement.classList.add("nchat-haut");
 
   var bulle = document.createElement("button"); bulle.type = "button"; bulle.className = "nchat-b"; bulle.setAttribute("aria-label", "Écrire à Nora Éditions");
-  bulle.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12.500h5"/></svg><i></i>';
+  bulle.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12.500h5"/></svg><span>Une question ?</span><i></i>';
   var p = document.createElement("div"); p.className = "nchat-p"; p.setAttribute("role", "dialog"); p.setAttribute("aria-label", "Discussion avec Nora Éditions");
   p.innerHTML = '<div class="nchat-t"><div><b>Nora Éditions</b><small>Une question ? Écrivez-nous, nous vous répondons ici, par écrit.</small></div><button type="button" aria-label="Fermer">×</button></div>' +
     '<div class="nchat-m" aria-live="polite"></div><form class="nchat-c" hidden><input name="nom" placeholder="Votre prénom" autocomplete="given-name"><input name="email" type="email" placeholder="Votre e-mail" autocomplete="email"><button>OK</button></form>' +
@@ -63,7 +69,11 @@
   }
   // la discussion se relit toutes les 5 secondes quand la fenêtre est ouverte, toutes les 25 secondes sinon ; jamais quand l'onglet est caché
   function rythme() { clearInterval(minuterie); if (garde.id) minuterie = setInterval(function () { if (!document.hidden) lire(); }, ouvert ? 5000 : 25000); }
-  function ouvrir(o) { ouvert = o; p.classList.toggle("ouvert", o); if (o) { accueil(); lire(); bulle.classList.remove("neuf"); setTimeout(function () { champ.focus(); }, 50); } rythme(); }
+  // le clavier du téléphone rétrécit l'écran visible : la fenêtre se cale dessus, pour que le champ et les derniers messages restent visibles
+  var vv = window.visualViewport;
+  function caler() { if (!ouvert || !vv || window.innerWidth > 600) { p.style.height = p.style.top = ""; return; } p.style.height = vv.height + "px"; p.style.top = vv.offsetTop + "px"; zone.scrollTop = zone.scrollHeight; }
+  if (vv) { vv.addEventListener("resize", caler); vv.addEventListener("scroll", caler); }
+  function ouvrir(o) { ouvert = o; p.classList.toggle("ouvert", o); document.documentElement.classList.toggle("nchat-ouvert", o); if (invite) { invite.remove(); invite = null; } caler(); if (o) { accueil(); lire(); bulle.classList.remove("neuf"); setTimeout(function () { champ.focus(); }, 50); } rythme(); }
   bulle.onclick = function () { ouvrir(!ouvert); };
   p.querySelector(".nchat-t button").onclick = function () { ouvrir(false); };
   champ.addEventListener("keydown", function (e) { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); ecrire.requestSubmit(); } });
@@ -80,6 +90,14 @@
     appel("chat_coordonnees", { p_discussion: garde.id, p_nom: nom, p_email: mail }).then(function () { garde.coord = 1; retenir(); coord.hidden = true; ligne("s", "C'est noté. Nous vous écrirons à " + mail + " si vous n'êtes plus sur la page."); }).catch(function () {});
   };
   window.noraChat = { ouvrir: function () { ouvrir(true); } };
+  // l'invitation : quelques secondes après l'arrivée, une fois par visite, pour qui n'a pas encore écrit
+  var invite = null, dejaInvite = false; try { dejaInvite = !!sessionStorage.getItem("nora_chat_invite"); } catch (e) {}
+  if (!garde.id && !dejaInvite) setTimeout(function () {
+    if (ouvert) return; try { sessionStorage.setItem("nora_chat_invite", "1"); } catch (e) {}
+    invite = document.createElement("div"); invite.className = "nchat-a"; invite.innerHTML = '<b>Une question sur votre site ?</b>Écrivez-nous ici : nous vous répondons par écrit.<button type="button" aria-label="Fermer">×</button>';
+    invite.onclick = function (e) { if (e.target.tagName === "BUTTON") { invite.remove(); invite = null; } else ouvrir(true); };
+    document.body.appendChild(invite);
+  }, 6000);
   // un visiteur qui revient retrouve sa discussion, et voit s'il a une réponse
   if (garde.id) { lire(); rythme(); }
 })();
