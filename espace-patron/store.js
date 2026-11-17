@@ -286,3 +286,36 @@ export async function comptes(corps) {
   if (error) { let m = ""; try { m = (await error.context.json()).erreur; } catch { /* pas de détail */ } throw new Error(m || `les comptes ne sont pas encore installés (${error.context?.status || "pas de réponse"})`); }
   return data;
 }
+
+/* ---------- Le chat du site (tables « discussions » et « chat_messages ») ---------- */
+export async function listerDiscussions() {
+  if (MODE_ESSAI) return lireLocal("discussions").sort((a, b) => (a.dernier_at < b.dernier_at ? 1 : -1));
+  const { data, error } = await sb.from("discussions").select("*").order("dernier_at", { ascending: false }).limit(300);
+  if (error) throw error;
+  return data;
+}
+export async function listerChat(id, apres = 0) {
+  if (MODE_ESSAI) return lireLocal("chat_messages").filter(m => m.discussion_id === id && m.id > apres);
+  const { data, error } = await sb.from("chat_messages").select("id, de, texte, created_at").eq("discussion_id", id).gt("id", apres).order("id");
+  if (error) throw error;
+  return data;
+}
+export async function repondreChat(id, texte) {
+  const t = String(texte).slice(0, 1500), resume = { dernier_at: new Date().toISOString(), dernier_texte: "Vous : " + t.slice(0, 190), non_lus: 0 };
+  if (MODE_ESSAI) { const l = lireLocal("chat_messages"); l.push({ id: Date.now(), discussion_id: id, de: "nora", texte: t, created_at: resume.dernier_at }); ecrireLocal("chat_messages", l);
+    const d = lireLocal("discussions"), x = d.find(y => y.id === id); if (x) { Object.assign(x, resume); ecrireLocal("discussions", d); } return; }
+  const { error } = await sb.from("chat_messages").insert({ discussion_id: id, de: "nora", texte: t });
+  if (error) throw error;
+  await sb.from("discussions").update(resume).eq("id", id);
+}
+export async function chatLu(id) {
+  if (MODE_ESSAI) { const l = lireLocal("discussions"), d = l.find(x => x.id === id); if (d) { d.non_lus = 0; ecrireLocal("discussions", l); } return; }
+  const { error } = await sb.from("discussions").update({ non_lus: 0 }).eq("id", id);
+  if (error) throw error;
+}
+// le nombre de messages de visiteurs pas encore lus (0 si le chat n'est pas installé dans la base)
+export async function chatNonLus() {
+  if (MODE_ESSAI) return lireLocal("discussions").reduce((t, d) => t + (d.archive ? 0 : d.non_lus || 0), 0);
+  const { data, error } = await sb.from("discussions").select("non_lus").gt("non_lus", 0).eq("archive", false);
+  return error ? 0 : (data || []).reduce((t, d) => t + d.non_lus, 0);
+}

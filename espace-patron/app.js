@@ -2,7 +2,7 @@
 // abonnements, agenda, carnet de projet, notifications.
 import * as db from "./store.js";
 // version des fichiers chargés à la demande : à changer à chaque mise en ligne, pour que le téléphone ne garde pas l'ancienne
-const V = "20261116d";
+const V = "20261117a";
 import { UNITES, PARAMETRES_DEFAUT } from "./donnees.js";
 import { telechargerPDF, totaux, estAbo, eur, poserTVA, avecTVA, TAUX_TVA, tauxTxt, avenantDe } from "./pdf.js";
 import { CATEGORIES, etatPaiements } from "./carnet.js";
@@ -1287,11 +1287,20 @@ function installerAppli() {
     : `<ol class="etapes-install"><li>Ouvrez cette page dans <b>Chrome</b>.</li><li>Touchez les <b>trois points</b> en haut à droite.</li><li>Choisissez <b>Ajouter à l'écran d'accueil</b> (ou <b>Installer l'application</b>), puis <b>Installer</b>.</li></ol><p class="gris" style="font-size:14px">L'icône Nora apparaît à côté de vos applis : un toucher, et l'appli s'ouvre en plein écran.</p>`);
 }
 
+// les messages du site pas encore lus : une pastille sur « Plus », et le compte sur la ligne « Messages du site »
+async function pastilleChat() {
+  if (ROLE.prospecteur) return;
+  const n = await db.chatNonLus().catch(() => 0), a = nav.querySelector('[data-r="plus"]'); if (!a) return;
+  a.querySelector(".compte-nav")?.remove(); if (n) a.insertAdjacentHTML("beforeend", `<span class="compte-nav">${n}</span>`);
+  const z = document.getElementById("nbChat"); if (z) z.innerHTML = n ? `<span class="badge refuse">${n} non lu${n > 1 ? "s" : ""}</span>` : "›";
+}
 async function vuePlus() {
   const notifs = await notifsActives().catch(() => false);
+  setTimeout(pastilleChat, 0);
   vue.innerHTML = `
     <div class="entete"><h1>Plus</h1></div>
     <div class="liste">
+      <a class="ligne-liste" href="#/discussions"><div><b>Messages du site</b><small>Ce que les visiteurs écrivent dans la bulle du site, et vos réponses</small></div><span class="gris" id="nbChat">›</span></a>
       <a class="ligne-liste" href="#/prospects"><div><b>Prospects</b><small>Trouver des clients : qui contacter, quoi écrire, qui relancer</small></div><span class="gris">›</span></a>
       <a class="ligne-liste" href="#/abonnements"><div><b>Abonnements</b><small>Chaque abonnement à sa date, ses factures et les rappels</small></div><span class="gris">›</span></a>
       <a class="ligne-liste" href="#/visites"><div><b>Visites du site</b><small>Visiteurs, pages vues, d'où ils viennent, questionnaires envoyés</small></div><span class="gris">›</span></a>
@@ -1407,6 +1416,8 @@ async function routeur() {
     else if (r === "abonnements") await vueAbonnements();
     else if (r === "agenda") await vueAgenda();
     else if (r === "visites") await vueVisites();
+    else if (r === "discussions" || r === "discussion") { const m = await import(`./discussions.js?v=${V}`), c = { db, vue, esc, toast, erreur, fenetre, confirmer, pastille: pastilleChat };
+      if (r === "discussion") await m.vueDiscussion(c, a); else await m.vueDiscussions(c); }
     else if (r === "prospects" || r === "prospect") { const m = await import(`./prospects.js?v=${V}`), c = { db, vue, esc, eur, toast, erreur, fenetre, confirmer, ICO, P, V, role: ROLE };
       if (r === "prospect") await m.vueProspect(c, a); else if (a === "trouver") await (await import(`./trouver.js?v=${V}`)).vueTrouver(c); else await m.vueProspects(c); }
     else await vueAccueil();
@@ -1440,8 +1451,11 @@ async function demarrer() {
   // une notification ouvre directement la demande
   const dem = new URLSearchParams(location.search).get("d");
   if (dem) { history.replaceState(null, "", location.pathname + "#/demande/" + dem); }
+  // une notification de message ouvre directement les messages du site
+  if (new URLSearchParams(location.search).get("c")) history.replaceState(null, "", location.pathname + "#/discussions");
   window.onhashchange = routeur;
   routeur();
+  pastilleChat(); setInterval(() => { if (!document.hidden) pastilleChat(); }, 30000);
   listerDemandes().then(l => {
     const n = (l || []).filter(x => x.statut === "nouvelle").length;
     const a = nav.querySelector('[data-r="demandes"]');

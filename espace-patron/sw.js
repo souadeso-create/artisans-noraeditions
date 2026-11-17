@@ -7,7 +7,7 @@ self.addEventListener("push", e => {
   let m = { titre: "Nouvelle demande", texte: "", id: "" };
   try { m = Object.assign(m, e.data.json()); } catch (err) {}
   e.waitUntil(self.registration.showNotification(m.titre, { body: m.texte, icon: "/medias/icone-site-192.png", badge: "/medias/icone-site-192.png",
-    tag: "demande-" + m.id, data: { url: "/espace-patron/" + (m.id ? "?d=" + m.id : "") } }));
+    tag: m.url ? "message-du-site" : "demande-" + m.id, data: { url: m.url || "/espace-patron/" + (m.id ? "?d=" + m.id : "") } }));
 });
 self.addEventListener("notificationclick", e => {
   e.notification.close();

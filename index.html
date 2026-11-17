@@ -708,6 +708,23 @@
   #tarifs .tarif-espace ul { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px 24px; }
   @media (min-width: 760px) { #tarifs .plus-tarif { left: -46px; top: 50%; margin: -38px 0 0 0; } #tarifs .tarifs { column-gap: 34px; } }
 </style>
+<script src="/medias/chat.js" defer></script>
+<style>
+  /* le « + » entre la création et l'abonnement : au-dessus sur téléphone, à gauche quand les tarifs sont côte à côte */
+  #tarifs .tarif-plus { position: relative; overflow: visible; }
+  #tarifs .plus-tarif { position: absolute; z-index: 3; left: 50%; top: -50px; width: 76px; height: 76px; margin-left: -38px;
+    border-radius: 50%; background: #ffd426; border: 4px solid #fff; font-size: 0; color: transparent !important;
+    box-shadow: 0 6px 0 #a65f00, 0 14px 26px rgba(0,0,0,.3); pointer-events: none; }
+  /* le « + » dessiné : deux barres épaisses */
+  #tarifs .plus-tarif::before, #tarifs .plus-tarif::after { content: ""; position: absolute; left: 50%; top: 50%; background: #0f1240; border-radius: 6px; }
+  #tarifs .plus-tarif::before { width: 38px; height: 11px; margin: -5.5px 0 0 -19px; }
+  #tarifs .plus-tarif::after { width: 11px; height: 38px; margin: -19px 0 0 -5.5px; }
+  #tarifs .tarifs { row-gap: 40px; }
+  /* l'espace client en option : sur toute la largeur, sous les quatre encadrés */
+  #tarifs .tarif-espace { grid-column: 1 / -1; }
+  #tarifs .tarif-espace ul { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px 24px; }
+  @media (min-width: 760px) { #tarifs .plus-tarif { left: -46px; top: 50%; margin: -38px 0 0 0; } #tarifs .tarifs { column-gap: 34px; } }
+</style>
 </head>
 <body>
 
