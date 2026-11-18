@@ -99,6 +99,31 @@
   #bandeau span { flex: 1; }
   #bandeau button { flex: none; padding: 8px 14px; border-radius: 999px; background: var(--fonce); color: #fff; font-weight: 700; font-size: 14px; }
   #bandeau button.plus-tard { background: none; color: #5a4300; padding: 8px 4px; font-weight: 600; }
+  /* le choix du fond d'écran : une feuille qui monte du bas */
+  #fonds { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; background: #fff; border-radius: 20px 20px 0 0; box-shadow: 0 -10px 30px rgba(28,35,51,.25); padding: 16px 16px calc(16px + env(safe-area-inset-bottom)); }
+  #fonds h3 { font-size: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+  #fonds h3 button { font-size: 26px; width: 36px; height: 36px; color: var(--gris); }
+  #fonds .choix { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  #fonds .choix button { aspect-ratio: 3 / 4; border-radius: 14px; border: 2px solid #cfd8e3; font-size: 12.5px; font-weight: 600; display: flex; align-items: flex-end; justify-content: center; padding: 6px 2px; background-size: cover; background-position: center; }
+  #fonds .choix button.choisi { border-color: var(--bleu); box-shadow: 0 0 0 2px var(--bleu); }
+  #fil.sombre #vu { color: #d5dbe3; }
+  /* les appels */
+  header { gap: 4px; } header #photos { margin-right: 6px; } header button { width: 36px; }
+  header h2 { font-size: 17px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  header button svg { width: 23px; height: 23px; display: block; margin: auto; }
+  #appel { position: fixed; inset: 0; z-index: 70; background: #0d1520; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: calc(40px + env(safe-area-inset-top)) 20px calc(28px + env(safe-area-inset-bottom)); }
+  #loin { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; background: #0d1520; }
+  #pres { position: absolute; right: 14px; top: calc(14px + env(safe-area-inset-top)); width: 104px; height: 150px; object-fit: cover; border-radius: 14px; border: 2px solid rgba(255,255,255,.7); background: #1c2333; transform: scaleX(-1); z-index: 2; }
+  #appelInfo { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 8px; text-shadow: 0 1px 6px rgba(0,0,0,.6); }
+  #appelPhoto { width: 120px; height: 120px; border-radius: 50%; background: #5f86ad center / cover no-repeat; display: grid; place-items: center; font-size: 48px; font-weight: 700; }
+  #appel.video.liaison #appelPhoto { display: none; }
+  #appelNom { font-size: 24px; }
+  #appelEtat { font-size: 15px; opacity: .85; }
+  #appelBoutons { position: relative; z-index: 2; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+  #appelBoutons button { padding: 13px 16px; border-radius: 999px; background: rgba(255,255,255,.16); color: #fff; font-weight: 600; font-size: 14.5px; backdrop-filter: blur(6px); }
+  #appelBoutons button.coupe { background: #fff; color: #1c2333; }
+  #appelBoutons button.rouge { background: #d93025; }
+  #appelBoutons button.vert { background: #1e9e55; }
 </style>
 </head>
 <body>
@@ -118,11 +143,15 @@
   <header>
     <div id="photos"><span data-p="Mohamed" role="img" aria-label="Mohamed">M</span><span data-p="Souad" role="img" aria-label="Souad">S</span></div>
     <h2>Private M et S</h2>
+    <button type="button" id="appelAudio" aria-label="Appel audio"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.100.4 2.300.6 3.600.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.600 21 3 13.400 3 4c0-.6.4-1 1-1h3.500c.6 0 1 .4 1 1 0 1.300.2 2.500.6 3.600.1.3 0 .7-.2 1l-2.300 2.200z"/></svg></button>
+    <button type="button" id="appelVideo" aria-label="Appel vidéo"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="2.500" y="6" width="13" height="12" rx="2.500"/><path d="M16.500 10.500l5-3v9l-5-3z"/></svg></button>
     <button type="button" id="ouvrirMenu" aria-label="Menu">⋮</button>
   </header>
   <div id="menu" hidden>
     <button type="button" id="notif">Me prévenir sur ce téléphone</button>
     <button type="button" id="maPhoto">Changer ma photo</button>
+    <button type="button" id="fond">Changer le fond d'écran</button>
+    <input type="file" id="fichierFond" accept="image/*" hidden>
     <input type="file" id="fichierPhoto" accept="image/*" hidden>
     <button type="button" id="installer" hidden>Mettre l'appli sur l'écran d'accueil</button>
     <button type="button" id="sortir">Quitter sur ce téléphone</button>
@@ -137,6 +166,16 @@
     <button type="button" id="envoyer" aria-label="Envoyer"></button>
   </footer>
 </div>
+<div id="appel" hidden>
+  <video id="loin" autoplay playsinline></video>
+  <video id="pres" autoplay playsinline muted hidden></video>
+  <div id="appelInfo"><div id="appelPhoto"></div><strong id="appelNom"></strong><span id="appelEtat" aria-live="polite"></span></div>
+  <div id="appelBoutons">
+    <button type="button" id="aMicro">Micro</button><button type="button" id="aCamera">Caméra</button><button type="button" id="aTourner">Retourner</button>
+    <button type="button" id="aRefuser" class="rouge">Raccrocher</button><button type="button" id="aAccepter" class="vert">Répondre</button>
+  </div>
+</div>
+<div id="fonds" hidden><h3>Le fond d'écran <button type="button" id="fermerFonds" aria-label="Fermer">×</button></h3><div class="choix"></div></div>
 <div id="grand" hidden><img alt=""><button type="button" aria-label="Fermer">×</button></div>
 <div id="toast" hidden></div>
 
@@ -176,6 +215,7 @@
       if (nom === "duo_photo") { b.photos = b.photos || {}; b.photos[c.p_qui] = c.p_chemin; ecrire(); return Promise.resolve(true); }
       if (nom === "duo_envoyer") { var n = b.m.length + 1; b.m.push({ id: n, de: c.p_de, texte: c.p_texte || "", media_chemin: c.p_chemin || null, media_type: c.p_type || null, created_at: new Date().toISOString(), supprime: false }); ecrire(); return Promise.resolve(n); }
       if (nom === "duo_supprimer") { b.m.forEach(function (m) { if (m.id === c.p_id && m.de === c.p_de) { m.supprime = true; m.texte = ""; m.media_chemin = null; } }); ecrire(); return Promise.resolve(true); }
+      if (nom === "duo_signaux_lire") return Promise.resolve([]);
       return Promise.resolve(true);
     } catch (e) { return Promise.reject(e); }
   }
@@ -259,15 +299,15 @@
     document.querySelectorAll("#photos span").forEach(function (z) { var ch = p && p[z.dataset.p];
       if (ch && z.dataset.ch !== ch) { z.dataset.ch = ch; z.style.backgroundImage = 'url("' + adresse(ch) + '")'; z.textContent = ""; } });
   }
-  function arreter() { clearInterval(veille); veille = null; }
+  function arreter() { clearInterval(veille); veille = null; clearInterval(veilleSignal); veilleSignal = null; }
   function ouvrir() {
     $("entree").hidden = true; $("appli").hidden = false; $("fil").innerHTML = '<button type="button" id="avant" hidden>Voir les messages plus anciens</button>';
-    dernier = premier = 0; vus = {}; prets(); bandeau();
+    dernier = premier = 0; vus = {}; prets(); bandeau(); dernierSignal = 0; lireSignaux(); cadenceSignaux(2000);
     $("avant").onclick = function () { lire(premier); };
     lire().then(function () { $("avant").hidden = Object.keys(vus).length < 60; $("fil").scrollTop = $("fil").scrollHeight; });
     arreter(); veille = setInterval(function () { if (!document.hidden) lire(); }, 3000);
   }
-  document.addEventListener("visibilitychange", function () { if (!document.hidden && moi.code) lire(); });
+  document.addEventListener("visibilitychange", function () { if (!document.hidden && moi.code) { lire(); lireSignaux(); } });
 
   /* ---------- écrire, envoyer ---------- */
   var texte = $("texte"), bouton = $("envoyer");
@@ -363,6 +403,146 @@
   }
   $("activer").onclick = function () { $("notif").click(); };
   $("plusTard").onclick = function () { $("bandeau").hidden = true; };
+  /* ---------- le fond d'écran (gardé sur ce téléphone) ---------- */
+  var FONDS = [["origine", "D'origine", ""], ["blanc", "Blanc", "#ffffff"], ["sable", "Sable", "#f1e7d3"], ["sauge", "Sauge", "#dbe7dd"], ["ciel", "Ciel", "#d6e6f5"], ["nuit", "Nuit", "#16283f"], ["noir", "Noir", "#101317"]];
+  var SOMBRES = { nuit: 1, noir: 1, photo: 1 };
+  function lireFond() { try { return JSON.parse(localStorage.getItem("duo_fond") || "{}"); } catch (e) { return {}; } }
+  function appliquerFond() {
+    var f = lireFond(), fil = $("fil"), c = (FONDS.filter(function (x) { return x[0] === f.id; })[0] || [])[2];
+    fil.style.background = f.id === "photo" && f.image ? 'linear-gradient(rgba(0,0,0,.18), rgba(0,0,0,.18)), url("' + f.image + '") center / cover no-repeat' : c || "";
+    fil.classList.toggle("sombre", !!SOMBRES[f.id]);
+  }
+  function choisirFond(f) { try { localStorage.setItem("duo_fond", JSON.stringify(f)); } catch (e) { return toast("Cette photo est trop lourde pour ce téléphone."); } appliquerFond(); feuilleFonds(); }
+  function feuilleFonds() {
+    var z = $("fonds").querySelector(".choix"), f = lireFond(), actuel = f.id || "origine"; z.innerHTML = "";
+    FONDS.forEach(function (x) { var b = document.createElement("button"); b.type = "button"; b.textContent = x[1]; b.style.background = x[2] || "#f5f7fa"; b.style.color = SOMBRES[x[0]] ? "#fff" : "#1c2333";
+      b.classList.toggle("choisi", actuel === x[0]); b.onclick = function () { choisirFond({ id: x[0] }); }; z.appendChild(b); });
+    var p = document.createElement("button"); p.type = "button"; p.textContent = "Ma photo"; p.style.color = f.image ? "#fff" : "#1c2333"; p.style.backgroundColor = "#e6ecf3";
+    if (f.image) p.style.backgroundImage = 'linear-gradient(rgba(0,0,0,.25), rgba(0,0,0,.25)), url("' + f.image + '")';
+    p.classList.toggle("choisi", actuel === "photo"); p.onclick = function () { $("fichierFond").click(); }; z.appendChild(p);
+  }
+  $("fond").onclick = function () { $("menu").hidden = true; feuilleFonds(); $("fonds").hidden = false; };
+  $("fermerFonds").onclick = function () { $("fonds").hidden = true; };
+  $("fichierFond").onchange = function () {
+    var f = this.files[0]; this.value = ""; if (!f) return;
+    createImageBitmap(f).then(function (im) { var k = Math.min(1, 1280 / Math.max(im.width, im.height)), t = document.createElement("canvas"); t.width = Math.round(im.width * k); t.height = Math.round(im.height * k);
+      t.getContext("2d").drawImage(im, 0, 0, t.width, t.height); choisirFond({ id: "photo", image: t.toDataURL("image/jpeg", .8) }); }).catch(function () { toast("Cette image ne se lit pas."); });
+  };
+  /* ---------- les appels, audio et vidéo ---------- */
+  // « com » : l'appel en cours sur ce téléphone, ou rien. L'image et le son vont d'un téléphone à l'autre, sans passer par la base.
+  var com = null, dernierSignal = 0, veilleSignal = null, signauxEnCours = false, sonnerie = null;
+  var rien = function () {};
+  var lAutre = function () { return moi.qui === "Souad" ? "Mohamed" : "Souad"; };
+  function signal(type, d) { return appel("duo_signal", { p_code: moi.code, p_de: moi.qui, p_type: type, p_donnees: d || {} }).catch(rien); }
+  function cadenceSignaux(ms) { clearInterval(veilleSignal); veilleSignal = setInterval(lireSignaux, ms); }
+  function lireSignaux() {
+    if (!moi.code || signauxEnCours || (document.hidden && !com)) return;
+    signauxEnCours = true;
+    appel("duo_signaux_lire", { p_code: moi.code, p_qui: moi.qui, p_apres: dernierSignal }).then(recevoir).catch(rien).then(function () { signauxEnCours = false; });
+  }
+  function ecranAppel(etat) {
+    var z = $("appel"), recu = com.role === "recu" && !com.accepte;
+    z.hidden = false; z.classList.toggle("video", !!com.video); z.classList.toggle("liaison", !!com.liaison);
+    $("appelNom").textContent = lAutre(); if (etat != null) $("appelEtat").textContent = etat;
+    var p = document.querySelector('#photos [data-p="' + lAutre() + '"]'), ph = $("appelPhoto");
+    ph.style.backgroundImage = p && p.style.backgroundImage || ""; ph.textContent = ph.style.backgroundImage ? "" : lAutre().charAt(0);
+    $("aAccepter").hidden = !recu; $("aRefuser").textContent = recu ? "Refuser" : "Raccrocher";
+    $("aMicro").hidden = recu; $("aCamera").hidden = $("aTourner").hidden = recu || !com.video;
+    $("loin").style.visibility = com.video && com.liaison ? "visible" : "hidden";
+  }
+  function sonner() {
+    try { var C = window.AudioContext || window.webkitAudioContext, ctx = new C(), bip = function () { var o = ctx.createOscillator(), g = ctx.createGain(); o.frequency.value = 660; g.gain.value = .12; o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime + .35); };
+      bip(); sonnerie = { ctx: ctx, t: setInterval(function () { bip(); if (navigator.vibrate) navigator.vibrate(300); }, 1300) }; } catch (e) {}
+  }
+  function taire() { if (sonnerie) { clearInterval(sonnerie.t); try { sonnerie.ctx.close(); } catch (e) {} sonnerie = null; } }
+  function prendre(video) { return navigator.mediaDevices.getUserMedia({ audio: true, video: video ? { facingMode: com.face || "user" } : false }); }
+  function refusMedia(e, video) { return /NotAllowed|Permission|Security/.test((e && e.name) + " " + (e && e.message)) ? "Autorisez le micro" + (video ? " et la caméra" : "") + " pour cette appli, puis recommencez." : "Le micro" + (video ? " ou la caméra" : "") + " ne répond pas."; }
+  function relier() {
+    var pc = new RTCPeerConnection({ iceServers: [{ urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"] }] }); com.pc = pc;
+    com.flux.getTracks().forEach(function (t) { pc.addTrack(t, com.flux); });
+    pc.onicecandidate = function (e) { if (e.candidate) signal("glace", { c: e.candidate.toJSON() }); };
+    pc.ontrack = function (e) { $("loin").srcObject = e.streams[0]; };
+    pc.onconnectionstatechange = function () {
+      if (!com || com.pc !== pc) return;
+      if (pc.connectionState === "connected" && !com.liaison) { com.liaison = true; clearTimeout(com.delai); com.debut = Date.now(); ecranAppel("00:00");
+        com.chrono = setInterval(function () { var n = Math.floor((Date.now() - com.debut) / 1000); $("appelEtat").textContent = String(Math.floor(n / 60)).padStart(2, "0") + ":" + String(n % 60).padStart(2, "0"); }, 1000);
+        try { if (navigator.wakeLock) navigator.wakeLock.request("screen").then(function (v) { if (com) com.veille = v; else v.release(); }).catch(rien); } catch (e) {} }
+      else if (pc.connectionState === "failed") finir("L'appel n'a pas pu s'établir sur ce réseau. Essayez en Wi-Fi.");
+      else if (pc.connectionState === "disconnected") $("appelEtat").textContent = "Connexion instable…";
+    };
+    return pc;
+  }
+  function vider() { if (!com || !com.pc) return; com.attente.forEach(function (c) { com.pc.addIceCandidate(c).catch(rien); }); com.attente = []; }
+  function finir(message, sansSignal) {
+    if (!com) return; var a = com; com = null;
+    clearTimeout(a.delai); clearInterval(a.chrono); taire(); if (!sansSignal) signal("fin");
+    try { if (a.pc) a.pc.close(); } catch (e) {} if (a.flux) a.flux.getTracks().forEach(function (t) { t.stop(); }); if (a.veille) a.veille.release().catch(rien);
+    $("loin").srcObject = null; $("pres").srcObject = null; $("pres").hidden = true; $("appel").hidden = true;
+    ["aMicro", "aCamera"].forEach(function (i) { $(i).classList.remove("coupe"); });
+    cadenceSignaux(2000); if (message) toast(message);
+  }
+  function appeler(video) {
+    if (com) return;
+    if (!navigator.mediaDevices || !window.RTCPeerConnection) return toast("Ce téléphone ne sait pas passer d'appel ici.");
+    com = { role: "emis", video: video, attente: [] }; ecranAppel("Appel en cours…");
+    prendre(video).then(function (f) {
+      if (!com) return f.getTracks().forEach(function (t) { t.stop(); });
+      com.flux = f; if (video) { $("pres").srcObject = f; $("pres").hidden = false; }
+      cadenceSignaux(700);
+      com.delai = setTimeout(function () { finir("Pas de réponse."); envoyer(video ? "Appel vidéo sans réponse" : "Appel audio sans réponse").catch(rien); }, 45000);
+      return signal("appel", { video: video });
+    }).catch(function (e) { finir(refusMedia(e, video), true); });
+  }
+  function recevoir(l) {
+    l = l || []; if (!l.length) return;
+    dernierSignal = l[l.length - 1].id;
+    // sans appel en cours, tout ce qui précède un « fin » ou un « refuse » est de l'histoire ancienne
+    if (!com) { for (var i = l.length - 1; i >= 0; i--) if (l[i].type === "fin" || l[i].type === "refuse") { l = l.slice(i + 1); break; } }
+    l.forEach(function (x) {
+      var d = x.donnees || {}, pc = com && com.pc;
+      if (x.type === "appel") {
+        if (com || x.age > 50 || !window.RTCPeerConnection) return;
+        com = { role: "recu", video: d.video !== false, attente: [] }; ecranAppel(com.video ? "Appel vidéo…" : "Appel audio…"); sonner(); cadenceSignaux(700);
+        com.delai = setTimeout(function () { finir("Appel manqué.", true); }, 50000);
+      } else if (!com) return;
+      else if (x.type === "accepte" && com.role === "emis" && !pc && com.flux) {
+        clearTimeout(com.delai); $("appelEtat").textContent = "Connexion…"; pc = relier();
+        pc.createOffer().then(function (o) { return pc.setLocalDescription(o); }).then(function () { return signal("offre", { sdp: pc.localDescription.sdp }); }).catch(function () { finir("L'appel n'a pas pu démarrer."); });
+        com.delai = setTimeout(function () { finir("L'appel n'a pas pu s'établir sur ce réseau. Essayez en Wi-Fi."); }, 25000);
+      } else if (x.type === "offre" && com.role === "recu" && pc) {
+        pc.setRemoteDescription({ type: "offer", sdp: d.sdp }).then(vider).then(function () { return pc.createAnswer(); }).then(function (r) { return pc.setLocalDescription(r); })
+          .then(function () { return signal("reponse", { sdp: pc.localDescription.sdp }); }).catch(function () { finir("L'appel n'a pas pu démarrer."); });
+      } else if (x.type === "reponse" && com.role === "emis" && pc) pc.setRemoteDescription({ type: "answer", sdp: d.sdp }).then(vider).catch(rien);
+      else if (x.type === "glace" && d.c) { if (pc && pc.remoteDescription) pc.addIceCandidate(d.c).catch(rien); else com.attente.push(d.c); }
+      else if (x.type === "refuse" && com.role === "emis") finir(lAutre() + " ne peut pas répondre.", true);
+      else if (x.type === "fin") finir("Appel terminé.", true);
+    });
+  }
+  $("appelAudio").onclick = function () { appeler(false); };
+  $("appelVideo").onclick = function () { appeler(true); };
+  $("aAccepter").onclick = function () {
+    if (!com || com.role !== "recu" || com.accepte) return;
+    taire(); clearTimeout(com.delai); com.accepte = true; ecranAppel("Connexion…");
+    prendre(com.video).then(function (f) {
+      if (!com) return f.getTracks().forEach(function (t) { t.stop(); });
+      com.flux = f; if (com.video) { $("pres").srcObject = f; $("pres").hidden = false; }
+      relier(); com.delai = setTimeout(function () { finir("L'appel n'a pas pu s'établir sur ce réseau. Essayez en Wi-Fi."); }, 25000);
+      return signal("accepte");
+    }).catch(function (e) { var v = com && com.video; signal("refuse"); finir(refusMedia(e, v), true); });
+  };
+  $("aRefuser").onclick = function () { if (!com) return; if (com.role === "recu" && !com.accepte) { signal("refuse"); finir("", true); } else finir(""); };
+  function couper(sorte, bouton) { if (!com || !com.flux) return; var p = com.flux[sorte === "audio" ? "getAudioTracks" : "getVideoTracks"]()[0]; if (!p) return; p.enabled = !p.enabled; $(bouton).classList.toggle("coupe", !p.enabled); }
+  $("aMicro").onclick = function () { couper("audio", "aMicro"); };
+  $("aCamera").onclick = function () { couper("video", "aCamera"); };
+  $("aTourner").onclick = function () {
+    if (!com || !com.flux || !com.video) return; var face = com.face === "environment" ? "user" : "environment";
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: face } } }).then(function (f) {
+      var neuve = f.getVideoTracks()[0]; if (!com) return neuve.stop();
+      var vieille = com.flux.getVideoTracks()[0], env = com.pc && com.pc.getSenders().filter(function (e) { return e.track && e.track.kind === "video"; })[0];
+      if (env) env.replaceTrack(neuve); if (vieille) { neuve.enabled = vieille.enabled; com.flux.removeTrack(vieille); vieille.stop(); }
+      com.flux.addTrack(neuve); com.face = face; $("pres").srcObject = com.flux; $("pres").style.transform = face === "user" ? "scaleX(-1)" : "none";
+    }).catch(function () { toast("Ce téléphone n'a pas d'autre caméra."); });
+  };
   var invite = null;
   window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); invite = e; $("installer").hidden = false; });
   $("installer").onclick = function () { $("menu").hidden = true; if (invite) { invite.prompt(); invite = null; $("installer").hidden = true; } };
@@ -370,7 +550,7 @@
   if ("serviceWorker" in navigator && !ESSAI) navigator.serviceWorker.register("/private/sw.js", { scope: "/private/" }).catch(function () {});
 
   /* ---------- départ ---------- */
-  etatBouton();
+  etatBouton(); appliquerFond();
   if (moi.code && moi.qui) appel("duo_ouvrir", { p_code: moi.code }).then(function (r) { if (!r.ok) throw 0; moi.dossier = r.dossier; garder(); ouvrir(); }).catch(function () { ecranEntree(); });
   else ecranEntree();
 })();
