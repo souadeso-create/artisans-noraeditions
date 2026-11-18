@@ -148,7 +148,9 @@
   var ESSAI = /^(localhost|127\.)/.test(location.hostname);   // sur l'ordinateur, tout reste dans le navigateur : la vraie messagerie n'est pas touchée
   var $ = function (i) { return document.getElementById(i); };
   var moi = {}; try { moi = JSON.parse(localStorage.getItem("duo") || "{}"); } catch (e) {}
-  var garder = function () { try { localStorage.setItem("duo", JSON.stringify(moi)); } catch (e) {} };
+  var garder = function () { try { localStorage.setItem("duo", JSON.stringify(moi)); } catch (e) {}
+    // une copie pour le service des notifications, qui s'en sert pour envoyer la réponse tapée dans la notification
+    try { if (window.caches) caches.open("private-moi").then(function (c) { return moi.code ? c.put("/private/moi", new Response(JSON.stringify({ qui: moi.qui, code: moi.code }), { headers: { "Content-Type": "application/json" } })) : c.delete("/private/moi"); }).catch(function () {}); } catch (e) {} };
   var dernier = 0, premier = 0, vuAutre = 0, vus = {}, veille = null, enCours = false;
 
   function toast(t) { var z = $("toast"); z.textContent = t; z.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(function () { z.hidden = true; }, 3200); }
