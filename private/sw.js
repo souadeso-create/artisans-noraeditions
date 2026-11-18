@@ -15,9 +15,12 @@ self.addEventListener("push", e => {
     // un appel : la notification reste à l'écran et vibre longtemps ; on la touche pour décrocher (pas de réponse écrite)
     // Un appel : appli fermée, un site ne peut pas faire sonner le téléphone en continu. Le serveur renvoie donc la même notification
     // toutes les quatre secondes et demie ; chacune sonne et vibre de nouveau. À la fin, « Appel manqué » remplace la notification d'appel.
-    if (/^Appel (audio|vidéo)/.test(m.texte)) return self.registration.showNotification(m.titre, { body: m.texte, icon: ICONE, badge: PASTILLE, tag: "duo-appel", renotify: true, silent: false,
-      requireInteraction: true, vibrate: [700, 250, 700, 250, 700], data: { url: "/private/" } });
-    if (m.texte === "Appel manqué") return self.registration.getNotifications({ tag: "duo-appel" }).then(l => { l.forEach(n => n.close());
+    // (chaque envoi ferme la notification précédente et en pose une neuve, sous un autre nom : le téléphone la traite comme une nouvelle et sonne)
+    const appels = () => self.registration.getNotifications().then(l => l.filter(n => (n.tag || "").indexOf("duo-appel") === 0));
+    if (/^Appel (audio|vidéo)/.test(m.texte)) return appels().then(l => { l.forEach(n => n.close());
+      return self.registration.showNotification(m.titre, { body: m.texte, icon: ICONE, badge: PASTILLE, tag: "duo-appel-" + Date.now(), renotify: true, silent: false,
+        requireInteraction: true, vibrate: [700, 250, 700, 250, 700], data: { url: "/private/" } }); });
+    if (m.texte === "Appel manqué") return appels().then(l => { l.forEach(n => n.close());
       return self.registration.showNotification(m.titre, { body: m.texte, icon: ICONE, badge: PASTILLE, tag: "duo-manque", data: { url: "/private/" } }); });
     return self.registration.showNotification(m.titre, { body: m.texte, icon: ICONE, badge: PASTILLE, tag: "duo", renotify: true, silent: false, vibrate: [180, 90, 180], data: { url: "/private/" },
       actions: [{ action: "repondre", type: "text", title: "Répondre", placeholder: "Votre réponse" }] });
