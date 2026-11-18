@@ -89,6 +89,11 @@
   #photos { flex: none; display: flex; }
   #photos span { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff; background: #5f86ad center / cover no-repeat; display: grid; place-items: center; font-weight: 700; font-size: 17px; color: #fff; }
   #photos span + span { margin-left: -12px; }
+  /* les messages tout prêts : une rangée qui défile du doigt */
+  #prets { flex: none; display: flex; gap: 8px; overflow-x: auto; padding: 8px 10px 2px; background: #fff; border-top: 1px solid #dfe5ec; scrollbar-width: none; }
+  #prets::-webkit-scrollbar { display: none; }
+  #prets button { flex: none; padding: 8px 14px; border-radius: 999px; background: var(--doux); color: var(--fonce); font-size: 14.5px; font-weight: 600; white-space: nowrap; }
+  #prets + footer { border-top: 0; }
 </style>
 </head>
 <body>
@@ -118,6 +123,7 @@
     <button type="button" id="sortir">Quitter sur ce téléphone</button>
   </div>
   <div id="fil" aria-live="polite"></div>
+  <div id="prets" aria-label="Messages tout prêts"></div>
   <footer>
     <button type="button" id="joindre" aria-label="Envoyer une photo ou une vidéo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="3"/><circle cx="12" cy="13" r="3.500"/><path d="M8 6l1.500-2h5L16 6"/></svg></button>
     <input type="file" id="fichier" accept="image/*,video/*" multiple hidden>
@@ -248,7 +254,7 @@
   function arreter() { clearInterval(veille); veille = null; }
   function ouvrir() {
     $("entree").hidden = true; $("appli").hidden = false; $("fil").innerHTML = '<button type="button" id="avant" hidden>Voir les messages plus anciens</button>';
-    dernier = premier = 0; vus = {};
+    dernier = premier = 0; vus = {}; prets();
     $("avant").onclick = function () { lire(premier); };
     lire().then(function () { $("avant").hidden = Object.keys(vus).length < 60; $("fil").scrollTop = $("fil").scrollHeight; });
     arreter(); veille = setInterval(function () { if (!document.hidden) lire(); }, 3000);
@@ -263,6 +269,14 @@
   texte.addEventListener("input", etatBouton);
   function envoyer(t, chemin, type) {
     return appel("duo_envoyer", { p_code: moi.code, p_de: moi.qui, p_texte: t || "", p_chemin: chemin || null, p_type: type || null }).then(function () { return lire(); }).then(function () { $("fil").scrollTop = $("fil").scrollHeight; });
+  }
+  function prets() {
+    var e = moi.qui === "Souad" ? "e" : "";
+    var l = ["Bonjour, bien dormi ?", "J'arrive", "Je suis en route", "Bien arrivé" + e, "Je t'appelle dans cinq minutes", "Je suis occupé" + e + ", je te réponds après",
+      "Tu rentres à quelle heure ?", "Tu as besoin de quelque chose ?", "Je pense à toi", "Tu me manques", "Je t'aime", "Bonne nuit"];
+    var z = $("prets"); z.innerHTML = "";
+    l.forEach(function (t) { var b = document.createElement("button"); b.type = "button"; b.textContent = t;
+      b.onclick = function () { b.disabled = true; envoyer(t).catch(function (er) { toast(er.message); }).then(function () { b.disabled = false; }); }; z.appendChild(b); });
   }
   bouton.onclick = function () {
     var t = texte.value.trim(); if (!t) return texte.focus();
