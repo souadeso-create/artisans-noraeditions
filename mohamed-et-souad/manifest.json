@@ -1,0 +1,17 @@
+{
+  "name": "Mohamed et Souad",
+  "short_name": "M & S",
+  "description": "Notre messagerie à nous deux.",
+  "lang": "fr",
+  "start_url": "/mohamed-et-souad/",
+  "scope": "/mohamed-et-souad/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f5f7fa",
+  "theme_color": "#1e3f63",
+  "icons": [
+    { "src": "/mohamed-et-souad/icone-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/mohamed-et-souad/icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/mohamed-et-souad/icone-masque-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

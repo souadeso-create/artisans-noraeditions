@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<title>Mohamed et Souad</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1e3f63">
+<link rel="manifest" href="/mohamed-et-souad/manifest.json">
+<link rel="icon" type="image/png" href="/mohamed-et-souad/icone-192.png">
+<link rel="apple-touch-icon" href="/mohamed-et-souad/icone-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mohamed et Souad">
+<style>
+  /* « Mohamed et Souad » (18/11/2026) : une messagerie privée à deux, installable sur le téléphone, avec photos et vidéos.
+     Pas de compte : un code secret choisi au premier lancement, gardé sur chaque téléphone. La base : nora-schema-13-duo.sql. */
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  :root { --bleu: #2f5d8a; --fonce: #1e3f63; --nuit: #1c2333; --doux: #e6ecf3; --fond: #f5f7fa; --gris: #6b7686; }
+  html, body { height: 100%; }
+  body { font: 16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--nuit); background: var(--fond); overflow: hidden; }
+  button, input, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; border: 0; background: none; }
+  [hidden] { display: none !important; }
+  .coeur { display: inline-block; width: 1em; height: 1em; vertical-align: -.12em; fill: currentColor; }
+
+  /* l'entrée */
+  #entree { height: 100dvh; overflow-y: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 28px 24px calc(28px + env(safe-area-inset-bottom));
+    background: radial-gradient(120% 60% at 50% 0%, #dbe5f0 0%, transparent 60%), linear-gradient(180deg, #f5f7fa, #e6ecf3); text-align: center; }
+  #entree h1 { font-size: 30px; line-height: 1.15; color: var(--fonce); }
+  #entree h1 .coeur { color: var(--bleu); animation: bat 1.6s ease-in-out infinite; }
+  @keyframes bat { 0%, 100% { transform: scale(1); } 18% { transform: scale(1.25); } 36% { transform: scale(1); } 54% { transform: scale(1.15); } }
+  #entree p { color: var(--gris); max-width: 320px; }
+  .qui { display: flex; gap: 12px; }
+  .qui { width: 100%; max-width: 320px; }
+  .qui button { flex: 1; padding: 14px 6px; border-radius: 999px; background: #fff; border: 2px solid #cfd8e3; font-weight: 700; font-size: 15.5px; white-space: nowrap; }
+  .champ::placeholder { letter-spacing: 0; font-size: 16px; }
+  .qui button.choisi { background: var(--bleu); border-color: var(--bleu); color: #fff; }
+  .champ { width: 100%; max-width: 320px; padding: 14px 16px; border-radius: 16px; border: 2px solid #cfd8e3; background: #fff; text-align: center; font-size: 18px; letter-spacing: .08em; outline: none; }
+  .champ:focus { border-color: var(--bleu); }
+  .grand { width: 100%; max-width: 320px; padding: 15px; border-radius: 999px; background: var(--bleu); color: #fff; font-weight: 700; font-size: 17px; box-shadow: 0 8px 20px rgba(47,93,138,.35); }
+  .grand:disabled { opacity: .5; }
+  #erreur { color: #b00020; font-weight: 600; min-height: 1.4em; }
+
+  /* le fil */
+  #appli { position: fixed; left: 0; right: 0; top: 0; height: 100dvh; display: flex; flex-direction: column; background: var(--fond); }
+  header { flex: none; display: flex; align-items: center; gap: 10px; padding: calc(10px + env(safe-area-inset-top)) 14px 10px; background: linear-gradient(135deg, var(--fonce), var(--bleu)); color: #fff; box-shadow: 0 2px 10px rgba(30,63,99,.3); }
+  header h2 { flex: 1; font-size: 19px; display: flex; align-items: center; gap: 7px; }
+  header h2 .coeur { color: #dbe5f0; animation: bat 1.6s ease-in-out infinite; }
+  header button { color: #fff; font-size: 24px; width: 40px; height: 40px; border-radius: 50%; }
+  #menu { position: absolute; right: 10px; top: calc(56px + env(safe-area-inset-top)); z-index: 20; background: #fff; border-radius: 16px; box-shadow: 0 12px 34px rgba(28,35,51,.25); overflow: hidden; min-width: 250px; }
+  #menu button { display: block; width: 100%; text-align: left; padding: 14px 18px; border-bottom: 1px solid #eef1f5; }
+  #menu button:last-child { border: 0; }
+  #fil { flex: 1; overflow-y: auto; padding: 12px 12px 6px; display: flex; flex-direction: column; gap: 6px; overscroll-behavior: contain;
+    background: radial-gradient(#e3e8ee 1.2px, transparent 1.4px) 0 0 / 26px 26px, var(--fond); }
+  #avant { align-self: center; padding: 8px 16px; border-radius: 999px; background: #fff; color: var(--fonce); font-weight: 600; font-size: 14px; box-shadow: 0 2px 8px rgba(28,35,51,.1); }
+  #fil > * { flex: none; }
+  footer textarea { scrollbar-width: none; }
+  .jour { align-self: center; margin: 8px 0 2px; padding: 4px 12px; border-radius: 999px; background: rgba(255,255,255,.85); color: var(--gris); font-size: 12.5px; font-weight: 600; }
+  .m { max-width: 82%; padding: 9px 13px; border-radius: 20px; background: #fff; box-shadow: 0 1px 3px rgba(28,35,51,.12); align-self: flex-start; border-bottom-left-radius: 6px; white-space: pre-wrap; overflow-wrap: anywhere; position: relative; }
+  .m.moi { align-self: flex-end; background: var(--bleu); color: #fff; border-bottom-left-radius: 20px; border-bottom-right-radius: 6px; }
+  .m small { display: block; margin-top: 3px; font-size: 11px; opacity: .7; text-align: right; }
+  .m.retire { font-style: italic; opacity: .6; }
+  .m.coeurs { background: none; box-shadow: none; font-size: 54px; line-height: 1.1; padding: 2px 6px; color: var(--bleu); }
+  .m.coeurs small { color: var(--gris); font-size: 11px; }
+  .m.media { padding: 4px; overflow: hidden; }
+  .m.media img, .m.media video { display: block; max-width: 100%; max-height: 62vh; border-radius: 16px; background: #dde3ea; }
+  .m.media .txt { padding: 6px 9px 2px; }
+  .m.media small { padding: 0 8px 4px; }
+  #vu { align-self: flex-end; font-size: 12px; color: var(--gris); margin: -2px 6px 2px; }
+  #envoi { align-self: center; margin: 4px 0; padding: 8px 14px; border-radius: 14px; background: #fff; color: var(--fonce); font-size: 14px; font-weight: 600; box-shadow: 0 2px 8px rgba(28,35,51,.1); }
+  footer { flex: none; display: flex; align-items: flex-end; gap: 8px; padding: 8px 10px calc(8px + env(safe-area-inset-bottom)); background: #fff; border-top: 1px solid #dfe5ec; }
+  footer textarea { flex: 1; min-width: 0; resize: none; border: 2px solid #cfd8e3; border-radius: 22px; padding: 10px 14px; height: 46px; max-height: 130px; outline: none; background: var(--fond); }
+  footer textarea:focus { border-color: var(--bleu); }
+  footer button { flex: none; width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; }
+  #joindre { background: var(--doux); color: var(--fonce); }
+  #joindre svg { width: 24px; height: 24px; }
+  #envoyer { background: var(--bleu); color: #fff; font-size: 24px; box-shadow: 0 4px 12px rgba(47,93,138,.4); }
+  #envoyer svg { width: 22px; height: 22px; }
+  /* la photo en grand */
+  #grand { position: fixed; inset: 0; z-index: 50; background: rgba(10,14,22,.94); display: flex; align-items: center; justify-content: center; }
+  #grand img { max-width: 100%; max-height: 100%; }
+  #grand button { position: absolute; top: calc(10px + env(safe-area-inset-top)); right: 12px; color: #fff; font-size: 34px; width: 48px; height: 48px; }
+  /* les cœurs qui montent quand on en envoie un */
+  .vole { position: fixed; bottom: 70px; z-index: 40; color: var(--bleu); pointer-events: none; animation: monte 1.7s ease-out forwards; }
+  @keyframes monte { from { transform: translateY(0) scale(.6); opacity: 1; } to { transform: translateY(-62vh) scale(1.5) rotate(18deg); opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .vole, #entree h1 .coeur, header h2 .coeur { animation: none; } }
+  #toast { position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%); z-index: 60; background: var(--nuit); color: #fff; padding: 10px 16px; border-radius: 999px; font-size: 14px; max-width: 90vw; text-align: center; }
+  /* les deux photos, rondes, en haut */
+  #photos { flex: none; display: flex; }
+  #photos span { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff; background: #5f86ad center / cover no-repeat; display: grid; place-items: center; font-weight: 700; font-size: 17px; color: #fff; }
+  #photos span + span { margin-left: -12px; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><symbol id="c" viewBox="0 0 24 24"><path d="M12 21s-7.500-4.700-9.600-9.300C.800 8 2.900 4 6.700 4c2 0 3.700 1 5.300 3 1.600-2 3.300-3 5.300-3 3.800 0 5.900 4 4.300 7.700C19.500 16.300 12 21 12 21z"/></symbol></svg>
+
+<main id="entree" hidden>
+  <h1>Mohamed et Souad</h1>
+  <p id="consigne"></p>
+  <div class="qui"><button type="button" data-qui="Mohamed">Je suis Mohamed</button><button type="button" data-qui="Souad">Je suis Souad</button></div>
+  <input class="champ" id="code" type="password" autocomplete="off" placeholder="Votre code secret" aria-label="Code secret">
+  <input class="champ" id="code2" type="password" autocomplete="off" placeholder="Le même code, une seconde fois" aria-label="Confirmer le code" hidden>
+  <div id="erreur" role="alert"></div>
+  <button class="grand" id="entrer" type="button">Entrer</button>
+</main>
+
+<div id="appli" hidden>
+  <header>
+    <div id="photos"><span data-p="Mohamed" role="img" aria-label="Mohamed">M</span><span data-p="Souad" role="img" aria-label="Souad">S</span></div>
+    <h2>Mohamed et Souad</h2>
+    <button type="button" id="ouvrirMenu" aria-label="Menu">⋮</button>
+  </header>
+  <div id="menu" hidden>
+    <button type="button" id="notif">Me prévenir sur ce téléphone</button>
+    <button type="button" id="maPhoto">Changer ma photo</button>
+    <input type="file" id="fichierPhoto" accept="image/*" hidden>
+    <button type="button" id="installer" hidden>Mettre l'appli sur l'écran d'accueil</button>
+    <button type="button" id="sortir">Quitter sur ce téléphone</button>
+  </div>
+  <div id="fil" aria-live="polite"></div>
+  <footer>
+    <button type="button" id="joindre" aria-label="Envoyer une photo ou une vidéo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="3"/><circle cx="12" cy="13" r="3.500"/><path d="M8 6l1.500-2h5L16 6"/></svg></button>
+    <input type="file" id="fichier" accept="image/*,video/*" multiple hidden>
+    <textarea id="texte" rows="1" placeholder="Écrire un message" aria-label="Écrire un message" maxlength="4000"></textarea>
+    <button type="button" id="envoyer" aria-label="Envoyer"></button>
+  </footer>
+</div>
+<div id="grand" hidden><img alt=""><button type="button" aria-label="Fermer">×</button></div>
+<div id="toast" hidden></div>
+
+<script>
+(function () {
+  "use strict";
+  var BASE = "https://olsqmrsyerdsyfkameab.supabase.co", CLE = "sb_publishable_nHTOBhRB-oKfl795VPVaAA_ujwUnkCn";
+  var VAPID = "BHINo8YCi84aSYcJ2KTiWJcWBKFY9m4Q8_-VgmNsgBkprU5I0Buw8x1jxhBw6wANKk7g30C8oCLn3VL0dY2rhcw";
+  var ESSAI = /^(localhost|127\.)/.test(location.hostname);   // sur l'ordinateur, tout reste dans le navigateur : la vraie messagerie n'est pas touchée
+  var $ = function (i) { return document.getElementById(i); };
+  var moi = {}; try { moi = JSON.parse(localStorage.getItem("duo") || "{}"); } catch (e) {}
+  var garder = function () { try { localStorage.setItem("duo", JSON.stringify(moi)); } catch (e) {} };
+  var dernier = 0, premier = 0, vuAutre = 0, vus = {}, veille = null, enCours = false;
+
+  function toast(t) { var z = $("toast"); z.textContent = t; z.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(function () { z.hidden = true; }, 3200); }
+
+  /* ---------- la base ---------- */
+  function appel(nom, corps) {
+    if (ESSAI) return essai(nom, corps);
+    return fetch(BASE + "/rest/v1/rpc/" + nom, { method: "POST", headers: { "Content-Type": "application/json", apikey: CLE }, body: JSON.stringify(corps || {}) })
+      .then(function (r) { return r.json().then(function (d) { if (!r.ok) throw new Error(d && d.message || "La base ne répond pas."); return d; }); });
+  }
+  function essai(nom, c) {
+    var b = {}; try { b = JSON.parse(localStorage.getItem("duo_essai") || "{}"); } catch (e) {} b.m = b.m || [];
+    var ecrire = function () { localStorage.setItem("duo_essai", JSON.stringify(b)); };
+    var bon = function () { if (c.p_code !== b.code) throw new Error("Code incorrect."); };
+    try {
+      if (nom === "duo_existe") return Promise.resolve(!!b.code);
+      if (nom === "duo_creer") { if ((c.p_code || "").length < 6) throw new Error("Le code doit faire six caractères au moins."); b.code = c.p_code; ecrire(); return Promise.resolve(true); }
+      if (nom === "duo_ouvrir") return Promise.resolve(c.p_code === b.code ? { ok: true, dossier: "essai" } : { ok: false });
+      bon();
+      if (nom === "duo_lire") { var l = b.m.filter(function (m) { return c.p_avant ? m.id < c.p_avant : m.id > (c.p_apres || 0); }).slice(-60);
+        b["vu_" + c.p_qui] = b.m.length ? b.m[b.m.length - 1].id : 0; ecrire();
+        return Promise.resolve({ messages: l, supprimes: b.m.filter(function (m) { return m.supprime; }).map(function (m) { return m.id; }), vu_autre: b["vu_" + (c.p_qui === "Souad" ? "Mohamed" : "Souad")] || 0, photos: b.photos || {} }); }
+      if (nom === "duo_photo") { b.photos = b.photos || {}; b.photos[c.p_qui] = c.p_chemin; ecrire(); return Promise.resolve(true); }
+      if (nom === "duo_envoyer") { var n = b.m.length + 1; b.m.push({ id: n, de: c.p_de, texte: c.p_texte || "", media_chemin: c.p_chemin || null, media_type: c.p_type || null, created_at: new Date().toISOString(), supprime: false }); ecrire(); return Promise.resolve(n); }
+      if (nom === "duo_supprimer") { b.m.forEach(function (m) { if (m.id === c.p_id && m.de === c.p_de) { m.supprime = true; m.texte = ""; m.media_chemin = null; } }); ecrire(); return Promise.resolve(true); }
+      return Promise.resolve(true);
+    } catch (e) { return Promise.reject(e); }
+  }
+  var adresse = function (chemin) { return ESSAI ? chemin : BASE + "/storage/v1/object/public/duo/" + chemin; };
+
+  /* ---------- l'entrée ---------- */
+  var nouveau = false, choix = moi.qui || "";
+  function ecranEntree() {
+    $("appli").hidden = true; $("entree").hidden = false; $("erreur").textContent = "";
+    appel("duo_existe").then(function (existe) {
+      nouveau = !existe; $("code2").hidden = !nouveau;
+      $("consigne").textContent = nouveau ? "Premier lancement : choisissez votre prénom, puis un code secret à vous deux (six caractères au moins). L'autre tapera le même sur son téléphone."
+        : "Choisissez votre prénom et tapez votre code secret. Il ne sera demandé qu'une fois sur ce téléphone.";
+      $("entrer").textContent = nouveau ? "Créer notre messagerie" : "Entrer";
+    }).catch(function (e) { $("erreur").textContent = e.message; });
+    document.querySelectorAll("[data-qui]").forEach(function (b) { b.classList.toggle("choisi", b.dataset.qui === choix); });
+  }
+  document.querySelectorAll("[data-qui]").forEach(function (b) { b.onclick = function () { choix = b.dataset.qui; document.querySelectorAll("[data-qui]").forEach(function (x) { x.classList.toggle("choisi", x === b); }); }; });
+  $("entrer").onclick = function () {
+    var code = $("code").value, b = $("entrer"); $("erreur").textContent = "";
+    if (!choix) return $("erreur").textContent = "Dites d'abord qui vous êtes.";
+    if (code.length < 6) return $("erreur").textContent = "Le code fait six caractères au moins.";
+    if (nouveau && code !== $("code2").value) return $("erreur").textContent = "Les deux codes ne sont pas les mêmes.";
+    b.disabled = true;
+    (nouveau ? appel("duo_creer", { p_code: code }) : Promise.resolve(true)).then(function () { return appel("duo_ouvrir", { p_code: code }); }).then(function (r) {
+      if (!r.ok) throw new Error("Ce n'est pas le bon code.");
+      moi = { qui: choix, code: code, dossier: r.dossier }; garder(); $("code").value = $("code2").value = ""; ouvrir();
+    }).catch(function (e) { $("erreur").textContent = e.message; }).then(function () { b.disabled = false; });
+  };
+
+  /* ---------- le fil ---------- */
+  var jourDe = function (d) { var x = new Date(d), a = new Date(), h = new Date(); h.setDate(a.getDate() - 1);
+    return x.toDateString() === a.toDateString() ? "Aujourd'hui" : x.toDateString() === h.toDateString() ? "Hier" : x.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" }); };
+  var heure = function (d) { return new Date(d).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }); };
+  function bulle(m) {
+    var e = document.createElement("div"), mien = m.de === moi.qui; e.className = "m" + (mien ? " moi" : ""); e.dataset.id = m.id; e.dataset.jour = jourDe(m.created_at); e.dataset.de = m.de;
+    if (m.supprime) { e.classList.add("retire"); e.textContent = "Message retiré"; }
+    else if (m.media_chemin) { e.classList.add("media"); e.dataset.chemin = m.media_chemin;
+      var v = /^video/.test(m.media_type || ""), el = document.createElement(v ? "video" : "img"); el.src = adresse(m.media_chemin);
+      if (v) { el.controls = true; el.preload = "metadata"; el.playsInline = true; } else { el.alt = "Photo"; el.loading = "lazy"; el.onclick = function () { $("grand").querySelector("img").src = el.src; $("grand").hidden = false; }; }
+      e.appendChild(el); if (m.texte) { var t = document.createElement("div"); t.className = "txt"; t.textContent = m.texte; e.appendChild(t); } }
+    else e.textContent = m.texte;
+    var s = document.createElement("small"); s.textContent = heure(m.created_at); e.appendChild(s);
+    // un appui long sur un de ses propres messages propose de le retirer
+    if (mien && !m.supprime) { var tps; var debut = function () { tps = setTimeout(function () { retirer(m, e); }, 650); }, fin = function () { clearTimeout(tps); };
+      e.addEventListener("touchstart", debut, { passive: true }); e.addEventListener("touchend", fin); e.addEventListener("touchmove", fin, { passive: true }); e.addEventListener("contextmenu", function (ev) { ev.preventDefault(); retirer(m, e); }); }
+    return e;
+  }
+  function retirer(m, e) {
+    if (!confirm("Retirer ce message pour vous deux ?")) return;
+    var suite = function () { return appel("duo_supprimer", { p_code: moi.code, p_de: moi.qui, p_id: m.id }); };
+    (m.media_chemin && !ESSAI ? fetch(BASE + "/storage/v1/object/duo/" + m.media_chemin, { method: "DELETE", headers: { apikey: CLE, Authorization: "Bearer " + CLE } }).catch(function () {}) : Promise.resolve())
+      .then(suite).then(function () { m.supprime = true; e.replaceWith(bulle(m)); }).catch(function (er) { toast(er.message); });
+  }
+  function poser(l, enHaut) {
+    var fil = $("fil"), bas = fil.scrollHeight - fil.scrollTop - fil.clientHeight < 140, hAvant = fil.scrollHeight;
+    l.forEach(function (m) { if (vus[m.id]) return; vus[m.id] = 1; dernier = Math.max(dernier, m.id); premier = premier ? Math.min(premier, m.id) : m.id;
+      var e = bulle(m);
+      if (enHaut) fil.insertBefore(e, fil.querySelector(".m, .jour")); else fil.insertBefore(e, $("vu") || null); });
+    // les séparateurs de jour, refaits d'un coup
+    fil.querySelectorAll(".jour").forEach(function (j) { j.remove(); }); var j = "";
+    fil.querySelectorAll(".m").forEach(function (e) { if (e.dataset.jour !== j) { j = e.dataset.jour; var d = document.createElement("div"); d.className = "jour"; d.textContent = j; fil.insertBefore(d, e); } });
+    if (enHaut) fil.scrollTop += fil.scrollHeight - hAvant; else if (bas || !l.length) fil.scrollTop = fil.scrollHeight;
+  }
+  function marquerVu() {
+    var z = $("vu"); if (!z) { z = document.createElement("div"); z.id = "vu"; $("fil").appendChild(z); }
+    var miens = [].slice.call($("fil").querySelectorAll(".m.moi")), d = miens[miens.length - 1];
+    z.textContent = d && Number(d.dataset.id) <= vuAutre ? "Vu" : ""; $("fil").appendChild(z);
+  }
+  function lire(avant) {
+    if (enCours && !avant) return Promise.resolve(); if (!avant) enCours = true;
+    return appel("duo_lire", { p_code: moi.code, p_qui: moi.qui, p_apres: avant ? 0 : dernier, p_avant: avant || null }).then(function (r) {
+      var neufs = (r.messages || []).filter(function (m) { return !vus[m.id]; });
+      if (avant) { poser(neufs.slice().reverse(), true); $("avant").hidden = neufs.length < 60; }
+      else poser(neufs);
+      (r.supprimes || []).forEach(function (id) { var e = $("fil").querySelector('.m[data-id="' + id + '"]:not(.retire)'); if (e) e.replaceWith(bulle({ id: id, de: e.dataset.de, supprime: true, created_at: new Date().toISOString() })); });
+      vuAutre = r.vu_autre || 0; marquerVu(); photos(r.photos);
+    }).catch(function (e) { if (/Code incorrect/.test(e.message)) { moi = {}; garder(); arreter(); ecranEntree(); } }).then(function () { if (!avant) enCours = false; });
+  }
+  function photos(p) {
+    document.querySelectorAll("#photos span").forEach(function (z) { var ch = p && p[z.dataset.p];
+      if (ch && z.dataset.ch !== ch) { z.dataset.ch = ch; z.style.backgroundImage = 'url("' + adresse(ch) + '")'; z.textContent = ""; } });
+  }
+  function arreter() { clearInterval(veille); veille = null; }
+  function ouvrir() {
+    $("entree").hidden = true; $("appli").hidden = false; $("fil").innerHTML = '<button type="button" id="avant" hidden>Voir les messages plus anciens</button>';
+    dernier = premier = 0; vus = {};
+    $("avant").onclick = function () { lire(premier); };
+    lire().then(function () { $("avant").hidden = Object.keys(vus).length < 60; $("fil").scrollTop = $("fil").scrollHeight; });
+    arreter(); veille = setInterval(function () { if (!document.hidden) lire(); }, 3000);
+  }
+  document.addEventListener("visibilitychange", function () { if (!document.hidden && moi.code) lire(); });
+
+  /* ---------- écrire, envoyer ---------- */
+  var texte = $("texte"), bouton = $("envoyer");
+  var FLECHE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.400" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+  function etatBouton() { var plein = texte.value.trim() !== ""; bouton.innerHTML = FLECHE; bouton.style.opacity = plein ? "1" : ".45";
+    texte.style.height = "46px"; texte.style.height = Math.max(46, Math.min(130, texte.scrollHeight + 2)) + "px"; }
+  texte.addEventListener("input", etatBouton);
+  function envoyer(t, chemin, type) {
+    return appel("duo_envoyer", { p_code: moi.code, p_de: moi.qui, p_texte: t || "", p_chemin: chemin || null, p_type: type || null }).then(function () { return lire(); }).then(function () { $("fil").scrollTop = $("fil").scrollHeight; });
+  }
+  bouton.onclick = function () {
+    var t = texte.value.trim(); if (!t) return texte.focus();
+    bouton.disabled = true; texte.value = ""; etatBouton();
+    envoyer(t).catch(function (e) { toast(e.message); texte.value = t; etatBouton(); }).then(function () { bouton.disabled = false; });
+  };
+
+  /* ---------- photos et vidéos ---------- */
+  $("joindre").onclick = function () { $("fichier").click(); };
+  // une photo de téléphone pèse plusieurs méga-octets : elle est ramenée à 1 920 pixels de côté avant de partir
+  function reduire(f) {
+    if (!/^image\/(jpeg|png|webp|heic)/.test(f.type)) return Promise.resolve(f);
+    return createImageBitmap(f).then(function (im) { var k = Math.min(1, 1920 / Math.max(im.width, im.height)), c = document.createElement("canvas"); c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
+      c.getContext("2d").drawImage(im, 0, 0, c.width, c.height); return new Promise(function (ok) { c.toBlob(function (b) { ok(b && b.size < f.size ? new File([b], "photo.jpg", { type: "image/jpeg" }) : f); }, "image/jpeg", .86); }); }).catch(function () { return f; });
+  }
+  function deposer(f, suivi) {
+    var ext = (f.name.split(".").pop() || (/^video/.test(f.type) ? "mp4" : "jpg")).toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 5) || "bin";
+    var nom = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2)) + "." + ext, chemin = moi.dossier + "/" + nom;
+    if (ESSAI) return new Promise(function (ok) { var r = new FileReader(); r.onload = function () { ok(f.size < 900000 ? r.result : "data:,trop-lourd-pour-l-essai"); }; r.readAsDataURL(f); });
+    return new Promise(function (ok, non) { var x = new XMLHttpRequest(); x.open("POST", BASE + "/storage/v1/object/duo/" + chemin);
+      x.setRequestHeader("apikey", CLE); x.setRequestHeader("Authorization", "Bearer " + CLE); x.setRequestHeader("Content-Type", f.type || "application/octet-stream"); x.setRequestHeader("x-upsert", "false");
+      x.upload.onprogress = function (e) { if (e.lengthComputable) suivi(Math.round(100 * e.loaded / e.total)); };
+      x.onload = function () { if (x.status >= 200 && x.status < 300) ok(chemin); else { var m = ""; try { m = JSON.parse(x.responseText).message; } catch (e) {} non(new Error(m || "Le fichier n'est pas parti (" + x.status + ").")); } };
+      x.onerror = function () { non(new Error("Pas de connexion.")); }; x.send(f); });
+  }
+  $("fichier").onchange = function () {
+    var liste = [].slice.call(this.files); this.value = ""; if (!liste.length) return;
+    var z = document.createElement("div"); z.id = "envoi"; $("fil").appendChild(z); $("fil").scrollTop = $("fil").scrollHeight;
+    var suite = Promise.resolve();
+    liste.forEach(function (f, i) { suite = suite.then(function () {
+      if (!/^(image|video)\//.test(f.type)) throw new Error("Seulement des photos et des vidéos.");
+      if (f.size > 50 * 1024 * 1024) throw new Error("Cette vidéo dépasse 50 Mo : elle est trop lourde pour partir.");
+      var quoi = (/^video/.test(f.type) ? "Vidéo" : "Photo") + (liste.length > 1 ? " " + (i + 1) + " sur " + liste.length : "");
+      z.textContent = quoi + " : préparation…";
+      return reduire(f).then(function (g) { return deposer(g, function (p) { z.textContent = quoi + " : " + p + " %"; }).then(function (chemin) { return envoyer("", chemin, g.type); }); });
+    }); });
+    suite.catch(function (e) { toast(e.message); }).then(function () { z.remove(); });
+  };
+  // sa propre photo : recadrée en carré, 400 pixels de côté
+  function carre(f) {
+    return createImageBitmap(f).then(function (im) { var c = Math.min(im.width, im.height), t = document.createElement("canvas"); t.width = t.height = 400;
+      t.getContext("2d").drawImage(im, (im.width - c) / 2, (im.height - c) / 2, c, c, 0, 0, 400, 400);
+      return new Promise(function (ok, non) { t.toBlob(function (b) { b ? ok(new File([b], "photo.jpg", { type: "image/jpeg" })) : non(new Error("Cette image ne se lit pas.")); }, "image/jpeg", .88); }); });
+  }
+  $("maPhoto").onclick = function () { $("menu").hidden = true; $("fichierPhoto").click(); };
+  $("fichierPhoto").onchange = function () {
+    var f = this.files[0]; this.value = ""; if (!f) return;
+    carre(f).then(function (g) { return deposer(g, function () {}); }).then(function (chemin) { return appel("duo_photo", { p_code: moi.code, p_qui: moi.qui, p_chemin: chemin }); })
+      .then(function () { toast("Votre photo est en place."); return lire(); }).catch(function (e) { toast(e.message || "La photo n'est pas partie."); });
+  };
+  $("grand").onclick = function () { $("grand").hidden = true; };
+
+  /* ---------- le menu : notifications, installation, quitter ---------- */
+  $("ouvrirMenu").onclick = function (e) { e.stopPropagation(); $("menu").hidden = !$("menu").hidden; };
+  document.addEventListener("click", function (e) { if (!e.target.closest("#menu")) $("menu").hidden = true; });
+  var enOctets = function (b) { var p = "=".repeat((4 - b.length % 4) % 4), s = atob((b + p).replace(/-/g, "+").replace(/_/g, "/")); return Uint8Array.from(s, function (c) { return c.charCodeAt(0); }); };
+  $("notif").onclick = function () {
+    $("menu").hidden = true;
+    if (!("serviceWorker" in navigator) || !("PushManager" in window)) return toast("Ce téléphone ne sait pas recevoir de notifications ici. Sur iPhone, mettez d'abord l'appli sur l'écran d'accueil.");
+    Notification.requestPermission().then(function (p) { if (p !== "granted") throw new Error("Les notifications sont refusées dans les réglages du téléphone.");
+      return navigator.serviceWorker.register("/mohamed-et-souad/sw.js", { scope: "/mohamed-et-souad/" }); }).then(function () { return navigator.serviceWorker.ready; })
+      .then(function (reg) { return reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: enOctets(VAPID) }); })
+      .then(function (ab) { var j = ab.toJSON(); return appel("duo_abonner", { p_code: moi.code, p_qui: moi.qui, p_endpoint: j.endpoint, p_cles: j.keys }); })
+      .then(function () { toast("Ce téléphone sonnera à chaque message"); }).catch(function (e) { toast(e.message || "Les notifications n'ont pas pu être activées."); });
+  };
+  var invite = null;
+  window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); invite = e; $("installer").hidden = false; });
+  $("installer").onclick = function () { $("menu").hidden = true; if (invite) { invite.prompt(); invite = null; $("installer").hidden = true; } };
+  $("sortir").onclick = function () { $("menu").hidden = true; if (!confirm("Quitter la messagerie sur ce téléphone ? Les messages restent ; il faudra retaper le code pour revenir.")) return; moi = {}; garder(); arreter(); ecranEntree(); };
+  if ("serviceWorker" in navigator && !ESSAI) navigator.serviceWorker.register("/mohamed-et-souad/sw.js", { scope: "/mohamed-et-souad/" }).catch(function () {});
+
+  /* ---------- départ ---------- */
+  etatBouton();
+  if (moi.code && moi.qui) appel("duo_ouvrir", { p_code: moi.code }).then(function (r) { if (!r.ok) throw 0; moi.dossier = r.dossier; garder(); ouvrir(); }).catch(function () { ecranEntree(); });
+  else ecranEntree();
+})();
+</script>
+</body>
+</html>
