@@ -124,6 +124,20 @@
   #appelBoutons button.coupe { background: #fff; color: #1c2333; }
   #appelBoutons button.rouge { background: #d93025; }
   #appelBoutons button.vert { background: #1e9e55; }
+  /* « Avant de commencer » : installer l'appli, activer les notifications */
+  #prepa { height: 100dvh; overflow-y: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 28px 22px calc(28px + env(safe-area-inset-bottom)); background: linear-gradient(180deg, #f5f7fa, #e6ecf3); }
+  #prepa h1 { font-size: 26px; color: var(--fonce); text-align: center; }
+  #prepa > p { color: var(--gris); text-align: center; max-width: 330px; }
+  #prepa .etape { width: 100%; max-width: 340px; background: #fff; border: 2px solid #cfd8e3; border-radius: 18px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
+  #prepa .etape.faite { border-color: #1e9e55; }
+  #prepa .etape strong { font-size: 16.5px; display: flex; justify-content: space-between; gap: 8px; }
+  #prepa .etape strong em { font-style: normal; font-size: 13px; font-weight: 700; color: #1e9e55; white-space: nowrap; }
+  #prepa .etape span { font-size: 14.5px; color: var(--gris); }
+  #prepa .etape { border: 0; background: none; padding: 0; }
+  #prepa .etape button { width: 100%; padding: 16px; border-radius: 16px; background: var(--bleu); color: #fff; font-weight: 700; font-size: 17px; box-shadow: 0 6px 16px rgba(47,93,138,.3); }
+  #prepa .etape.faite button { background: #1e9e55; box-shadow: none; }
+  #prepa .etape span:empty { display: none; }
+  #prepa .etape span { text-align: center; }
 </style>
 </head>
 <body>
@@ -139,6 +153,13 @@
   <button class="grand" id="entrer" type="button">Entrer</button>
 </main>
 
+<main id="prepa" hidden>
+  <h1>Avant de commencer</h1>
+  <div class="etape" id="etapeInstaller"><button type="button"></button><span></span></div>
+  <div class="etape" id="etapeNotif"><button type="button"></button><span></span></div>
+  <button class="grand" id="commencer" type="button" disabled>Entrer dans la messagerie</button>
+</main>
+
 <div id="appli" hidden>
   <header>
     <div id="photos"><span data-p="Mohamed" role="img" aria-label="Mohamed">M</span><span data-p="Souad" role="img" aria-label="Souad">S</span></div>
@@ -151,6 +172,7 @@
     <button type="button" id="notif">Me prévenir sur ce téléphone</button>
     <button type="button" id="maPhoto">Changer ma photo</button>
     <button type="button" id="fond">Changer le fond d'écran</button>
+    <button type="button" id="sons"></button>
     <input type="file" id="fichierFond" accept="image/*" hidden>
     <input type="file" id="fichierPhoto" accept="image/*" hidden>
     <button type="button" id="installer" hidden>Mettre l'appli sur l'écran d'accueil</button>
@@ -290,7 +312,7 @@
     return appel("duo_lire", { p_code: moi.code, p_qui: moi.qui, p_apres: avant ? 0 : dernier, p_avant: avant || null }).then(function (r) {
       var neufs = (r.messages || []).filter(function (m) { return !vus[m.id]; });
       if (avant) { poser(neufs.slice().reverse(), true); $("avant").hidden = neufs.length < 60; }
-      else poser(neufs);
+      else { var recu = dernier > 0 && neufs.some(function (m) { return m.de !== moi.qui && !m.supprime; }); poser(neufs); if (recu) tinter(); }
       (r.supprimes || []).forEach(function (id) { var e = $("fil").querySelector('.m[data-id="' + id + '"]:not(.retire)'); if (e) e.replaceWith(bulle({ id: id, de: e.dataset.de, supprime: true, created_at: new Date().toISOString() })); });
       vuAutre = r.vu_autre || 0; marquerVu(); photos(r.photos);
     }).catch(function (e) { if (/Code incorrect/.test(e.message)) { moi = {}; garder(); arreter(); ecranEntree(); } }).then(function () { if (!avant) enCours = false; });
@@ -301,7 +323,8 @@
   }
   function arreter() { clearInterval(veille); veille = null; clearInterval(veilleSignal); veilleSignal = null; }
   function ouvrir() {
-    $("entree").hidden = true; $("appli").hidden = false; $("fil").innerHTML = '<button type="button" id="avant" hidden>Voir les messages plus anciens</button>';
+    if (!moi.pret && (!ESSAI || /accueil/.test(location.search))) return preparer();
+    $("prepa").hidden = true; $("entree").hidden = true; $("appli").hidden = false; $("fil").innerHTML = '<button type="button" id="avant" hidden>Voir les messages plus anciens</button>';
     dernier = premier = 0; vus = {}; prets(); bandeau(); dernierSignal = 0; lireSignaux(); cadenceSignaux(2000);
     $("avant").onclick = function () { lire(premier); };
     lire().then(function () { $("avant").hidden = Object.keys(vus).length < 60; $("fil").scrollTop = $("fil").scrollHeight; });
@@ -388,7 +411,7 @@
       return navigator.serviceWorker.register("/private/sw.js", { scope: "/private/" }); }).then(function () { return navigator.serviceWorker.ready; })
       .then(function (reg) { return reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: enOctets(VAPID) }); })
       .then(function (ab) { var j = ab.toJSON(); return appel("duo_abonner", { p_code: moi.code, p_qui: moi.qui, p_endpoint: j.endpoint, p_cles: j.keys }); })
-      .then(function () { moi.notif = true; garder(); bandeau(); toast("Ce téléphone sonnera à chaque message"); }).catch(function (e) { toast(e.message || "Les notifications n'ont pas pu être activées."); });
+      .then(function () { moi.notif = true; garder(); bandeau(); if (!$("prepa").hidden) preparer(); toast("Ce téléphone sonnera à chaque message"); }).catch(function (e) { toast(e.message || "Les notifications n'ont pas pu être activées."); });
   };
   // le bandeau : il reste tant que ce téléphone n'est pas inscrit (ou jusqu'à « × », pour cette fois)
   function bandeau() {
@@ -428,6 +451,24 @@
     createImageBitmap(f).then(function (im) { var k = Math.min(1, 1280 / Math.max(im.width, im.height)), t = document.createElement("canvas"); t.width = Math.round(im.width * k); t.height = Math.round(im.height * k);
       t.getContext("2d").drawImage(im, 0, 0, t.width, t.height); choisirFond({ id: "photo", image: t.toDataURL("image/jpeg", .8) }); }).catch(function () { toast("Cette image ne se lit pas."); });
   };
+  /* ---------- les sons (fabriqués sur place, aucun fichier) ---------- */
+  var ctxSon = null, sons = true; try { sons = localStorage.getItem("duo_sons") !== "0"; } catch (e) {}
+  // un navigateur ne joue un son qu'après un premier toucher : on réveille le haut-parleur à ce moment-là
+  function reveil() { try { if (!ctxSon) { var C = window.AudioContext || window.webkitAudioContext; ctxSon = new C(); } if (ctxSon.state === "suspended") ctxSon.resume(); } catch (e) {} }
+  document.addEventListener("pointerdown", reveil, { passive: true });
+  // notes : [fréquence, départ, durée, volume]
+  function notes(l) {
+    if (!sons) return; reveil(); if (!ctxSon) return;
+    try { var t0 = ctxSon.currentTime + .03;
+      l.forEach(function (n) { var o = ctxSon.createOscillator(), g = ctxSon.createGain(), d = t0 + n[1]; o.type = "sine"; o.frequency.value = n[0];
+        g.gain.setValueAtTime(.0001, d); g.gain.exponentialRampToValueAtTime(n[3] || .2, d + .02); g.gain.exponentialRampToValueAtTime(.0001, d + n[2]);
+        o.connect(g); g.connect(ctxSon.destination); o.start(d); o.stop(d + n[2] + .05); }); } catch (e) {}
+  }
+  function tinter() { notes([[880, 0, .18, .22], [1175, .14, .34, .22]]); }
+  function boutonSons() { $("sons").textContent = sons ? "Couper les sons" : "Remettre les sons"; }
+  $("sons").onclick = function () { sons = !sons; try { localStorage.setItem("duo_sons", sons ? "1" : "0"); } catch (e) {} boutonSons(); $("menu").hidden = true; if (sons) tinter(); else taire(); toast(sons ? "Les sons sont remis." : "Les sons sont coupés sur ce téléphone."); };
+  boutonSons();
+
   /* ---------- les appels, audio et vidéo ---------- */
   // « com » : l'appel en cours sur ce téléphone, ou rien. L'image et le son vont d'un téléphone à l'autre, sans passer par la base.
   var com = null, dernierSignal = 0, veilleSignal = null, signauxEnCours = false, sonnerie = null;
@@ -450,11 +491,13 @@
     $("aMicro").hidden = recu; $("aCamera").hidden = $("aTourner").hidden = recu || !com.video;
     $("loin").style.visibility = com.video && com.liaison ? "visible" : "hidden";
   }
-  function sonner() {
-    try { var C = window.AudioContext || window.webkitAudioContext, ctx = new C(), bip = function () { var o = ctx.createOscillator(), g = ctx.createGain(); o.frequency.value = 660; g.gain.value = .12; o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime + .35); };
-      bip(); sonnerie = { ctx: ctx, t: setInterval(function () { bip(); if (navigator.vibrate) navigator.vibrate(300); }, 1300) }; } catch (e) {}
+  function sonner(sorte) {
+    taire(); var sortant = sorte === "sortant";
+    var l = sortant ? [[440, 0, .9, .1], [480, 0, .9, .1]] : [[784, 0, .22, .3], [988, .22, .22, .3], [1175, .44, .4, .3], [988, .9, .22, .3], [1175, 1.12, .5, .3]];
+    var f = function () { notes(l); if (!sortant && sons && navigator.vibrate) navigator.vibrate([400, 200, 400]); };
+    f(); sonnerie = { t: setInterval(f, sortant ? 3000 : 2200) };
   }
-  function taire() { if (sonnerie) { clearInterval(sonnerie.t); try { sonnerie.ctx.close(); } catch (e) {} sonnerie = null; } }
+  function taire() { if (sonnerie) { clearInterval(sonnerie.t); sonnerie = null; if (navigator.vibrate) navigator.vibrate(0); } }
   function prendre(video) { return navigator.mediaDevices.getUserMedia({ audio: true, video: video ? { facingMode: com.face || "user" } : false }); }
   function refusMedia(e, video) { return /NotAllowed|Permission|Security/.test((e && e.name) + " " + (e && e.message)) ? "Autorisez le micro" + (video ? " et la caméra" : "") + " pour cette appli, puis recommencez." : "Le micro" + (video ? " ou la caméra" : "") + " ne répond pas."; }
   function relier() {
@@ -475,7 +518,7 @@
   function vider() { if (!com || !com.pc) return; com.attente.forEach(function (c) { com.pc.addIceCandidate(c).catch(rien); }); com.attente = []; }
   function finir(message, sansSignal) {
     if (!com) return; var a = com; com = null;
-    clearTimeout(a.delai); clearInterval(a.chrono); taire(); if (!sansSignal) signal("fin");
+    clearTimeout(a.delai); clearInterval(a.chrono); taire(); notes([[660, 0, .16, .18], [440, .16, .3, .18]]); if (!sansSignal) signal("fin");
     try { if (a.pc) a.pc.close(); } catch (e) {} if (a.flux) a.flux.getTracks().forEach(function (t) { t.stop(); }); if (a.veille) a.veille.release().catch(rien);
     $("loin").srcObject = null; $("pres").srcObject = null; $("pres").hidden = true; $("appel").hidden = true;
     ["aMicro", "aCamera"].forEach(function (i) { $(i).classList.remove("coupe"); });
@@ -488,7 +531,7 @@
     prendre(video).then(function (f) {
       if (!com) return f.getTracks().forEach(function (t) { t.stop(); });
       com.flux = f; if (video) { $("pres").srcObject = f; $("pres").hidden = false; }
-      cadenceSignaux(700);
+      cadenceSignaux(700); sonner("sortant");
       com.delai = setTimeout(function () { finir("Pas de réponse."); envoyer(video ? "Appel vidéo sans réponse" : "Appel audio sans réponse").catch(rien); }, 45000);
       return signal("appel", { video: video });
     }).catch(function (e) { finir(refusMedia(e, video), true); });
@@ -506,7 +549,7 @@
         com.delai = setTimeout(function () { finir("Appel manqué.", true); }, 50000);
       } else if (!com) return;
       else if (x.type === "accepte" && com.role === "emis" && !pc && com.flux) {
-        clearTimeout(com.delai); $("appelEtat").textContent = "Connexion…"; pc = relier();
+        taire(); clearTimeout(com.delai); $("appelEtat").textContent = "Connexion…"; pc = relier();
         pc.createOffer().then(function (o) { return pc.setLocalDescription(o); }).then(function () { return signal("offre", { sdp: pc.localDescription.sdp }); }).catch(function () { finir("L'appel n'a pas pu démarrer."); });
         com.delai = setTimeout(function () { finir("L'appel n'a pas pu s'établir sur ce réseau. Essayez en Wi-Fi."); }, 25000);
       } else if (x.type === "offre" && com.role === "recu" && pc) {
@@ -543,8 +586,35 @@
       com.flux.addTrack(neuve); com.face = face; $("pres").srcObject = com.flux; $("pres").style.transform = face === "user" ? "scaleX(-1)" : "none";
     }).catch(function () { toast("Ce téléphone n'a pas d'autre caméra."); });
   };
+  /* ---------- avant de commencer : l'appli installée, les notifications activées ---------- */
+  var aide = {};   // une phrase d'aide, seulement après un appui que le bouton n'a pas pu honorer seul
+  function preparer() {
+    $("entree").hidden = true; $("appli").hidden = true; $("prepa").hidden = false;
+    var iphone = /iPhone|iPad|iPod/.test(navigator.userAgent), dedans = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+    var i = $("etapeInstaller"), n = $("etapeNotif"), ib = i.querySelector("button"), nb = n.querySelector("button");
+    var installee = !!(dedans || moi.installe);
+    i.classList.toggle("faite", installee); ib.disabled = installee; ib.textContent = installee ? "Appli installée ✓" : "Installer l'appli";
+    i.querySelector("span").textContent = installee ? "" : aide.installer || "";
+    ib.onclick = function () {
+      if (invite) { var v = invite; invite = null; v.prompt(); v.userChoice.then(function (c) { if (c && c.outcome === "accepted") { moi.installe = true; garder(); } else invite = v; preparer(); }).catch(preparer); return; }
+      if (aide.installer && !iphone) { moi.installe = true; garder(); return preparer(); }   // second appui : il l'a fait à la main
+      aide.installer = iphone ? "Sur iPhone : bouton Partager, puis « Sur l'écran d'accueil ». Ouvrez ensuite l'appli depuis son icône." : "Menu ⋮ du navigateur, puis « Ajouter à l'écran d'accueil ». Ensuite, touchez de nouveau ce bouton.";
+      preparer();
+    };
+    var possible = "PushManager" in window && "serviceWorker" in navigator && window.Notification, refuse = possible && Notification.permission === "denied";
+    var prevenu = possible ? !!moi.notif && Notification.permission === "granted" : !iphone || dedans;   // un téléphone qui ne sait pas : on ne le bloque pas
+    n.classList.toggle("faite", !!(prevenu && possible)); nb.disabled = !!prevenu; nb.textContent = prevenu && possible ? "Notifications activées ✓" : "Activer les notifications";
+    n.querySelector("span").textContent = prevenu ? (possible ? "" : "Ce téléphone ne sait pas recevoir de notifications ici.")
+      : refuse ? "Elles sont bloquées pour cette appli : autorisez-les dans les réglages du téléphone, puis revenez."
+      : !possible ? aide.notif || "" : "";
+    nb.onclick = function () { if (!possible) { aide.notif = "Installez d'abord l'appli, puis ouvrez-la depuis son icône."; return preparer(); } $("notif").click(); };
+    $("commencer").disabled = !(installee && prevenu);
+  }
+  $("commencer").onclick = function () { moi.pret = true; garder(); ouvrir(); };
+  document.addEventListener("visibilitychange", function () { if (!document.hidden && !$("prepa").hidden) preparer(); });
   var invite = null;
-  window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); invite = e; $("installer").hidden = false; });
+  window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); invite = e; $("installer").hidden = false; if (!$("prepa").hidden) preparer(); });
+  window.addEventListener("appinstalled", function () { moi.installe = true; garder(); if (!$("prepa").hidden) preparer(); });
   $("installer").onclick = function () { $("menu").hidden = true; if (invite) { invite.prompt(); invite = null; $("installer").hidden = true; } };
   $("sortir").onclick = function () { $("menu").hidden = true; if (!confirm("Quitter la messagerie sur ce téléphone ? Les messages restent ; il faudra retaper le code pour revenir.")) return; moi = {}; garder(); arreter(); ecranEntree(); };
   if ("serviceWorker" in navigator && !ESSAI) navigator.serviceWorker.register("/private/sw.js", { scope: "/private/" }).catch(function () {});

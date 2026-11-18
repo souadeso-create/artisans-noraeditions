@@ -12,7 +12,10 @@ self.addEventListener("push", e => {
   e.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(l => {
     // l'appli est ouverte sous les yeux : le message s'y affiche déjà, inutile de sonner
     if (l.some(c => c.visibilityState === "visible" && c.url.includes("/private/"))) return;
-    return self.registration.showNotification(m.titre, { body: m.texte, icon: ICONE, badge: PASTILLE, tag: "duo", renotify: true, data: { url: "/private/" },
+    // un appel : la notification reste à l'écran et vibre longtemps ; on la touche pour décrocher (pas de réponse écrite)
+    if (/^Appel /.test(m.texte)) return self.registration.showNotification(m.titre, { body: m.texte, icon: ICONE, badge: PASTILLE, tag: "duo-appel", renotify: true, silent: false,
+      requireInteraction: true, vibrate: [600, 250, 600, 250, 600, 250, 600, 250, 600], data: { url: "/private/" } });
+    return self.registration.showNotification(m.titre, { body: m.texte, icon: ICONE, badge: PASTILLE, tag: "duo", renotify: true, silent: false, vibrate: [180, 90, 180], data: { url: "/private/" },
       actions: [{ action: "repondre", type: "text", title: "Répondre", placeholder: "Votre réponse" }] });
   }));
 });
