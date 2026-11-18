@@ -219,7 +219,7 @@
   var garder = function () { try { localStorage.setItem("duo", JSON.stringify(moi)); } catch (e) {}
     // une copie pour le service des notifications, qui s'en sert pour envoyer la réponse tapée dans la notification
     try { if (window.caches) caches.open("private-moi").then(function (c) { return moi.code ? c.put("/private/moi", new Response(JSON.stringify({ qui: moi.qui, code: moi.code }), { headers: { "Content-Type": "application/json" } })) : c.delete("/private/moi"); }).catch(function () {}); } catch (e) {} };
-  var dernier = 0, premier = 0, vuAutre = 0, vus = {}, veille = null, enCours = false;
+  var dernier = 0, premier = 0, vuAutre = 0, recuAutre = 0, vuLe = null, vus = {}, veille = null, enCours = false;
 
   function toast(t) { var z = $("toast"); z.textContent = t; z.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(function () { z.hidden = true; }, 3200); }
 
@@ -312,7 +312,8 @@
   function marquerVu() {
     var z = $("vu"); if (!z) { z = document.createElement("div"); z.id = "vu"; $("fil").appendChild(z); }
     var miens = [].slice.call($("fil").querySelectorAll(".m.moi")), d = miens[miens.length - 1];
-    z.textContent = d && Number(d.dataset.id) <= vuAutre ? "Vu" : ""; $("fil").appendChild(z);
+    var n = d ? Number(d.dataset.id) : 0, auj = vuLe && new Date(vuLe).toDateString() === new Date().toDateString();
+    z.textContent = !d ? "" : n <= vuAutre ? "Vu" + (vuLe ? (auj ? " à " + heure(vuLe) : " le " + new Date(vuLe).toLocaleDateString("fr-FR", { day: "numeric", month: "long" }) + " à " + heure(vuLe)) : "") : n <= recuAutre ? "Reçu" : "Envoyé"; $("fil").appendChild(z);
   }
   function lire(avant) {
     if (enCours && !avant) return Promise.resolve(); if (!avant) enCours = true;
@@ -321,7 +322,7 @@
       if (avant) { poser(neufs.slice().reverse(), true); $("avant").hidden = neufs.length < 60; }
       else { var recu = dernier > 0 && neufs.some(function (m) { return m.de !== moi.qui && !m.supprime; }); poser(neufs); if (recu) tinter(); }
       (r.supprimes || []).forEach(function (id) { var e = $("fil").querySelector('.m[data-id="' + id + '"]:not(.retire)'); if (e) e.replaceWith(bulle({ id: id, de: e.dataset.de, supprime: true, created_at: new Date().toISOString() })); });
-      vuAutre = r.vu_autre || 0; marquerVu(); photos(r.photos);
+      vuAutre = r.vu_autre || 0; recuAutre = r.recu_autre || 0; vuLe = r.vu_autre_le || null; marquerVu(); photos(r.photos);
     }).catch(function (e) { if (/Code incorrect/.test(e.message)) { moi = {}; garder(); arreter(); ecranEntree(); } }).then(function () { if (!avant) enCours = false; });
   }
   function photos(p) {

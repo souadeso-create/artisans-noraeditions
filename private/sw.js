@@ -9,6 +9,8 @@ self.addEventListener("fetch", () => {});   // présent pour que le téléphone 
 self.addEventListener("push", e => {
   let m = { titre: "Private M et S", texte: "Un nouveau message" };
   try { m = Object.assign(m, e.data.json()); } catch (err) {}
+  // la notification est arrivée sur ce téléphone : on le dit à la base, pour que l'autre voie « Reçu »
+  e.waitUntil(moi().then(q => q && q.code && q.qui ? fetch(BASE + "/rest/v1/rpc/duo_recu", { method: "POST", headers: { "Content-Type": "application/json", apikey: CLE }, body: JSON.stringify({ p_code: q.code, p_qui: q.qui }) }) : null).catch(() => {}));
   e.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(l => {
     // l'appli est ouverte sous les yeux : le message s'y affiche déjà, inutile de sonner
     if (l.some(c => c.visibilityState === "visible" && c.url.includes("/private/"))) return;
