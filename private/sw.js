@@ -1,4 +1,4 @@
-// « Private M et S » : le service qui reçoit les notifications, même l'appli fermée.
+// « Private » : le service qui reçoit les notifications, même l'appli fermée.
 // On peut répondre dans la notification elle-même (là où le téléphone le permet : Chrome sur Android).
 const BASE = "https://olsqmrsyerdsyfkameab.supabase.co", CLE = "sb_publishable_nHTOBhRB-oKfl795VPVaAA_ujwUnkCn";
 const ICONE = "/private/icone-192.png", PASTILLE = "/private/pastille.png";
@@ -7,7 +7,7 @@ self.addEventListener("activate", e => e.waitUntil(self.clients.claim()));
 self.addEventListener("fetch", () => {});   // présent pour que le téléphone propose l'installation
 
 self.addEventListener("push", e => {
-  let m = { titre: "Private M et S", texte: "Un nouveau message" };
+  let m = { titre: "Private", texte: "Un nouveau message" };
   try { m = Object.assign(m, e.data.json()); } catch (err) {}
   // la notification est arrivée sur ce téléphone : on le dit à la base, pour que l'autre voie « Reçu »
   e.waitUntil(moi().then(q => q && q.code && q.qui ? fetch(BASE + "/rest/v1/rpc/duo_recu", { method: "POST", headers: { "Content-Type": "application/json", apikey: CLE }, body: JSON.stringify({ p_code: q.code, p_qui: q.qui }) }) : null).catch(() => {}));
@@ -32,13 +32,22 @@ self.addEventListener("push", e => {
 // qui tient ce téléphone, et son code : l'appli les range ici à l'entrée (le service ne peut pas lire la mémoire de la page)
 const moi = () => caches.open("private-moi").then(c => c.match("/private/moi")).then(r => r ? r.json() : null).catch(() => null);
 
+// la réponse tapée dans la notification part chiffrée, comme depuis l'appli (même clé, rangée par l'appli à l'entrée)
+const chiffrer = async (cle, t) => {
+  const brut = Uint8Array.from(atob(cle), c => c.charCodeAt(0)), k = await crypto.subtle.importKey("raw", brut, "AES-GCM", false, ["encrypt"]);
+  const iv = crypto.getRandomValues(new Uint8Array(12)), c = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, k, new TextEncoder().encode(t)));
+  const u = new Uint8Array(12 + c.length); u.set(iv); u.set(c, 12);
+  let s = ""; for (let i = 0; i < u.length; i++) s += String.fromCharCode(u[i]);
+  return "c1:" + btoa(s);
+};
+
 self.addEventListener("notificationclick", e => {
   e.notification.close();
   if (e.action === "repondre" && e.reply) {
     const rate = () => self.registration.showNotification("La réponse n'est pas partie", { body: "Touchez pour ouvrir la messagerie et répondre.", icon: ICONE, badge: PASTILLE, tag: "duo-rate", data: { url: "/private/" } });
     e.waitUntil(moi().then(m => {
-      if (!m || !m.code || !m.qui) return rate();
-      return fetch(BASE + "/rest/v1/rpc/duo_envoyer", { method: "POST", headers: { "Content-Type": "application/json", apikey: CLE }, body: JSON.stringify({ p_code: m.code, p_de: m.qui, p_texte: e.reply }) })
+      if (!m || !m.code || !m.qui || !m.cle) return rate();   // sans la clé, pas de réponse en clair : on ouvre l'appli
+      return chiffrer(m.cle, e.reply).then(c => fetch(BASE + "/rest/v1/rpc/duo_envoyer", { method: "POST", headers: { "Content-Type": "application/json", apikey: CLE }, body: JSON.stringify({ p_code: m.code, p_de: m.qui, p_texte: c }) }))
         .then(r => r.ok ? null : rate()).catch(rate);
     }));
     return;

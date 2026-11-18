@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
-<title>Private M et S</title>
+<title>Private</title>
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#1e3f63">
 <link rel="manifest" href="/private/manifest.json">
 <link rel="icon" type="image/png" href="/private/icone-192.png">
 <link rel="apple-touch-icon" href="/private/icone-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Private M et S">
+<meta name="apple-mobile-web-app-title" content="Private">
 <style>
-  /* « Private M et S » (18/11/2026) : une messagerie privée à deux, installable sur le téléphone, avec photos et vidéos.
+  /* « Private » (18/11/2026) : une messagerie privée à deux, installable sur le téléphone, avec photos et vidéos.
      Pas de compte : un code secret choisi au premier lancement, gardé sur chaque téléphone. La base : nora-schema-13-duo.sql. */
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   :root { --bleu: #2f5d8a; --fonce: #1e3f63; --nuit: #1c2333; --doux: #e6ecf3; --fond: #f5f7fa; --gris: #6b7686; }
@@ -142,15 +142,24 @@
   #prendre { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; background: #fff; border-radius: 20px 20px 0 0; box-shadow: 0 -10px 30px rgba(28,35,51,.25); padding: 14px 16px calc(16px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 10px; }
   #prendre button { padding: 16px; border-radius: 16px; background: var(--doux); color: var(--fonce); font-weight: 700; font-size: 16.5px; }
   #prendre button.annuler { background: none; color: var(--gris); font-weight: 600; padding: 10px; }
+  /* les messages vocaux */
+  #micro { background: var(--doux); color: var(--fonce); }
+  #micro svg { width: 24px; height: 24px; }
+  #vocal { flex: none; display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #fff; border-top: 1px solid #dfe5ec; font-weight: 600; }
+  #vocal span { flex: 1; color: #c62828; }
+  #vocal button { padding: 10px 16px; border-radius: 999px; background: var(--doux); color: var(--fonce); font-weight: 700; }
+  #vocal button.oui { background: var(--bleu); color: #fff; }
+  .m.media audio { display: block; width: 240px; max-width: 100%; height: 44px; }
+  .m.media .voir { display: block; width: 220px; max-width: 100%; padding: 34px 10px; border-radius: 16px; background: #1c2333; color: #fff; font-weight: 700; }
 </style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute"><symbol id="c" viewBox="0 0 24 24"><path d="M12 21s-7.500-4.700-9.600-9.300C.800 8 2.900 4 6.700 4c2 0 3.700 1 5.300 3 1.600-2 3.300-3 5.300-3 3.800 0 5.900 4 4.300 7.700C19.500 16.300 12 21 12 21z"/></symbol></svg>
 
 <main id="entree" hidden>
-  <h1>Private M et S</h1>
+  <h1>Private</h1>
   <p id="consigne"></p>
-  <div class="qui"><button type="button" data-qui="Mohamed">Je suis Mohamed</button><button type="button" data-qui="Souad">Je suis Souad</button></div>
+  <input class="champ" id="prenom" type="text" autocomplete="off" autocapitalize="words" placeholder="Votre prénom" aria-label="Votre prénom">
   <input class="champ" id="code" type="password" autocomplete="off" placeholder="Votre code secret" aria-label="Code secret">
   <input class="champ" id="code2" type="password" autocomplete="off" placeholder="Le même code, une seconde fois" aria-label="Confirmer le code" hidden>
   <div id="erreur" role="alert"></div>
@@ -167,7 +176,7 @@
 <div id="appli" hidden>
   <header>
     <div id="photos"><span data-p="Mohamed" role="img" aria-label="Mohamed">M</span><span data-p="Souad" role="img" aria-label="Souad">S</span></div>
-    <h2>Private M et S</h2>
+    <h2>Private</h2>
     <button type="button" id="appelAudio" aria-label="Appel audio"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.100.4 2.300.6 3.600.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.600 21 3 13.400 3 4c0-.6.4-1 1-1h3.500c.6 0 1 .4 1 1 0 1.300.2 2.500.6 3.600.1.3 0 .7-.2 1l-2.300 2.200z"/></svg></button>
     <button type="button" id="appelVideo" aria-label="Appel vidéo"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="2.500" y="6" width="13" height="12" rx="2.500"/><path d="M16.500 10.500l5-3v9l-5-3z"/></svg></button>
     <button type="button" id="ouvrirMenu" aria-label="Menu">⋮</button>
@@ -185,11 +194,13 @@
   <div id="bandeau" hidden><span></span><button type="button" id="activer">Activer</button><button type="button" class="plus-tard" id="plusTard" aria-label="Plus tard">×</button></div>
   <div id="fil" aria-live="polite"></div>
   <div id="prets" aria-label="Messages tout prêts"></div>
+  <div id="vocal" hidden><span aria-live="polite"></span><button type="button" id="vocalNon">Annuler</button><button type="button" class="oui" id="vocalOui">Envoyer</button></div>
   <footer>
     <button type="button" id="joindre" aria-label="Envoyer une photo ou une vidéo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="3"/><circle cx="12" cy="13" r="3.500"/><path d="M8 6l1.500-2h5L16 6"/></svg></button>
     <input type="file" id="fichier" accept="image/*,video/*" multiple hidden>
     <input type="file" id="camPhoto" accept="image/*" capture="environment" hidden>
     <input type="file" id="camVideo" accept="video/*" capture="environment" hidden>
+    <button type="button" id="micro" aria-label="Enregistrer un message vocal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></button>
     <textarea id="texte" rows="1" placeholder="Écrire un message" aria-label="Écrire un message" maxlength="4000"></textarea>
     <button type="button" id="envoyer" aria-label="Envoyer"></button>
   </footer>
@@ -218,7 +229,39 @@
   var moi = {}; try { moi = JSON.parse(localStorage.getItem("duo") || "{}"); } catch (e) {}
   var garder = function () { try { localStorage.setItem("duo", JSON.stringify(moi)); } catch (e) {}
     // une copie pour le service des notifications, qui s'en sert pour envoyer la réponse tapée dans la notification
-    try { if (window.caches) caches.open("private-moi").then(function (c) { return moi.code ? c.put("/private/moi", new Response(JSON.stringify({ qui: moi.qui, code: moi.code }), { headers: { "Content-Type": "application/json" } })) : c.delete("/private/moi"); }).catch(function () {}); } catch (e) {} };
+    try { if (window.caches) caches.open("private-moi").then(function (c) { return moi.code ? c.put("/private/moi", new Response(JSON.stringify({ qui: moi.qui, code: moi.code, cle: moi.cle }), { headers: { "Content-Type": "application/json" } })) : c.delete("/private/moi"); }).catch(function () {}); } catch (e) {} };
+  /* ---------- le chiffrement (sur le téléphone ; la base ne voit que du texte illisible) ---------- */
+  var enOct = function (t) { return new TextEncoder().encode(t); };
+  var b64 = function (u) { u = new Uint8Array(u); var t = ""; for (var i = 0; i < u.length; i++) t += String.fromCharCode(u[i]); return btoa(t); };
+  var deb64 = function (t) { var x = atob(t), u = new Uint8Array(x.length); for (var i = 0; i < x.length; i++) u[i] = x.charCodeAt(i); return u; };
+  // la clé : tirée du code secret, une fois, puis gardée sur ce téléphone
+  function fabriquerCle() {
+    if (moi.cle || !moi.code) return Promise.resolve();
+    return crypto.subtle.importKey("raw", enOct(moi.code), "PBKDF2", false, ["deriveBits"])
+      .then(function (k) { return crypto.subtle.deriveBits({ name: "PBKDF2", salt: enOct("private:" + moi.dossier), iterations: 150000, hash: "SHA-256" }, k, 256); })
+      .then(function (bits) { moi.cle = b64(bits); });
+  }
+  var cleGardee = { s: "", p: null };
+  function cle() { if (cleGardee.s !== moi.cle) cleGardee = { s: moi.cle, p: crypto.subtle.importKey("raw", deb64(moi.cle), "AES-GCM", false, ["encrypt", "decrypt"]) }; return cleGardee.p; }
+  function chiffrerOctets(buf) { var iv = crypto.getRandomValues(new Uint8Array(12));
+    return cle().then(function (k) { return crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, k, buf); }).then(function (c) { var u = new Uint8Array(12 + c.byteLength); u.set(iv); u.set(new Uint8Array(c), 12); return u; }); }
+  function dechiffrerOctets(buf) { var u = new Uint8Array(buf); return cle().then(function (k) { return crypto.subtle.decrypt({ name: "AES-GCM", iv: u.slice(0, 12) }, k, u.slice(12)); }); }
+  function chiffrer(t) { if (!t) return Promise.resolve("");
+    return chiffrerOctets(enOct(t)).then(function (u) { var c = "c1:" + b64(u); if (c.length > 4000) throw new Error("Message trop long : coupez-le en deux."); return c; }); }
+  function dechiffrer(t) { if (!t || t.indexOf("c1:") !== 0) return Promise.resolve(t || "");
+    return dechiffrerOctets(deb64(t.slice(3))).then(function (b) { return new TextDecoder().decode(b); }).catch(function () { return "Message illisible sur ce téléphone"; }); }
+  function clair(l) { return Promise.all(l.map(function (m) { return dechiffrer(m.texte).then(function (t) { m.texte = t; }); })); }
+  var marque = function (type) { return ESSAI ? type : "c1;" + type; };   // « c1; » devant le type : le fichier est chiffré
+  // un fichier chiffré : on le charge, on le déchiffre, on le montre. Une vidéo attend qu'on la demande (elle se charge en entier).
+  function secret(el, chemin, type, video) {
+    var charger = function () { return fetch(adresse(chemin)).then(function (r) { if (!r.ok) throw 0; return r.arrayBuffer(); }).then(dechiffrerOctets)
+      .then(function (b) { el.src = URL.createObjectURL(new Blob([b], { type: type })); }); };
+    if (!video) { charger().catch(function () { el.alt = "Fichier illisible"; }); return null; }
+    el.hidden = true; var b = document.createElement("button"); b.type = "button"; b.className = "voir"; b.textContent = "▶  Voir la vidéo";
+    b.onclick = function () { b.disabled = true; b.textContent = "Chargement…"; charger().then(function () { b.remove(); el.hidden = false; el.play().catch(function () {}); }).catch(function () { b.disabled = false; b.textContent = "La vidéo ne se charge pas : réessayer"; }); };
+    return b;
+  }
+
   var dernier = 0, premier = 0, vuAutre = 0, recuAutre = 0, vuLe = null, vus = {}, veille = null, enCours = false;
 
   function toast(t) { var z = $("toast"); z.textContent = t; z.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(function () { z.hidden = true; }, 3200); }
@@ -256,8 +299,8 @@
     $("appli").hidden = true; $("entree").hidden = false; $("erreur").textContent = "";
     appel("duo_existe").then(function (existe) {
       nouveau = !existe; $("code2").hidden = !nouveau;
-      $("consigne").textContent = nouveau ? "Premier lancement : choisissez votre prénom, puis un code secret à vous deux (six caractères au moins). L'autre tapera le même sur son téléphone."
-        : "Choisissez votre prénom et tapez votre code secret. Il ne sera demandé qu'une fois sur ce téléphone.";
+      $("consigne").textContent = nouveau ? "Premier lancement : tapez votre prénom, puis choisissez un code secret (six caractères au moins)."
+        : "Tapez votre prénom et votre code secret.";
       $("entrer").textContent = nouveau ? "Créer notre messagerie" : "Entrer";
     }).catch(function (e) { $("erreur").textContent = e.message; });
     document.querySelectorAll("[data-qui]").forEach(function (b) { b.classList.toggle("choisi", b.dataset.qui === choix); });
@@ -265,13 +308,17 @@
   document.querySelectorAll("[data-qui]").forEach(function (b) { b.onclick = function () { choix = b.dataset.qui; document.querySelectorAll("[data-qui]").forEach(function (x) { x.classList.toggle("choisi", x === b); }); }; });
   $("entrer").onclick = function () {
     var code = $("code").value, b = $("entrer"); $("erreur").textContent = "";
-    if (!choix) return $("erreur").textContent = "Dites d'abord qui vous êtes.";
+    var p = $("prenom").value.trim().toLowerCase().normalize("NFD").replace(/[^a-z]/g, "");
+    if (!p) return $("erreur").textContent = "Tapez votre prénom.";
+    choix = p === "souad" ? "Souad" : /^moham+[ae]d$/.test(p) ? "Mohamed" : "";
     if (code.length < 6) return $("erreur").textContent = "Le code fait six caractères au moins.";
     if (nouveau && code !== $("code2").value) return $("erreur").textContent = "Les deux codes ne sont pas les mêmes.";
+    if (!choix) return $("erreur").textContent = "Ce n'est pas le bon code.";
     b.disabled = true;
     (nouveau ? appel("duo_creer", { p_code: code }) : Promise.resolve(true)).then(function () { return appel("duo_ouvrir", { p_code: code }); }).then(function (r) {
       if (!r.ok) throw new Error("Ce n'est pas le bon code.");
-      moi = { qui: choix, code: code, dossier: r.dossier }; garder(); $("code").value = $("code2").value = ""; ouvrir();
+      moi = { qui: choix, code: code, dossier: r.dossier }; $("code").value = $("code2").value = $("prenom").value = "";
+      return fabriquerCle().then(function () { garder(); ouvrir(); });
     }).catch(function (e) { $("erreur").textContent = e.message; }).then(function () { b.disabled = false; });
   };
 
@@ -283,9 +330,10 @@
     var e = document.createElement("div"), mien = m.de === moi.qui; e.className = "m" + (mien ? " moi" : ""); e.dataset.id = m.id; e.dataset.jour = jourDe(m.created_at); e.dataset.de = m.de;
     if (m.supprime) { e.classList.add("retire"); e.textContent = "Message retiré"; }
     else if (m.media_chemin) { e.classList.add("media"); e.dataset.chemin = m.media_chemin;
-      var v = /^video/.test(m.media_type || ""), el = document.createElement(v ? "video" : "img"); el.src = adresse(m.media_chemin);
-      if (v) { el.controls = true; el.preload = "metadata"; el.playsInline = true; } else { el.alt = "Photo"; el.loading = "lazy"; el.onclick = function () { $("grand").querySelector("img").src = el.src; $("grand").hidden = false; }; }
-      e.appendChild(el); if (m.texte) { var t = document.createElement("div"); t.className = "txt"; t.textContent = m.texte; e.appendChild(t); } }
+      var tm = (m.media_type || "").replace(/^c1;/, ""), cache = /^c1;/.test(m.media_type || ""), v = /^video/.test(tm), son = /^audio/.test(tm), el = document.createElement(son ? "audio" : v ? "video" : "img");
+      var bouton = cache ? secret(el, m.media_chemin, tm, v) : (el.src = adresse(m.media_chemin), null);
+      if (son) { el.controls = true; el.preload = "metadata"; } else if (v) { el.controls = true; el.preload = "metadata"; el.playsInline = true; } else { el.alt = "Photo"; el.loading = "lazy"; el.onclick = function () { $("grand").querySelector("img").src = el.src; $("grand").hidden = false; }; }
+      e.appendChild(el); if (bouton) e.appendChild(bouton); if (m.texte) { var t = document.createElement("div"); t.className = "txt"; t.textContent = m.texte; e.appendChild(t); } }
     else e.textContent = m.texte;
     var s = document.createElement("small"); s.textContent = heure(m.created_at); e.appendChild(s);
     // un appui long sur un de ses propres messages propose de le retirer
@@ -317,7 +365,7 @@
   }
   function lire(avant) {
     if (enCours && !avant) return Promise.resolve(); if (!avant) enCours = true;
-    return appel("duo_lire", { p_code: moi.code, p_qui: moi.qui, p_apres: avant ? 0 : dernier, p_avant: avant || null }).then(function (r) {
+    return appel("duo_lire", { p_code: moi.code, p_qui: moi.qui, p_apres: avant ? 0 : dernier, p_avant: avant || null }).then(function (r) { return clair(r.messages || []).then(function () { return r; }); }).then(function (r) {
       var neufs = (r.messages || []).filter(function (m) { return !vus[m.id]; });
       if (avant) { poser(neufs.slice().reverse(), true); $("avant").hidden = neufs.length < 60; }
       else { var recu = dernier > 0 && neufs.some(function (m) { return m.de !== moi.qui && !m.supprime; }); poser(neufs); if (recu) tinter(); }
@@ -347,7 +395,7 @@
     texte.style.height = "46px"; texte.style.height = Math.max(46, Math.min(130, texte.scrollHeight + 2)) + "px"; }
   texte.addEventListener("input", etatBouton);
   function envoyer(t, chemin, type) {
-    return appel("duo_envoyer", { p_code: moi.code, p_de: moi.qui, p_texte: t || "", p_chemin: chemin || null, p_type: type || null }).then(function () { return lire(); }).then(function () { $("fil").scrollTop = $("fil").scrollHeight; });
+    return chiffrer(t || "").then(function (c) { return appel("duo_envoyer", { p_code: moi.code, p_de: moi.qui, p_texte: c, p_chemin: chemin || null, p_type: type || null }); }).then(function () { return lire(); }).then(function () { $("fil").scrollTop = $("fil").scrollHeight; });
   }
   function prets() {
     var e = moi.qui === "Souad" ? "e" : "";
@@ -373,7 +421,11 @@
     return createImageBitmap(f).then(function (im) { var k = Math.min(1, 1920 / Math.max(im.width, im.height)), c = document.createElement("canvas"); c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
       c.getContext("2d").drawImage(im, 0, 0, c.width, c.height); return new Promise(function (ok) { c.toBlob(function (b) { ok(b && b.size < f.size ? new File([b], "photo.jpg", { type: "image/jpeg" }) : f); }, "image/jpeg", .86); }); }).catch(function () { return f; });
   }
-  function deposer(f, suivi) {
+  function deposer(f, suivi, enClair) {
+    if (ESSAI || enClair) return deposerBrut(f, suivi);
+    return f.arrayBuffer().then(chiffrerOctets).then(function (u) { return deposerBrut(new File([u], f.name, { type: f.type }), suivi); });
+  }
+  function deposerBrut(f, suivi) {
     var ext = (f.name.split(".").pop() || (/^video/.test(f.type) ? "mp4" : "jpg")).toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 5) || "bin";
     var nom = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2)) + "." + ext, chemin = moi.dossier + "/" + nom;
     if (ESSAI) return new Promise(function (ok) { var r = new FileReader(); r.onload = function () { ok(f.size < 900000 ? r.result : "data:,trop-lourd-pour-l-essai"); }; r.readAsDataURL(f); });
@@ -392,11 +444,39 @@
       if (f.size > 50 * 1024 * 1024) throw new Error("Cette vidéo dépasse 50 Mo : elle est trop lourde pour partir.");
       var quoi = (/^video/.test(f.type) ? "Vidéo" : "Photo") + (liste.length > 1 ? " " + (i + 1) + " sur " + liste.length : "");
       z.textContent = quoi + " : préparation…";
-      return reduire(f).then(function (g) { return deposer(g, function (p) { z.textContent = quoi + " : " + p + " %"; }).then(function (chemin) { return envoyer("", chemin, g.type); }); });
+      return reduire(f).then(function (g) { return deposer(g, function (p) { z.textContent = quoi + " : " + p + " %"; }).then(function (chemin) { return envoyer("", chemin, marque(g.type)); }); });
     }); });
     suite.catch(function (e) { toast(e.message); }).then(function () { z.remove(); });
   };
   $("camPhoto").onchange = $("camVideo").onchange = $("fichier").onchange;   // même chemin que la galerie
+  /* ---------- les messages vocaux ---------- */
+  var enr = null;
+  $("micro").onclick = function () {
+    if (enr) return;
+    if (!navigator.mediaDevices || !window.MediaRecorder) return toast("Ce téléphone ne sait pas enregistrer la voix ici.");
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(function (f) {
+      var type = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg"].filter(function (t) { return MediaRecorder.isTypeSupported(t); })[0] || "";
+      var r = new MediaRecorder(f, type ? { mimeType: type } : undefined), a = enr = { r: r, f: f, morceaux: [], debut: Date.now() };
+      r.ondataavailable = function (e) { if (e.data && e.data.size) a.morceaux.push(e.data); };
+      r.start(); $("vocal").hidden = false;
+      var montre = function () { var n = Math.floor((Date.now() - a.debut) / 1000); $("vocal").querySelector("span").textContent = "● Enregistrement " + Math.floor(n / 60) + ":" + String(n % 60).padStart(2, "0"); if (n >= 300) finVocal(true); };
+      montre(); a.t = setInterval(montre, 500);
+    }).catch(function () { toast("Autorisez le micro pour cette appli, puis recommencez."); });
+  };
+  function finVocal(envoi) {
+    if (!enr) return; var a = enr; enr = null; clearInterval(a.t); $("vocal").hidden = true;
+    a.r.onstop = function () {
+      a.f.getTracks().forEach(function (t) { t.stop(); }); if (!envoi) return;
+      var base = (a.r.mimeType || "audio/webm").split(";")[0], ext = base === "audio/mp4" ? "m4a" : base === "audio/ogg" ? "ogg" : "webm", b = new Blob(a.morceaux, { type: base });
+      if (b.size < 1500) return toast("Message trop court.");
+      var z = document.createElement("div"); z.id = "envoi"; z.textContent = "Message vocal : envoi…"; $("fil").appendChild(z); $("fil").scrollTop = $("fil").scrollHeight;
+      deposer(new File([b], "vocal." + ext, { type: base }), function (p) { z.textContent = "Message vocal : " + p + " %"; }).then(function (chemin) { return envoyer("", chemin, marque(base)); })
+        .catch(function (e) { toast(e.message || "Le message vocal n'est pas parti."); }).then(function () { z.remove(); });
+    };
+    try { a.r.stop(); } catch (e) { a.r.onstop(); }
+  }
+  $("vocalOui").onclick = function () { finVocal(true); };
+  $("vocalNon").onclick = function () { finVocal(false); };
   // sa propre photo : recadrée en carré, 400 pixels de côté
   function carre(f) {
     return createImageBitmap(f).then(function (im) { var c = Math.min(im.width, im.height), t = document.createElement("canvas"); t.width = t.height = 400;
@@ -406,7 +486,7 @@
   $("maPhoto").onclick = function () { $("menu").hidden = true; $("fichierPhoto").click(); };
   $("fichierPhoto").onchange = function () {
     var f = this.files[0]; this.value = ""; if (!f) return;
-    carre(f).then(function (g) { return deposer(g, function () {}); }).then(function (chemin) { return appel("duo_photo", { p_code: moi.code, p_qui: moi.qui, p_chemin: chemin }); })
+    carre(f).then(function (g) { return deposer(g, function () {}, true); }).then(function (chemin) { return appel("duo_photo", { p_code: moi.code, p_qui: moi.qui, p_chemin: chemin }); })
       .then(function () { toast("Votre photo est en place."); return lire(); }).catch(function (e) { toast(e.message || "La photo n'est pas partie."); });
   };
   $("grand").onclick = function () { $("grand").hidden = true; };
@@ -632,7 +712,7 @@
 
   /* ---------- départ ---------- */
   etatBouton(); appliquerFond();
-  if (moi.code && moi.qui) appel("duo_ouvrir", { p_code: moi.code }).then(function (r) { if (!r.ok) throw 0; moi.dossier = r.dossier; garder(); ouvrir(); }).catch(function () { ecranEntree(); });
+  if (moi.code && moi.qui) appel("duo_ouvrir", { p_code: moi.code }).then(function (r) { if (!r.ok) throw 0; moi.dossier = r.dossier; return fabriquerCle(); }).then(function () { garder(); ouvrir(); }).catch(function () { ecranEntree(); });
   else ecranEntree();
 })();
 </script>
