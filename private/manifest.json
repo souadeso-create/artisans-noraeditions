@@ -1,0 +1,17 @@
+{
+  "name": "Private M et S",
+  "short_name": "Private",
+  "description": "Notre messagerie à nous deux.",
+  "lang": "fr",
+  "start_url": "/private/",
+  "scope": "/private/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f5f7fa",
+  "theme_color": "#1e3f63",
+  "icons": [
+    { "src": "/private/icone-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/private/icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/private/icone-masque-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

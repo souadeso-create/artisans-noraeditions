@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
-<title>Mohamed et Souad</title>
+<title>Private M et S</title>
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#1e3f63">
-<link rel="manifest" href="/mohamed-et-souad/manifest.json">
-<link rel="icon" type="image/png" href="/mohamed-et-souad/icone-192.png">
-<link rel="apple-touch-icon" href="/mohamed-et-souad/icone-192.png">
+<link rel="manifest" href="/private/manifest.json">
+<link rel="icon" type="image/png" href="/private/icone-192.png">
+<link rel="apple-touch-icon" href="/private/icone-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Mohamed et Souad">
+<meta name="apple-mobile-web-app-title" content="Private M et S">
 <style>
-  /* « Mohamed et Souad » (18/11/2026) : une messagerie privée à deux, installable sur le téléphone, avec photos et vidéos.
+  /* « Private M et S » (18/11/2026) : une messagerie privée à deux, installable sur le téléphone, avec photos et vidéos.
      Pas de compte : un code secret choisi au premier lancement, gardé sur chaque téléphone. La base : nora-schema-13-duo.sql. */
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   :root { --bleu: #2f5d8a; --fonce: #1e3f63; --nuit: #1c2333; --doux: #e6ecf3; --fond: #f5f7fa; --gris: #6b7686; }
@@ -94,13 +94,18 @@
   #prets::-webkit-scrollbar { display: none; }
   #prets button { flex: none; padding: 8px 14px; border-radius: 999px; background: var(--doux); color: var(--fonce); font-size: 14.5px; font-weight: 600; white-space: nowrap; }
   #prets + footer { border-top: 0; }
+  /* le bandeau des notifications, tant qu'elles ne sont pas activées sur ce téléphone */
+  #bandeau { flex: none; display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #fff7e0; color: #5a4300; font-size: 14px; border-bottom: 1px solid #f0e0a8; }
+  #bandeau span { flex: 1; }
+  #bandeau button { flex: none; padding: 8px 14px; border-radius: 999px; background: var(--fonce); color: #fff; font-weight: 700; font-size: 14px; }
+  #bandeau button.plus-tard { background: none; color: #5a4300; padding: 8px 4px; font-weight: 600; }
 </style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute"><symbol id="c" viewBox="0 0 24 24"><path d="M12 21s-7.500-4.700-9.600-9.300C.800 8 2.900 4 6.700 4c2 0 3.700 1 5.300 3 1.600-2 3.300-3 5.300-3 3.800 0 5.900 4 4.300 7.700C19.500 16.300 12 21 12 21z"/></symbol></svg>
 
 <main id="entree" hidden>
-  <h1>Mohamed et Souad</h1>
+  <h1>Private M et S</h1>
   <p id="consigne"></p>
   <div class="qui"><button type="button" data-qui="Mohamed">Je suis Mohamed</button><button type="button" data-qui="Souad">Je suis Souad</button></div>
   <input class="champ" id="code" type="password" autocomplete="off" placeholder="Votre code secret" aria-label="Code secret">
@@ -112,7 +117,7 @@
 <div id="appli" hidden>
   <header>
     <div id="photos"><span data-p="Mohamed" role="img" aria-label="Mohamed">M</span><span data-p="Souad" role="img" aria-label="Souad">S</span></div>
-    <h2>Mohamed et Souad</h2>
+    <h2>Private M et S</h2>
     <button type="button" id="ouvrirMenu" aria-label="Menu">⋮</button>
   </header>
   <div id="menu" hidden>
@@ -122,6 +127,7 @@
     <button type="button" id="installer" hidden>Mettre l'appli sur l'écran d'accueil</button>
     <button type="button" id="sortir">Quitter sur ce téléphone</button>
   </div>
+  <div id="bandeau" hidden><span></span><button type="button" id="activer">Activer</button><button type="button" class="plus-tard" id="plusTard" aria-label="Plus tard">×</button></div>
   <div id="fil" aria-live="polite"></div>
   <div id="prets" aria-label="Messages tout prêts"></div>
   <footer>
@@ -254,7 +260,7 @@
   function arreter() { clearInterval(veille); veille = null; }
   function ouvrir() {
     $("entree").hidden = true; $("appli").hidden = false; $("fil").innerHTML = '<button type="button" id="avant" hidden>Voir les messages plus anciens</button>';
-    dernier = premier = 0; vus = {}; prets();
+    dernier = premier = 0; vus = {}; prets(); bandeau();
     $("avant").onclick = function () { lire(premier); };
     lire().then(function () { $("avant").hidden = Object.keys(vus).length < 60; $("fil").scrollTop = $("fil").scrollHeight; });
     arreter(); veille = setInterval(function () { if (!document.hidden) lire(); }, 3000);
@@ -337,16 +343,29 @@
     $("menu").hidden = true;
     if (!("serviceWorker" in navigator) || !("PushManager" in window)) return toast("Ce téléphone ne sait pas recevoir de notifications ici. Sur iPhone, mettez d'abord l'appli sur l'écran d'accueil.");
     Notification.requestPermission().then(function (p) { if (p !== "granted") throw new Error("Les notifications sont refusées dans les réglages du téléphone.");
-      return navigator.serviceWorker.register("/mohamed-et-souad/sw.js", { scope: "/mohamed-et-souad/" }); }).then(function () { return navigator.serviceWorker.ready; })
+      return navigator.serviceWorker.register("/private/sw.js", { scope: "/private/" }); }).then(function () { return navigator.serviceWorker.ready; })
       .then(function (reg) { return reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: enOctets(VAPID) }); })
       .then(function (ab) { var j = ab.toJSON(); return appel("duo_abonner", { p_code: moi.code, p_qui: moi.qui, p_endpoint: j.endpoint, p_cles: j.keys }); })
-      .then(function () { toast("Ce téléphone sonnera à chaque message"); }).catch(function (e) { toast(e.message || "Les notifications n'ont pas pu être activées."); });
+      .then(function () { moi.notif = true; garder(); bandeau(); toast("Ce téléphone sonnera à chaque message"); }).catch(function (e) { toast(e.message || "Les notifications n'ont pas pu être activées."); });
   };
+  // le bandeau : il reste tant que ce téléphone n'est pas inscrit (ou jusqu'à « × », pour cette fois)
+  function bandeau() {
+    var z = $("bandeau"), t = z.querySelector("span"), iphone = /iPhone|iPad|iPod/.test(navigator.userAgent), installee = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+    if (moi.notif && (ESSAI || (window.Notification && Notification.permission === "granted"))) return z.hidden = true;
+    if (!("PushManager" in window)) {
+      if (!iphone || installee) return z.hidden = true;
+      t.textContent = "Pour être prévenu des messages : touchez Partager, puis « Sur l'écran d'accueil », et ouvrez l'appli depuis son icône."; $("activer").hidden = true;
+    } else if (window.Notification && Notification.permission === "denied") { t.textContent = "Les notifications sont bloquées pour cette appli dans les réglages du téléphone."; $("activer").hidden = true; }
+    else { t.textContent = "Être prévenu à chaque message, même l'appli fermée."; $("activer").hidden = false; }
+    z.hidden = false;
+  }
+  $("activer").onclick = function () { $("notif").click(); };
+  $("plusTard").onclick = function () { $("bandeau").hidden = true; };
   var invite = null;
   window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); invite = e; $("installer").hidden = false; });
   $("installer").onclick = function () { $("menu").hidden = true; if (invite) { invite.prompt(); invite = null; $("installer").hidden = true; } };
   $("sortir").onclick = function () { $("menu").hidden = true; if (!confirm("Quitter la messagerie sur ce téléphone ? Les messages restent ; il faudra retaper le code pour revenir.")) return; moi = {}; garder(); arreter(); ecranEntree(); };
-  if ("serviceWorker" in navigator && !ESSAI) navigator.serviceWorker.register("/mohamed-et-souad/sw.js", { scope: "/mohamed-et-souad/" }).catch(function () {});
+  if ("serviceWorker" in navigator && !ESSAI) navigator.serviceWorker.register("/private/sw.js", { scope: "/private/" }).catch(function () {});
 
   /* ---------- départ ---------- */
   etatBouton();
