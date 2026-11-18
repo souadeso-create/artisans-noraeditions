@@ -13,8 +13,27 @@ self.addEventListener("push", e => {
     // l'appli est ouverte sous les yeux : le message s'y affiche déjà, inutile de sonner
     if (l.some(c => c.visibilityState === "visible" && c.url.includes("/private/"))) return;
     // un appel : la notification reste à l'écran et vibre longtemps ; on la touche pour décrocher (pas de réponse écrite)
-    if (/^Appel /.test(m.texte)) return self.registration.showNotification(m.titre, { body: m.texte, icon: ICONE, badge: PASTILLE, tag: "duo-appel", renotify: true, silent: false,
-      requireInteraction: true, vibrate: [600, 250, 600, 250, 600, 250, 600, 250, 600], data: { url: "/private/" } });
+    // Appli fermée, un site ne peut pas faire sonner le téléphone en continu : la notification est donc redonnée toutes les quatre secondes
+    // (son et vibration à chaque fois), pendant une demi-minute, ou jusqu'à ce qu'on ouvre l'appli ou qu'on écarte la notification.
+    if (/^Appel /.test(m.texte)) {
+      const sonne = () => self.registration.showNotification(m.titre, { body: m.texte, icon: ICONE, badge: PASTILLE, tag: "duo-appel", renotify: true, silent: false,
+        requireInteraction: true, vibrate: [700, 250, 700, 250, 700], data: { url: "/private/" } });
+      const attendre = ms => new Promise(r => setTimeout(r, ms));
+      const encore = async () => {
+        await sonne();
+        for (let i = 0; i < 6; i++) {
+          await attendre(4000);
+          const fen = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+          if (fen.some(c => c.visibilityState === "visible" && c.url.includes("/private/"))) break;                    // l'appli est ouverte : elle sonne elle-même
+          if (!(await self.registration.getNotifications({ tag: "duo-appel" })).length) return;                          // notification écartée : on se tait
+          await sonne();
+        }
+        (await self.registration.getNotifications({ tag: "duo-appel" })).forEach(n => n.close());
+        const vu = (await self.clients.matchAll({ type: "window", includeUncontrolled: true })).some(c => c.visibilityState === "visible" && c.url.includes("/private/"));
+        if (!vu) return self.registration.showNotification(m.titre, { body: "Appel manqué", icon: ICONE, badge: PASTILLE, tag: "duo-manque", data: { url: "/private/" } });
+      };
+      return encore();
+    }
     return self.registration.showNotification(m.titre, { body: m.texte, icon: ICONE, badge: PASTILLE, tag: "duo", renotify: true, silent: false, vibrate: [180, 90, 180], data: { url: "/private/" },
       actions: [{ action: "repondre", type: "text", title: "Répondre", placeholder: "Votre réponse" }] });
   }));
